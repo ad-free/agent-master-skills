@@ -100,6 +100,14 @@ Write state after LOAD.
    - **Refused Bequest** — subclass that ignores most of what it inherits
    - **Dead Code** — exports, functions, or components no longer referenced
 
+2. **Scan for design system health:**
+   - Check for `tailwind.config.*`, `tokens.css`, `theme.ts`, `design-tokens.*`
+   - Check for shadcn/ui components (`components/ui/`)
+   - Check for CSS custom properties (`:root { --color-* }`)
+   - Check for design system documentation (`DESIGN.md`, `design-system/`)
+   - Flag inconsistencies: ad-hoc colors vs tokens, missing dark mode tokens, inconsistent spacing
+   - If no design system found: "No design system detected — recommend creating one (use ui-craft)"
+
 2. **Surface the report** as a structured list with locations:
    ```
    SMELL REPORT:
@@ -271,6 +279,8 @@ For each vertical slice from the plan:
 - **TDD seams** — Test at public interfaces only. Agree on seams with the human before writing code. No testing private methods.
 - **Mock at boundaries only** — Prefer real implementations > fakes > stubs > mocks. Over-mocking creates tests that pass while production breaks.
 - **Feature flags for risky changes** — If the slice modifies production-critical flow, wrap it behind a feature flag. Deploy OFF → enable in staging → gradual rollout. The feature flag lifecycle (create → test → rollout → remove) is documented in the ADR.
+- **Form generation** — When building forms, use React Hook Form + Zod for validation (React projects) or equivalent type-safe validation. Generate login, signup, contact, settings, and password reset forms as needed.
+- **Design system consistency** — If a design system exists, use its tokens. No ad-hoc colors, fonts, or spacing. If no design system exists, note it and suggest creating one with ui-craft.
 
 **Lint/Type/Tests are gating — every slice leaves the codebase cleaner than you found it.**
 
@@ -350,7 +360,16 @@ Conduct a parallel review of the entire diff (since the last known-good commit o
 - Parameterized queries (no string concatenation)?
 - Treat external data as untrusted?
 
-**Axis 6 — Modern Patterns (against fetched docs):**
+**Axis 6 — Accessibility (for UI-touching code):**
+- Color contrast ≥ 4.5:1 for body text, ≥ 3:1 for large text
+- Focus-visible ring on all interactive elements
+- Touch targets ≥ 44x44px on mobile
+- All interactive elements have aria labels
+- Semantic HTML used (button, nav, main, heading hierarchy)
+- `prefers-reduced-motion` respected for animations
+- If design system exists: tokens used consistently (no ad-hoc colors)
+
+**Axis 7 — Modern Patterns (against fetched docs):**
 - No deprecated APIs from the migration guide?
 - Code follows patterns shown in current-version docs?
 - Lint/format/tests pass?
@@ -449,6 +468,45 @@ Conduct a parallel review of the entire diff (since the last known-good commit o
    - Any decisions to be made
    - Known issues or blockers
 3. Summarize to the human: "Session saved. Run dev-craft again to resume from the current phase."
+
+---
+
+## Workflow Orchestration
+
+For complex features that span multiple domains (backend + UI + infrastructure), use workflow orchestration to coordinate multiple pipeline runs.
+
+### Workflow Types
+
+| Workflow | Description | Pipeline |
+|----------|-------------|----------|
+| **SaaS MVP** | Full-stack SaaS with auth, billing, dashboard | dev-craft (backend) + ui-craft (frontend) |
+| **Admin Dashboard** | Data-heavy admin panel with CRUD operations | dev-craft (API) + ui-craft (dashboard UI) |
+| **E-commerce** | Product catalog, cart, checkout, payments | dev-craft (backend) + ui-craft (storefront) |
+| **API Service** | Backend-only REST/GraphQL API | dev-craft only |
+| **Landing Page** | Marketing site with forms | ui-craft only |
+
+### Orchestration Pattern
+
+```
+1. PLAN — Decompose feature into backend and frontend slices
+2. BACKEND FIRST — Run dev-craft for API/database/auth slices
+3. HANDOFF — Generate API contract documentation
+4. FRONTEND — Run ui-craft for UI slices using API contract
+5. INTEGRATION — Run dev-craft for integration testing
+6. SHIP — Coordinate commits across both pipelines
+```
+
+### Cross-Skill Communication
+
+When dev-craft needs UI work:
+- Note in `.dev-craft/state.json`: `"uiSliceNeeded": ["login-form", "dashboard"]`
+- Generate API contract in `.dev-craft/api-contract.md`
+- Resume with ui-craft: "Run ui-craft for API contract in `.dev-craft/api-contract.md`"
+
+When ui-craft needs backend work:
+- Note in `.ui-craft/state.json`: `"backendSliceNeeded": ["auth-api", "data-endpoint"]`
+- Generate API spec in `.ui-craft/api-spec.md`
+- Resume with dev-craft: "Run dev-craft for API spec in `.ui-craft/api-spec.md`"
 
 ---
 
