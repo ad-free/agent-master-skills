@@ -260,9 +260,20 @@ Write state after LOAD.
 
 6. Build glossary in context.md
 
+7. **Image analysis** (if screenshot provided):
+   ```bash
+   python scripts/analyze.py --image <path> --format json --output .ui-craft/image-analysis.json
+   ```
+   Use extracted data to:
+   - Auto-generate design tokens from extracted colors
+   - Create `.ui-craft/design-system/MASTER.md` from analysis
+   - Skip manual token definition
+   - Generate Tailwind config from colors
+   Present to user for confirmation.
+
 **Exit criterion:** Human confirms scope with explicit yes.
 
-**State write:** Save stack to state.json. Save context.md.
+**State write:** Save stack to state.json. Save context.md. Save image analysis if present.
 
 ---
 

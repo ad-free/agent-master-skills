@@ -37,6 +37,29 @@ NO IMPLEMENTATION WITHOUT A WRITTEN PLAN
 
 ## The Planning Process
 
+### Step 0: Image Analysis (if screenshot provided)
+
+Before planning, analyze any visual reference material:
+
+```bash
+python scripts/analyze.py --image <path> --format md
+```
+
+Use output to enrich requirements:
+- Add detected components to task list
+- Add colors to design token tasks
+- Add layout to structure tasks
+- Use complexity score for task sizing
+
+```
+VISUAL REFERENCE ANALYSIS:
+- Layout: [detected layout type]
+- Components: [detected components]
+- Colors: [extracted palette]
+- Mode: [light/dark]
+→ Added to requirements context.
+```
+
 ### Step 1: Enter Plan Mode
 
 Before writing any code, operate in read-only mode:

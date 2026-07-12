@@ -20,6 +20,7 @@ Skills for AI coding agents — composable, disciplined, evidence-based.
 | `verification-before-completion` | Evidence gates | NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE |
 | `code-review-and-quality` | Code review protocols | NO CODE WITHOUT REVIEW EVIDENCE |
 | `dispatching-parallel-agents` | Parallel execution | NO PARALLEL DISPATCH WITHOUT INDEPENDENCE VERIFICATION |
+| `image-to-design-spec` | Screenshot → design tokens | NO UI WITHOUT DESIGN SYSTEM |
 
 ## Philosophy
 
@@ -42,6 +43,7 @@ ui-craft BUILD → uses debugging-and-error-recovery
 ui-craft REVIEW → uses code-review-and-quality
 ui-craft SHIP → uses verification-before-completion
 Any phase → uses dispatching-parallel-agents for independent tasks
+image-to-design-spec → feeds into dev-craft/ui-craft/planning when screenshots provided
 ```
 
 ## Usage

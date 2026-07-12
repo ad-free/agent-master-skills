@@ -1,0 +1,79 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "meta": {
+    "source": "{{SOURCE_IMAGE}}",
+    "generated": "{{TIMESTAMP}}",
+    "generator": "image-to-design-spec"
+  },
+  "color": {
+    "primary": {
+      "$type": "color",
+      "$value": "{{PRIMARY_COLOR}}",
+      "$description": "Primary brand color",
+      "$extensions": {
+        "com.agent-master-skills.confidence": 0.85,
+        "com.agent-master-skills.source": "kmeans-extraction"
+      }
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{{SECONDARY_COLOR}}",
+      "$description": "Secondary color"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{{ACCENT_COLOR}}",
+      "$description": "Accent/highlight color"
+    },
+    "background": {
+      "$type": "color",
+      "$value": "{{BACKGROUND_COLOR}}",
+      "$description": "Page background"
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{{TEXT_COLOR}}",
+      "$description": "Primary text color"
+    }
+  },
+  "spacing": {
+    "xs": {
+      "$type": "dimension",
+      "$value": "0.25rem"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "0.5rem"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "1rem"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "1.5rem"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "2rem"
+    }
+  },
+  "borderRadius": {
+    "sm": {
+      "$type": "dimension",
+      "$value": "4px"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "8px"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "12px"
+    },
+    "full": {
+      "$type": "dimension",
+      "$value": "9999px"
+    }
+  }
+}

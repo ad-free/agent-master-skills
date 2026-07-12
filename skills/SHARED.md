@@ -39,6 +39,7 @@ User Request Received
 | About to say "done" | `verification-before-completion` |
 | Reviewing code | `code-review-and-quality` |
 | Multiple independent tasks | `dispatching-parallel-agents` |
+| Screenshot/image as reference | `image-to-design-spec` |
 
 ### Skill Chaining Pattern
 
@@ -70,13 +71,14 @@ User Request Received
 | `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete |
 | `code-review-and-quality` | Code review protocols (7-axis review) | Reviewing code, receiving review feedback |
 | `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist |
+| `image-to-design-spec` | Analyzes screenshots → design tokens | User provides visual reference material |
 
 ### Skill Integration Map
 
 ```
 dev-craft Pipeline Phases → Essential Skills
 ├── Phase 1: ARCH-SCAN → (standalone)
-├── Phase 2: ALIGN → (standalone)
+├── Phase 2: ALIGN → (standalone) + image-to-design-spec (if screenshot)
 ├── Phase 3: DESIGN → (standalone)
 ├── Phase 4: SOURCE → (standalone)
 ├── Phase 5: BUILD → uses debugging-and-error-recovery
@@ -89,7 +91,7 @@ dev-craft Pipeline Phases → Essential Skills
 ui-craft Pipeline Phases → Essential Skills
 ├── Phase 0: LOAD → (standalone)
 ├── Phase 1: AUDIT → (standalone)
-├── Phase 2: ALIGN → (standalone)
+├── Phase 2: ALIGN → (standalone) + image-to-design-spec (if screenshot)
 ├── Phase 3: DESIGN → (standalone)
 ├── Phase 4: SOURCE → (standalone)
 ├── Phase 5: BUILD → uses debugging-and-error-recovery
@@ -97,6 +99,8 @@ ui-craft Pipeline Phases → Essential Skills
 ├── Phase 7: HARDEN → uses verification-before-completion
 ├── Phase 8: SHIP → uses verification-before-completion
 └── Phase H: HANDOFF → (standalone)
+
+planning-and-task-breakdown → image-to-design-spec (if screenshot in Step 0)
 
 Cross-Cutting → dispatching-parallel-agents
 └── Any phase with independent tasks → parallel execution

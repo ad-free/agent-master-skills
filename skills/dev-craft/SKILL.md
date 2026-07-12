@@ -171,9 +171,24 @@ Write state after LOAD.
 
 5. Build glossary in context.md
 
+6. **Image analysis** (if screenshot provided):
+   ```bash
+   python scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
+   ```
+   Present findings:
+   ```
+   IMAGE ANALYSIS:
+   - Colors: [primary, secondary, accent, background]
+   - Layout: [sidebar-main / single-column / grid / dashboard]
+   - Mode: [light / dark]
+   - Components: [if Gemini available]
+   → Confirm these observations.
+   ```
+   Save to state.json for DESIGN phase reference.
+
 **Exit criterion:** Human confirms scope with explicit yes.
 
-**State write:** Save stack to state.json. Save context.md.
+**State write:** Save stack to state.json. Save context.md. Save image analysis if present.
 
 ---
 
