@@ -1,4 +1,106 @@
-# Shared Documentation for dev-craft and ui-craft
+# Shared Documentation for agent-master-skills
+
+## Start Here — Skill Router
+
+Determine which skill to load based on your current situation:
+
+```
+User Request Received
+│
+├── Is this a new feature or project?
+│   ├── Yes → Do you have a clear spec?
+│   │   ├── Yes → planning-and-task-breakdown
+│   │   │         → dev-craft or ui-craft
+│   │   └── No → planning-and-task-breakdown
+│   │             (collect info, verify, ask questions, write plan)
+│   └── No → Is this a bug fix or improvement?
+│       ├── Yes → debugging-and-error-recovery
+│       └── No → What needs to happen?
+│           ├── Code review → code-review-and-quality
+│           ├── Parallel work → dispatching-parallel-agents
+│           └── Other → plan first, then execute
+│
+├── Is this frontend/UI work?
+│   ├── Yes → ui-craft
+│   └── No → dev-craft
+│
+└── Are you about to claim completion?
+    └── Yes → verification-before-completion
+```
+
+### Quick Reference
+
+| Situation | Load This Skill |
+|-----------|-----------------|
+| Starting new feature | `planning-and-task-breakdown` |
+| Building backend/API | `dev-craft` |
+| Building UI/frontend | `ui-craft` |
+| Tests failing | `debugging-and-error-recovery` |
+| About to say "done" | `verification-before-completion` |
+| Reviewing code | `code-review-and-quality` |
+| Multiple independent tasks | `dispatching-parallel-agents` |
+
+### Skill Chaining Pattern
+
+```
+1. planning → creates plan
+2. dev-craft or ui-craft → executes plan
+3. debugging → fixes failures during build
+4. code-review → quality gate before merge
+5. verification → proves completion
+```
+
+---
+
+## Skill Inventory
+
+### Core Pipelines
+
+| Skill | Purpose | Lines |
+|-------|---------|-------|
+| `dev-craft` | Backend development pipeline (10 phases) | 527 |
+| `ui-craft` | Frontend development pipeline (9 phases) | 650 |
+
+### Essential Skills
+
+| Skill | Purpose | When to Use |
+|-------|---------|-------------|
+| `planning-and-task-breakdown` | Breaks work into ordered, verifiable tasks | Have a spec, need implementable units |
+| `debugging-and-error-recovery` | Root-cause investigation (4-phase methodology) | Tests fail, bugs reported, unexpected behavior |
+| `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete |
+| `code-review-and-quality` | Code review protocols (7-axis review) | Reviewing code, receiving review feedback |
+| `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist |
+
+### Skill Integration Map
+
+```
+dev-craft Pipeline Phases → Essential Skills
+├── Phase 1: ARCH-SCAN → (standalone)
+├── Phase 2: ALIGN → (standalone)
+├── Phase 3: DESIGN → (standalone)
+├── Phase 4: SOURCE → (standalone)
+├── Phase 5: BUILD → uses debugging-and-error-recovery
+├── Phase 6: TEST → uses debugging-and-error-recovery
+├── Phase 7: REVIEW → uses code-review-and-quality
+├── Phase 8: HARDEN → uses verification-before-completion
+├── Phase 9: SHIP → uses verification-before-completion
+└── Phase H: HANDOFF → (standalone)
+
+ui-craft Pipeline Phases → Essential Skills
+├── Phase 0: LOAD → (standalone)
+├── Phase 1: AUDIT → (standalone)
+├── Phase 2: ALIGN → (standalone)
+├── Phase 3: DESIGN → (standalone)
+├── Phase 4: SOURCE → (standalone)
+├── Phase 5: BUILD → uses debugging-and-error-recovery
+├── Phase 6: REVIEW → uses code-review-and-quality
+├── Phase 7: HARDEN → uses verification-before-completion
+├── Phase 8: SHIP → uses verification-before-completion
+└── Phase H: HANDOFF → (standalone)
+
+Cross-Cutting → dispatching-parallel-agents
+└── Any phase with independent tasks → parallel execution
+```
 
 ## Plugin System
 
