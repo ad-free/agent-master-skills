@@ -1,6 +1,8 @@
 ---
 name: dispatching-parallel-agents
 description: Use when you have multiple independent tasks that can run concurrently. Parallel execution for non-dependent work.
+metadata:
+  origin: agent-master-skills
 ---
 
 # Dispatching Parallel Agents
@@ -190,5 +192,5 @@ Multiple tasks?
 
 **Use with:**
 - `subagent-driven-development` — Orchestrate parallel task execution
-- `test-driven-development` — Run independent tests in parallel
+- `dev-craft` Phase 5 BUILD (TDD loop) — Run independent tests in parallel
 - `verification-before-completion` — Verify all parallel results before claiming done

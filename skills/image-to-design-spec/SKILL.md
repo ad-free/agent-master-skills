@@ -1,6 +1,8 @@
 ---
 name: image-to-design-spec
 description: Analyzes UI screenshots/images and generates structured design specs with colors, layout, components, and design tokens. Hybrid approach: Pillow+K-means (local), Gemini Vision (optional), guided questions (fallback). Outputs JSON, Markdown, CSS, SCSS, Tailwind, W3C DTCG.
+metadata:
+  origin: agent-master-skills
 ---
 
 # image-to-design-spec

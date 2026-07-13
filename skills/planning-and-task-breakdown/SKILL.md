@@ -1,6 +1,8 @@
 ---
 name: planning-and-task-breakdown
 description: Breaks work into ordered, verifiable tasks. Use when you have a spec and need implementable units with acceptance criteria.
+metadata:
+  origin: agent-master-skills
 ---
 
 # Planning & Task Breakdown

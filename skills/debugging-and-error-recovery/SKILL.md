@@ -1,6 +1,8 @@
 ---
 name: debugging-and-error-recovery
 description: Use when tests fail, builds break, or behavior doesn't match expectations. Systematic root-cause investigation, not guessing.
+metadata:
+  origin: agent-master-skills
 ---
 
 # Debugging & Error Recovery
@@ -173,6 +175,7 @@ Can't check all boxes? You didn't fix the bug. You fixed a symptom.
 ## Integration
 
 **Use with:**
-- `test-driven-development` — Bug fixes follow TDD: test first, then fix
+- `dev-craft` Phase 5 BUILD (TDD loop) — Bug fixes follow TDD: test first, then fix
 - `verification-before-completion` — Verify the fix before claiming done
+- `bug-hunting` — Security vulnerabilities found through bug hunting are debugged using this methodology
 - `systematic-debugging` — Full four-phase investigation for complex issues

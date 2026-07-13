@@ -1,6 +1,8 @@
 ---
 name: verification-before-completion
 description: Use before claiming any task is complete. Requires fresh evidence, not assumptions. Prevents false completion claims.
+metadata:
+  origin: agent-master-skills
 ---
 
 # Verification Before Completion
@@ -183,6 +185,7 @@ If verification fails:
 ## Integration
 
 **Use with:**
-- `test-driven-development` — Tests provide verification evidence
+- `dev-craft` Phase 5 BUILD (TDD loop) — Tests provide verification evidence
 - `debugging-and-error-recovery` — Fix failures before verifying
 - `code-review-and-quality` — Review includes verification evidence
+- `bug-hunting` — Security verification gates before completion claim

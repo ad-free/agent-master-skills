@@ -1,6 +1,8 @@
 ---
 name: code-review-and-quality
-description: Use when reviewing code or receiving review feedback. Six-axis quality assessment before merging any change.
+description: Use when reviewing code or receiving review feedback. Eight-axis quality assessment before merging any change.
+metadata:
+  origin: agent-master-skills
 ---
 
 # Code Review & Quality
@@ -35,9 +37,9 @@ NO CODE WITHOUT REVIEW EVIDENCE
 
 "Looks good to me" without systematic review is not approval. It's negligence.
 
-## Six-Axis Review
+## Eight-Axis Review
 
-Review code across ALL six axes. Missing one axis means incomplete review.
+Review code across ALL eight axes. Missing one axis means incomplete review.
 
 ### Axis 1: Correctness
 
@@ -76,6 +78,13 @@ Review code across ALL six axes. Missing one axis means incomplete review.
 - Parameterized queries (no string concatenation)?
 - External data treated as untrusted?
 
+**Regex security — review every regex in the diff:**
+- ReDoS risk: nested quantifiers `(a+)+b`, overlapping alternatives `(a|aa)+b`, unbounded `(.*a)*` patterns?
+- User-controlled regex: `new RegExp(userInput)` without `re.escape()`?
+- Missing anchors: `/\d+/` without `^...$` allows partial match bypass?
+- Unicode safety: missing `u` flag in JS? Wrong dot-all behavior? `\w` Unicode scope matches intent?
+- Bounded repetition: user-controlled `{m,n}` with large ranges causing ReDoS?
+
 ### Axis 6: Testing
 
 - Tests exist for new code?
@@ -90,7 +99,35 @@ Review code across ALL six axes. Missing one axis means incomplete review.
 - Source citations for correct version?
 - Lint/format/tests pass?
 
-## Finding Severity
+### Axis 8: Conventions
+
+- New code follows project conventions detected in ALIGN phase?
+
+**File organization:**
+- Does the new file go where existing similar files live?
+- Test colocated or in a test directory? (match existing pattern)
+
+**Naming:**
+- Files: match existing case convention (kebab, camel, Pascal, snake)?
+- Functions/variables: match existing naming style?
+- Types/interfaces: match existing prefix/suffix convention?
+
+**Imports & exports:**
+- Import style matches existing code (absolute vs relative, grouped vs inline)?
+- Export style matches (named vs default)?
+- Existing code uses barrel/index exports — does new code follow?
+
+**Error handling:**
+- Does the new code use the same error handling pattern as existing code?
+- (try/catch vs Result types vs error boundaries)?
+
+**Code structure:**
+- Does the new code follow the same file-per-component or grouped approach?
+- Does it match the existing state management and data fetching patterns?
+
+**Testing:**
+- Do new tests follow the same framework and assertion style?
+- Same describe/it structure or test() calls?
 
 | Severity | Meaning | Action |
 |----------|---------|--------|
@@ -125,6 +162,9 @@ Review code across ALL six axes. Missing one axis means incomplete review.
 - [Finding with location and explanation]
 
 ### Axis 7: Modern Patterns
+- [Finding with location and explanation]
+
+### Axis 8: Conventions
 - [Finding with location and explanation]
 
 ### Summary
@@ -197,14 +237,15 @@ YAGNI CHECK:
 
 Before approving any code:
 
-- [ ] All six axes reviewed
+- [ ] All eight axes reviewed
 - [ ] Every finding has severity assigned
 - [ ] Critical findings addressed
 - [ ] YAGNI check passed
 - [ ] Tests exist and pass
 - [ ] Lint passes
 - [ ] Type check passes
-- [ ] No security concerns
+- [ ] No security concerns (including regex)
+- [ ] Code matches project conventions (naming, imports, structure, error handling)
 
 ## Self-Review Protocol
 
@@ -221,4 +262,5 @@ When reviewing your own code:
 **Use with:**
 - `verification-before-completion` — Verification evidence required for review
 - `debugging-and-error-recovery` — Fix issues found in review
-- `test-driven-development` — Tests provide review evidence
+- `bug-hunting` — Deep security review feeds into bug hunting methodology
+- `dev-craft` Phase 5 BUILD (TDD loop) — Tests provide review evidence

@@ -1,6 +1,8 @@
 ---
 name: ui-craft
 description: UI/UX engineering pipeline with persistent memory. Detects stack versions, generates design tokens, component code, and visual preview. Resumes via .ui-craft/ state.
+metadata:
+  origin: agent-master-skills
 ---
 
 # ui-craft
@@ -124,9 +126,9 @@ AUDIT → Health report (remediate first?)
 ALIGN → CONTEXT.md (shared language)
 DESIGN → Design system + tokens + preview
 SOURCE → Fetched docs
-BUILD → UI code + tokens + preview
-REVIEW → UX + a11y + visual audit
-HARDEN → Polish + dark mode + responsive
+BUILD → UI code + tokens + preview + SECURE (incl. regex) per slice
+REVIEW → UX + a11y + visual + security audit
+HARDEN → Polish + dark mode + responsive + cross-cutting security
 SHIP → Commit + ADRs + state complete
 ```
 
@@ -366,9 +368,9 @@ Write state after LOAD.
 
 ---
 
-### [5] BUILD — Generate UI Code
+### [5] BUILD — Generate UI Code + Secure-by-Construction
 
-**Goal:** Generate tokens, component code, and preview per slice.
+**Goal:** Generate tokens, component code, and preview per slice. Every UI slice is verified for security as it's written.
 
 **Process per component/page:**
 
@@ -383,22 +385,72 @@ Write state after LOAD.
    - Tests: Vitest + React Testing Library + jest-axe
    - Icons: lucide-react, heroicons, phosphor, tabler
 
-3. Generate HTML style guide preview
-4. Run lint/type checks → must pass
+3. **SECURE** — Agent determines what the UI slice touches, then runs matching checks:
+
+   ```
+   Read the slice's files to determine what it does:
+   │
+   ├── Renders user data (displays user content, messages, profiles)?
+   │   Read templates → verify:
+   │   ├── dangerouslySetInnerHTML / v-html used? → must use DOMPurify
+   │   ├── User content in href/src attrs? → validate protocol (no javascript:)
+   │   ├── innerHTML/outerHTML/insertAdjacentHTML from user data? → use textContent
+   │   └── Template variables: React/Vue autoescape in templates, but not in attrs
+   │
+   ├── Handles forms/input (login, signup, search, upload)?
+   │   Read form handlers → verify:
+   │   ├── Sensitive data in URL params? (?token=..., ?password=...)
+   │   ├── File upload preview: type validated before render? (accept attr)
+   │   └── Form state in URL hash? (leaks via Referer header)
+   │
+   ├── Stores data client-side (localStorage, cookies, IndexedDB)?
+   │   Read storage code → verify:
+   │   ├── Auth tokens in localStorage/sessionStorage? → prefer httpOnly cookies
+   │   ├── PII in console.log or error tracking? → strip before logging
+   │   └── Sensitive API responses cached? → Cache-Control: no-store
+   │
+   ├── Makes API calls (fetch, axios, Apollo, tRPC)?
+   │   Read API client → verify:
+   │   ├── API keys in client bundle? → move to server proxy
+   │   ├── Sensitive data in URL query strings? → use body/headers
+   │   ├── CSRF token on state-changing requests?
+   │   └── Error responses shown to user? (no stack traces)
+   │
+   └── Uses REGEX (validation, formatting, routing)?
+       Read each regex → verify:
+       ├── ReDoS: (a+)+b, (a|aa)+b, (.*a)* patterns?
+       ├── Injection: new RegExp(userValue) without escape?
+       ├── Anchors: /[a-z]+/ matches partial → use /^[a-z]+$/
+       └── Unicode: JS without u flag? → \w doesn't match Unicode
+   ```
+
+   **Output:**
+   ```
+   SECURE CHECK: [component name]
+   - User Data: [PASS / FLAG]
+   - Forms: [PASS / FLAG]
+   - Storage: [PASS / FLAG]
+   - API Calls: [PASS / FLAG]
+   - Regex: [PASS / FLAG]
+   ```
+
+4. Generate HTML style guide preview
+5. Run lint/type checks → must pass
 
 **Rules:**
 - Version-correct patterns only
 - Scope discipline — don't touch code outside slice
 - One slice at a time
 - Accessibility gates: contrast ≥ 4.5:1, focus visible, touch ≥ 44px
+- **SECURE before lint** — Security first, then code quality
 
-**Exit criterion:** All slices implemented and committed.
+**Exit criterion:** All slices implemented, committed, and security-verified.
 
-**State write:** Save slices to state.json.
+**State write:** Save slices and security notes to state.json.
 
 ---
 
-### [6] REVIEW — Seven-Axis Audit
+### [6] REVIEW — Multi-Axis Audit
 
 **Goal:** Quality gate before shipping.
 
@@ -461,6 +513,53 @@ Review entire diff across UI-specific axes:
 - No missing responsive utilities
 - Run automated UI lint tools
 
+**Axis 8 — Security (UI-Specific):**
+
+The agent reads the UI code and traces each concern:
+
+```
+XSS Prevention — agent reads every place user data reaches the DOM:
+├── dangerouslySetInnerHTML / v-html present? → read context: is content
+│   sanitized with DOMPurify before rendering?
+├── href/src attrs from user data? → read: is protocol validated?
+│   (javascript: URLs must be rejected, not just appended)
+├── innerHTML/outerHTML/insertAdjacentHTML from user data? →
+│   read: should use textContent or createTextNode instead
+└── Template variables in JSX/Vue SFC? → React/Vue autoescape template
+    expressions, but not attribute values like href/src
+
+CSRF Protection — agent reads API client code:
+├── State-changing requests include CSRF token or use SameSite cookies?
+└── Cookie-based auth uses SameSite=Strict/Lax? (Lax for GET redirects)
+
+Sensitive Data Exposure — agent reads bundle and storage code:
+├── API responses cached with Cache-Control: no-store for sensitive data?
+├── Auth tokens/Session IDs in URL query params? → must move to headers
+├── Secrets or API keys in client bundle? (process.env.NEXT_PUBLIC_* or
+    REACT_APP_* prefixed env vars are client-accessible)
+└── Password fields use autocomplete="current-password"/"new-password"?
+
+Client-Side Data — agent reads storage and logging code:
+├── Auth/session data in localStorage/sessionStorage? → prefer
+    httpOnly cookies (not accessible from JS, immune to XSS)
+├── PII/user data in console.log, Sentry, or analytics? → strip
+    sensitive fields before logging
+└── File upload previews validate type client-side? (accept attr +
+    early rejection of unexpected types)
+
+Third-Party & Dependency Risk — agent reads package.json and templates:
+├── Known-vulnerable UI libraries from agent knowledge?
+    (old jQuery, Moment.js, deprecated packages)
+├── Script tags with integrity hash (SRI) for external CDN resources?
+└── Dev dependencies not bundled into production builds?
+
+CSP Readiness — agent reads meta tags and server config:
+├── CSP meta tag or header present? script-src policy allows inline
+    scripts? (need nonce or hash for inline)
+├── form-action restricts submission targets?
+└── object-src 'none' and base-uri 'self' set?
+```
+
 **Categorize findings:**
 | Label | Action |
 |---|---|
@@ -475,9 +574,9 @@ Review entire diff across UI-specific axes:
 
 ---
 
-### [7] HARDEN — Polish + Dark Mode + Responsive
+### [7] HARDEN — Polish + Dark Mode + Responsive + Cross-Cutting Security
 
-**Goal:** Polish UI across all dimensions.
+**Goal:** Polish UI across all dimensions. Catch cross-cutting frontend security issues.
 
 **Dark Mode:**
 - All colors have dark mode equivalents
@@ -505,6 +604,36 @@ Review entire diff across UI-specific axes:
 - Remove debug instrumentation
 - Delete throwaway prototypes
 - Check unused CSS classes
+
+**Cross-Cutting Security Review — agent reads across all UI slices:**
+
+1. **Third-party scripts & dependencies:**
+   - Read package.json: any known-vulnerable frontend deps? (old jQuery, Moment.js, deprecated plugins)
+   - Read next.config / vite.config: are env vars with NEXT_PUBLIC_ / VITE_ leaking secrets to client?
+   - Read index.html / layout: external scripts have integrity hashes (SRI)?
+   - Read service worker: intercepting sensitive URLs? Caching auth responses?
+
+2. **Auth token handling consistency:**
+   - Read all API client calls: same auth header/token pattern everywhere?
+   - Read token storage: localStorage (avoid) vs httpOnly cookie (prefer)?
+   - Read token refresh logic: rotated securely? Old token invalidated?
+   - Read logout: clears all client-side state? Invalidates server session?
+
+3. **Error handling & info leakage:**
+   - Read error boundaries / catch handlers: sensitive data in error UI?
+   - Read API error interceptor: stack traces or internal details shown to user?
+   - Read data fetching: auth errors handled (redirect to login) vs silently ignored?
+
+4. **Form security consistency:**
+   - Read all forms: CSRF token included in state-changing requests?
+   - Read password fields: autocomplete attr set correctly?
+   - Read file upload components: type validation on client before submit?
+
+5. **Client-side data exposure:**
+   - Read analytics/tracking code: PII sent to third-party analytics?
+   - Read console.log / debug code left in production components?
+   - Read Sentry/error tracking: sensitive data in error reports?
+   - Read state management: user data stored in Redux/Vuex persists in devtools?
 
 **Exit criterion:** Zero findings. Human approves.
 
@@ -665,13 +794,17 @@ After Phase 3 (DESIGN), user can explore alternatives.
 - [ ] Accessibility gates passed
 - [ ] Dark mode supported
 - [ ] Responsive at 375px, 768px, 1024px, 1440px
+- [ ] Every slice had SECURE check pass before commit
+- [ ] Cross-cutting security review in HARDEN passed
+- [ ] No secrets in source code (agent verified by reading all files)
 - [ ] No debug tags or temp files
 - [ ] ADRs written for decisions
 - [ ] CONTEXT.md up to date
-- [ ] No secrets in diff
 - [ ] Human approved every checkpoint
 
 ## See Also
 
 - `references/ui-patterns.md` — UI-specific pattern guidance
 - `~/.opencode/skills/ui-ux-pro-max/` — Design database
+- `bug-hunting` — Security methodology for frontend vulnerability discovery
+- `dev-craft` — Backend pipeline with complementary security checks
