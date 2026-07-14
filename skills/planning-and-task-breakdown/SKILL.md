@@ -5,6 +5,9 @@ metadata:
   origin: agent-master-skills
 ---
 
+Skill Chain: product-thinking (PRODUCT.md) → project-discovery (DOMAIN.md)
+  → planning-and-task-breakdown (PLAN.md) → dev-craft (implementation)
+
 # Planning & Task Breakdown
 
 ## Overview
@@ -12,6 +15,17 @@ metadata:
 Decompose work into small, verifiable tasks with explicit acceptance criteria.
 Good task breakdown = reliable agent work.
 Every task should be small enough to implement, test, and verify in a single focused session.
+
+### Input Sources
+
+This skill can consume:
+- PRODUCT.md from `product-thinking` — structured product spec with modules, features, priorities
+- DOMAIN.md from `project-discovery` — extracted domain model with entities and dependencies
+- Spec text or user description — free-form requirements
+- Existing task list — refine and reorder
+
+If PRODUCT.md or DOMAIN.md is available, load it first to get the module/feature structure.
+If the input is still vague, suggest running `product-thinking` first.
 
 ## When to Use
 
@@ -44,7 +58,7 @@ NO IMPLEMENTATION WITHOUT A WRITTEN PLAN
 Before planning, analyze any visual reference material:
 
 ```bash
-python scripts/analyze.py --image <path> --format md
+python skills/image-to-design-spec/scripts/analyze.py --image <path> --format md
 ```
 
 Use output to enrich requirements:
@@ -91,6 +105,35 @@ COLLECTED:
 - Attached files (specs, designs, docs)
 - Existing codebase (if any)
 - External references (URLs, docs)
+
+### Validate Before Trusting
+
+Before entering upstream consumption mode, verify the document is complete:
+
+- [ ] PRODUCT.md: All 6 sections populated (Domain, Scope, Features, Priority, Questions, Glossary)
+- [ ] DOMAIN.md: All modules have priorities and dependencies
+- [ ] No placeholder text ("...", "TBD", empty tables)
+- [ ] Features have explicit priorities (not all UNKNOWN)
+
+If validation fails → Fall back to normal planning mode with user questions.
+Only the sections that are incomplete need clarification — don't re-ask about documented sections.
+
+**Upstream Consumption Mode:**
+
+When PRODUCT.md or DOMAIN.md is available:
+
+1. **Extract modules directly** from the upstream document
+2. **Skip the "Ask Questions" loop** (already answered in product-thinking)
+3. **Go straight to dependency mapping and slicing**
+4. **Only ask questions about gaps**, not about already-documented features
+
+Example extract from PRODUCT.md:
+```
+Module: Employee (G1) — CRUD, documents, org chart → depends on Auth
+Module: Attendance (G1) — clock in/out, shifts, overtime → depends on Employee
+```
+
+This avoids redundant questioning and keeps context focused on planning structure.
 
 ### Step 3: Verify Assumptions
 
@@ -244,41 +287,126 @@ Save to `docs/plans/YYYY-MM-DD-feature-name.md`.
 - Touches 2+ independent subsystems
 - Task title has "and" in it
 
-## Plan Document Template
+## Module-Level Planning
+
+For large projects (3+ modules), plan at module level first instead of a flat task list:
+
+1. List all modules with priorities
+2. Map dependencies between modules
+3. Define build order (foundation → core → extended)
+4. Per module: define features and slices
+5. Per feature: define acceptance criteria
+
+### Module Planning Pattern
 
 ```markdown
-# Implementation Plan: [Feature Name]
+Module: [Module Name] ([Priority])
+  Features:
+    - [Feature 1]
+    - [Feature 2]
+  Dependencies: [Other modules]
+  Slices:
+    - [Slice 1: schema + API + form]
+    - [Slice 2: query + API + table]
+```
+
+### Example (HRM)
+
+```
+Module: Employee (G1)
+  Features:
+    - CRUD employee records
+    - Document upload
+    - Org chart
+  Dependencies: Auth
+  Slices:
+    - Create employee (schema + API + form)
+    - List employees (query + API + table)
+    - Edit employee (update + API + form)
+
+Module: Attendance (G1)
+  Features:
+    - Clock in/out
+    - Shift management
+    - Overtime calculation
+  Dependencies: Employee, Shift
+  Slices:
+    - Clock in/out API
+    - Attendance dashboard
+```
+
+## Dependency-Aware Phasing
+
+When planning large projects, order tasks by dependency chain so each phase produces usable output:
+
+| Phase | Modules | Strategy |
+|-------|---------|----------|
+| Phase 1: Foundation | Auth, Employee | No downstream dependencies — build first |
+| Phase 2: Transaction | Attendance, Leave | Depend on Employee |
+| Phase 3: Processing | Payroll, Tax | Depend on Attendance + Employee |
+| Phase 4: Evaluation | KPI, Review | Depend on Employee + Payroll |
+| Phase 5: Extended | Recruitment, Onboarding | Stand-alone modules |
+| Phase 6: Mobile/Integration | API consumers | Need stable API from all phases |
+
+**Bad**: Build Payroll directly (missing Employee + Attendance data)
+**Good**: Employee → Attendance → Payroll (each phase produces usable output)
+
+## Plan Document Template
+
+The PLAN.md is the handoff document to dev-craft. It must contain enough structure for the ALIGN phase to consume directly.
+
+```markdown
+# PLAN.md — [Feature/Project Name]
+
+Generated from: [PRODUCT.md / DOMAIN.md / spec text]
 
 ## Overview
 [One paragraph summary]
 
-## Architecture Decisions
-- [Decision 1 and rationale]
-- [Decision 2 and rationale]
+## Module / Feature Map
+| Module | Features | Priority | Dependencies |
+|--------|----------|----------|-------------|
+| Module 1 | F1, F2, F3 | G1 | — |
+| Module 2 | F4, F5 | G1 | Module 1 |
+
+## Build Order
+Phase 1 (Foundation): [modules]
+Phase 2 (Core): [modules]
+Phase 3 (Extended): [modules]
 
 ## Task List
 
 ### Phase 1: Foundation
-- [ ] Task 1: ...
-- [ ] Task 2: ...
+- [ ] Task 1: [description]
+- [ ] Task 2: [description]
 
 ### Checkpoint: Foundation
-- [ ] Tests pass, builds clean
+- [ ] All tests pass
+- [ ] Build succeeds
 
 ### Phase 2: Core Features
-- [ ] Task 3: ...
-- [ ] Task 4: ...
+- [ ] Task 3: [description]
+- [ ] Task 4: [description]
 
-### Checkpoint: Core Features
+### Checkpoint: Core
 - [ ] End-to-end flow works
 
 ### Phase 3: Polish
-- [ ] Task 5: ...
-- [ ] Task 6: ...
+- [ ] Task 5: [description]
+- [ ] Task 6: [description]
 
 ### Checkpoint: Complete
 - [ ] All acceptance criteria met
 - [ ] Ready for review
+
+## Dependencies
+- Module dependency graph
+- Data flow between modules
+
+## Priorities
+G1 (Must have): [features]
+G2 (Should have): [features]
+G3 (Nice to have): [features]
 
 ## Risks and Mitigations
 | Risk | Impact | Mitigation |
@@ -291,8 +419,9 @@ Save to `docs/plans/YYYY-MM-DD-feature-name.md`.
 
 ## Output Files
 
-- **Plan document:** `docs/plans/YYYY-MM-DD-feature.md`
-- **Task list:** `docs/plans/YYYY-MM-DD-feature-tasks.md`
+- **Plan document:** `PLAN.md` at project root (for dev-craft consumption)
+- **Task list:** included in PLAN.md under each phase
+- **Legacy archive (optional):** `docs/plans/YYYY-MM-DD-feature.md` for historical record
 
 ## Parallelization
 
@@ -348,8 +477,23 @@ Can't check all boxes? Plan is incomplete. Don't start.
 ## Integration
 
 **Use with:**
-- `dev-craft` — Plan feeds into dev-craft ALIGN phase
-- `ui-craft` — Plan feeds into ui-craft ALIGN phase
-- `verification-before-completion` — Verify plan is complete
+- `product-thinking` — Upstream: provides PRODUCT.md input with structured modules and priorities
+- `project-discovery` — Upstream: provides DOMAIN.md input with domain entities and dependencies
+- `dev-craft` — Downstream: consumes PLAN.md in ALIGN phase for implementation
+- `ui-craft` — Downstream: consumes UI-related tasks from PLAN.md
 - `code-review-and-quality` — Review plan for completeness
-- `dispatching-parallel-agents` — Parallelize independent tasks
+- `dispatching-parallel-agents` — Parallelize independent tasks based on plan
+
+**Skill Chain:**
+```
+product-thinking (PRODUCT.md)
+       │
+       ▼
+project-discovery (DOMAIN.md)
+       │
+       ▼
+planning-and-task-breakdown (PLAN.md) ◄── You are here
+       │
+       ├──► dev-craft (implementation)
+       └──► ui-craft (UI implementation)
+```

@@ -34,6 +34,33 @@ NO CODE WITHOUT DESIGN APPROVAL
 
 Implementation without approved spec = wasted hours of rework.
 
+---
+
+## Input Quality Handling
+
+Before starting, assess the input:
+
+| Input Type | Action |
+|------------|--------|
+| Short/vague ("Build HRM", "Make me a CRM") | → Do NOT proceed automatically. Ask user: "Your prompt is short — I need more context. Should I load `product-thinking` to refine this into a spec first, or can you provide more details?" |
+| Has spec files attached (xlsx, csv, md, pdf) | → Suggest or auto-load `project-discovery` to extract domain model |
+| Has PRODUCT.md from product-thinking | → Load it into REQUIRE phase |
+| Has DOMAIN.md from project-discovery | → Load it into REQUIRE phase |
+| Clear spec text or PLAN.md | → Proceed to ALIGN |
+| "Just build it, I'll know it when I see it" | → DO NOT proceed. Explain: "Without a written spec, there's a 90% chance I build the wrong thing. 10 minutes of `product-thinking` saves hours of rework." |
+
+### The Clarification Protocol
+
+When input is too vague:
+
+1. Say: "I need to understand the project before I can build it. Do you have:
+   - A spec document? → I'll use project-discovery
+   - A vague idea? → I'll use product-thinking to refine it
+   - A PLAN.md? → I'll load it directly"
+2. Based on answer, invoke the right skill or ask the user for more detail.
+
+---
+
 ## Memory System
 
 `.dev-craft/` directory created on first run:
@@ -42,6 +69,9 @@ Implementation without approved spec = wasted hours of rework.
 .dev-craft/
 ├── state.json       # currentPhase, completed, stack, slices
 ├── plan.md          # Evolving plan from Align → Design
+├── domain.md        # Domain model (from REQUIRE or project-discovery)
+├── build-order.md   # Module dependency sequencing
+├── estimation.md    # Cost/schedule validation
 ├── context.md       # Domain glossary (shared language)
 ├── decisions/       # ADRs — key decisions captured
 │   └── 001-*.md
@@ -54,7 +84,8 @@ Implementation without approved spec = wasted hours of rework.
 
 | Scenario | Behavior |
 |---|---|
-| No `.dev-craft/` | Phase 1 if codebase exists, Phase 2 if greenfield |
+| No `.dev-craft/` | Phase 0.5 (REQUIRE) — check for spec files |
+| DOMAIN.md exists but not loaded | Load into REQUIRE |
 | `state.json` exists | Load state, skip completed phases |
 | All phases complete | Ask "New task on same project?" |
 | Context near limit | Generate handoff doc, resume next session |
@@ -84,23 +115,27 @@ Read dependency files (package.json, requirements.txt, go.mod, Cargo.toml, etc.)
 ## Pipeline Phases
 
 ```
-[0] LOAD → [1] ARCH-SCAN → [2] ALIGN → [3] DESIGN → [4] SOURCE
-    → [5] BUILD → [6] TEST → [7] REVIEW → [8] HARDEN → [9] SHIP
+[0] LOAD → [0.5] REQUIRE → [1] ARCH-SCAN → [2] ALIGN → [3] DESIGN
+    → [3.5] BUILD-ORDER → [4] SOURCE → [5] BUILD → [6] TEST
+    → [7] REVIEW → [8] HARDEN → [9] SHIP
 ```
 
 Each phase:
+
 ```
 Phase → Output
 LOAD → state.json initialized
-ARCH-SCAN → Smell report (remediate first?)
+REQUIRE → domain.md (domain model, feature list, priorities)
+ARCH-SCAN → Smell report
 ALIGN → CONTEXT.md (shared language)
 DESIGN → PLAN.md + ADRs
+BUILD-ORDER → build-order.md (module dependency sequencing)
 SOURCE → Fetched docs
 BUILD → Vertical slices (TDD + SECURE + MATCH per slice)
 TEST → Test output
 REVIEW → Code review
-HARDEN → Cross-cutting security verification
-SHIP → Commit + ADRs
+HARDEN → Cross-cutting security + risk register
+SHIP → Commit + ADRs + rollback plan
 ```
 
 ---
@@ -110,14 +145,77 @@ SHIP → Commit + ADRs
 Read `.dev-craft/state.json`:
 
 **Not found →** Detect existing source code:
-- Existing code (src/, lib/, app/) → Phase 1 (ARCH-SCAN)
-- Greenfield → Phase 2 (ALIGN), skip ARCH-SCAN
+- Existing code (src/, lib/, app/) → Phase 0.5 (REQUIRE)
+- Greenfield → Phase 0.5 (REQUIRE)
 
 **Found + complete →** Ask: "New feature? Start fresh?"
 
 **Found + incomplete →** Load context.md, restore slice progress.
 
 Write state after LOAD.
+
+---
+
+### [0.5] REQUIRE — Domain Discovery
+
+**Goal:** Ingest existing requirements (specs, files, domain model) before any design or code decisions.
+
+**Process:**
+
+1. **Scan for existing specs:**
+   - Check for PRODUCT.md (from product-thinking)
+   - Check for DOMAIN.md (from project-discovery)
+   - Check for PLAN.md (from planning-and-task-breakdown)
+   - Check for spec files (xlsx, csv, md, pdf, txt)
+
+2. **If PRODUCT.md found:**
+   Extract domain, modules, features, priorities, dependencies.
+   Generate `.dev-craft/domain.md` from the spec.
+
+3. **If DOMAIN.md found:**
+   Load directly into `.dev-craft/domain.md`.
+
+4. **If spec files found (xlsx, csv, etc.):**
+   If `project-discovery` skill is available, load it to extract domain model.
+   Otherwise, manually scan and extract:
+   ```
+   ENTITIES FOUND:
+   - Employee, Department, Attendance, Payroll...
+
+   MODULES FOUND:
+   - Employee Management (G1)
+   - Attendance (G1) → depends on: Employee
+   - Payroll (G1) → depends on: Employee, Attendance
+
+   FEATURES FOUND:
+   - CRUD employee records (G1)
+   - Clock in/out (G1)
+   - Calculate salary (G1)
+   ```
+   Save to `.dev-craft/domain.md`.
+
+5. **If no specs found:**
+   Proceed to ALIGN. ALIGN will ask clarifying questions.
+
+6. **Validate domain model:**
+   Present to user:
+   ```
+   Domain Model Summary
+   ─────────────────────
+   Modules: [N]
+   Features: [N]
+   G1: [N] features
+   G2: [N] features
+   G3: [N] features
+   Dependencies: [N] module links
+   
+   Confirm this model? (Y/n/detail)
+   ```
+   If user says "n" or "detail", loop back to refine.
+
+**Exit criterion:** Domain model confirmed by user (or no specs available).
+
+**State write:** Save domain model to `.dev-craft/domain.md`. Update state.json.
 
 ---
 
@@ -158,13 +256,34 @@ Write state after LOAD.
 
 ### [2] ALIGN — Grill + Detect + Glossary
 
-**Goal:** Surface assumptions, sharpen requirements.
+**Goal:** Surface assumptions, sharpen requirements. If REQUIRE phase produced a domain model, use it to ask targeted questions. If not, do basic discovery.
 
 **Process:**
 
-1. Ask one question at a time with best guess attached
+1. **Load domain model** if `.dev-craft/domain.md` exists:
+   ```
+   DOMAIN MODEL LOADED:
+   - Modules: [list from domain.md]
+   - Features: [count per module]
+   - Priorities: G1=[count], G2=[count], G3=[count]
+   - Dependencies: [module links]
+   
+   I'll use this to ask targeted questions about each module.
+   ```
 
-2. Surface assumptions:
+2. **Domain-calibrated questions** (instead of generic ones):
+   - If HRM domain: "For Attendance module, do you need GPS check-in, QR code, or biometric?"
+   - If E-commerce domain: "For Checkout, do you need one-page checkout or multi-step?"
+   - If CRM domain: "For Pipeline, how many stages do you typically have?"
+   
+   **Use the domain model to scope questions to the actual modules being built.**
+
+3. **If no domain model** (no REQUIRE phase), do basic discovery:
+   - Ask one question at a time with best guess attached
+   - Detect domain from keywords
+   - Build glossary in context.md
+
+4. Surface assumptions:
    ```
    ASSUMPTIONS:
    1. Web app (not native mobile)
@@ -173,9 +292,9 @@ Write state after LOAD.
    → Correct me now or I'll proceed.
    ```
 
-3. Define "Out of scope" explicitly
+5. Define "Out of scope" explicitly
 
-4. Detect stack:
+6. Detect stack:
    ```
    STACK DETECTED:
    - Python 3.12, FastAPI, SQLAlchemy 2.0
@@ -184,9 +303,9 @@ Write state after LOAD.
    - Type checker: mypy
    ```
 
-5. Build glossary in context.md
+7. Build glossary in context.md
 
-6. **Detect code conventions** from existing source files:
+8. **Detect code conventions** from existing source files:
    ```
    CONVENTIONS DETECTED: [read from src/ lib/ or existing files]
    ├── File organization: [features/ modules/ pages/]
@@ -199,9 +318,9 @@ Write state after LOAD.
    Read 3-5 existing files to detect patterns. Save to `state.json` for BUILD phase.
    If the project is greenfield (no existing code), skip detection and use sensible defaults based on the detected stack.
 
-7. **Image analysis** (if screenshot provided):
+9. **Image analysis** (if screenshot provided):
    ```bash
-   python scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
+    python skills/image-to-design-spec/scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
    ```
    Present findings:
    ```
@@ -258,6 +377,105 @@ Write state after LOAD.
 **Exit criterion:** Human reviews and approves.
 
 **State write:** Save plan.md. Save ADRs to decisions/.
+
+---
+
+### Estimation Validation (after DESIGN, before SOURCE)
+
+**Goal:** Catch cost/schedule discrepancies between plan and expectations.
+
+**Process:**
+
+1. Review each module's estimated effort:
+   ```
+   MODULE ESTIMATION:
+   Employee Profile: ~3 days (5 slices × 0.5 day)
+   Attendance: ~5 days (7 slices × 0.75 day)
+   Payroll: ~8 days (complex: tax rules, calculations)
+   Mobile App: ~10 days (native iOS + Android or RN)
+   ```
+
+2. Compare against any stated budget/schedule from domain.md:
+   ```
+   ESTIMATION CHECK:
+   Module        Expected (from spec)   My estimate     Delta
+   Attendance    4.5                    5.0             ~10%
+   Payroll       5.2                    8.0             ⚠ ~35% (tax complexity)
+   Mobile App    6.85                   10.0            ⚠ ~31%
+   
+   Total: 34.55 (spec) vs 40.0 (estimate) → ⚠ ~13% gap
+   
+   Flag any significant discrepancies for user review.
+   ```
+
+3. **Ask user:** "Total estimated effort is ~40 days. Does this match your expectations? Want me to descope some G2/G3 features?"
+
+---
+
+### [3.5] BUILD-ORDER — Module Dependency Sequencing
+
+**Goal:** Determine optimal build sequence based on module dependencies and priorities.
+
+**Only needed when:** Project has 3+ modules or complex cross-module dependencies.
+
+**Process:**
+
+1. **Load module list** from domain.md or plan.md:
+   ```
+   MODULES:
+   1. Auth (G1) — no dependencies
+   2. Employee Profile (G1) — depends on: Auth
+   3. Attendance (G1) — depends on: Employee, Shift
+   4. Shift (G1) — depends on: Employee
+   5. Payroll (G1) — depends on: Employee, Attendance, Tax
+   6. KPI (G2) — depends on: Employee
+   ```
+
+2. **Build sequence respecting dependencies:**
+   ```
+   Phase 1 (Foundation — G1):
+     Auth ← no deps, required by everything
+     Employee Profile ← only needs Auth
+     Shift ← only needs Employee
+   
+   Phase 2 (Transactions — G1):
+     Attendance ← needs Employee + Shift
+     Leave ← needs Employee
+   
+   Phase 3 (Processing — G1):
+     Payroll ← needs Employee + Attendance + Tax Config
+     Tax Config ← no deps, but needed by Payroll
+   
+   Phase 4 (Evaluation — G2):
+     KPI ← needs Employee
+     Evaluation ← needs Employee + KPI
+   
+   Phase 5 (Extended — G2/G3):
+     Recruitment ← needs Employee (for conversion)
+     Onboarding ← needs Employee + Recruitment
+     Internal Comms ← needs Employee
+   
+   Phase 6 (Mobile — G2):
+     Mobile App ← needs all core API endpoints stable
+   ```
+
+3. **Assign slices per module:**
+   Each module gets its own set of vertical slices.
+   Example for Employee Profile:
+   ```
+   Module: Employee Profile (G1)
+   Slice 1: Create employee record (DB schema + API + form)
+   Slice 2: List/search employees (query + API + table)
+   Slice 3: Edit employee details (update + API + form)
+   Slice 4: Document upload (file handling + API + upload UI)
+   Slice 5: Delete / deactivate (soft delete + confirm dialog)
+   ```
+
+4. **Save build-order.md**
+
+**Exit criterion:** Build order is documented and user-approved for complex projects.
+
+**State write:** Save `.dev-craft/build-order.md`.
 
 ---
 
@@ -450,6 +668,39 @@ Conventions detected: [fileOrg, naming, imports, errorHandling, testing, structu
 - **Design system** — Use tokens, no ad-hoc values
 - **SECURE before MATCH, MATCH before LINT** — Security, then consistency, then quality
 
+#### Git Worktree Mode (for large/multi-module projects)
+
+When a project has 3+ modules or needs parallel backend + frontend development,
+use git worktree isolation:
+
+```bash
+git worktree add ../project-api api-slice     # Backend agent
+git worktree add ../project-web web-slice      # Frontend agent
+git worktree add ../project-mobile mobile-slice # Mobile agent
+```
+
+**Workflow:**
+1. Define API contract first (OpenAPI spec)
+2. Each agent works in its own worktree on its own branch
+3. Backend implements API from contract
+4. Frontend consumes API contract, builds UI
+5. Mobile builds against same contract
+6. Master agent merges worktrees via integration branch
+
+**When to use worktree mode:**
+- Project has separate backend + frontend
+- Multiple developers/agents working simultaneously
+- Module count > 5
+- Estimated total effort > 2 weeks
+
+**When NOT to use:** Single-module project, solo development, prototype/exploration.
+
+**Cleanup:**
+```bash
+git worktree list
+git worktree remove ../project-api
+```
+
 **Exit criterion:** All slices implemented, committed, security-verified, and convention-matched.
 
 **State write:** Save slices, security notes, and convention profile to state.json.
@@ -487,15 +738,12 @@ Conventions detected: [fileOrg, naming, imports, errorHandling, testing, structu
 **Process:**
 
 1. Load `code-review-and-quality` skill (and `bug-hunting` for security-sensitive code)
-2. Review entire diff across seven axes:
+2. Review entire diff across all axes defined in `code-review-and-quality`:
    - Correctness, Readability, Architecture
    - Performance, Security, Testing, Modern Patterns
+   (Conventions are already validated during BUILD MATCH step)
 3. Categorize findings (Critical/Required/Nit/Optional)
 4. Fix all Critical/Required findings
-
-**Exit criterion:** All Critical/Required resolved.
-
-**State write:** Save review findings.
 
 **Exit criterion:** All Critical/Required resolved.
 
@@ -761,23 +1009,33 @@ For complex features spanning multiple domains.
 
 ### Workflow Types
 
-| Workflow | Pipeline |
-|----------|----------|
-| SaaS MVP | dev-craft + ui-craft |
-| Admin Dashboard | dev-craft + ui-craft |
-| E-commerce | dev-craft + ui-craft |
-| API Service | dev-craft only |
-| Landing Page | ui-craft only |
+| Workflow | Pipeline | When |
+|----------|----------|------|
+| SaaS MVP | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | New SaaS product |
+| Admin Dashboard | dev-craft + ui-craft | Internal tool |
+| E-commerce | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | Online store |
+| API Service | dev-craft only | Backend API |
+| Mobile App | dev-craft (backend) + agent-orchestration (mobile) | Mobile with backend |
+| Landing Page | ui-craft only | Marketing site |
+| Multi-module | product-thinking → planning-and-task-breakdown → dev-craft + agent-orchestration | Large project |
 
 ### Orchestration Pattern
 
 ```
-1. PLAN — Decompose into backend/frontend slices
-2. BACKEND — Run dev-craft for API/database/auth
-3. HANDOFF — Generate API contract
-4. FRONTEND — Run ui-craft using API contract
-5. INTEGRATION — Run dev-craft for testing
-6. SHIP — Coordinate commits
+1. THINK — If prompt is vague → product-thinking for PRODUCT.md
+2. DISCOVER — If spec files exist → project-discovery for DOMAIN.md
+3. PLAN — planning-and-task-breakdown for PLAN.md
+4. REQUIRE — Load PRODUCT.md / DOMAIN.md into dev-craft
+5. ALIGN — Domain-calibrated questions
+6. DESIGN — Spec + ADRs + task list
+7. BUILD-ORDER — Dependency-based sequencing
+8. SOURCE — Official docs verification
+9. BUILD — For large projects: agent-orchestration with git worktree
+   For small projects: single-agent vertical slices
+10. TEST — Full suite
+11. REVIEW — code-review-and-quality
+12. HARDEN — Cross-cutting security
+13. SHIP — Commit + docs
 ```
 
 ### Cross-Skill Communication
@@ -791,6 +1049,11 @@ ui-craft needs backend:
 - Note in state.json: `"backendSliceNeeded": ["auth-api"]`
 - Generate API spec in api-spec.md
 - Resume with dev-craft
+
+dev-craft needs mobile:
+- Note in state.json: `"mobileSliceNeeded": ["api-endpoints"]`
+- Generate API contract in api-contract.md
+- Resume with agent-orchestration
 
 ---
 
@@ -822,6 +1085,12 @@ ui-craft needs backend:
 - No .dev-craft/ directory
 - Security review skipped
 - Commit messages: "WIP", "fix", "update"
+- Vague prompt accepted without clarification
+- Skipping REQUIRE when spec files exist
+- Building modules in wrong dependency order
+- No domain model for multi-module project
+- No worktree isolation for parallel agents
+- Starting BUILD without build-order.md for complex projects
 
 ## Verification
 
@@ -838,9 +1107,18 @@ ui-craft needs backend:
 - [ ] Every slice had SECURE check pass before commit
 - [ ] Commit references ADRs
 - [ ] Human approved every checkpoint
+- [ ] Input was assessed (vague prompts redirected to product-thinking)
+- [ ] REQUIRE phase completed (or skipped with valid reason)
+- [ ] Domain model exists in .dev-craft/domain.md (for multi-module projects)
+- [ ] Build order documented in .dev-craft/build-order.md (for complex projects)
+- [ ] Module dependencies respected during build
 
 ## See Also
 
 - `plugins/security-audit/SKILL.md` — Deep security scan pipeline
 - `references/modern-patterns.md` — Per-language guidance
 - `references/phase-templates.md` — Templates for documents
+- `product-thinking` — Refine vague ideas into structured specs
+- `project-discovery` — Extract domain model from existing documents
+- `agent-orchestration` — Multi-agent parallel builds with git worktree
+- `quality-gates` — Layered validation pipeline

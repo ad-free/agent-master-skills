@@ -120,7 +120,7 @@ Use the right model for each task:
 
 | Task Type | Model | Reason |
 |-----------|-------|--------|
-| Mechanical (1-2 files, clear spec) | Fast/cheap | Simple execution |
+| Mechanical (1-2 files, clear spec) | Fast/cheap model | Simple execution — use platform's fastest available |
 | Integration (multiple files) | Standard | Needs judgment |
 | Architecture (design decisions) | Most capable | Needs deep reasoning |
 | Review (quality assessment) | Standard or capable | Needs judgment |
@@ -191,6 +191,6 @@ Multiple tasks?
 ## Integration
 
 **Use with:**
-- `subagent-driven-development` — Orchestrate parallel task execution
+- `agent-orchestration` — Orchestrate parallel task execution
 - `dev-craft` Phase 5 BUILD (TDD loop) — Run independent tests in parallel
 - `verification-before-completion` — Verify all parallel results before claiming done

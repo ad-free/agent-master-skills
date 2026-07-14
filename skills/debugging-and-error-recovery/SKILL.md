@@ -172,6 +172,56 @@ Can't check all boxes? You didn't fix the bug. You fixed a symptom.
 | Multiple things broken | Fix one at a time. Start with the first failure. |
 | It's in library code | Work around it. Report it. Don't fix library code. |
 
+### Context Degradation Detection
+
+Before investigating the code, check if the issue is caused by agent context degradation. These patterns mimic real bugs but have different root causes:
+
+| Degradation Pattern | Symptoms | Fix |
+|---------------------|----------|-----|
+| **Lost-in-the-Middle** | Agent writes code that compiles but references definitions from earlier context that don't exist. Imports or functions used but never defined in current scope. | Rotate context. Load only the relevant files. Resume with fresh short context. |
+| **Context Poisoning** | Agent writes code that contradicts itself (e.g., two different validation strategies in the same file). Style drifts mid-file. | Clear session. Re-establish conventions. Feed only consistent examples. |
+| **Distraction** | Agent adds unrelated code (dashboard components in an API endpoint). Fixes a different bug than the one reported. | Re-read the error message. Re-anchor to the specific failure. Remove unrelated code. |
+| **Clash** | Agent's training data contradicts something established earlier (e.g., writes React class component after agreeing to use hooks). | Re-verify conventions. Re-establish project rules. Check AGREED.md. |
+| **Confusion** | Agent produces syntactically valid but semantically wrong code. Uses wrong library version's API. References deprecated patterns. | Fetch current-version docs. Verify API signatures. Check migration guides. |
+
+**Diagnostic question:** Ask yourself: "Is this a bug in the code, or a bug in the agent's understanding?"
+
+**If context degradation is suspected:**
+1. Save current state to handoff document
+2. Rotate context (new session)
+3. Load only: the error message, relevant file(s), plan document
+4. Resume debugging from Phase 1 (REPRODUCE)
+
+### Git Bisect — Regression Tracking
+
+When a bug is a regression (it used to work):
+
+**Setup:**
+```bash
+git bisect start
+git bisect bad              # Current broken state
+git bisect good <commit>    # Last known working state
+```
+
+**During bisect:**
+```bash
+# At each checkout, test:
+git bisect good  # If bug not present
+git bisect bad   # If bug present
+```
+
+**Exit:**
+```bash
+git bisect reset
+```
+
+**Pro tip:** Write a single command that reproduces the bug:
+```bash
+git bisect run npm test -- --grep "failing-test-name"
+```
+
+This finds the exact commit that introduced the regression without manual testing.
+
 ## Integration
 
 **Use with:**
@@ -179,3 +229,4 @@ Can't check all boxes? You didn't fix the bug. You fixed a symptom.
 - `verification-before-completion` — Verify the fix before claiming done
 - `bug-hunting` — Security vulnerabilities found through bug hunting are debugged using this methodology
 - `systematic-debugging` — Full four-phase investigation for complex issues
+- `quality-gates` — Deterministic checks catch bugs before LLM judge. Debugging feeds findings back into gate configuration.

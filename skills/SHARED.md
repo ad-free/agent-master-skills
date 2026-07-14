@@ -7,6 +7,18 @@ Determine which skill to load based on your current situation:
 ```
 User Request Received
 │
+├── Is the prompt vague, short, or idea-stage?
+│   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft or ui-craft
+│
+├── Are spec files provided (xlsx, csv, md, pdf)?
+│   └── Yes → project-discovery → dev-craft (REQUIRE) → planning-and-task-breakdown
+│
+├── Is this a large multi-module project?
+│   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft + agent-orchestration
+│
+├── Pre-merge or release validation?
+│   └── Yes → quality-gates (after dev-craft completes)
+│
 ├── Is this a new feature or project?
 │   ├── Yes → Do you have a clear spec?
 │   │   ├── Yes → planning-and-task-breakdown
@@ -45,6 +57,7 @@ User Request Received
 | Reviewing code | `code-review-and-quality` |
 | Security audit / bug bounty | `bug-hunting` |
 | Multiple independent tasks | `dispatching-parallel-agents` |
+| product-thinking | Structured idea refinement: vague concept → clear spec | Prompt is vague, idea-stage, missing requirements |
 | Screenshot/image as reference | `image-to-design-spec` |
 
 ### Skill Chaining Pattern
@@ -118,6 +131,11 @@ planning-and-task-breakdown → image-to-design-spec (if screenshot in Step 0)
 
 Cross-Cutting → dispatching-parallel-agents
 └── Any phase with independent tasks → parallel execution
+
+├── Phase 0.5: REQUIRE → domain discovery from specs
+├── Phase 3.5: BUILD-ORDER → module dependency sequencing
+├── Throughout: Complex multi-agent → uses agent-orchestration
+├── Pre-merge: → uses quality-gates (layered validation)
 ```
 
 ## Plugin System

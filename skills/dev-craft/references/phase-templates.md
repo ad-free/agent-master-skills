@@ -51,7 +51,7 @@ docs/          → Documentation
 - [Anything unresolved needing human input]
 ```
 
-## Task Template (Phase 2 — DESIGN)
+## Task Template (Phase [3] — DESIGN)
 
 ```markdown
 ## Task [N]: [Short descriptive title]
@@ -167,8 +167,8 @@ docs/          → Documentation
 {
   "version": 1,
   "status": "in_progress" | "complete",
-  "currentPhase": 4,
-  "completed": [0, 1, 2, 3],
+  "currentPhase": 5,
+  "completed": [0, 0.5, 1, 2, 3, 3.5, 4],
   "currentSlice": 3,
   "totalSlices": 8,
   "stack": {
