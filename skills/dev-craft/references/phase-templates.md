@@ -156,12 +156,13 @@ docs/          → Documentation
 - [Bugs, blockers, unresolved questions]
 
 ## Artifacts
-- Spec: `.dev-craft/plan.md`
-- ADRs: `.dev-craft/decisions/`
-- State: `.dev-craft/state.json`
+- Spec: `.dev-craft/runs/<slug>/plan.md`
+- ADRs: `.dev-craft/runs/<slug>/decisions/`
+- State: `.dev-craft/runs/<slug>/state.json`
+- Runs index: `.dev-craft/index.json`
 ```
 
-## State File Format (`.dev-craft/state.json`)
+## State File Format (`.dev-craft/runs/<slug>/state.json`)
 
 ```json
 {
@@ -179,7 +180,36 @@ docs/          → Documentation
     "formatter": "ruff",
     "typeChecker": "mypy"
   },
+  "source": "PLAN.md" | "PROJ-123" | "prompt",
   "lastRun": "2026-07-10T14:30:00Z",
   "sessions": ["session-20260710-1", "session-20260710-2"]
+}
+```
+
+## Run Index Format (`.dev-craft/index.json`)
+
+Registry of every run — the audit trail used to improve the skill over time.
+
+```json
+{
+  "activeSlug": "PROJ-123",
+  "runs": [
+    {
+      "slug": "PROJ-123",
+      "source": "PROJ-123",
+      "createdAt": "2026-07-10T14:30:00Z",
+      "lastRun": "2026-07-12T09:15:00Z",
+      "status": "complete",
+      "outcome": "shipped"
+    },
+    {
+      "slug": "billing-service",
+      "source": "prompt",
+      "createdAt": "2026-07-14T10:00:00Z",
+      "lastRun": "2026-07-14T10:00:00Z",
+      "status": "in_progress",
+      "outcome": null
+    }
+  ]
 }
 ```

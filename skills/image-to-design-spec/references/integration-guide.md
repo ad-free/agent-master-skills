@@ -23,7 +23,7 @@ In Phase 2 (ALIGN), after stack detection, if user provides a screenshot.
 ### How to Invoke
 
 ```bash
-python scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
+python scripts/analyze.py --image <path> --format json --output .dev-craft/runs/<slug>/image-analysis.json
 ```
 
 ### What to Do with Output
@@ -54,19 +54,19 @@ If user provides screenshot:
    - Mode: dark
    → Are these observations correct?
    ```
-3. Save to `.dev-craft/image-analysis.json`
-4. Reference in Phase 3 (DESIGN) for token generation
+ 3. Save to `.dev-craft/runs/<slug>/image-analysis.json`
+ 4. Reference in Phase 3 (DESIGN) for token generation
 ```
 
 ### State Integration
 
-Add to `.dev-craft/state.json`:
+Add to `.dev-craft/runs/<slug>/state.json`:
 
 ```json
 {
   "imageAnalysis": {
     "available": true,
-    "path": ".dev-craft/image-analysis.json",
+    "path": ".dev-craft/runs/<slug>/image-analysis.json",
     "colors": ["#1a1a2e", "#16213e", "#e94560"],
     "layout": "sidebar-main",
     "mode": "dark"
@@ -194,7 +194,7 @@ If user provides screenshot:
 
 To avoid re-analyzing the same image:
 
-1. First skill to run saves to `.dev-craft/image-analysis.json`
+1. First skill to run saves to `.dev-craft/runs/<slug>/image-analysis.json`
 2. Subsequent skills read from same file
 3. All skills work from same analysis data
 

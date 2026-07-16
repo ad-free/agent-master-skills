@@ -152,7 +152,8 @@ See [`WORKFLOW-BUNDLES.md`](./WORKFLOW-BUNDLES.md) for pre-configured workflows 
 
 ### State File Schema
 
-Both dev-craft and ui-craft use compatible `state.json` formats:
+Both dev-craft and ui-craft use compatible `state.json` formats, stored per run under
+`.dev-craft/runs/<slug>/state.json` (registry in `.dev-craft/index.json`):
 
 ```json
 {
@@ -167,7 +168,7 @@ Both dev-craft and ui-craft use compatible `state.json` formats:
   "plugins": ["security-audit"],
   "crossSkill": {
     "backendSliceNeeded": ["auth-api"],
-    "apiContract": ".dev-craft/api-contract.md"
+    "apiContract": ".dev-craft/runs/<slug>/api-contract.md"
   }
 }
 ```

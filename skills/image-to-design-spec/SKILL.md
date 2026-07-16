@@ -259,7 +259,7 @@ In Phase 2 (ALIGN), after stack detection:
 ```markdown
 ### Image Analysis (if screenshot provided)
 
-1. Run: `python scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json`
+ 1. Run: `python scripts/analyze.py --image <path> --format json --output .dev-craft/runs/<slug>/image-analysis.json`
 2. Review extracted data:
    ```
    IMAGE ANALYSIS:

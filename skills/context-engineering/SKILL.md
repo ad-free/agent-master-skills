@@ -59,7 +59,7 @@ Task details, partial results, immediate decisions
 
 ### Level 2 — Project Context (persistent)
 
-Long-lived project knowledge stored in `.dev-craft/`. Always available (compressed).
+Long-lived project knowledge stored per run in `.dev-craft/runs/<slug>/` (registry in `.dev-craft/index.json`). Always available (compressed).
 
 | File | Purpose |
 |------|---------|
@@ -78,7 +78,7 @@ Fetched as needed: official docs, codebase files, MDN. Load only what's needed �
 
 ### Level 5 — Handoff History (archival)
 
-Session records in `.dev-craft/sessions/session-YYYYMMDD-N.md`. Only the latest is loaded on resume.
+Session records in `.dev-craft/runs/<slug>/sessions/session-YYYYMMDD-N.md`. Only the latest is loaded on resume.
 
 ```
 Persistence:     Working < Project < Skill < Reference < Handoff
@@ -126,7 +126,7 @@ Estimate before loading. If a doc is 3k tokens and only 1k remains in budget, do
 
 ### At 70% full (~5k tokens remaining in 16k window):
 
-1. **Generate handoff** to `.dev-craft/sessions/session-YYYYMMDD-N.md`:
+ 1. **Generate handoff** to `.dev-craft/runs/<slug>/sessions/session-YYYYMMDD-N.md`:
    - Current phase + completed phases
    - Completed slices/modules
    - Active decisions (ADRs in progress)

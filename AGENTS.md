@@ -85,8 +85,9 @@ These keep agent output fast, cheap, and correct.
   and idempotent (running twice yields the same result).
 - **Checkpoints, not autopilot.** Pipeline phases have human checkpoints. Stop
   and surface decisions; do not silently barrel through.
-- **Resume, don't restart.** Pipeline state lives in `.dev-craft/` / `.ui-craft/`
-  (`state.json`). Detect and resume prior progress instead of redoing work.
+- **Resume, don't restart.** Pipeline state lives in `.dev-craft/runs/<slug>/`
+  (`state.json`, registered in `.dev-craft/index.json`). Detect and resume prior
+  progress instead of redoing work.
 
 ---
 
