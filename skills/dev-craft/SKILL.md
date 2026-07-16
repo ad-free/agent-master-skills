@@ -1,6 +1,6 @@
 ---
 name: dev-craft
-description: Full-stack engineering pipeline with persistent memory. Detects stack, scans code smells, enforces modern patterns, runs lint/type/test per slice. Resumes via .dev-craft/ runs (indexed, per-task state).
+description: Full-stack engineering pipeline with persistent memory. Detects stack, scans code smells, enforces modern patterns, runs lint/type/test per slice. Resumes via .dev-craft/ state.
 metadata:
   origin: agent-master-skills
 ---
@@ -11,7 +11,7 @@ metadata:
 
 Turns a prompt into production-quality code.
 Every phase has a clear goal, exit criteria, and a human checkpoint.
-Persists state to `.dev-craft/` (per-task run folders, tracked in `index.json`) so work survives across sessions.
+Persists state to `.dev-craft/` so work survives across sessions.
 
 **Philosophy:** Transparent, human-orchestrated, composable.
 Skip any phase. Edit any phase. The pipeline serves you.
@@ -63,52 +63,32 @@ When input is too vague:
 
 ## Memory System
 
-`.dev-craft/` directory created on first run. State is **scoped per task/run** so every
-PLAN.md, prompt, or Jira ticket gets its own isolated workspace — and history is preserved
-for later skill improvement.
+`.dev-craft/` directory created on first run:
 
 ```
 .dev-craft/
-├── index.json           # Registry of all runs (audit trail / skill-improvement log)
-├── active               # Symlink → runs/<slug> of the currently active run
-└── runs/
-    └── <slug>/          # One folder per task (slug from input, see [0] LOAD)
-        ├── state.json   # currentPhase, completed, stack, slices, source
-        ├── plan.md      # Evolving plan from Align → Design
-        ├── domain.md    # Domain model (from REQUIRE or project-discovery)
-        ├── build-order.md  # Module dependency sequencing
-        ├── estimation.md   # Cost/schedule validation
-        ├── context.md   # Domain glossary (shared language)
-        ├── risk-register.md  # HARDEN output
-        ├── decisions/   # ADRs — key decisions captured
-        │   └── 001-*.md
-        ├── sessions/    # Handoff docs for context rotation
-        │   └── session-YYYYMMDD-N.md
-        └── config.json  # Project config (linter, formatter, test cmds)
+├── state.json       # currentPhase, completed, stack, slices
+├── plan.md          # Evolving plan from Align → Design
+├── domain.md        # Domain model (from REQUIRE or project-discovery)
+├── build-order.md   # Module dependency sequencing
+├── estimation.md    # Cost/schedule validation
+├── context.md       # Domain glossary (shared language)
+├── decisions/       # ADRs — key decisions captured
+│   └── 001-*.md
+├── sessions/        # Handoff docs for context rotation
+│   └── session-YYYYMMDD-N.md
+└── config.json      # Project config (linter, formatter, test cmds)
 ```
-
-**Slug rules** (how `<slug>` is derived — full logic in [0] LOAD):
-
-| Input type | Slug source |
-|---|---|
-| Jira ID (`PROJ-123`) | the ID verbatim → `PROJ-123` |
-| `PLAN.md` given | filename stem, or slug of its `#` title → `add-auth-flow` |
-| Free-form prompt | auto-derived from keywords, **overrideable** by the user |
-
-`index.json` is the single source of truth for "what has this project run through dev-craft".
-It lets you later review past runs (inputs, outcomes, durations) to improve the skill itself.
 
 ### Resume Logic
 
 | Scenario | Behavior |
 |---|---|
-| No `.dev-craft/` | Create it (with `index.json`). Phase 0.5 (REQUIRE) — check for spec files |
-| Input matches an existing run slug | Load that run's `state.json`, skip completed phases |
-| Input is new (new slug) | Create `runs/<slug>/`, preserve all prior runs |
+| No `.dev-craft/` | Phase 0.5 (REQUIRE) — check for spec files |
 | DOMAIN.md exists but not loaded | Load into REQUIRE |
-| `state.json` exists (in the matched run) | Load state, skip completed phases |
-| All phases complete | Ask "New task on same project?" → new slug or re-run |
-| Context near limit | Generate handoff doc in the run's `sessions/`, resume next session |
+| `state.json` exists | Load state, skip completed phases |
+| All phases complete | Ask "New task on same project?" |
+| Context near limit | Generate handoff doc, resume next session |
 
 ## Stack Detection
 
@@ -144,7 +124,7 @@ Each phase:
 
 ```
 Phase → Output
-LOAD → runs/<slug>/state.json initialized
+LOAD → state.json initialized
 REQUIRE → domain.md (domain model, feature list, priorities)
 ARCH-SCAN → Smell report
 ALIGN → CONTEXT.md (shared language)
@@ -162,35 +142,15 @@ SHIP → Commit + ADRs + rollback plan
 
 ### [0] LOAD — Initialize or Resume
 
-**Step 0.1 — Resolve the task slug from the input.** Every run gets an isolated
-`runs/<slug>/` folder. Derive the slug:
+Read `.dev-craft/state.json`:
 
-1. **Jira ID** in the prompt or as the input (regex `[A-Z][A-Z0-9]+-\d+`, e.g. `PROJ-123`)
-   → slug = the ID verbatim.
-2. **`PLAN.md` provided** → slug from:
-   - the filename stem if not the generic `PLAN` (`plan-add-auth` → `add-auth`), or
-   - the slug of the first `#` heading, else `plan-<date>`.
-3. **Free-form prompt** → auto-derive a short slug from keywords (e.g. "build a billing
-   service" → `billing-service`). Then **ask the user to confirm or override**:
-   ```
-   I'll track this as run "<slug>". OK, or give it a different short name?
-   ```
-   This keeps history readable when reviewing past runs.
-
-**Step 0.2 — Look up or create the run.**
-
-- Read `.dev-craft/index.json` (create `{"runs":[]}` if absent).
-- **Slug already registered** → load `runs/<slug>/state.json`:
-  - complete → Ask: "Re-run this task, or start a new one?"
-  - incomplete → Load `context.md`, restore slice progress.
-- **Slug new** → create `runs/<slug>/`, register it in `index.json` with
-  `{ slug, source, createdAt, status:"in_progress" }`.
-- Point `.dev-craft/active` symlink at `runs/<slug>` (best-effort; skip on filesystems
-  without symlink support and rely on `index.json` `activeSlug` instead).
-
-**Step 0.3 — Detect existing source code** (only when starting fresh in this run):
+**Not found →** Detect existing source code:
 - Existing code (src/, lib/, app/) → Phase 0.5 (REQUIRE)
 - Greenfield → Phase 0.5 (REQUIRE)
+
+**Found + complete →** Ask: "New feature? Start fresh?"
+
+**Found + incomplete →** Load context.md, restore slice progress.
 
 Write state after LOAD.
 
@@ -208,12 +168,12 @@ Write state after LOAD.
    - Check for PLAN.md (from planning-and-task-breakdown)
    - Check for spec files (xlsx, csv, md, pdf, txt)
 
- 2. **If PRODUCT.md found:**
-    Extract domain, modules, features, priorities, dependencies.
-    Generate `.dev-craft/runs/<slug>/domain.md` from the spec.
+2. **If PRODUCT.md found:**
+   Extract domain, modules, features, priorities, dependencies.
+   Generate `.dev-craft/domain.md` from the spec.
 
- 3. **If DOMAIN.md found:**
-    Load directly into `.dev-craft/runs/<slug>/domain.md`.
+3. **If DOMAIN.md found:**
+   Load directly into `.dev-craft/domain.md`.
 
 4. **If spec files found (xlsx, csv, etc.):**
    If `project-discovery` skill is available, load it to extract domain model.
@@ -232,7 +192,7 @@ Write state after LOAD.
    - Clock in/out (G1)
    - Calculate salary (G1)
    ```
-    Save to `.dev-craft/runs/<slug>/domain.md`.
+   Save to `.dev-craft/domain.md`.
 
 5. **If no specs found:**
    Proceed to ALIGN. ALIGN will ask clarifying questions.
@@ -255,7 +215,7 @@ Write state after LOAD.
 
 **Exit criterion:** Domain model confirmed by user (or no specs available).
 
-**State write:** Save domain model to `.dev-craft/runs/<slug>/domain.md`. Update state.json.
+**State write:** Save domain model to `.dev-craft/domain.md`. Update state.json.
 
 ---
 
@@ -300,7 +260,7 @@ Write state after LOAD.
 
 **Process:**
 
- 1. **Load domain model** if `.dev-craft/runs/<slug>/domain.md` exists:
+1. **Load domain model** if `.dev-craft/domain.md` exists:
    ```
    DOMAIN MODEL LOADED:
    - Modules: [list from domain.md]
@@ -360,7 +320,7 @@ Write state after LOAD.
 
 9. **Image analysis** (if screenshot provided):
    ```bash
-    python skills/image-to-design-spec/scripts/analyze.py --image <path> --format json --output .dev-craft/runs/<slug>/image-analysis.json
+    python skills/image-to-design-spec/scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
    ```
    Present findings:
    ```
@@ -515,7 +475,7 @@ Write state after LOAD.
 
 **Exit criterion:** Build order is documented and user-approved for complex projects.
 
-**State write:** Save `.dev-craft/runs/<slug>/build-order.md`.
+**State write:** Save `.dev-craft/build-order.md`.
 
 ---
 
@@ -558,9 +518,33 @@ Write state after LOAD.
 
 **Goal:** Implement one vertical slice at a time. Every slice is verified for security as it's written — not deferred to a batch scan.
 
+**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`master`/`develop`. The branch keeps in-progress work isolated and reviewable, and makes the SHIP step a clean PR-ready commit.
+
+1. **Before any code, create the branch** from the current base:
+   ```bash
+   git checkout -b <branch-name>
+   ```
+2. **Branch naming convention:**
+   ```
+   <type>/<short-description>[-<issue-id>]
+   type ∈ { feat, fix, refactor, chore, test, docs }
+   examples:
+     feat/user-auth
+     fix/login-rate-limit-142
+     refactor/payroll-calc
+   ```
+   Derive `type` and description from the slice/spec. If a ticket/issue id is known, append it.
+3. **Per-slice commits land on this branch.** Each slice is an atomic commit (see loop below). The branch is only merged/PR'd during SHIP.
+4. **Resume safety:** If `.dev-craft/state.json` records an active `buildBranch`, re-checkout it on resume instead of creating a new branch:
+   ```bash
+   git checkout "$(jq -r .buildBranch .dev-craft/state.json)"
+   ```
+   Only create a new branch when none is recorded or the recorded branch no longer exists.
+
 **Process per slice:**
 
 ```
+0. BRANCH — Ensure dedicated feature branch exists (create or resume)
 1. RED    — Write failing test
 2. GREEN  — Write minimal code to pass
 3. SECURE — Verify the slice has no security issues
@@ -568,7 +552,7 @@ Write state after LOAD.
 5. LINT   — Run linter + formatter
 6. TYPE   — Run type checker
 7. TEST   — Run test suite
-8. COMMIT — Atomic commit
+8. COMMIT — Atomic commit (on the feature branch)
 ```
 
 **Step 3 — SECURE: Agent traces what the slice touches, then runs matching checks.**
@@ -743,7 +727,7 @@ git worktree remove ../project-api
 
 **Exit criterion:** All slices implemented, committed, security-verified, and convention-matched.
 
-**State write:** Save slices, security notes, and convention profile to state.json.
+**State write:** Save `buildBranch` (the feature branch name), slices, security notes, and convention profile to state.json.
 
 ---
 
@@ -988,7 +972,7 @@ Consolidate all findings into a risk register:
 
 **Exit criterion:** All Critical/High findings resolved. Risk register documents any accepted risks with explicit reasoning.
 
-**State write:** Update state. Save risk register to `.dev-craft/runs/<slug>/risk-register.md`.
+**State write:** Update state. Save risk register to `.dev-craft/risk-register.md`.
 
 ---
 
@@ -1005,20 +989,27 @@ Consolidate all findings into a risk register:
    - Dead code removed
    - HARDEN risk register is clean (no unaddressed Critical/High findings)
 4. Update CHANGELOG
-5. Atomic commit:
-   ```
-   type(scope): short description
+ 5. Atomic commit (on the feature branch created in BUILD):
+    ```
+    type(scope): short description
 
-   - What changed and why
-   - Key decisions (reference ADRs)
-   - What was intentionally NOT done
-   ```
-6. Define rollback strategy:
+    - What changed and why
+    - Key decisions (reference ADRs)
+    - What was intentionally NOT done
+    ```
+ 6. Merge or open a pull request from the feature branch:
+    - **PR (recommended):** Push the branch and open a PR for review before merging to the base branch. Never merge unreviewed Critical/Required findings.
+    - **Direct merge (solo/small):** Only if no review gate is required:
+      ```bash
+      git checkout <base-branch> && git merge --no-ff <feature-branch>
+      ```
+    - Record the merged branch name and PR/commit reference in `state.json` (`shippedBranch`, `prUrl` if any).
+ 7. Define rollback strategy:
    - Feature flag toggling: < 1 minute
    - Code revert: specify commit
    - Database: migration revert command
 
-**Exit criterion:** Clean commit with rollback plan.
+**Exit criterion:** Feature branch merged (or PR opened) with a clean commit and a rollback plan.
 
 ---
 
@@ -1028,18 +1019,18 @@ Consolidate all findings into a risk register:
 
 **Process:**
 
- 1. Save state to `.dev-craft/runs/<slug>/state.json`:
-    - Current phase and slice position
-    - Incomplete tasks
-    - Pending decisions
+1. Save state to state.json:
+   - Current phase and slice position
+   - Incomplete tasks
+   - Pending decisions
 
- 2. Write handoff to `.dev-craft/runs/<slug>/sessions/session-YYYYMMDD-N.md`:
-    - What was accomplished
-    - What's in progress
-    - What's next
-    - Known issues
+2. Write handoff to sessions/session-YYYYMMDD-N.md:
+   - What was accomplished
+   - What's in progress
+   - What's next
+   - Known issues
 
- 3. Summarize: "Session saved under run '<slug>'. Run dev-craft to resume."
+3. Summarize: "Session saved. Run dev-craft to resume."
 
 ---
 
@@ -1108,6 +1099,7 @@ dev-craft needs mobile:
 | "Lint after slices" | Lint debt compounds |
 | "Tests pass, it's good" | Tests don't catch architecture/security |
 | "Commit at the end" | Large commits destroy history |
+| "Commit straight to main" | Always work on a feature branch, merge via review |
 | "Prototype, skip security" | Prototypes become production |
 | "Fix architecture later" | Rot compounds fast |
 | "Skip arch scan" | 2-min scan prevents 2-hour rework |
@@ -1122,8 +1114,10 @@ dev-craft needs mobile:
 - Lint/type/tests failing but proceeding
 - No ADRs for decisions
 - "Fix it later" for Critical findings
-- No .dev-craft/ directory or index.json
+- No .dev-craft/ directory
 - Security review skipped
+- Commits made directly to main/master/develop (no feature branch)
+- No `buildBranch` recorded in state.json before BUILD commits
 - Commit messages: "WIP", "fix", "update"
 - Vague prompt accepted without clarification
 - Skipping REQUIRE when spec files exist
@@ -1135,9 +1129,10 @@ dev-craft needs mobile:
 ## Verification
 
 - [ ] ARCH-SCAN was run (or deferred with approval)
-- [ ] .dev-craft/runs/<slug>/state.json exists with status: complete
-- [ ] .dev-craft/index.json registers this run
-- [ ] All slices implemented and committed
+- [ ] .dev-craft/state.json exists with status: complete
+- [ ] All slices implemented and committed on a dedicated feature branch
+- [ ] `buildBranch` recorded in state.json before any BUILD commit
+- [ ] Feature branch merged or PR opened during SHIP (not committed to base)
 - [ ] Full test suite passes
 - [ ] Linter + formatter pass
 - [ ] Type checker passes
@@ -1150,8 +1145,8 @@ dev-craft needs mobile:
 - [ ] Human approved every checkpoint
 - [ ] Input was assessed (vague prompts redirected to product-thinking)
 - [ ] REQUIRE phase completed (or skipped with valid reason)
-- [ ] Domain model exists in .dev-craft/runs/<slug>/domain.md (for multi-module projects)
-- [ ] Build order documented in .dev-craft/runs/<slug>/build-order.md (for complex projects)
+- [ ] Domain model exists in .dev-craft/domain.md (for multi-module projects)
+- [ ] Build order documented in .dev-craft/build-order.md (for complex projects)
 - [ ] Module dependencies respected during build
 
 ## See Also
