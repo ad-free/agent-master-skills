@@ -122,11 +122,15 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 
 **Checks:**
 
-```
-1. LINT
-   ├── Linter passes with zero errors (configurable: warnings may be allowed)
-   ├── Formatter passes (code is idempotent under formatter)
-   └── No lint rule disable comments without team-approved exception list
+ ```
+ 1. LINT
+    ├── Linter passes with zero errors (configurable: warnings may be allowed)
+    ├── Formatter passes (code is idempotent under formatter)
+    └── No lint rule disable comments without team-approved exception list
+    └── Use the per-stack config from dev-craft `references/lint-rules.md`
+       (ruff UP rules for Python; ESLint id-length + no-explicit-any for TS/JS;
+        clippy/gofmt/RuboCop/PSR-12 for other stacks). These enforce no
+        single-char/cryptic names and no legacy/deprecated idioms.
 
 2. TYPE CHECK
    ├── Type checker passes (tsc, mypy, pyright, flow, etc.)

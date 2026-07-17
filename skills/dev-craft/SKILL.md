@@ -852,8 +852,11 @@ git worktree remove ../project-api
    - Correctness, Readability, Architecture
    - Performance, Security, Testing, Modern Patterns
    (Conventions are already validated during BUILD MATCH step)
-3. Categorize findings (Critical/Required/Nit/Optional)
-4. Fix all Critical/Required findings
+ 3. Categorize findings (Critical/Required/Nit/Optional)
+ 4. **Run the lint gate** — load `references/lint-rules.md` and execute its ruff
+    config + cryptic-name grep. UP007/UP035/UP045 violations and any cryptic-name
+    hit are automatic fails; fix before proceeding.
+ 5. Fix all Critical/Required findings
 
 **Reality-Check Discipline (evidence-based QA):** Approach review as a skeptic, not an advocate.
 - **Default stance is "needs work."** First-pass implementations typically need 1–3
@@ -1256,6 +1259,7 @@ dev-craft needs mobile:
 
 - `plugins/security-audit/SKILL.md` — Deep security scan pipeline
 - `references/modern-patterns.md` — Per-language guidance
+- `references/lint-rules.md` — Forbidden patterns + ruff gate (Optional[], single-char names)
 - `references/phase-templates.md` — Templates for documents
 - `product-thinking` — Refine vague ideas into structured specs
 - `project-discovery` — Extract domain model from existing documents

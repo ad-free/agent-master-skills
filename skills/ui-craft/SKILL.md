@@ -554,6 +554,12 @@ Review entire diff across UI-specific axes:
 - Code follows current-version docs
 - Source citations for correct version
 - Lint/format/tests pass
+- **No cryptic identifiers / legacy idioms** — `any`→`unknown`, `var`→`const`, single-char vars banned. Enforced by ESLint `id-length` + `no-explicit-any`; config in dev-craft `references/lint-rules.md`.
+
+**Axis 4b — Readability Gate (frontend):**
+- Component/function/hook names are self-documenting (no `tmp`, `x`, `res`, `val`).
+- Props and state have descriptive names; no cryptic destructuring aliases.
+- Run the frontend lint gate from dev-craft `references/lint-rules.md` and read the output before claiming pass.
 
 **Axis 5 — Visual Regression:**
 - Run Playwright/Cypress screenshot comparison
@@ -572,6 +578,7 @@ Review entire diff across UI-specific axes:
 - No unused CSS classes
 - No missing responsive utilities
 - Run automated UI lint tools
+- **Run the frontend readability gate** (ESLint `id-length` + `no-explicit-any`) per dev-craft `references/lint-rules.md` and read output before claiming pass.
 
 **Axis 8 — Security (UI-Specific):**
 

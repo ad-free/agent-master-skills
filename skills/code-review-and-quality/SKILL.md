@@ -52,6 +52,7 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 ### Axis 2: Readability
 
 - Are names clear and consistent?
+- **No single-character or cryptic identifiers** (`x`, `d`, `tmp`, `res`) outside a tight loop scope — see dev-craft `references/lint-rules.md` gate.
 - Is control flow straightforward (no deep nesting, no clever tricks)?
 - Does each function have a clear single responsibility?
 - Would a new developer understand this code?
@@ -77,6 +78,8 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 - Secrets out of code/logs?
 - Parameterized queries (no string concatenation)?
 - External data treated as untrusted?
+- Any auth/authorization bypass?
+- Any unsafe deserialization?
 
 **Regex security — review every regex in the diff:**
 - ReDoS risk: nested quantifiers `(a+)+b`, overlapping alternatives `(a|aa)+b`, unbounded `(.*a)*` patterns?
@@ -98,6 +101,8 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 - Code follows current-version docs?
 - Source citations for correct version?
 - Lint/format/tests pass?
+- **No legacy typing / deprecated idioms** — varies by stack (Python `Optional[X]`→`X | None`; TS `any`→`unknown`, `var`→`const`; etc.). Blocked by the stack's native linter per dev-craft `references/lint-rules.md`.
+
 
 ### Axis 8: Conventions
 
