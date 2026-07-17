@@ -114,8 +114,8 @@ Every generated code must match exact framework version.
 ## Pipeline Phases
 
 ```
-[0] LOAD → [1] AUDIT → [2] ALIGN → [3] DESIGN → [4] SOURCE
-    → [5] BUILD → [6] REVIEW → [7] HARDEN → [8] SHIP
+[0] LOAD → [1] AUDIT → [2] ALIGN → [3] DESIGN → [3.7] REQUIREMENTS-EXTRACTION
+    → [4] SOURCE → [5] BUILD → [6] REVIEW → [7] HARDEN → [8] SHIP
 ```
 
 Each phase:
@@ -125,12 +125,19 @@ LOAD → state.json initialized
 AUDIT → Health report (remediate first?)
 ALIGN → CONTEXT.md (shared language)
 DESIGN → Design system + tokens + preview
+REQUIREMENTS-EXTRACTION → requirements.md (spec→task traceability matrix)  ← COVERAGE GATE
 SOURCE → Fetched docs
 BUILD → UI code + tokens + preview + SECURE (incl. regex) per slice
 REVIEW → UX + a11y + visual + security audit
 HARDEN → Polish + dark mode + responsive + cross-cutting security
 SHIP → Commit + ADRs + state complete
 ```
+
+> **Why REQUIREMENTS-EXTRACTION exists:** ui-craft enforces design discipline, but on its
+> own it does not prove the UI plan covers the product spec. UI requirements
+> (a11y targets, responsive breakpoints, permission-gated components, i18n, specific
+> component libraries) get dropped the same way backend ones do. This phase traces every
+> UI requirement to a concrete design/component task **before** any component is built.
 
 ---
 
@@ -328,9 +335,62 @@ Write state after LOAD.
 
 7. Persist design system to .ui-craft/design-system/
 
-**Exit criterion:** Human reviews and approves.
+ **Exit criterion:** Human reviews and approves.
 
 **State write:** Save plan.md, ADRs, design system.
+
+---
+
+### [3.7] REQUIREMENTS-EXTRACTION — Spec → Task Traceability (COVERAGE GATE)
+
+**Goal:** Guarantee every UI-relevant requirement from the source spec is traced to a
+concrete design/component task with an acceptance criterion, before any component is
+built. This is what stops UI features (a11y, responsive, permission-gating, i18n,
+mandated component libraries) from silently falling out of the plan.
+
+**Input:** The source spec (from product-thinking / project-discovery, or `docs/*.md`).
+If no source spec exists, skip this phase.
+
+**Process:**
+
+1. **Extract every UI requirement** from the spec — literal and exhaustive:
+   - Component library mandates ("Tailwind + shadcn/ui only, no Ant Design")
+   - Accessibility targets ("contrast ≥ 4.5:1", "touch ≥ 44px")
+   - Responsive breakpoints ("375 / 768 / 1024 / 1440")
+   - Permission-gated UI (`<HasPermission permission="hrm.payroll.approve">`)
+   - i18n ("Interface language: Vietnamese")
+   - Design language ("minimalist global SaaS style")
+   - Every screen/page the spec implies but does not name explicitly
+   - Preserve the spec's priority markers (`🔴 [REQUIRED P1]`, `G1/G2/G3`) verbatim.
+
+2. **Assign stable IDs:** `UI-REQ-001`, `UI-REQ-002`, ...
+
+3. **Trace each to a task** in the DESIGN/BUILD plan. Every UI requirement must map to
+   ≥1 task whose acceptance criteria verify it.
+
+4. **Build the matrix** → `.ui-craft/requirements.md`:
+   ```markdown
+   # UI Requirements Traceability Matrix — <project>
+
+   | UI-REQ-ID | Priority | Requirement (verbatim) | Traced Task(s) | Status |
+   |-----------|----------|------------------------|----------------|--------|
+   | UI-REQ-001 | P1 | shadcn/ui only, no Ant Design | DESIGN tokens | ✅ |
+   | UI-REQ-007 | P1 | i18n Vietnamese | A9 i18n setup | ✅ |
+   | UI-REQ-012 | G1 | permission-gated components | A10 HasPermission | ⚠️ GAP |
+   ```
+
+5. **Self-review** against the spec (do not delegate): re-read each section, confirm a
+   row exists and maps to a task. Search for skipped markers.
+
+6. **Present matrix + gaps.** Do not auto-skip.
+
+**Exit criterion (HARD GATE):** Every P1/G1 UI requirement traced to a task + acceptance
+criterion. G2/G3 gaps deferrable **only with explicit human acknowledgement** (recorded
+in state.json `deferredRequirements`). Building UI with unresolved P1/G1 coverage gaps is
+the failure this phase prevents.
+
+**State write:** Save `.ui-craft/requirements.md`; record `requirementsExtracted`,
+`coverageGaps`, `deferredRequirements` in state.json.
 
 ---
 
@@ -568,7 +628,22 @@ CSP Readiness — agent reads meta tags and server config:
 | Nit | May ignore |
 | Optional | Worth considering |
 
-**Exit criterion:** All Critical/Required resolved.
+**Reality-Check Discipline (borrowed from evidence-based QA):** Approach review as a
+skeptic, not an advocate.
+- **Default stance is "needs work."** Do not declare a UI slice done on first pass;
+  first implementations typically need 1–3 revision cycles.
+- **Evidence, not assertion.** For every axis above, cite the actual file/line, the
+  rendered output, or a captured screenshot at the required breakpoints (375/768/1024/1440).
+  A claim like "looks consistent" without evidence is a RED FLAG.
+- **Run real checks.** Execute the linter, type checker, build, and a11y test
+  (`jest-axe`) and read the output. Do not infer pass/fail.
+- **Spec reality-check:** for each P1/G1 row in `.ui-craft/requirements.md`, confirm the
+  built UI actually satisfies it — quote the requirement, show the evidence.
+- **Automatic-fail triggers:** claiming "zero issues", a perfect score without evidence,
+  or "premium" for a basic implementation.
+
+**Exit criterion:** All Critical/Required resolved **with evidence**, and every P1/G1
+requirement in the traceability matrix verified against the built UI.
 
 **State write:** Save review findings.
 
@@ -778,8 +853,9 @@ After Phase 3 (DESIGN), user can explore alternatives.
 - "Fix it later" for Critical findings
 - No .ui-craft/ directory
 - Accessibility review skipped
-- No design tokens generated
 - No visual preview before BUILD
+- **Starting BUILD without `.ui-craft/requirements.md` coverage gate passing (P1/G1 UI gaps unresolved)**
+- UI requirement traced to a task but no acceptance criterion verifying it
 
 ## Verification
 
@@ -788,6 +864,8 @@ After Phase 3 (DESIGN), user can explore alternatives.
 - [ ] All slices implemented and committed
 - [ ] Design token files generated
 - [ ] HTML style guide preview generated
+- [ ] **`.ui-craft/requirements.md` exists and the COVERAGE GATE passed** (every P1/G1 UI REQ-ID traced to a task + acceptance criterion)
+- [ ] Every P1/G1 requirement in the matrix verified against the built UI during REVIEW
 - [ ] Linter + formatter pass
 - [ ] Type checker passes
 - [ ] No deprecated patterns

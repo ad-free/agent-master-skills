@@ -116,8 +116,8 @@ Read dependency files (package.json, requirements.txt, go.mod, Cargo.toml, etc.)
 
 ```
 [0] LOAD → [0.5] REQUIRE → [1] ARCH-SCAN → [2] ALIGN → [3] DESIGN
-    → [3.5] BUILD-ORDER → [4] SOURCE → [5] BUILD → [6] TEST
-    → [7] REVIEW → [8] HARDEN → [9] SHIP
+    → [3.5] BUILD-ORDER → [3.7] REQUIREMENTS-EXTRACTION → [4] SOURCE
+    → [5] BUILD → [6] TEST → [7] REVIEW → [8] HARDEN → [9] SHIP
 ```
 
 Each phase:
@@ -130,6 +130,7 @@ ARCH-SCAN → Smell report
 ALIGN → CONTEXT.md (shared language)
 DESIGN → PLAN.md + ADRs
 BUILD-ORDER → build-order.md (module dependency sequencing)
+REQUIREMENTS-EXTRACTION → requirements.md (spec→task traceability matrix)  ← COVERAGE GATE
 SOURCE → Fetched docs
 BUILD → Vertical slices (TDD + SECURE + MATCH per slice)
 TEST → Test output
@@ -137,6 +138,11 @@ REVIEW → Code review
 HARDEN → Cross-cutting security + risk register
 SHIP → Commit + ADRs + rollback plan
 ```
+
+> **Why REQUIREMENTS-EXTRACTION exists:** This pipeline enforces *process* discipline
+> (phases, checkpoints, TDD) but, on its own, does NOT guarantee *feature completeness*.
+> A dense 300-line spec can be "planned" while 6 P1 requirements silently fall through
+> the cracks. This phase makes spec coverage a first-class, machine-checkable artifact.
 
 ---
 
@@ -473,9 +479,89 @@ Write state after LOAD.
 
 4. **Save build-order.md**
 
-**Exit criterion:** Build order is documented and user-approved for complex projects.
+ **Exit criterion:** Build order is documented and user-approved for complex projects.
 
 **State write:** Save `.dev-craft/build-order.md`.
+
+---
+
+### [3.7] REQUIREMENTS-EXTRACTION — Spec → Task Traceability (COVERAGE GATE)
+
+**Goal:** Guarantee every explicitly stated requirement from the source spec is traced
+to a concrete plan task with an acceptance criterion. Catch coverage gaps *before* any
+code is written. This is the phase that prevents "the pipeline ran perfectly but we
+missed 6 P1 requirements."
+
+**Why this phase exists:** ALIGN captures decisions; DESIGN writes a plan. Neither
+mechanically proves the plan covers the spec. A 343-line spec with 12 `[REQUIRED P1]`
+markers will lose requirements in summarization. This phase is a line-by-line audit.
+
+**Input:** The source spec (from REQUIRE → `domain.md`, or the original `docs/*.md` /
+PRODUCT.md / DOMAIN.md). If no source spec exists, skip this phase.
+
+**Process:**
+
+1. **Extract every requirement** from the source spec. Be exhaustive and literal:
+   - For each paragraph/bullet/table row that expresses a capability, constraint, or
+     non-functional rule, write one requirement row.
+   - Preserve the spec's own priority markers verbatim
+     (`[REQUIRED P1]`, `🔴 [REQUIRED P1]`, `⚪ [FUTURE PHASE]`, `G1/G2/G3`).
+   - Capture CONCRETE constraints as requirements, not prose:
+     e.g. "JWT payload contains only `user_id`, `company_id`, `permission_version`" →
+     a row, not a footnote.
+   - Do NOT paraphrase away detail. Quote the operative clause.
+
+2. **Assign each requirement a stable ID:**
+   ```
+   REQ-001  [REQUIRED P1]  employee_code auto-generated via PG SEQUENCE (NV0001...)
+   REQ-002  [REQUIRED P1]  login lockout after 5 failures / 15 min + audit_log
+   REQ-003  ⚪ [FUTURE]     AWS deployment
+   ```
+
+3. **Trace each requirement to a plan task.** Map REQ-ID → task ID in PLAN.md
+   (DESIGN phase). Every requirement must resolve to at least one task whose
+   acceptance criteria verify it.
+
+4. **Build the traceability matrix** and save to `.dev-craft/requirements.md`:
+   ```markdown
+   # Requirements Traceability Matrix — <project>
+
+   Source spec: docs/hansa_global.md (343 lines)
+   Extracted: 47 requirements (12 P1, 9 G1, 18 G2, 8 G3/Future)
+
+   | REQ-ID | Priority | Requirement (verbatim clause) | Traced Task(s) | Acceptance Ref | Status |
+   |--------|----------|-------------------------------|----------------|----------------|--------|
+   | REQ-001 | P1 | `employee_code` auto via PG SEQUENCE | B1, B2 | B1-AC1 | ✅ |
+   | REQ-002 | P1 | lockout 5 fails/15min + audit_log | A7 | A7-AC2 | ✅ |
+   | REQ-011 | P1 | Cross-day shifts UTC+7 display | D1, D2 | D1-AC3 | ⚠️ GAP |
+   | REQ-027 | G1 | Leave: full/half/hourly + carry-forward | — | — | ❌ GAP |
+
+   ## Gaps (must resolve before BUILD)
+   - REQ-011: no task covers UTC+7 presentation conversion
+   - REQ-027: Leave module not in plan at all
+   ```
+
+5. **Self-review the matrix against the spec** (do not delegate this):
+   - Re-read the spec section by section. For each requirement you extracted, confirm
+     a row exists. For each row, confirm a task + acceptance ref exists.
+   - Search the spec for priority markers you may have skipped:
+     `grep -nE "REQUIRED P1|🔴|G1|Must have|must implement" <spec>`.
+   - Any P1 / G1 requirement with no traced task = a blocking gap.
+
+6. **Present the matrix + gaps to the human.** Do not auto-skip gaps.
+
+**Exit criterion (HARD GATE):** Every `[REQUIRED P1]` and `G1` requirement is traced to
+a task with an acceptance criterion. G2/G3 gaps may be deferred **only with explicit
+human acknowledgement** (record in state.json `deferredRequirements`).
+
+- If gaps exist and are NOT acknowledged → **stop the pipeline**, return to DESIGN and
+  add the missing tasks. Do NOT proceed to BUILD.
+- This gate is non-negotiable: building with known P1 coverage gaps is the exact failure
+  this phase exists to prevent.
+
+**State write:** Save `.dev-craft/requirements.md`. Record `requirementsExtracted`,
+`coverageGaps`, and `deferredRequirements` in state.json. Set
+`phases.REQUIREMENTS_EXTRACTION = "completed"` only after the gate passes.
 
 ---
 
@@ -769,7 +855,19 @@ git worktree remove ../project-api
 3. Categorize findings (Critical/Required/Nit/Optional)
 4. Fix all Critical/Required findings
 
-**Exit criterion:** All Critical/Required resolved.
+**Reality-Check Discipline (evidence-based QA):** Approach review as a skeptic, not an advocate.
+- **Default stance is "needs work."** First-pass implementations typically need 1–3
+  revision cycles; do not declare done on the first review.
+- **Spec reality-check:** for each P1/G1 row in `.dev-craft/requirements.md`, confirm the
+  built code actually satisfies it — quote the requirement, cite the file/line or test
+  that proves it. A requirement marked ✅ without evidence is not verified.
+- **Evidence, not assertion:** run the linter, type checker, and full test suite and read
+  the output. Do not infer pass/fail.
+- **Automatic-fail triggers:** claiming "zero issues", a perfect score without evidence, or
+  treating unverified requirements as complete.
+
+**Exit criterion:** All Critical/Required resolved **with evidence**, and every P1/G1
+requirement in the traceability matrix verified against the built code.
 
 **State write:** Save review findings.
 
@@ -1125,6 +1223,9 @@ dev-craft needs mobile:
 - No domain model for multi-module project
 - No worktree isolation for parallel agents
 - Starting BUILD without build-order.md for complex projects
+- **Starting BUILD without `requirements.md` coverage gate passing** (P1/G1 gaps unresolved)
+- P1/G1 requirement with no traced task silently deferred without human acknowledgement
+- Plan tasks whose acceptance criteria cannot be mapped back to a REQ-ID
 
 ## Verification
 
@@ -1148,6 +1249,8 @@ dev-craft needs mobile:
 - [ ] Domain model exists in .dev-craft/domain.md (for multi-module projects)
 - [ ] Build order documented in .dev-craft/build-order.md (for complex projects)
 - [ ] Module dependencies respected during build
+- [ ] **`requirements.md` exists and the COVERAGE GATE passed** (every P1/G1 REQ-ID traced to a task + acceptance criterion)
+- [ ] Any deferred G2/G3 requirement recorded in state.json with human acknowledgement
 
 ## See Also
 

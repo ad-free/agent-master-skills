@@ -166,12 +166,21 @@ Both dev-craft and ui-craft use compatible `state.json` formats, stored per run 
   "slices": ["auth", "dashboard", "settings"],
   "currentSlice": 1,
   "plugins": ["security-audit"],
+  "requirementsExtracted": 47,
+  "coverageGaps": ["REQ-011", "REQ-027"],
+  "deferredRequirements": ["REQ-030"],
   "crossSkill": {
     "backendSliceNeeded": ["auth-api"],
     "apiContract": ".dev-craft/runs/<slug>/api-contract.md"
   }
 }
 ```
+
+> **Coverage gate keys** (`requirementsExtracted`, `coverageGaps`, `deferredRequirements`)
+> back the `[3.7] REQUIREMENTS-EXTRACTION` COVERAGE GATE in both dev-craft and ui-craft.
+> A run may not advance to BUILD/SOURCE until every P1/G1 requirement is traced to a task
+> (no unresolved `coverageGaps` of priority P1/G1 unless recorded in `deferredRequirements`
+> with explicit human acknowledgement).
 
 ### Handoff Document Format
 

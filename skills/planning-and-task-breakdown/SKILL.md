@@ -215,6 +215,8 @@ Each task follows this structure:
 ```markdown
 ## Task [N]: [Short title]
 
+**Requirement refs:** REQ-001, REQ-002   <!-- trace back to source spec rows -->
+
 **Description:** One paragraph explaining what this task accomplishes.
 
 **Acceptance criteria:**
@@ -234,6 +236,12 @@ Each task follows this structure:
 
 **Estimated scope:** [XS/S/M/L]
 ```
+
+> **REQ-IDs are mandatory for spec-driven work.** Every task must cite the source-spec
+> requirement row(s) it satisfies. A task with no `Requirement refs:` is a symptom that
+> the plan is being written from memory, not from the spec — the exact failure mode that
+> drops P1 requirements. If you cannot cite a REQ-ID, either the requirement was never
+> extracted (go back to Step 0/Step 2) or the task is out of scope.
 
 ### Step 8: Order and Checkpoint
 
@@ -266,6 +274,56 @@ Present design in sections:
 
 After each section: "Does this look right so far?"
 Wait for approval before continuing.
+
+### Step 9.5: Spec Coverage Self-Review (COVERAGE GATE)
+
+This is the most important step for spec-driven work. A plan can look complete and
+still omit 6 P1 requirements. Do this review yourself — do not delegate it.
+
+**1. Extract requirements from the source spec (exhaustive, literal):**
+   - Read the spec line by line. For every capability, constraint, or non-functional
+     rule, write one requirement row. Preserve the spec's own priority markers
+     (`[REQUIRED P1]`, `🔴`, `G1/G2/G3`, `⚪ [FUTURE PHASE]`) verbatim.
+   - Capture *concrete* constraints as requirements, not prose
+     (e.g. "JWT payload = only user_id + company_id + permission_version" → a row).
+   - If a source spec was not provided, skip this step and note it.
+
+2. **Assign each requirement a stable ID:** `REQ-001`, `REQ-002`, ...
+
+3. **Trace every requirement to a task.** Each REQ-ID must map to ≥1 task whose
+   `Requirement refs:` and acceptance criteria verify it.
+
+4. **Build the traceability matrix** and save to `requirements.md` (consumed by
+   dev-craft/ui-craft as the COVERAGE GATE artifact):
+
+   ```markdown
+   # Requirements Traceability Matrix — <feature>
+
+   Source spec: <path> (<N> lines)
+   Extracted: <M> requirements (P1: x, G1: y, G2: z, Future: w)
+
+   | REQ-ID | Priority | Requirement (verbatim clause) | Traced Task(s) | Status |
+   |--------|----------|-------------------------------|----------------|--------|
+   | REQ-001 | P1 | employee_code via PG SEQUENCE | Task 1 | ✅ |
+   | REQ-011 | P1 | cross-day shifts, UTC+7 display | Task 4 | ⚠️ GAP |
+   | REQ-027 | G1 | leave: full/half/hourly + carry-forward | — | ❌ GAP |
+
+   ## Gaps
+   - REQ-011: no task covers UTC+7 presentation conversion
+   - REQ-027: Leave module absent from plan
+   ```
+
+5. **Re-read the spec against the matrix.** For each section, confirm a row exists and
+   each row maps to a task. Search for skipped priority markers:
+   `grep -nE "REQUIRED P1|🔴|G1|must implement|Must have" <spec>`.
+
+6. **Resolve gaps before writing the plan:**
+   - Every P1 / G1 requirement **must** have a traced task. Add missing tasks.
+   - G2/G3 gaps may be deferred **only with explicit human acknowledgement**.
+   - Do NOT write the final plan (Step 10) until P1/G1 coverage is 100%.
+
+**Exit criterion (HARD GATE):** 100% of P1 + G1 requirements traced to a task with
+acceptance criteria. This gate is what prevents "pipeline ran, requirements missing."
 
 ### Step 10: Write the Plan
 
@@ -421,6 +479,7 @@ G3 (Nice to have): [features]
 
 - **Plan document:** `PLAN.md` at project root (for dev-craft consumption)
 - **Task list:** included in PLAN.md under each phase
+- **Traceability matrix:** `requirements.md` at project root (the COVERAGE GATE artifact — consumed by dev-craft `[3.7] REQUIREMENTS-EXTRACTION` and ui-craft `[3.7]`)
 - **Legacy archive (optional):** `docs/plans/YYYY-MM-DD-feature.md` for historical record
 
 ## Parallelization
@@ -467,6 +526,8 @@ Before starting implementation:
 
 - [ ] Every task has acceptance criteria
 - [ ] Every task has verification step
+- [ ] Every task cites `Requirement refs:` (REQ-IDs) from the source spec
+- [ ] `requirements.md` traceability matrix exists and P1/G1 coverage is 100%
 - [ ] Task dependencies identified and ordered
 - [ ] No task touches more than ~5 files
 - [ ] Checkpoints exist between phases
