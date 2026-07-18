@@ -477,10 +477,12 @@ G3 (Nice to have): [features]
 
 ## Output Files
 
-- **Plan document:** `PLAN.md` at project root (for dev-craft consumption)
+- **Plan document:** `PLAN.md` at project root (for dev-craft consumption). For **multi-repo** topology (separate BE + FE repos), place `PLAN.md` and the traceability matrix in the BE repo (`contractRepo`) so both sides reference one plan; or split per repo when the work is fully independent. dev-craft's SCOPE gate carries the `topology` decision.
 - **Task list:** included in PLAN.md under each phase
 - **Traceability matrix:** `requirements.md` at project root (the COVERAGE GATE artifact — consumed by dev-craft `[3.7] REQUIREMENTS-EXTRACTION` and ui-craft `[3.7]`)
 - **Legacy archive (optional):** `docs/plans/YYYY-MM-DD-feature.md` for historical record
+
+> **Multi-repo verification:** a fullstack ticket across two repos needs tests/build run in *both* repos. When generating acceptance criteria, list the per-repo verify command (e.g. `cd be-repo && pytest` **and** `cd fe-repo && npm test`), not a single root command.
 
 ## Parallelization
 

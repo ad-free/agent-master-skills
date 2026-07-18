@@ -95,7 +95,7 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 3. SCHEMA VALIDATION
    ├── Configuration files valid (JSON, YAML, TOML parse correctly)
    ├── Database migrations runnable (no syntax errors in SQL/migration files)
-   ├── API contracts match implementation (OpenAPI spec vs actual routes)
+   ├── API contracts match implementation (api-contract.md vs actual routes)
    ├── TypeScript: tsconfig.json compiles without "paths" resolution errors
    └── Environment variable files have `.env.example` (not real secrets)
 ```

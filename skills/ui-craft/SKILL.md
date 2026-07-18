@@ -432,18 +432,70 @@ the failure this phase prevents.
 
 **Goal:** Generate tokens, component code, and preview per slice. Every UI slice is verified for security as it's written.
 
+**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`master`/`develop`. For `multi` topology with `fullstack` scope, the FE branch is created in the FE repo **paired** with the BE branch in the BE repo (see dev-craft SCOPE §0.2 step 5): `fix/fe-payroll-142` alongside `fix/be-payroll-142`. Each repo's `state.json` records its own `activeBranch`; `linkedBranches` ties them. A FE-only unit branches only the FE repo.
+
+**Base-branch guard (enforced before every commit):** Treat `main`, `master`, `develop` (and the repo's configured default branch) as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
+
+1. **Resolve the branch name** (deterministic, from SCOPE when fullstack, else derived here):
+    - `mono`: one `activeBranch` in this repo.
+    - `multi`: read `linkedBranches.fe` (this FE repo's branch) from state.
+2. **Branch naming convention:**
+    ```
+    <type>/<scope>-<short-description>[-<issue-id>]
+    type ∈ { feat, fix, refactor, chore, test, docs }
+    scope ∈ { fe, fs }
+    examples:
+      feat/fs-login-form        (mono: one branch;  multi: paired be+fe branches)
+      fix/fe-button-a11y-142
+    ```
+3. **Ensure the branch actually exists before any code** — verify, don't just record intent:
+    ```bash
+    BRANCH="$(jq -r '.activeBranch // empty' .ui-craft/state.json)"
+    if [ -z "$BRANCH" ]; then
+      # derive from SCOPE: <type>/<scope>-<short-description>, e.g. feat/fe-login-form
+      BRANCH="<type>/<scope>-<short-description>"
+      jq --arg b "$BRANCH" '.activeBranch = $b' .ui-craft/state.json > .ui-craft/state.tmp \
+        && mv .ui-craft/state.tmp .ui-craft/state.json
+    fi
+
+    if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+      git checkout "$BRANCH"
+    elif [ "$(git branch --show-current)" = "$BRANCH" ]; then
+      :
+    else
+      git checkout -b "$BRANCH"
+    fi
+
+    # FAIL LOUDLY if we are not on the feature branch (e.g. checkout failed)
+    CURRENT="$(git branch --show-current)"
+    case "$CURRENT" in
+      main|master|develop) echo "ERROR: still on base branch $CURRENT — branch creation failed"; exit 1 ;;
+      "")                  echo "ERROR: detached HEAD — branch creation failed"; exit 1 ;;
+      "$BRANCH")           echo "OK: on feature branch $BRANCH" ;;
+      *)                   echo "ERROR: on unexpected branch $CURRENT, expected $BRANCH"; exit 1 ;;
+    esac
+    ```
+    Record `activeBranch` in state.json **only after** the branch is confirmed to exist and we are on it. Also register it in `branches` keyed by the unit.
+4. **Per-slice commits land on this branch.** Each slice is an atomic commit. The branch is only merged/PR'd during SHIP. Re-run the base-branch guard above before each commit.
+5. **Resume safety:** On resume, re-run step 3. If the recorded `activeBranch` no longer exists, fall back to deriving a new name (do NOT silently stay on a base branch).
+
+**Scope-aware entry (fe-ticket on existing project):** If this is a frontend-only ticket on a repo that already has a design system (`.ui-craft/design-system/MASTER.md` or tokens present), skip ALIGN/DESIGN and jump straight to BUILD consuming the existing tokens. Do not regenerate the design system for a one-component fix.
+
+**Consume the API contract (fullstack only):** Before building components that call the BE, read `api-contract.md` from the recorded `apiContract` path (dev-craft's `contractRepo`, or the mirror path for `multi`). If it is missing, STOP and ask dev-craft to produce it — do not invent endpoints.
+
 **Process per component/page:**
 
+0a. BRANCH-GUARD — Confirm we are on the feature branch (create/switch if needed); abort if on a base branch
 1. Generate design token files
 2. Generate component code with version-correct patterns:
-   - React 19 → `useActionState`, Server Components
-   - React 18 → `useTransition`, `Suspense`, `useId`
-   - Tailwind v4 → CSS-first config
-   - Tailwind v3 → JS config
-   - shadcn/ui v2 → new-york style, `cn()` helper
-   - Forms: React Hook Form + Zod validation
-   - Tests: Vitest + React Testing Library + jest-axe
-   - Icons: lucide-react, heroicons, phosphor, tabler
+    - React 19 → `useActionState`, Server Components
+    - React 18 → `useTransition`, `Suspense`, `useId`
+    - Tailwind v4 → CSS-first config
+    - Tailwind v3 → JS config
+    - shadcn/ui v2 → new-york style, `cn()` helper
+    - Forms: React Hook Form + Zod validation
+    - Tests: Vitest + React Testing Library + jest-axe
+    - Icons: lucide-react, heroicons, phosphor, tabler
 
 3. **SECURE** — Agent determines what the UI slice touches, then runs matching checks:
 
@@ -506,7 +558,7 @@ the failure this phase prevents.
 
 **Exit criterion:** All slices implemented, committed, and security-verified.
 
-**State write:** Save slices and security notes to state.json.
+**State write:** Save `activeBranch` (the current unit's branch), `branches` map, slices, and security notes to state.json.
 
 ---
 
@@ -717,6 +769,18 @@ requirement in the traceability matrix verified against the built UI.
    - Read Sentry/error tracking: sensitive data in error reports?
    - Read state management: user data stored in Redux/Vuex persists in devtools?
 
+**Axis 9 — API Contract Conformance (fullstack only):**
+
+When `api-contract.md` exists, verify the UI honors it (the BE side is checked in dev-craft HARDEN Check 7):
+
+- Every route the UI calls is declared in `api-contract.md` (no invented endpoints).
+- Request bodies the UI sends match the contract's `Request` shape.
+- The UI reads response fields the contract's `Response` actually returns (no `.items` when BE returns `.data`).
+- The UI handles the status codes the contract lists (e.g. 401, 429) — none silently unhandled.
+- Base URL / CORS origin matches what the BE serves.
+
+Any divergence is a Required finding: the UI "works" in isolation but breaks against the real API.
+
 **Exit criterion:** Zero findings. Human approves.
 
 **State write:** Update state.
@@ -737,13 +801,16 @@ requirement in the traceability matrix verified against the built UI.
    - Run secrets scanner
    - Dead code removed
 5. Atomic commit:
-   ```
-   type(scope): short description
+    ```
+    type(scope): short description
 
-   - What changed and why
-   - Key decisions (reference ADRs)
-   - What was intentionally NOT done
-   ```
+    - What changed and why
+    - Key decisions (reference ADRs)
+    - What was intentionally NOT done
+    ```
+    Before committing, re-run the branch-guard: confirm `git branch --show-current`
+    is the feature branch, not a base branch. If on a base branch, stop and
+    checkout the feature branch first.
 6. Define rollback strategy
 7. Mark state complete
 
@@ -800,15 +867,19 @@ For complex features spanning multiple domains.
 
 ### Cross-Skill Communication
 
-ui-craft needs backend:
-- Note in state.json: `"backendSliceNeeded": ["auth-api"]`
-- Generate API spec in api-spec.md
-- Resume with dev-craft
+Driven by SCOPE (dev-craft §0.2). The contract artifact is ALWAYS named **`api-contract.md`** (no `api-spec.md` variant), at repo root or `docs/`. Both skills read the same file.
 
-dev-craft needs UI:
-- Note in state.json: `"uiSliceNeeded": ["login-form"]`
-- Generate API contract in api-contract.md
-- Resume with ui-craft
+**ui-craft (`scope: fullstack`) needs backend:**
+1. If `api-contract.md` already exists (dev-craft produced it), consume it directly — do not regenerate endpoints.
+2. If not, generate `api-contract.md` from the UI's data needs; record `crossSkill.backendSliceNeeded: ["auth-api"]`; hand to dev-craft to implement.
+3. dev-craft MUST implement only what the contract declares; any new endpoint updates the contract first.
+
+**dev-craft needs UI:**
+1. Run CONTRACT (dev-craft §4.5) → write `api-contract.md`.
+2. Record `crossSkill.uiSliceNeeded: ["login-form"]`, `apiContract: "api-contract.md"`.
+3. ui-craft MUST consume `api-contract.md` and may not invent endpoints.
+
+**Contract conformance (fullstack):** In REVIEW, verify the built UI calls only contract-declared routes with contract-declared request/response shapes; surface any divergence as Required.
 
 ---
 
@@ -863,12 +934,16 @@ After Phase 3 (DESIGN), user can explore alternatives.
 - No visual preview before BUILD
 - **Starting BUILD without `.ui-craft/requirements.md` coverage gate passing (P1/G1 UI gaps unresolved)**
 - UI requirement traced to a task but no acceptance criterion verifying it
+- Commits made directly to main/master/develop (no feature branch)
+- `activeBranch` recorded in state.json but agent is actually on a base branch (branch was never created/checked out)
 
 ## Verification
 
 - [ ] AUDIT was run (or deferred with approval)
 - [ ] .ui-craft/state.json exists with status: complete
 - [ ] All slices implemented and committed
+- [ ] All slices committed on a dedicated feature branch (not a base branch)
+- [ ] `activeBranch` recorded in state.json and verified to exist before BUILD commits
 - [ ] Design token files generated
 - [ ] HTML style guide preview generated
 - [ ] **`.ui-craft/requirements.md` exists and the COVERAGE GATE passed** (every P1/G1 UI REQ-ID traced to a task + acceptance criterion)

@@ -34,6 +34,8 @@ NO CODE WITHOUT DESIGN APPROVAL
 
 Implementation without approved spec = wasted hours of rework.
 
+**Standing navigation rule:** After finishing ANY request — a phase, a fix, or an answer — the agent MUST close by stating the current phase and the next valid step (run the `[S] STATUS` protocol). When the human asks for a fix/tweak outside the phase loop, route it through STATUS's resume-after-ad-hoc-fix routing; never silently edit and claim done. This keeps the human oriented and ties every action back to what they asked for.
+
 ---
 
 ## Input Quality Handling
@@ -115,10 +117,14 @@ Read dependency files (package.json, requirements.txt, go.mod, Cargo.toml, etc.)
 ## Pipeline Phases
 
 ```
-[0] LOAD → [0.5] REQUIRE → [1] ARCH-SCAN → [2] ALIGN → [3] DESIGN
-    → [3.5] BUILD-ORDER → [3.7] REQUIREMENTS-EXTRACTION → [4] SOURCE
-    → [5] BUILD → [6] TEST → [7] REVIEW → [8] HARDEN → [9] SHIP
+[0] LOAD → [0.2] SCOPE (be/fe/fullstack × build/ticket) → [0.5] REQUIRE → [1] ARCH-SCAN
+    → [2] ALIGN → [3] DESIGN → [3.5] BUILD-ORDER → [3.7] REQUIREMENTS-EXTRACTION
+    → [4] SOURCE → [4.5] CONTRACT (fullstack only) → [5] BUILD → [6] TEST
+    → [7] REVIEW → [8] HARDEN → [9] SHIP
+    → [S] STATUS (anytime: navigation + drift + requirements-coverage aid)
 ```
+
+> **Ticket mode short-circuits:** when `mode == ticket`, skip REQUIRE/DESIGN/BUILD-ORDER/REQUIREMENTS-EXTRACTION unless the change alters spec coverage — go LOAD → SCOPE → scoped BUILD → TEST → REVIEW → SHIP. SCOPE decides.
 
 Each phase:
 
@@ -146,19 +152,89 @@ SHIP → Commit + ADRs + rollback plan
 
 ---
 
-### [0] LOAD — Initialize or Resume
+### [0.2] SCOPE — Classify the work (BE / FE / Fullstack, Build / Ticket)
 
-Read `.dev-craft/state.json`:
+**Goal:** One gate that decides the entire downstream shape of the run. Every later phase (REQUIRE, DESIGN, BUILD, TEST, HARDEN, SHIP, cross-skill handoff) reads the scope decision made here. This is what makes dev-craft correct for a backend-only bug ticket, a frontend-only tweak, a fullstack feature, and a greenfield build — without separate pipelines.
 
-**Not found →** Detect existing source code:
-- Existing code (src/, lib/, app/) → Phase 0.5 (REQUIRE)
-- Greenfield → Phase 0.5 (REQUIRE)
+**Why this exists:** The skill was originally written as "dev-craft = backend, ui-craft = frontend." That binary breaks two ways: (1) a large existing repo contains BE *and* FE, so building them needs a shared contract; (2) an incoming ticket is often BE-only or FE-only on a codebase mid-build, and forcing the full greenfield pipeline is wasted overhead. SCOPE classifies intent up front so the right phases run.
 
-**Found + complete →** Ask: "New feature? Start fresh?"
+**Process:**
 
-**Found + incomplete →** Load context.md, restore slice progress.
+0. **Detect repo topology** (how the code is laid out — this decides where git/state/contract operations run):
+    - `mono`  — BE and FE in ONE repo (e.g. `backend/` + `frontend/` dirs, or a single fullstack app).
+    - `multi` — separate repos: a BE repo and a FE repo (two checkouts, two remotes).
+    Heuristic:
+    ```bash
+    # mono: backend + frontend signals in the SAME checkout
+    has_be=$( test -d backend || grep -q '"fastapi"\|"django"\|"flask"' package.json 2>/dev/null && echo y )
+    has_fe=$( test -d frontend || grep -q '"react"\|"vue"\|"next"' package.json 2>/dev/null && echo y )
+    # multi: user passed two repo paths, or only one side exists here and the other is elsewhere
+    ```
+    If the request names two repo paths (e.g. `~/be-api` and `~/web-app`), or only BE *or* only FE is present in the current checkout, treat as `multi` and ask the user for the sibling repo path. Record `topology` (`mono`/`multi`).
+    For `multi`, record `repos: { be: "<path>", fe: "<path>" }` and a `contractRepo` — the repo that owns `api-contract.md` (default: the BE repo). Every git/state/contract command below is **scoped to the relevant repo(s)** via `cd "<repo>"`.
 
-Write state after LOAD.
+1. **Detect what exists** (don't ask if the filesystem answers):
+    ```bash
+    # backend signals (mono: cwd; multi: $repos.be)
+    # frontend signals (mono: cwd; multi: $repos.fe)
+    ```
+    Record `repoHasBE`, `repoHasFE`.
+
+2. **Classify DOMAIN** (what this run touches):
+    - `be`     — backend code only (API, services, DB, workers)
+    - `fe`     — frontend code only (components, pages, styles, client state)
+    - `fullstack` — both, and they must agree (FE consumes a BE API)
+    Derive from the request; if ambiguous and the repo has both, ask: *"Is this BE, FE, or fullstack?"* Never assume.
+
+3. **Classify MODE** (how much process is warranted):
+    - `build`  — new feature / greenfield / multi-file change → full pipeline.
+    - `ticket` — scoped change on an existing codebase (bug fix, small enhancement, config) → reduced pipeline (see routing below).
+    Heuristic: if the request names an existing module/file/endpoint/component, or says "fix/adjust/ticket/bug/hotfix", it is a `ticket`. If it describes something new, it is `build`. When unsure, prefer `ticket` for existing repos (less overhead) but confirm.
+
+4. **Resolve the pipeline shape** from the two axes + topology:
+
+    | TOPOLOGY | DOMAIN  | MODE     | Pipeline                                                                 |
+    |----------|---------|----------|--------------------------------------------------------------------------|
+    | `mono`   | `be`    | `build`  | full dev-craft (REQUIRE…SHIP), no CONTRACT needed                        |
+    | `mono`   | `be`    | `ticket` | LOAD → SCOPE → scoped BUILD slice → TEST → REVIEW → SHIP; skip REQUIREMENTS-EXTRACTION/DESIGN/BUILD-ORDER unless spec coverage changes |
+    | `mono`   | `fe`    | `build`  | ui-craft full (owns DESIGN/tokens); dev-craft not needed                |
+    | `mono`   | `fe`    | `ticket` | ui-craft, jump to BUILD consuming existing design system; skip ALIGN/DESIGN |
+    | `mono`   | `fullstack` | `build` | dev-craft with **CONTRACT** (§4.5) before BUILD; ui-craft consumes `api-contract.md` |
+    | `mono`   | `fullstack` | `ticket` | CONTRACT (update touched endpoints) → scoped BE + FE slices → TEST (both) → REVIEW (contract conformance) → SHIP |
+    | `multi`  | `be`    | any      | dev-craft in BE repo only; branch in BE repo; FE repo untouched          |
+    | `multi`  | `fe`    | any      | ui-craft in FE repo only; branch in FE repo; BE repo untouched          |
+    | `multi`  | `fullstack` | any   | BE in BE repo, FE in FE repo, **paired branches** in BOTH repos, one shared `api-contract.md` (in `contractRepo`); cross-repo conformance in HARDEN/REVIEW |
+
+5. **Branch per unit of work (repo-scoped, never one global branch):**
+    - Each `build`/`ticket` gets its **own** branch derived from scope + mode:
+      ```
+      <type>/<scope>-<short-description>[-<issue-id>]
+      type ∈ { feat, fix, refactor, chore, test, docs }
+      scope ∈ { be, fe, fs }
+      examples:
+        feat/fs-user-auth      (mono: one branch;  multi: paired be+fe branches)
+        fix/be-payroll-calc-142
+        fix/fe-login-align
+      ```
+    - **mono:** create the single branch in the one repo.
+    - **multi:** create the branch in **every repo the scope touches**:
+      ```bash
+      # fullstack ticket across two repos → paired branches
+      cd "$beRepo" && git checkout -b "fix/be-payroll-142"
+      cd "$feRepo" && git checkout -b "fix/fe-payroll-142"
+      ```
+      Each repo's `state.json` records its own `activeBranch`; the SCOPE record links them via `linkedBranches: { be: "fix/be-payroll-142", fe: "fix/fe-payroll-142" }`. A BE-only or FE-only `multi` ticket branches only its own repo.
+    - This replaces the single `buildBranch` assumption: a BE hotfix can run on `fix/be-payroll-calc` while a feature branch `feat/fs-user-auth` is mid-BUILD. Keep a `branches` map of `{unitId: {be?, fe?}}` so units can be resumed and switched.
+    - The branch-isolation + base-branch guard from BUILD (§5) applies to **every** per-unit branch, in **every** repo it was created in.
+
+6. **Interrupt / resume between units:** If a `ticket` arrives while a `build` is `in_progress`, do NOT abandon the build:
+    - Stash the current phase pointer: `state.suspendedPhase = currentPhase`, `state.suspendedBranch = activeBranch` (and `suspendedBranches` for multi).
+    - Do the ticket on its own branch(es) per step 5.
+    - On ticket completion, restore: `git checkout "$suspendedBranch"` in each relevant repo, set `currentPhase = suspendedPhase`. The STATUS protocol (§S) surfaces this automatically.
+
+**State write:** `topology` (`mono`/`multi`), `scope` (`be`/`fe`/`fullstack`), `mode` (`build`/`ticket`), `repos` (multi only), `contractRepo` (multi only), `activeBranch`, `branches` (map of unitId → {be?, fe?}), `linkedBranches` (multi), and (if suspended) `suspendedPhase`/`suspendedBranch`(es).
+
+**Exit criterion:** DOMAIN and MODE are decided and recorded; downstream phases know which shape to run.
 
 ---
 
@@ -600,37 +676,97 @@ human acknowledgement** (record in state.json `deferredRequirements`).
 
 ---
 
+### [4.5] CONTRACT — API contract (fullstack only)
+
+**Goal:** For `fullstack` scope, produce ONE source-of-truth contract that the backend implements and the frontend consumes, so the two never silently diverge. Skipped for `be`-only and `fe`-only scope.
+
+**When to run:** Only when `scope == fullstack` (from SCOPE §0.2). For `build` mode, run before BUILD. For `ticket` mode, update only the endpoints the ticket touches.
+
+**Process:**
+
+1. **Write `api-contract.md`** — the single canonical name (no `api-spec.md` variant). Location depends on topology:
+    - `mono`: repo root or `docs/api-contract.md` in the one repo.
+    - `multi`: in `contractRepo` (the BE repo by default, from SCOPE §0.2 step 0). The other repo references it by absolute path or a symlink; do NOT keep a second copy that can drift. If the sibling repo cannot read it (separate remote, no shared mount), copy it and record `apiContractMirror: "<feRepo>/api-contract.md"` so conformance checks read the same content.
+    Structure per endpoint:
+    ```markdown
+    ## POST /api/auth/login
+    Auth: required? (public)
+    Request:  { email: string, password: string }
+    Response: 200 { token: string, user: User }
+             401 { error: "invalid_credentials" }
+             429 { error: "rate_limited" }
+    Notes: httpOnly cookie set; never return raw password
+    ```
+    Prefer OpenAPI YAML **content inside** `api-contract.md` when the stack has tooling for it; the canonical filename stays `api-contract.md` (do not rename the file to `openapi.yaml`). Otherwise the markdown table above is the minimum.
+2. **Record the contract path** in state.json: `apiContract: "<contractRepo>/api-contract.md"` (multi) or `"api-contract.md"` (mono).
+3. **Hand to ui-craft:** ui-craft MUST consume this file (not invent endpoints). For `multi`, ui-craft reads it from `contractRepo` (or the recorded mirror). See Cross-Skill Communication below.
+
+**Exit criterion:** `api-contract.md` exists at the canonical location and is recorded; backend BUILD slices trace to it; ui-craft is pointed at it.
+
+---
+
 ### [5] BUILD — TDD + Incremental + Secure-by-Construction
 
 **Goal:** Implement one vertical slice at a time. Every slice is verified for security as it's written — not deferred to a batch scan.
 
-**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`master`/`develop`. The branch keeps in-progress work isolated and reviewable, and makes the SHIP step a clean PR-ready commit.
+**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`master`/`develop`. The branch keeps in-progress work isolated and reviewable. For `multi` topology, the branch is created in **every repo the scope touches** (see SCOPE §0.2 step 5), and each repo's `state.json` records its own `activeBranch`; the SCOPE record links them via `linkedBranches`. A BE-only or FE-only `multi` unit branches only its own repo.
 
-1. **Before any code, create the branch** from the current base:
-   ```bash
-   git checkout -b <branch-name>
-   ```
+**Base-branch guard (enforced before every commit, in every repo):** Treat `main`, `master`, `develop` (and each repo's configured default branch) as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
+
+1. **Resolve the branch name(s)** (deterministic, from SCOPE §0.2 step 5):
+    - `mono`: one `activeBranch`.
+    - `multi`: read `linkedBranches` for the unit — branch names per repo (`be`, `fe`).
 2. **Branch naming convention:**
-   ```
-   <type>/<short-description>[-<issue-id>]
-   type ∈ { feat, fix, refactor, chore, test, docs }
-   examples:
-     feat/user-auth
-     fix/login-rate-limit-142
-     refactor/payroll-calc
-   ```
-   Derive `type` and description from the slice/spec. If a ticket/issue id is known, append it.
-3. **Per-slice commits land on this branch.** Each slice is an atomic commit (see loop below). The branch is only merged/PR'd during SHIP.
-4. **Resume safety:** If `.dev-craft/state.json` records an active `buildBranch`, re-checkout it on resume instead of creating a new branch:
-   ```bash
-   git checkout "$(jq -r .buildBranch .dev-craft/state.json)"
-   ```
-   Only create a new branch when none is recorded or the recorded branch no longer exists.
+    ```
+    <type>/<scope>-<short-description>[-<issue-id>]
+    type ∈ { feat, fix, refactor, chore, test, docs }
+    scope ∈ { be, fe, fs }
+    examples:
+      feat/fs-user-auth        (mono: one branch;  multi: paired be+fe branches)
+      fix/be-payroll-calc-142
+      fix/fe-login-align
+    ```
+3. **Ensure the branch(es) actually exist before any code** — verify per repo, don't just record intent:
+    ```bash
+    # mono: single repo
+    REPOS=(".")
+    # multi fullstack: both repos; multi be/fe: only the touched repo
+    # REPOS=("$beRepo" "$feRepo")  # adjust by scope
+
+    for R in "${REPOS[@]}"; do
+      BRANCH="$(jq -r --arg r "$R" '.linkedBranches[$r] // .activeBranch // empty' .dev-craft/state.json)"
+      if [ -z "$BRANCH" ]; then
+        BRANCH="<type>/<scope>-<short-description>"
+        jq --arg r "$R" --arg b "$BRANCH" '.linkedBranches[$r] = $b' .dev-craft/state.json > .dev-craft/state.tmp \
+          && mv .dev-craft/state.tmp .dev-craft/state.json
+      fi
+      ( cd "$R" && {
+        if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+          git checkout "$BRANCH"
+        elif [ "$(git branch --show-current)" = "$BRANCH" ]; then
+          :
+        else
+          git checkout -b "$BRANCH"
+        fi
+        CURRENT="$(git branch --show-current)"
+        case "$CURRENT" in
+          main|master|develop) echo "ERROR[$R]: still on base branch — branch creation failed"; exit 1 ;;
+          "")                  echo "ERROR[$R]: detached HEAD — branch creation failed"; exit 1 ;;
+          "$BRANCH")           echo "OK[$R]: on $BRANCH" ;;
+          *)                   echo "ERROR[$R]: on $CURRENT, expected $BRANCH"; exit 1 ;;
+        esac
+      } )
+    done
+    ```
+    Record `activeBranch` / `linkedBranches` in state.json **only after** each branch is confirmed to exist and we are on it.
+4. **Per-slice commits land on the branch(es).** Each slice is an atomic commit in every repo it touches. Branches are only merged/PR'd during SHIP. Re-run the base-branch guard above (per repo) before each commit — never assume the branch is still current.
+5. **Resume safety:** On resume, re-run step 3. If a recorded branch no longer exists, fall back to deriving a new name (do NOT silently stay on a base branch). If a different unit was suspended (SCOPE §0.2 step 6), restore `suspendedBranch`(es) first.
 
 **Process per slice:**
 
 ```
-0. BRANCH — Ensure dedicated feature branch exists (create or resume)
+0a. BRANCH-GUARD — Confirm we are on the feature branch (create/switch if needed); abort if on a base branch
+0b. BRANCH — Ensure dedicated feature branch exists (create or resume)
 1. RED    — Write failing test
 2. GREEN  — Write minimal code to pass
 3. SECURE — Verify the slice has no security issues
@@ -638,7 +774,7 @@ human acknowledgement** (record in state.json `deferredRequirements`).
 5. LINT   — Run linter + formatter
 6. TYPE   — Run type checker
 7. TEST   — Run test suite
-8. COMMIT — Atomic commit (on the feature branch)
+8. COMMIT — Atomic commit (on the feature branch; re-run branch-guard first)
 ```
 
 **Step 3 — SECURE: Agent traces what the slice touches, then runs matching checks.**
@@ -813,29 +949,35 @@ git worktree remove ../project-api
 
 **Exit criterion:** All slices implemented, committed, security-verified, and convention-matched.
 
-**State write:** Save `buildBranch` (the feature branch name), slices, security notes, and convention profile to state.json.
+**State write:** Save `activeBranch` (the current unit's branch), `branches` map, slices, security notes, and convention profile to state.json.
 
 ---
 
 ### [6] TEST — Full Suite + Diagnose
 
-**Goal:** Run full test suite. Fix every failure.
+**Goal:** Run the relevant test suites for the scope. Fix every failure.
 
 **Process:**
 
-1. Run full suite: `npm test` / `pytest` / `cargo test`
+1. **Run suites per scope** (run what the scope touches; for `multi`, run in the relevant repo):
+    - `be` / `fullstack` backend:
+      - `mono`: `cd backend && pytest` (or the project's BE test cmd)
+      - `multi`: `cd "$beRepo" && <be test cmd>`
+    - `fe` / `fullstack` frontend:
+      - `mono`: `cd frontend && npm test` (or `vitest` / the project's FE test cmd)
+      - `multi`: `cd "$feRepo" && <fe test cmd>`
+    - `be`-only or `fe`-only ticket: run only the touched suite/repo — don't force the other.
+    - If the layout differs, detect the per-domain test command from its manifest; never assume a single root-level `npm test`/`pytest`.
+2. **Contract conformance (fullstack only):** If `api-contract.md` exists, assert the running app matches it — at minimum: every contract route is registered, request/response shapes are compatible, and status codes the FE handles are returned by the BE. For `multi`, read the contract from `contractRepo`. A route the FE calls that the BE doesn't expose is a test failure.
+3. If all pass → Proceed to Phase 7
+4. If any fail → **Invoke:** `debugging-and-error-recovery`
+    - This skill handles structured root-cause investigation
+    - Do NOT embed debugging procedures here — defer to the skill
+5. Re-run the relevant suites after every fix
 
-2. If all pass → Proceed to Phase 7
+**Exit criterion:** All relevant suites pass; for fullstack, contract conformance holds.
 
-3. If any fail → **Invoke:** `debugging-and-error-recovery`
-   - This skill handles structured root-cause investigation
-   - Do NOT embed debugging procedures here — defer to the skill
-
-4. Re-run full suite after every fix
-
-**Exit criterion:** Full test suite passes.
-
-**State write:** Update state.
+**State write:** Update state with suites run and results.
 
 ---
 
@@ -1024,13 +1166,35 @@ Issues that span multiple slices — these are the most dangerous and the hardes
 5. Are there any "TODO: fix security" or "FIXME: add auth" comments?
    (These are deferred vulnerabilities — surface them)
 
-6. Does every new feature flag have a removal path?
-   (Feature flags left on = permanent bypass)
+  6. Does every new feature flag have a removal path?
+    (Feature flags left on = permanent bypass)
 ```
 
 ---
 
-#### Check 7: Generate Risk Register
+#### Check 7: BE ↔ FE Contract Conformance (fullstack only)
+
+When `scope == fullstack` and `api-contract.md` exists, verify the two sides actually agree — this is the gap per-slice checks cannot see:
+
+```
+1. ROUTE MATCH — For every endpoint the FE calls, does the BE expose it?
+   (FE fetches /api/v2/users but BE only serves /api/users → break)
+2. SHAPE MATCH — Does the BE request schema accept what the FE sends,
+   and does the BE response shape match what the FE consumes?
+   (BE returns {data:[...]}; FE reads .items → break)
+3. STATUS MATCH — Does the BE return the status codes the FE handles?
+   (BE sends 429 on rate-limit; FE only handles 401/500 → unhandled)
+4. AUTH MATCH — Does the FE send auth the BE expects (header vs cookie),
+   and does CORS origin == the FE's deployment origin?
+5. CONTRACT DRIFT — Is any endpoint implemented/consumed but NOT in
+   api-contract.md? → either the contract is stale or the code diverged.
+```
+
+Any mismatch is a Critical finding: the build "passes" per-slice but the app is broken end-to-end.
+
+---
+
+#### Check 8: Generate Risk Register
 
 Consolidate all findings into a risk register:
 
@@ -1090,27 +1254,105 @@ Consolidate all findings into a risk register:
    - Dead code removed
    - HARDEN risk register is clean (no unaddressed Critical/High findings)
 4. Update CHANGELOG
- 5. Atomic commit (on the feature branch created in BUILD):
-    ```
-    type(scope): short description
+  5. Atomic commit (on the feature branch(es) created in BUILD):
+     ```
+     type(scope): short description
 
-    - What changed and why
-    - Key decisions (reference ADRs)
-    - What was intentionally NOT done
-    ```
- 6. Merge or open a pull request from the feature branch:
-    - **PR (recommended):** Push the branch and open a PR for review before merging to the base branch. Never merge unreviewed Critical/Required findings.
-    - **Direct merge (solo/small):** Only if no review gate is required:
-      ```bash
-      git checkout <base-branch> && git merge --no-ff <feature-branch>
-      ```
-    - Record the merged branch name and PR/commit reference in `state.json` (`shippedBranch`, `prUrl` if any).
- 7. Define rollback strategy:
-   - Feature flag toggling: < 1 minute
-   - Code revert: specify commit
-   - Database: migration revert command
+     - What changed and why
+     - Key decisions (reference ADRs)
+     - What was intentionally NOT done
+     ```
+    Before committing, re-run the branch-guard **in every repo the unit touched** (per SCOPE topology): confirm `git branch --show-current` is the feature branch, not a base branch. If on a base branch in any repo, stop and checkout the feature branch first.
+  6. Merge or open a pull request from the feature branch(es):
+     - **mono:** one branch, one PR.
+     - **multi:** open a PR in **each repo the scope touched** (paired `fix/be-*` + `fix/fe-*` branches), linked by the same issue id. Never ship one side without the other for a `fullstack` unit — they are one change split across repos.
+     - **PR (recommended):** Push the branch(es) and open PR(s) for review before merging to the base branch. Never merge unreviewed Critical/Required findings.
+     - **Direct merge (solo/small):** Only if no review gate is required:
+       ```bash
+       cd "$REPO" && git checkout <base-branch> && git merge --no-ff <feature-branch>
+       ```
+     - Record the merged branch name(s) and PR/commit reference in `state.json` (`shippedBranches`, `prUrls` if any).
+  7. Define rollback strategy:
+    - Feature flag toggling: < 1 minute
+    - Code revert: specify commit (per repo for multi)
+    - Database: migration revert command
 
-**Exit criterion:** Feature branch merged (or PR opened) with a clean commit and a rollback plan.
+**Exit criterion:** Feature branch(es) merged (or PR(s) opened) with a clean commit and a rollback plan.
+
+---
+
+### [S] STATUS — Where am I / What's next (on demand)
+
+**Goal:** Give the human an always-available navigation aid. After the pipeline "finishes", after ad-hoc fixes, or when the human loses track of the phase flow, this protocol reconstructs the current position from `state.json` + git and shows the forward path — tied back to what the human actually asked for (the requirements matrix).
+
+**When to run it:**
+- The human asks "where are we?", "what now?", "what's next?", "what phase?", or "remind me".
+- The human returns after a gap and asks to continue.
+- The human asks the agent to fix/change something *outside* the normal phase loop (a bug report, a tweak, a "can you also…").
+- The agent finishes ANY request (phase, fix, or answer) and should close by stating the next valid step.
+
+**Process:**
+
+1. **Read position from state:**
+    ```bash
+    python3 - <<'PY'
+    import json
+    d = json.load(open('.dev-craft/state.json'))
+    ph = d.get('phases', {})
+    print("currentPhase:", d.get('currentPhase'))
+    for name in ["LOAD","REQUIRE","ARCH_SCAN","ALIGN","DESIGN","BUILD_ORDER",
+                 "SOURCE","BUILD","TEST","REVIEW","HARDEN","SHIP"]:
+        st = ph.get(name, "—")
+        mark = {"completed":"✅","in_progress":"🔶","pending":"⬜","failed":"❌"}.get(st, "·")
+        print(f"  {mark} {name}")
+    PY
+    ```
+
+2. **Detect drift (is state out of sync with reality?):**
+    ```bash
+    # For multi topology, loop over each repo in state.repos; for mono, just cwd
+    for R in "${REPOS[@]}"; do
+      ( cd "$R" && {
+        echo "[$R] status:"; git status --porcelain | head
+        echo "[$R] current branch: $(git branch --show-current)"
+      } )
+    done
+    echo "activeBranch:   $(jq -r .activeBranch .dev-craft/state.json)"
+    echo "linkedBranches: $(jq -r '.linkedBranches // {}' .dev-craft/state.json)"
+    echo "branches:       $(jq -r '.branches // {}' .dev-craft/state.json)"
+    ```
+    - Uncommitted changes in any repo → warn: *"Uncommitted work in `<R>`. The phase loop expects atomic per-slice commits. Commit or stash before moving on."*
+    - On a different branch than the recorded branch for that repo → warn: *"You're on `<x>` in `<R>`, not the feature branch `<expected>`. Switch back before committing."*
+    - A phase marked `completed` but `git log` shows no commit since it started → flag: *"`<phase>` is marked done but no commit landed — verification may be unrecorded."*
+
+3. **Map to requirements coverage (stay close to what the human expects):**
+    - If `.dev-craft/requirements.md` exists, read it and report:
+      - Total requirements, and how many P1/G1 are traced ✅ vs ⚠️ GAP vs ❌ GAP.
+      - Explicitly name any open GAPs — these are the human-facing "not done yet" list.
+    - If it does not exist but the human expects feature completeness, say so:
+      *"No coverage gate has been run yet. We cannot claim the spec is covered. Run REQUIREMENTS-EXTRACTION before SHIP."*
+
+4. **Print the forward path** as a short, ordered checklist ending at the next actionable step:
+    ```
+    ROADMAP (from current position):
+      ✅ LOAD  ✅ REQUIRE  ✅ ALIGN  ✅ DESIGN  🔶 BUILD  ⬜ TEST  ⬜ REVIEW  ⬜ HARDEN  ⬜ SHIP
+    NEXT: TEST — run full suite, fix failures via debugging-and-error-recovery
+    THEN: REVIEW → HARDEN → SHIP
+    OPEN GAPS: REQ-011 (UTC+7), REQ-027 (Leave module)  ← must close before SHIP
+    DRIFT: 3 uncommitted files — commit before TEST
+    ```
+
+5. **Resume-after-ad-hoc-fix routing:** When the human asks for a fix/tweak *outside* the loop, do NOT silently edit and claim done. Instead:
+    - Identify which phase the fix belongs to (bug → re-run TEST + the slice's SECURE; style/convention → re-run MATCH/LINT; security → HARDEN; spec gap → back to REQUIREMENTS-EXTRACTION).
+    - Run that phase's verification on the changed slice, then update state + requirements.md if coverage changed.
+    - Close by printing the roadmap (step 4) so the human sees the fix did not skip gates.
+
+**Output contract:** STATUS must always answer three questions for the human:
+1. *Where am I?* (phase + completed/pending map)
+2. *Am I drifting?* (uncommitted / wrong branch / unverified-completed)
+3. *What does the human still expect?* (open requirement gaps + next phase)
+
+**Exit criterion:** Human has a current-position readout, a next-step, and a clear list of what remains vs. what was asked.
 
 ---
 
@@ -1172,20 +1414,23 @@ For complex features spanning multiple domains.
 
 ### Cross-Skill Communication
 
-dev-craft needs UI:
-- Note in state.json: `"uiSliceNeeded": ["login-form"]`
-- Generate API contract in api-contract.md
-- Resume with ui-craft
+Driven by the SCOPE gate (§0.2). The contract artifact is ALWAYS named **`api-contract.md`** (no `api-spec.md` variant) and lives at repo root or `docs/`. This is the single source of truth both skills read.
 
-ui-craft needs backend:
-- Note in state.json: `"backendSliceNeeded": ["auth-api"]`
-- Generate API spec in api-spec.md
-- Resume with dev-craft
+**dev-craft (`scope: fullstack`) needs UI:**
+1. Run CONTRACT (§4.5) → write `api-contract.md` (in `contractRepo` for `multi`).
+2. Record in state.json: `crossSkill.uiSliceNeeded: ["login-form"]`, `apiContract: "<path>"` (the canonical location; for `multi` that's in the BE repo / `contractRepo`).
+3. Hand off to ui-craft: ui-craft MUST consume `api-contract.md` (read from `contractRepo` or the recorded mirror) and may not invent endpoints.
+4. On ui-craft return, run HARDEN Check 7 (contract conformance) before SHIP.
 
-dev-craft needs mobile:
-- Note in state.json: `"mobileSliceNeeded": ["api-endpoints"]`
-- Generate API contract in api-contract.md
-- Resume with agent-orchestration
+**ui-craft (`scope: fullstack`) needs backend:**
+1. If `api-contract.md` already exists (dev-craft produced it), consume it directly — for `multi`, read it from `contractRepo` (or the recorded mirror path). Do not regenerate.
+2. If not, generate `api-contract.md` from the UI's data needs, record `crossSkill.backendSliceNeeded: ["auth-api"]` and its path, hand to dev-craft to implement.
+3. dev-craft MUST implement only what the contract declares; any new endpoint updates the contract first.
+
+**dev-craft needs mobile (agent-orchestration):**
+1. Produce `api-contract.md`; record `crossSkill.mobileSliceNeeded: ["api-endpoints"]`; hand to agent-orchestration.
+
+**Verification before switching skills:** confirm `api-contract.md` exists at its recorded path and is readable from the consuming repo (for `multi`, the mirror is in sync). Never switch with an implied/unwritten contract.
 
 ---
 
@@ -1218,7 +1463,7 @@ dev-craft needs mobile:
 - No .dev-craft/ directory
 - Security review skipped
 - Commits made directly to main/master/develop (no feature branch)
-- No `buildBranch` recorded in state.json before BUILD commits
+- `activeBranch` recorded in state.json but agent is actually on a base branch (branch was never created/checked out)
 - Commit messages: "WIP", "fix", "update"
 - Vague prompt accepted without clarification
 - Skipping REQUIRE when spec files exist
@@ -1228,6 +1473,7 @@ dev-craft needs mobile:
 - Starting BUILD without build-order.md for complex projects
 - **Starting BUILD without `requirements.md` coverage gate passing** (P1/G1 gaps unresolved)
 - P1/G1 requirement with no traced task silently deferred without human acknowledgement
+- Ad-hoc fix made outside the phase loop without re-running the owning phase's verification (TEST/SECURE/MATCH/HARDEN)
 - Plan tasks whose acceptance criteria cannot be mapped back to a REQ-ID
 
 ## Verification
@@ -1235,7 +1481,7 @@ dev-craft needs mobile:
 - [ ] ARCH-SCAN was run (or deferred with approval)
 - [ ] .dev-craft/state.json exists with status: complete
 - [ ] All slices implemented and committed on a dedicated feature branch
-- [ ] `buildBranch` recorded in state.json before any BUILD commit
+- [ ] `activeBranch` recorded in state.json and verified to exist before BUILD commits
 - [ ] Feature branch merged or PR opened during SHIP (not committed to base)
 - [ ] Full test suite passes
 - [ ] Linter + formatter pass
@@ -1253,7 +1499,9 @@ dev-craft needs mobile:
 - [ ] Build order documented in .dev-craft/build-order.md (for complex projects)
 - [ ] Module dependencies respected during build
 - [ ] **`requirements.md` exists and the COVERAGE GATE passed** (every P1/G1 REQ-ID traced to a task + acceptance criterion)
-- [ ] Any deferred G2/G3 requirement recorded in state.json with human acknowledgement
+- [ ] Any ad-hoc fix was routed through STATUS and re-ran the owning phase's verification
+- [ ] Agent closed its last turn by stating current phase + next valid step (STATUS)
+- [ ] No uncommitted drift warning left unaddressed before claiming a phase complete
 
 ## See Also
 

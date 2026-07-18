@@ -16,6 +16,12 @@ User Request Received
 ├── Is this a large multi-module project?
 │   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft + agent-orchestration
 │
+├── SCOPE gate (run first in dev-craft / ui-craft): what is the topology & domain?
+│   ├── 2 separate repos (BE + FE)? → topology = multi → paired branches, shared api-contract.md in contractRepo
+│   ├── 1 repo with BE + FE?        → topology = mono, scope = fullstack → dev-craft CONTRACT phase
+│   ├── BE only / FE only ticket?   → scope = be|fe, mode = ticket → scoped branch, skip heavy phases
+│   └── (all of the above feed agent-orchestration when parallel agents are needed)
+│
 ├── Pre-merge or release validation?
 │   └── Yes → quality-gates (after dev-craft completes)
 │
@@ -44,6 +50,8 @@ User Request Received
 └── Are you about to claim completion?
     └── Yes → verification-before-completion
 ```
+
+> **SCOPE note:** dev-craft's `[0.2] SCOPE` gate classifies every run by `topology` (mono/multi), `scope` (be/fe/fullstack), and `mode` (build/ticket). The router above points you to the right skill; SCOPE decides the branch/contract/phase shape *within* it. For multi-repo fullstack, the canonical contract is `api-contract.md` in the BE repo (`contractRepo`); agent-orchestration has a multi-repo variant that uses paired branches instead of git worktree.
 
 ### Quick Reference
 
@@ -95,6 +103,7 @@ User Request Received
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
 | `planning-and-task-breakdown` | Breaks work into ordered, verifiable tasks | Have a spec, need implementable units |
+| `agent-orchestration` | Parallel multi-agent builds with isolated workspaces + shared API contract | Large project, 3+ modules, or parallel BE/FE/mobile agents |
 | `debugging-and-error-recovery` | Root-cause investigation (4-phase methodology) | Tests fail, bugs reported, unexpected behavior |
 | `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete |
 | `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist |

@@ -26,6 +26,12 @@ Split large features across multiple agents (backend, frontend, mobile) working 
 - Agents need to modify the same files (worktrees won't help here)
 - No clear shared contract (API, schema, etc.) exists yet
 
+**Topology (mono vs multi):** This skill coordinates agents on a **shared codebase**. Two layouts apply:
+- `mono` — one repo containing BE + FE (e.g. `backend/` + `frontend/`). Use `git worktree` isolation below.
+- `multi` — separate BE repo and FE repo (two checkouts). `git worktree` cannot span repos, so use **separate clones + paired branches** instead (see Multi-Repo Variant). The shared contract still applies, but lives in the BE repo (`contractRepo`) as `api-contract.md`, aligned with dev-craft's SCOPE gate (§0.2).
+
+This skill's state must align with dev-craft's SCOPE record: read `topology`, `scope`, `mode`, `repos`, `contractRepo`, and `linkedBranches` from the active dev-craft run so agents branch and read the contract consistently.
+
 ## The Iron Law
 
 ```
@@ -53,13 +59,13 @@ Each worktree shares **git objects** (history, commits) but has **independent** 
 
 ### API Contract as Shared Interface
 
-The contract (OpenAPI, Protobuf, or similar) defines:
+The contract (canonical file: `api-contract.md`; OpenAPI YAML content allowed when tooling supports it) defines:
 - Endpoints, methods, and paths
 - Request/response schemas
 - Error codes and statuses
 - Authentication requirements
 
-It lives in the **master agent's worktree** and is consumed (not modified) by worker agents.
+It lives in the **master agent's workspace** and is consumed (not modified) by worker agents. For `mono`, the master keeps it on a `contract`/feature branch; for `multi`, it lives in `contractRepo` (the BE repo) on the paired feature branch — matching dev-craft's SCOPE convention. Do NOT maintain a separate long-lived `contract` branch; the contract travels on the feature branch(es).
 
 ### Master/Worker Agent Pattern
 
@@ -103,23 +109,23 @@ Each worktree:
 - Shares the **same `.git/` object store** — no duplication of history
 - Can `push`/`pull` independently
 
-### Branch Strategy
+### Branch Strategy (mono)
 
 ```
 main ──────┬────────────── api-slice ──────────┐
-            │                                        │
-            ├────────────── web-slice ─────────────┤───► integration
-            │                                        │
-            ├────────────── mobile-slice ───────────┘
-            │
-            └─ contract (owned by master agent)
+           │                                        │
+           ├────────────── web-slice ─────────────┤───► integration
+           │                                        │
+           ├────────────── mobile-slice ───────────┘
+           │
+           └─ contract (owned by master agent)
 ```
 
-- `contract` branch — the API contract definition file(s), owned by master agent
 - `api-slice` — backend implementation
 - `web-slice` — frontend implementation
 - `mobile-slice` — mobile implementation
 - `integration` — merge target for all worktrees
+- The contract (`api-contract.md`) is committed on the feature branch(es), not a separate `contract` branch.
 
 ### Listing & Cleaning Worktrees
 
@@ -135,23 +141,39 @@ git branch -D api-slice      # remove branch if no longer needed
 git worktree prune
 ```
 
-## Agent Split Pattern
+### Multi-Repo Variant (`multi` topology)
 
-### Master Agent
+When BE and FE are **separate repos**, `git worktree` cannot isolate across them — a worktree shares one `.git/`. Instead, use **separate clones with paired branches**:
+
+```bash
+# Two independent repos; each gets its own feature branch, linked by issue id
+cd "$beRepo" && git checkout -b "feat/fs-user-auth"
+cd "$feRepo" && git checkout -b "feat/fs-user-auth"   # same name = trivial pairing
+
+# OR scope-prefixed names per dev-craft SCOPE §0.2 step 5:
+cd "$beRepo" && git checkout -b "feat/be-user-auth"
+cd "$feRepo" && git checkout -b "feat/fe-user-auth"
+```
+
+Rules for `multi`:
+- **Contract:** write `api-contract.md` in `contractRepo` (BE repo by default). The FE repo reads it from there (or a synced mirror copy). Never keep two drifting copies.
+- **State:** each repo keeps its own `.dev-craft/` / `.ui-craft/` state; the SCOPE record's `linkedBranches` ties them (`{ be: "feat/be-user-auth", fe: "feat/fe-user-auth" }`).
+- **Integration:** run per-repo suites, then contract conformance (every FE-called route exists in BE, shapes match, status codes handled). Merge/PR each repo's branch; ship both sides together for a fullstack unit.
+- The master agent still owns the contract and integration merge — isolation is by clone, not worktree.
 
 The master agent is loaded first. It:
 
 1. Analyses the feature requirements
-2. Defines the **API contract** (OpenAPI 3.x preferred)
-3. Creates worktrees for each worker agent
-4. Commits the contract to the `contract` branch
+2. Defines the **API contract** (`api-contract.md`; OpenAPI 3.x content preferred)
+3. Creates workspaces for each worker agent (worktrees for `mono`, separate clones for `multi`)
+4. Commits the contract on the feature branch(es) — for `multi`, in `contractRepo` (the BE repo)
 5. Dispatches worker agents with context
 6. Runs **integration tests** after all workers complete
 7. Performs the integration merge
 
 **Context passed to each worker:**
-- The API contract file (path or content)
-- The worktree path and branch name
+- The API contract file (path or content) — for `multi`, the path in `contractRepo` (or mirror)
+- The workspace path and branch name (worktree path for `mono`; clone path + branch for `multi`)
 - Feature requirements relevant to their layer
 - Shared domain glossary
 
@@ -193,9 +215,9 @@ Mobile: generates client FROM contract
 
 ### Contract Lifecycle
 
-1. **Define** — Master writes the contract in `openapi.yaml` (or equivalent)
+1. **Define** — Master writes the contract in `api-contract.md` (OpenAPI YAML content allowed; canonical filename stays `api-contract.md`)
 2. **Review** — Master validates the contract (schema correctness, completeness)
-3. **Commit** — Master commits to `contract` branch
+3. **Commit** — Master commits the contract on the feature branch(es) (`contractRepo` for `multi`)
 4. **Distribute** — Workers fetch and reference the contract
 5. **Freeze** — Contract is frozen during implementation; changes require master approval
 6. **Iterate** — If contract must change, master updates and all agents sync
@@ -260,7 +282,7 @@ Conflicts during integration are **true conflicts** (not structural noise) and r
 
 ### Gate 1: Contract Defined
 
-**Entry criteria:** Master has committed the API contract to the `contract` branch
+**Entry criteria:** Master has committed `api-contract.md` on the feature branch(es) (`contractRepo` for `multi`)
 
 **Actions:**
 - Master creates all worktrees
@@ -312,7 +334,7 @@ Conflicts during integration are **true conflicts** (not structural noise) and r
 
 **Issue:** Workers accidentally modify the contract file in their worktree, creating subtle incompatibilities.
 
-**Mitigation:** Set the contract file as read-only in worker worktrees. Use CI to validate that the contract in each worktree matches the `contract` branch. Enforce contract change protocol.
+**Mitigation:** Set the contract file as read-only in worker workspaces. Use CI to validate that the contract matches the committed `api-contract.md` on the feature branch. Enforce contract change protocol.
 
 ### Git Ref Management
 

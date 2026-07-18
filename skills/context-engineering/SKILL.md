@@ -61,6 +61,8 @@ Task details, partial results, immediate decisions
 
 Long-lived project knowledge stored per run in `.dev-craft/runs/<slug>/` (registry in `.dev-craft/index.json`). Always available (compressed).
 
+> **Multi-repo note:** when dev-craft's SCOPE gate reports `topology: multi` (separate BE + FE repos), each repo keeps its own `.dev-craft/` / `.ui-craft/` state. Shared knowledge (the API contract, the SCOPE record) lives in `contractRepo` (the BE repo) and is referenced by the other repo — do not duplicate it per repo. Handoffs that span repos must name which repo's `.dev-craft/` they live in.
+
 | File | Purpose |
 |------|---------|
 | `state.json` | Current phase, completed slices, stack |
