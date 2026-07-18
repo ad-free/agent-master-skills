@@ -574,10 +574,7 @@ the failure this phase prevents.
 **Invoke:** `code-review-and-quality` for backend axes (Correctness, Readability, Architecture, Performance, Security, Testing, Modern Patterns).
 
 **UI-Specific Review (in addition to code-review-and-quality):**
-Load `references/review-protocol.md` for the 8 UI-specific axes (UX, accessibility,
-screen-reader, visual consistency, version pattern, readability gate, visual
-regression, testing, UI lint, and the Axis 8 security trace tree), the
-finding-categorization labels, and the reality-check discipline. Each axis is a
+Load `references/review-protocol.md` for the 8 UI-specific axes (UX, accessibility, visual consistency, version pattern, visual regression, testing, UI lint, security), plus the two nested sub-checks (Axis 2b screen-reader testing, Axis 4b readability gate), the finding-categorization labels, and the reality-check discipline. Each axis is a
 read-the-actual-diff pass; do not summarize from memory.
 
 **Exit criterion:** All Critical/Required resolved **with evidence**, and every P1/G1
