@@ -115,8 +115,8 @@ does not copy those rules; they have one source of truth.
 
 | Skill | Purpose | Lines |
 |-------|---------|-------|
-| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1306 |
-| `ui-craft` | Frontend development pipeline (10 phases) | 939 |
+| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1142 |
+| `ui-craft` | Frontend development pipeline (10 phases) | 813 |
 
 ### Security & Quality Skills
 
