@@ -56,6 +56,30 @@ User Request Received
 
 > **SCOPE note:** dev-craft's `[0.2] SCOPE` gate classifies every run by `topology` (mono/multi), `scope` (be/fe/fullstack), and `mode` (build/ticket). The router above points you to the right skill; SCOPE decides the branch/contract/phase shape *within* it. For multi-repo fullstack, the canonical contract is `api-contract.md` in the BE repo (`contractRepo`); agent-orchestration has a multi-repo variant that uses paired branches instead of git worktree.
 
+### Minimum Bar (applies to every code edit)
+
+Regardless of which skill is loaded — or whether any skill is loaded — the
+following always applies to any code you write or edit in a downstream project.
+This is the floor, not the pipeline; it cannot be skipped even for "trivial"
+changes.
+
+1. **No single-character / cryptic identifiers** outside the documented
+   exceptions (tight loop counters, mathematical `x`/`y`). `x`, `d`, `tmp`,
+   `res`, `val`, `cfg`, `ctx` as dumped values are banned.
+2. **No legacy / deprecated idioms.** Use the modern baseline per language
+   (e.g. Python `X | None` over `Optional[X]`, TS `unknown` over `any`).
+
+The concrete, per-language enforcement (linters, config, the grep gate for
+cryptic names) lives in **`dev-craft/references/lint-rules.md`** — read that
+file for the specifics rather than re-deriving them. This section intentionally
+does not copy those rules; they have one source of truth.
+
+> **Why this exists:** dev-craft's "When NOT to use" excludes single-line
+> fixes and typo corrections from the full 15-phase pipeline — correctly, so a
+> one-line change doesn't trigger the whole flow. But that exemption must not
+> also exempt the edit from the deterministic readability/modern-code gate. The
+> gate runs for *every* code edit, trivial or not.
+
 ### Quick Reference
 
 | Situation | Load This Skill |
@@ -91,8 +115,8 @@ User Request Received
 
 | Skill | Purpose | Lines |
 |-------|---------|-------|
-| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1515 |
-| `ui-craft` | Frontend development pipeline (10 phases) | 970 |
+| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1306 |
+| `ui-craft` | Frontend development pipeline (10 phases) | 939 |
 
 ### Security & Quality Skills
 
