@@ -22,25 +22,9 @@ used. Treat this repo as a published library.
 
 ## 1. Skill Router (load the right skill first)
 
-Before doing any task, pick the skill from this decision tree. Do not improvise
-a workflow when a skill exists for it.
-
-```
-Request
- ├─ vague / idea-stage?               → product-thinking → planning-and-task-breakdown → dev-craft | ui-craft
- ├─ spec files (xlsx/csv/md/pdf)?     → project-discovery → planning-and-task-breakdown → dev-craft
- ├─ new feature / project?            → planning-and-task-breakdown → dev-craft | ui-craft
- ├─ bug / failing test / weird behavior? → debugging-and-error-recovery
- ├─ large multi-module project?       → dev-craft + agent-orchestration (git worktree isolation)
- ├─ multiple independent tasks?       → dispatching-parallel-agents
- ├─ infra / IaC / deploy change?      → dev-craft + Infra Safety Checklist (§4.1)
- ├─ about to claim "done"?            → verification-before-completion
- ├─ review code?                      → code-review-and-quality
- ├─ security audit / vuln discovery?  → bug-hunting
- ├─ frontend / UI work?               → ui-craft
- ├─ screenshot / image reference?     → image-to-design-spec
- └─ pre-merge / release validation?   → quality-gates
-```
+The canonical skill router lives in `skills/SHARED.md` under **Start Here — Skill
+Router**. Use that as the single source of truth; load the right skill from there
+before any task. Do not improvise a workflow when a skill exists for it.
 
 When unsure, **plan first** (`planning-and-task-breakdown`), then execute.
 
@@ -144,7 +128,7 @@ Before reporting any task complete in THIS repo (e.g. a skill edit or refactor):
 | New feature / plan | planning-and-task-breakdown |
 | Backend / API build | dev-craft |
 | Frontend / UI build | ui-craft |
-| Infra / IaC / deploy | dev-craft + Infra Safety Checklist (§4.1) |
+| Infra / IaC / deploy | dev-craft + Infra Safety Checklist (see the user's global AGENTS.md §4.1) |
 | Tests fail / bug | debugging-and-error-recovery |
 | About to say "done" | verification-before-completion |
 | Code review | code-review-and-quality |

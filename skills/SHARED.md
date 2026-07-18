@@ -39,11 +39,14 @@ User Request Received
 │           ├── Parallel work → dispatching-parallel-agents
 │           └── Other → plan first, then execute
 │
-├── Is this frontend/UI work?
-│   ├── Yes → ui-craft
-│   └── No → dev-craft
-│
-├── Is this a security concern?
+ ├── Is this frontend/UI work?
+ │   ├── Yes → ui-craft
+ │   └── No → dev-craft
+ │
+ ├── Is this an infra / IaC / deploy change?
+ │   └── Yes → dev-craft + Infra Safety Checklist (see the user's global AGENTS.md §4.1)
+ │
+ ├── Is this a security concern?
 │   ├── Yes → bug-hunting (deep) or security-audit plugin (automated)
 │   └── No → continue above
 │

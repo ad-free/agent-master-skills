@@ -292,11 +292,16 @@ Write state after LOAD.
 
 **Process:**
 
-1. Generate design system:
-    ```bash
-    python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py \
-      "<query>" --design-system -p "Project Name"
-    ```
+ 1. Generate design system (requires a screenshot reference):
+     ```bash
+     python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py \
+       --image <path> --design-system --output .ui-craft/design-system/
+     ```
+    This writes `design-system.json`, `tokens.css`, `tailwind.config.js`,
+    and `DESIGN-SPEC.md` into the output directory.
+    If you already have a JSON analysis from Step [2] (`--format json`), you can
+    instead run `generate_design_system.py --input .ui-craft/image-analysis.json \
+    --output .ui-craft/design-system/`.
 
 2. Figma integration (if Figma MCP available):
    - Export design tokens from Figma
