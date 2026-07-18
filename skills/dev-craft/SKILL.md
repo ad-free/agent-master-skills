@@ -401,9 +401,9 @@ SHIP → Commit + ADRs + rollback plan
    If the project is greenfield (no existing code), skip detection and use sensible defaults based on the detected stack.
 
 9. **Image analysis** (if screenshot provided):
-   ```bash
-    python skills/image-to-design-spec/scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
-   ```
+    ```bash
+    python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json
+    ```
    Present findings:
    ```
    IMAGE ANALYSIS:

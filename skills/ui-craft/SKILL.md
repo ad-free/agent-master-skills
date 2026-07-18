@@ -270,9 +270,9 @@ Write state after LOAD.
 6. Build glossary in context.md
 
 7. **Image analysis** (if screenshot provided):
-   ```bash
-   python scripts/analyze.py --image <path> --format json --output .ui-craft/image-analysis.json
-   ```
+    ```bash
+    python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py --image <path> --format json --output .ui-craft/image-analysis.json
+    ```
    Use extracted data to:
    - Auto-generate design tokens from extracted colors
    - Create `.ui-craft/design-system/MASTER.md` from analysis
@@ -293,10 +293,10 @@ Write state after LOAD.
 **Process:**
 
 1. Generate design system:
-   ```bash
-   python3 ~/.opencode/skills/ui-ux-pro-max/scripts/search.py \
-     "<query>" --design-system -p "Project Name"
-   ```
+    ```bash
+    python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py \
+      "<query>" --design-system -p "Project Name"
+    ```
 
 2. Figma integration (if Figma MCP available):
    - Export design tokens from Figma
@@ -965,6 +965,6 @@ After Phase 3 (DESIGN), user can explore alternatives.
 ## See Also
 
 - `references/ui-patterns.md` — UI-specific pattern guidance
-- `~/.opencode/skills/ui-ux-pro-max/` — Design database
+- `image-to-design-spec` — Design token extraction from images
 - `bug-hunting` — Security methodology for frontend vulnerability discovery
 - `dev-craft` — Backend pipeline with complementary security checks

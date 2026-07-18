@@ -711,5 +711,4 @@ After running quality-gates:
 - `dev-craft` — Full-stack engineering pipeline with REVIEW and HARDEN phases
 - `debugging-and-error-recovery` — Fix issues found by quality gates
 - `bug-hunting` — Deep security inspection (feeds Gate 3)
-- `performance-optimization` — Performance gate extension for Gate 2
-- `ai/agents/dev.md` — Developer agent instructions
+- `performance-profiling` — Performance gate extension for Gate 2

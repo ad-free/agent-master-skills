@@ -26,20 +26,19 @@ Before doing any task, pick the skill from this decision tree. Do not improvise
 a workflow when a skill exists for it.
 
 ```
-User Request
- ├─ vague / idea-stage prompt?        → product-thinking → planning-and-task-breakdown → dev-craft | ui-craft
- ├─ spec files given (xlsx/csv/md/pdf)?→ project-discovery → planning-and-task-breakdown → dev-craft
- ├─ new feature / project?
- │   ├─ has clear spec?               → planning-and-task-breakdown → dev-craft | ui-craft
- │   └─ no spec?                      → planning-and-task-breakdown (collect, verify, ask, write plan)
+Request
+ ├─ vague / idea-stage?               → product-thinking → planning-and-task-breakdown → dev-craft | ui-craft
+ ├─ spec files (xlsx/csv/md/pdf)?     → project-discovery → planning-and-task-breakdown → dev-craft
+ ├─ new feature / project?            → planning-and-task-breakdown → dev-craft | ui-craft
  ├─ bug / failing test / weird behavior? → debugging-and-error-recovery
  ├─ large multi-module project?       → dev-craft + agent-orchestration (git worktree isolation)
  ├─ multiple independent tasks?       → dispatching-parallel-agents
+ ├─ infra / IaC / deploy change?      → dev-craft + Infra Safety Checklist (§4.1)
  ├─ about to claim "done"?            → verification-before-completion
  ├─ review code?                      → code-review-and-quality
  ├─ security audit / vuln discovery?  → bug-hunting
  ├─ frontend / UI work?               → ui-craft
- ├─ screenshot / image as reference?  → image-to-design-spec
+ ├─ screenshot / image reference?     → image-to-design-spec
  └─ pre-merge / release validation?   → quality-gates
 ```
 
@@ -53,13 +52,17 @@ These are the discipline gates the skills encode. Honor them even when a skill
 is not explicitly loaded.
 
 1. **NO implementation without a written plan.** (`planning-and-task-breakdown`)
-2. **NO parallel agents without a shared contract.** (`agent-orchestration`)
-3. **NO parallel dispatch without independence verification.** (`dispatching-parallel-agents`)
+2. **NO completion claims without fresh verification evidence.** (`verification-before-completion`)
+3. **NO fixes without root-cause investigation first.** (`debugging-and-error-recovery`)
 4. **NO merge without quality gates.** (`quality-gates`)
 5. **NO code without review evidence.** (`code-review-and-quality`)
-6. **NO completion claims without fresh verification evidence.** (`verification-before-completion`)
-7. **NO fixes without root-cause investigation first.** (`debugging-and-error-recovery`)
-8. **NO attack surface without intentional probing.** (`bug-hunting`)
+6. **NO parallel work without verified independence + a shared contract.** (`agent-orchestration` + `dispatching-parallel-agents`)
+7. **NO attack surface assessed without intentional probing.** (`bug-hunting`)
+8. **NO weakening or deleting a test to make it pass.** Fix the root cause, or
+   flag to the user that the test may be wrong and wait for a decision.
+9. **NO unverified APIs.** Don't call a library method, CLI flag, or config key
+   without confirming it exists (docs, `--help`, installed version) if there's
+   any doubt — especially for less-common packages or fast-moving ecosystems.
 
 ---
 
@@ -141,6 +144,7 @@ Before reporting any task complete in THIS repo (e.g. a skill edit or refactor):
 | New feature / plan | planning-and-task-breakdown |
 | Backend / API build | dev-craft |
 | Frontend / UI build | ui-craft |
+| Infra / IaC / deploy | dev-craft + Infra Safety Checklist (§4.1) |
 | Tests fail / bug | debugging-and-error-recovery |
 | About to say "done" | verification-before-completion |
 | Code review | code-review-and-quality |

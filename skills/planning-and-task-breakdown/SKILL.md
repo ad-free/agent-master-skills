@@ -58,7 +58,7 @@ NO IMPLEMENTATION WITHOUT A WRITTEN PLAN
 Before planning, analyze any visual reference material:
 
 ```bash
-python skills/image-to-design-spec/scripts/analyze.py --image <path> --format md
+python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py --image <path> --format md
 ```
 
 Use output to enrich requirements:

@@ -10,8 +10,8 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 
 | Skill | Purpose | Phases |
 |-------|---------|--------|
-| `dev-craft` | Full-stack engineering pipeline | 11 (LOAD → REQUIRE → ARCH-SCAN → ALIGN → DESIGN → BUILD-ORDER → SOURCE → BUILD → TEST → REVIEW → HARDEN → SHIP) |
-| `ui-craft` | Frontend development pipeline | 9 (LOAD → SHIP) |
+| `dev-craft` | Full-stack engineering pipeline | 15 (LOAD → SCOPE → REQUIRE → ARCH-SCAN → ALIGN → DESIGN → BUILD-ORDER → REQUIREMENTS-EXTRACTION → SOURCE → CONTRACT → BUILD → TEST → REVIEW → HARDEN → SHIP) |
+| `ui-craft` | Frontend development pipeline | 10 (LOAD → AUDIT → ALIGN → DESIGN → REQUIREMENTS-EXTRACTION → SOURCE → BUILD → REVIEW → HARDEN → SHIP) |
 
 ### Product Discovery
 
@@ -104,13 +104,13 @@ Skills must be placed in a directory OpenCode scans:
 
 ```bash
 # Global install (available in every project)
-cp -r skills/* "~/.opencode/skills/"
+ln -sfn "$(pwd)/skills/" ~/.config/opencode/skills
 
 # Or per-project install
 mkdir -p .opencode/skills/
-cp -r skills/dev-craft .opencode/skills/dev-craft
-cp -r skills/product-thinking .opencode/skills/product-thinking
-# ... copy only the skills you need
+ln -sfn "$(pwd)/skills/dev-craft" .opencode/skills/dev-craft
+ln -sfn "$(pwd)/skills/product-thinking" .opencode/skills/product-thinking
+# ... link only the skills you need
 ```
 
 OpenCode auto-discovers skills from:

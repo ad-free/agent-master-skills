@@ -65,7 +65,7 @@ User Request Received
 | Reviewing code | `code-review-and-quality` |
 | Security audit / bug bounty | `bug-hunting` |
 | Multiple independent tasks | `dispatching-parallel-agents` |
-| product-thinking | Structured idea refinement: vague concept → clear spec | Prompt is vague, idea-stage, missing requirements |
+| Vague idea / missing requirements | `product-thinking` |
 | Screenshot/image as reference | `image-to-design-spec` |
 
 ### Skill Chaining Pattern
@@ -88,8 +88,8 @@ User Request Received
 
 | Skill | Purpose | Lines |
 |-------|---------|-------|
-| `dev-craft` | Backend development pipeline (10 phases) | 540+ |
-| `ui-craft` | Frontend development pipeline (9 phases) | 700+ |
+| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1515 |
+| `ui-craft` | Frontend development pipeline (10 phases) | 970 |
 
 ### Security & Quality Skills
 
