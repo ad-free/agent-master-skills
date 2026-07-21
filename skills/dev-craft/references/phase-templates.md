@@ -186,6 +186,25 @@ docs/          → Documentation
 }
 ```
 
+## Estimation Template (Phase 3 — DESIGN)
+
+```markdown
+MODULE ESTIMATION:
+[Module Name]: ~[X] days ([N] slices × [Y] day)
+```
+
+**Process:**
+
+1. Review each module's estimated effort
+2. Compare against any stated budget/schedule from domain.md
+3. Flag significant discrepancies:
+   ```
+   Module        Expected (from spec)   My estimate     Delta
+   Attendance    4.5                    5.0             ~10%
+   Payroll       5.2                    8.0             ⚠ ~35%
+   ```
+4. Ask user: "Total estimated effort is ~X days. Does this match your expectations?"
+
 ## Run Index Format (`.dev-craft/index.json`)
 
 Registry of every run — the audit trail used to improve the skill over time.

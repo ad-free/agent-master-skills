@@ -178,3 +178,37 @@ git worktree add ../project-mobile mobile-slice # Mobile agent
 git worktree list
 git worktree remove ../project-api
 ```
+
+## Branch Verification Script (per-repo, used by BUILD step 0b and SHIP pre-commit)
+
+```bash
+REPOS=(".")
+# for multi: REPOS=("$beRepo" "$feRepo")
+
+for R in "${REPOS[@]}"; do
+  BRANCH="$(jq -r --arg r "$R" '.linkedBranches[$r] // .activeBranch // empty' .dev-craft/state.json)"
+  if [ -z "$BRANCH" ]; then
+    BRANCH="<type>/<scope>-<short-description>"
+    jq --arg r "$R" --arg b "$BRANCH" '.linkedBranches[$r] = $b' .dev-craft/state.json > .dev-craft/state.tmp \
+      && mv .dev-craft/state.tmp .dev-craft/state.json
+  fi
+  ( cd "$R" && {
+    if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+      git checkout "$BRANCH"
+    elif [ "$(git branch --show-current)" = "$BRANCH" ]; then
+      :
+    else
+      git checkout -b "$BRANCH"
+    fi
+    CURRENT="$(git branch --show-current)"
+    case "$CURRENT" in
+      main|master|develop) echo "ERROR[$R]: still on base branch"; exit 1 ;;
+      "")                  echo "ERROR[$R]: detached HEAD"; exit 1 ;;
+      "$BRANCH")           echo "OK[$R]: on $BRANCH" ;;
+      *)                   echo "ERROR[$R]: on $CURRENT, expected $BRANCH"; exit 1 ;;
+    esac
+  } )
+done
+```
+
+Record `activeBranch` / `linkedBranches` in state.json **only after** each branch is confirmed to exist and we are on it.

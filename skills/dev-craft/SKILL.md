@@ -36,6 +36,40 @@ Implementation without approved spec = wasted hours of rework.
 
 **Standing navigation rule:** After finishing ANY request — a phase, a fix, or an answer — the agent MUST close by stating the current phase and the next valid step (run the `[S] STATUS` protocol). When the human asks for a fix/tweak outside the phase loop, route it through STATUS's resume-after-ad-hoc-fix routing; never silently edit and claim done. This keeps the human oriented and ties every action back to what they asked for.
 
+**Concrete output format** (every response that is not a question to the user MUST end with this):
+
+```
+STATUS: Phase <name> [✅/🔶/⬜]
+NEXT: <the single next action the agent will take or expects the user to take>
+STATE: sessionFile=<file>, lastBuildFix=<count>
+```
+
+Examples:
+```
+STATUS: Phase SHIP [✅]  NEXT: Awaiting new task.  STATE: session-20260721-001, 1 fix
+```
+```
+STATUS: Phase BUILD (slice 3/5) [🔶]  NEXT: Write failing test for payslip export.  STATE: session-20260721-002, 0 fixes
+```
+
+If the user's last message was not a request but a question/comment, and there is no pending action, end with:
+```
+STATUS: Awaiting instructions.  NEXT: None.  STATE: session-20260721-001
+```
+
+This format is the minimum — add context as needed, but never omit it entirely.
+
+### State Integrity Mandate (non-negotiable)
+
+Every task run — whether `build` or `ticket` — MUST persist its progress to `.dev-craft/`:
+
+1. **Load state before any phase.** If `state.json` exists, read it. Detect `currentPhase`, `lastSession`, and resume logic.
+2. **Create a session file before any BUILD work.** Every task must have a corresponding `sessions/session-YYYYMMDD-N.md` written BEFORE the first code change, not after. No session file = no BUILD.
+3. **Update state.json after every phase.** After each phase completes, write the updated `currentPhase`, `testResults`, `buildFixes`, and `lastSession` to `state.json`. Do not batch updates.
+4. **Verify state after ad-hoc fixes.** If the human requests a fix outside the phase loop, update `state.json`'s `buildFixes` and `testResults` before closing.
+
+A simple mental model: *if a context crash happens right now, the next session should resume from the correct phase.* If you can't confidently say that, the state is stale — update it.
+
 ---
 
 ## Input Quality Handling
@@ -82,14 +116,29 @@ When input is too vague:
 └── config.json      # Project config (linter, formatter, test cmds)
 ```
 
+### Session Creation Checklist (mandatory)
+
+Every new task MUST go through this checklist before any code is written:
+
+1. **Load or initialize `state.json`.**
+2. **Confirm task intent** — if all phases were completed, ask "New task on same project?" before proceeding.
+3. **Create session file** at `sessions/session-YYYYMMDD-N.md` with at minimum:
+   - Date, task summary, scope classification
+   - A checklist of the phases you expect to run
+4. **Record `sessionFile`** in `state.json`.
+5. **After every phase**, append results to the session file and update `state.json`.
+
+> **Rationale:** Without this checklist, agents skip session creation, batch state updates, and lose traceability across context resets. A session file is not optional paperwork — it is the agent's sole recovery point if context crashes mid-pipeline.
+
 ### Resume Logic
 
 | Scenario | Behavior |
 |---|---|
 | No `.dev-craft/` | Phase 0.5 (REQUIRE) — check for spec files |
 | DOMAIN.md exists but not loaded | Load into REQUIRE |
-| `state.json` exists | Load state, skip completed phases |
-| All phases complete | Ask "New task on same project?" |
+| `state.json` exists but `sessionFile` is missing or stale | Treat as suspect — flag to user: *"State file found but no recent session. Verify you want to resume or start fresh."* |
+| `state.json` exists and `sessionFile` is current | Load state, skip completed phases |
+| All phases complete | Ask "New task on same project?" and create new session |
 | Context near limit | Generate handoff doc, resume next session |
 
 ## Stack Detection
@@ -145,10 +194,19 @@ HARDEN → Cross-cutting security + risk register
 SHIP → Commit + ADRs + rollback plan
 ```
 
-> **Why REQUIREMENTS-EXTRACTION exists:** This pipeline enforces *process* discipline
-> (phases, checkpoints, TDD) but, on its own, does NOT guarantee *feature completeness*.
-> A dense 300-line spec can be "planned" while 6 P1 requirements silently fall through
-> the cracks. This phase makes spec coverage a first-class, machine-checkable artifact.
+> **Why REQUIREMENTS-EXTRACTION exists:** Makes spec coverage a first-class, machine-checkable artifact (see §3.7 for the full rationale).
+
+### Non-Negotiable Gates (applied across ALL phases)
+
+These gates fire at specific points and block progress if not satisfied. They exist because
+the pipeline is long and agents routinely skip them without a hard stop:
+
+| Gate | Fires At | Fails If | Action on Failure |
+|------|----------|----------|-------------------|
+| **State Integrity** | Before every phase transition after SCOPE | `state.json` is missing, stale, or `sessionFile` is empty/null | Create/update state and session file before proceeding |
+| **Skill Alignment** | SCOPE §0.2 step 3a | Classification is `fe` (frontend) but the running skill is dev-craft without a recorded `skillOverride` | Surface to user, get explicit approval or switch to ui-craft |
+| **Session Exists** | Before BUILD phase | No `sessions/session-YYYYMMDD-N.md` exists for this run | Create session file first (see checklist above) |
+| **Standing Navigation** | After ANY request finishes | Agent finishes a response without stating current phase + next step | This is a text-output rule — output MUST include "Current phase: X. Next: Y" or equivalent |
 
 ---
 
@@ -191,6 +249,22 @@ SHIP → Commit + ADRs + rollback plan
     - `ticket` — scoped change on an existing codebase (bug fix, small enhancement, config) → reduced pipeline (see routing below).
     Heuristic: if the request names an existing module/file/endpoint/component, or says "fix/adjust/ticket/bug/hotfix", it is a `ticket`. If it describes something new, it is `build`. When unsure, prefer `ticket` for existing repos (less overhead) but confirm.
 
+3a. **Skill Alignment Check** (do NOT skip after classification):
+    - If you loaded this skill (`dev-craft`) because the user asked you to, but the SCOPE classification resolves to `fe` (frontend-only), then dev-craft is the wrong skill for the work — ui-craft owns frontend.
+    - **Action:** Surface the mismatch to the user immediately after classification:
+      ```
+      SCOPE classified this as [fe] + [ticket|build].
+      The optimal skill for frontend work is ui-craft, not dev-craft.
+      I can:
+        1. Switch to ui-craft (recommended)
+        2. Continue with dev-craft (you asked for it, but I'll note the override)
+      ```
+    - If the user chooses to continue with dev-craft despite the mismatch, record in state.json:
+      ```json
+      "skillOverride": { "requested": "dev-craft", "recommended": "ui-craft", "accepted": true }
+      ```
+    - This serves as proof that the mismatch was surfaced and the human made an informed choice. Without this record, the pipeline must NOT proceed past SCOPE for an FE-classified task — stop and ask.
+
 4. **Resolve the pipeline shape** from the two axes + topology:
 
     | TOPOLOGY | DOMAIN  | MODE     | Pipeline                                                                 |
@@ -205,7 +279,22 @@ SHIP → Commit + ADRs + rollback plan
     | `multi`  | `fe`    | any      | ui-craft in FE repo only; branch in FE repo; BE repo untouched          |
     | `multi`  | `fullstack` | any   | BE in BE repo, FE in FE repo, **paired branches** in BOTH repos, one shared `api-contract.md` (in `contractRepo`); cross-repo conformance in HARDEN/REVIEW |
 
-5. **Branch per unit of work (repo-scoped, never one global branch):**
+5. **State Initialization Gate (run before any branch/state work):**
+    - Before writing any code, creating any branch, or entering any build phase:
+      1. If `state.json` does NOT exist → create it with `currentPhase: "SCOPE"` and the classification from steps 1-4.
+      2. If `state.json` EXISTS and all phases show `"completed"` → this is a new task on a shipped codebase. Do NOT silently skip session creation. Ask: *"Previous run completed. New task on same project?"* and only proceed after confirmation.
+      3. If `state.json` EXISTS with `in_progress` → resume from that phase (do NOT restart).
+    - **Session file creation:** After state is initialized and the task is confirmed, immediately create `sessions/session-YYYYMMDD-N.md` with:
+      ```markdown
+      # Session YYYY-MM-DD-N
+      Type: [build|ticket]
+      Task: <one-line summary>
+      Scope: [be|fe|fullstack]
+      ```
+      This file MUST exist before any BUILD-phase work. It is the agent's checkpoint: if context resets, the session file proves progress.
+    - Record the session filename in `state.json` under `sessionFile`.
+
+6. **Branch per unit of work (repo-scoped, never one global branch):**
     - Each `build`/`ticket` gets its **own** branch derived from scope + mode:
       ```
       <type>/<scope>-<short-description>[-<issue-id>]
@@ -227,12 +316,12 @@ SHIP → Commit + ADRs + rollback plan
     - This replaces the single `buildBranch` assumption: a BE hotfix can run on `fix/be-payroll-calc` while a feature branch `feat/fs-user-auth` is mid-BUILD. Keep a `branches` map of `{unitId: {be?, fe?}}` so units can be resumed and switched.
     - The branch-isolation + base-branch guard from BUILD (§5) applies to **every** per-unit branch, in **every** repo it was created in.
 
-6. **Interrupt / resume between units:** If a `ticket` arrives while a `build` is `in_progress`, do NOT abandon the build:
+7. **Interrupt / resume between units:** If a `ticket` arrives while a `build` is `in_progress`, do NOT abandon the build:
     - Stash the current phase pointer: `state.suspendedPhase = currentPhase`, `state.suspendedBranch = activeBranch` (and `suspendedBranches` for multi).
-    - Do the ticket on its own branch(es) per step 5.
+    - Do the ticket on its own branch(es) per step 6 (Branch per unit of work).
     - On ticket completion, restore: `git checkout "$suspendedBranch"` in each relevant repo, set `currentPhase = suspendedPhase`. The STATUS protocol (§S) surfaces this automatically.
 
-**State write:** `topology` (`mono`/`multi`), `scope` (`be`/`fe`/`fullstack`), `mode` (`build`/`ticket`), `repos` (multi only), `contractRepo` (multi only), `activeBranch`, `branches` (map of unitId → {be?, fe?}), `linkedBranches` (multi), and (if suspended) `suspendedPhase`/`suspendedBranch`(es).
+**State write:** `topology` (`mono`/`multi`), `scope` (`be`/`fe`/`fullstack`), `mode` (`build`/`ticket`), `repos` (multi only), `contractRepo` (multi only), `activeBranch`, `branches` (map of unitId → {be?, fe?}), `linkedBranches` (multi), `sessionFile` (string, set by State Initialization Gate step 5), `skillOverride` (object, set by Skill Alignment Check step 3a if override occurred), and (if suspended) `suspendedPhase`/`suspendedBranch`(es).
 
 **Exit criterion:** DOMAIN and MODE are decided and recorded; downstream phases know which shape to run.
 
@@ -466,31 +555,9 @@ SHIP → Commit + ADRs + rollback plan
 
 **Goal:** Catch cost/schedule discrepancies between plan and expectations.
 
-**Process:**
+Use the template in `references/phase-templates.md` (Estimation Template section). Compare module estimates against any stated budget/schedule from domain.md and flag significant gaps.
 
-1. Review each module's estimated effort:
-   ```
-   MODULE ESTIMATION:
-   Employee Profile: ~3 days (5 slices × 0.5 day)
-   Attendance: ~5 days (7 slices × 0.75 day)
-   Payroll: ~8 days (complex: tax rules, calculations)
-   Mobile App: ~10 days (native iOS + Android or RN)
-   ```
-
-2. Compare against any stated budget/schedule from domain.md:
-   ```
-   ESTIMATION CHECK:
-   Module        Expected (from spec)   My estimate     Delta
-   Attendance    4.5                    5.0             ~10%
-   Payroll       5.2                    8.0             ⚠ ~35% (tax complexity)
-   Mobile App    6.85                   10.0            ⚠ ~31%
-   
-   Total: 34.55 (spec) vs 40.0 (estimate) → ⚠ ~13% gap
-   
-   Flag any significant discrepancies for user review.
-   ```
-
-3. **Ask user:** "Total estimated effort is ~40 days. Does this match your expectations? Want me to descope some G2/G3 features?"
+**Exit:** User reviewed and acknowledged the estimate.
 
 ---
 
@@ -709,11 +776,11 @@ human acknowledgement** (record in state.json `deferredRequirements`).
 
 **Goal:** Implement one vertical slice at a time. Every slice is verified for security as it's written — not deferred to a batch scan.
 
-**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`master`/`develop`. The branch keeps in-progress work isolated and reviewable. For `multi` topology, the branch is created in **every repo the scope touches** (see SCOPE §0.2 step 5), and each repo's `state.json` records its own `activeBranch`; the SCOPE record links them via `linkedBranches`. A BE-only or FE-only `multi` unit branches only its own repo.
+**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`master`/`develop`. The branch keeps in-progress work isolated and reviewable. For `multi` topology, the branch is created in **every repo the scope touches** (see SCOPE §0.2 step 6 "Branch per unit of work"), and each repo's `state.json` records its own `activeBranch`; the SCOPE record links them via `linkedBranches`. A BE-only or FE-only `multi` unit branches only its own repo.
 
 **Base-branch guard (enforced before every commit, in every repo):** Treat `main`, `master`, `develop` (and each repo's configured default branch) as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
 
-1. **Resolve the branch name(s)** (deterministic, from SCOPE §0.2 step 5):
+1. **Resolve the branch name(s)** (deterministic, from SCOPE §0.2 step 6 "Branch per unit of work"):
     - `mono`: one `activeBranch`.
     - `multi`: read `linkedBranches` for the unit — branch names per repo (`be`, `fe`).
 2. **Branch naming convention:**
@@ -726,41 +793,9 @@ human acknowledgement** (record in state.json `deferredRequirements`).
       fix/be-payroll-calc-142
       fix/fe-login-align
     ```
-3. **Ensure the branch(es) actually exist before any code** — verify per repo, don't just record intent:
-    ```bash
-    # mono: single repo
-    REPOS=(".")
-    # multi fullstack: both repos; multi be/fe: only the touched repo
-    # REPOS=("$beRepo" "$feRepo")  # adjust by scope
-
-    for R in "${REPOS[@]}"; do
-      BRANCH="$(jq -r --arg r "$R" '.linkedBranches[$r] // .activeBranch // empty' .dev-craft/state.json)"
-      if [ -z "$BRANCH" ]; then
-        BRANCH="<type>/<scope>-<short-description>"
-        jq --arg r "$R" --arg b "$BRANCH" '.linkedBranches[$r] = $b' .dev-craft/state.json > .dev-craft/state.tmp \
-          && mv .dev-craft/state.tmp .dev-craft/state.json
-      fi
-      ( cd "$R" && {
-        if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-          git checkout "$BRANCH"
-        elif [ "$(git branch --show-current)" = "$BRANCH" ]; then
-          :
-        else
-          git checkout -b "$BRANCH"
-        fi
-        CURRENT="$(git branch --show-current)"
-        case "$CURRENT" in
-          main|master|develop) echo "ERROR[$R]: still on base branch — branch creation failed"; exit 1 ;;
-          "")                  echo "ERROR[$R]: detached HEAD — branch creation failed"; exit 1 ;;
-          "$BRANCH")           echo "OK[$R]: on $BRANCH" ;;
-          *)                   echo "ERROR[$R]: on $CURRENT, expected $BRANCH"; exit 1 ;;
-        esac
-      } )
-    done
-    ```
-    Record `activeBranch` / `linkedBranches` in state.json **only after** each branch is confirmed to exist and we are on it.
+3. **Ensure the branch(es) actually exist before any code** — verify per repo, don't just record intent. Run the branch verification script from `references/build-protocol.md` (Branch Verification Script section) per repo. Record `activeBranch` / `linkedBranches` in state.json **only after** each branch is confirmed to exist and we are on it.
 4. **Per-slice commits land on the branch(es).** Each slice is an atomic commit in every repo it touches. Branches are only merged/PR'd during SHIP. Re-run the base-branch guard above (per repo) before each commit — never assume the branch is still current.
-5. **Resume safety:** On resume, re-run step 3. If a recorded branch no longer exists, fall back to deriving a new name (do NOT silently stay on a base branch). If a different unit was suspended (SCOPE §0.2 step 6), restore `suspendedBranch`(es) first.
+5. **Resume safety:** On resume, re-run step 3. If a recorded branch no longer exists, fall back to deriving a new name (do NOT silently stay on a base branch). If a different unit was suspended (SCOPE §0.2 step 7 "Interrupt / resume between units"), restore `suspendedBranch`(es) first.
 
 **Process per slice:**
 
@@ -774,7 +809,7 @@ human acknowledgement** (record in state.json `deferredRequirements`).
 5. LINT   — Run linter + formatter
 6. TYPE   — Run type checker
 7. TEST   — Run test suite
-8. COMMIT — Atomic commit (on the feature branch; re-run branch-guard first)
+8. COMMIT — Atomic commit (re-run per-repo branch-guard from BUILD intro first)
 ```
 
 **Per-slice deep detail (SECURE tree, MATCH tree, Rules, Git Worktree Mode):**
@@ -889,7 +924,7 @@ The agent now has the full codebase in context. It reads across all slices to fi
      - Key decisions (reference ADRs)
      - What was intentionally NOT done
      ```
-    Before committing, re-run the branch-guard **in every repo the unit touched** (per SCOPE topology): confirm `git branch --show-current` is the feature branch, not a base branch. If on a base branch in any repo, stop and checkout the feature branch first.
+    Before committing, re-run the per-repo branch-guard from BUILD intro (confirm no repo is on a base branch).
   6. Merge or open a pull request from the feature branch(es):
      - **mono:** one branch, one PR.
      - **multi:** open a PR in **each repo the scope touched** (paired `fix/be-*` + `fix/fe-*` branches), linked by the same issue id. Never ship one side without the other for a `fullstack` unit — they are one change split across repos.
@@ -1006,102 +1041,38 @@ The agent now has the full codebase in context. It reads across all slices to fi
 
 ## Workflow Orchestration
 
-For complex features spanning multiple domains.
-
-### Workflow Types
-
-| Workflow | Pipeline | When |
-|----------|----------|------|
-| SaaS MVP | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | New SaaS product |
-| Admin Dashboard | dev-craft + ui-craft | Internal tool |
-| E-commerce | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | Online store |
-| API Service | dev-craft only | Backend API |
-| Mobile App | dev-craft (backend) + agent-orchestration (mobile) | Mobile with backend |
-| Landing Page | ui-craft only | Marketing site |
-| Multi-module | product-thinking → planning-and-task-breakdown → dev-craft + agent-orchestration | Large project |
-
-### Orchestration Pattern
-
-```
-1. THINK — If prompt is vague → product-thinking for PRODUCT.md
-2. DISCOVER — If spec files exist → project-discovery for DOMAIN.md
-3. PLAN — planning-and-task-breakdown for PLAN.md
-4. REQUIRE — Load PRODUCT.md / DOMAIN.md into dev-craft
-5. ALIGN — Domain-calibrated questions
-6. DESIGN — Spec + ADRs + task list
-7. BUILD-ORDER — Dependency-based sequencing
-8. SOURCE — Official docs verification
-9. BUILD — For large projects: agent-orchestration with git worktree
-   For small projects: single-agent vertical slices
-10. TEST — Full suite
-11. REVIEW — code-review-and-quality
-12. HARDEN — Cross-cutting security
-13. SHIP — Commit + docs
-```
-
-### Cross-Skill Communication
-
-Driven by the SCOPE gate (§0.2). The contract artifact is ALWAYS named **`api-contract.md`** (no `api-spec.md` variant) and lives at repo root or `docs/`. This is the single source of truth both skills read.
-
-**dev-craft (`scope: fullstack`) needs UI:**
-1. Run CONTRACT (§4.5) → write `api-contract.md` (in `contractRepo` for `multi`).
-2. Record in state.json: `crossSkill.uiSliceNeeded: ["login-form"]`, `apiContract: "<path>"` (the canonical location; for `multi` that's in the BE repo / `contractRepo`).
-3. Hand off to ui-craft: ui-craft MUST consume `api-contract.md` (read from `contractRepo` or the recorded mirror) and may not invent endpoints.
-4. On ui-craft return, run HARDEN Check 7 (contract conformance) before SHIP.
-
-**ui-craft (`scope: fullstack`) needs backend:**
-1. If `api-contract.md` already exists (dev-craft produced it), consume it directly — for `multi`, read it from `contractRepo` (or the recorded mirror path). Do not regenerate.
-2. If not, generate `api-contract.md` from the UI's data needs, record `crossSkill.backendSliceNeeded: ["auth-api"]` and its path, hand to dev-craft to implement.
-3. dev-craft MUST implement only what the contract declares; any new endpoint updates the contract first.
-
-**dev-craft needs mobile (agent-orchestration):**
-1. Produce `api-contract.md`; record `crossSkill.mobileSliceNeeded: ["api-endpoints"]`; hand to agent-orchestration.
-
-**Verification before switching skills:** confirm `api-contract.md` exists at its recorded path and is readable from the consuming repo (for `multi`, the mirror is in sync). Never switch with an implied/unwritten contract.
+For complex features spanning multiple domains. Load `references/cross-skill.md` for workflow tables, orchestration patterns, and cross-skill communication protocols.
 
 ---
 
 ## Common Rationalizations
 
 | Rationalization | Reality |
-|---|---|
-| "I know what they want" | #1 cause of AI failure is misalignment |
-| "Just start coding" | No spec = scope creep, wrong architecture |
-| "Tests later" | You won't. Tests after test implementation |
-| "Too simple to verify" | Training data is stale |
-| "Lint after slices" | Lint debt compounds |
+|---|---|---|
+| "I know what they want" | #1 cause of AI misalignment |
+| "Just start coding" | No spec → scope creep, wrong architecture |
+| "Tests later / lint after slices" | You won't; debt compounds |
 | "Tests pass, it's good" | Tests don't catch architecture/security |
-| "Commit at the end" | Large commits destroy history |
-| "Commit straight to main" | Always work on a feature branch, merge via review |
+| "Commit at the end / to main" | Destroys history; always branch → review |
 | "Prototype, skip security" | Prototypes become production |
 | "Fix architecture later" | Rot compounds fast |
 | "Skip arch scan" | 2-min scan prevents 2-hour rework |
 
 ## Red Flags
 
-- Skipping ARCH-SCAN on codebase with > 10 files
-- Starting without completed Align phase
-- Human checkpoints skipped
-- Code before fetching current-version docs
-- Multiple slices in one commit
+- Skipping ARCH-SCAN (>10 files)
+- Starting BUILD without completed ALIGN
+- Code before SOURCE (current-version docs)
 - Lint/type/tests failing but proceeding
-- No ADRs for decisions
-- "Fix it later" for Critical findings
-- No .dev-craft/ directory
-- Security review skipped
-- Commits made directly to main/master/develop (no feature branch)
-- `activeBranch` recorded in state.json but agent is actually on a base branch (branch was never created/checked out)
-- Commit messages: "WIP", "fix", "update"
-- Vague prompt accepted without clarification
-- Skipping REQUIRE when spec files exist
-- Building modules in wrong dependency order
-- No domain model for multi-module project
-- No worktree isolation for parallel agents
-- Starting BUILD without build-order.md for complex projects
-- **Starting BUILD without `requirements.md` coverage gate passing** (P1/G1 gaps unresolved)
-- P1/G1 requirement with no traced task silently deferred without human acknowledgement
-- Ad-hoc fix made outside the phase loop without re-running the owning phase's verification (TEST/SECURE/MATCH/HARDEN)
-- Plan tasks whose acceptance criteria cannot be mapped back to a REQ-ID
+- Multiple slices in one commit; commits to main/master/develop
+- No ADRs, no .dev-craft/, no domain model for multi-module
+- "Fix it later" for Critical findings; security review skipped
+- `activeBranch` mismatch (recorded branch ≠ actual HEAD)
+- Vague prompt accepted; REQUIRE skipped when spec files exist
+- Wrong dependency order; no build-order.md for complex projects
+- BUILD without passing `requirements.md` coverage gate (P1/G1 gaps unresolved)
+- Ad-hoc fix outside phase loop without re-running verification
+- Plan tasks with AC that can't map to a REQ-ID
 
 ## Verification
 

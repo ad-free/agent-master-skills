@@ -40,7 +40,7 @@ User Request Received
 │           └── Other → plan first, then execute
 │
  ├── Is this frontend/UI work?
- │   ├── Yes → ui-craft
+ │   ├── Yes → ui-craft (if the user explicitly asks for dev-craft anyway, dev-craft's own Skill Alignment Check §0.2 step 3a will catch the mismatch and surface it)
  │   └── No → dev-craft
  │
  ├── Is this an infra / IaC / deploy change?
