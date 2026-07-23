@@ -87,6 +87,12 @@ does not copy those rules; they have one source of truth.
 | Starting new feature | `planning-and-task-breakdown` |
 | Building backend/API | `dev-craft` |
 | Building UI/frontend | `ui-craft` |
+| Designing APIs (REST/GraphQL/gRPC) | `api-design` |
+| Establishing testing strategy | `testing-strategies` |
+| Setting up documentation/ADRs | `documentation-engineering` |
+| Setting up CI/CD/IaC/deployment | `devops-automation` |
+| Implementing observability (logs/metrics/traces/SLOs) | `observability-engineering` |
+| Choosing architecture pattern | `architecture-patterns` |
 | Tests failing | `debugging-and-error-recovery` |
 | About to say "done" | `verification-before-completion` |
 | Reviewing code | `code-review-and-quality` |
@@ -94,6 +100,23 @@ does not copy those rules; they have one source of truth.
 | Multiple independent tasks | `dispatching-parallel-agents` |
 | Vague idea / missing requirements | `product-thinking` |
 | Screenshot/image as reference | `image-to-design-spec` |
+
+---
+
+### Skill Disambiguation Rules (prevent wrong-skill triggers)
+
+| If the user says… | Load THIS | NOT this (adjacent skill) |
+|-------------------|-----------|---------------------------|
+| "what kind of test should I write" | `testing-strategies` | `verification-before-completion` / `code-review-and-quality` |
+| "is this ready to merge" | `quality-gates` / `verification-before-completion` | `testing-strategies` |
+| "design the API for the new webhook endpoint" | `api-design` | `dev-craft` (BUILD) / `bug-hunting` |
+| "review this endpoint for security holes" | `bug-hunting` | `api-design` |
+| "how should we roll this out" | `devops-automation` | `quality-gates` |
+| "did the deploy actually succeed" | `verification-before-completion` | `devops-automation` |
+| "what should we alert on for this service" | `observability-engineering` | `bug-hunting` / `dev-craft` HARDEN |
+| "is this service hardened against attack" | `dev-craft` HARDEN / `bug-hunting` | `observability-engineering` |
+| "should this be one service or three" | `architecture-patterns` | `dev-craft` ARCH-SCAN |
+| "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `architecture-patterns` |
 
 ### Skill Chaining Pattern
 
@@ -117,6 +140,17 @@ does not copy those rules; they have one source of truth.
 |-------|---------|-------|
 | `dev-craft` | Full-stack engineering pipeline (15 phases) | 1142 |
 | `ui-craft` | Frontend development pipeline (10 phases) | 813 |
+
+### Specialized Engineering Skills
+
+| Skill | Purpose | Iron Law | When to Use |
+|-------|---------|----------|-------------|
+| `api-design` | Design robust APIs with REST, GraphQL, gRPC patterns, versioning, security | **NO ENDPOINT WITHOUT A CONSUMER-STATED CONTRACT** | Designing new APIs, evaluating existing, planning versioning |
+| `testing-strategies` | Comprehensive testing: unit, integration, e2e, contract, property-based | **NO TEST WITHOUT A STATED FAILURE MODE** | Setting up test strategy, debugging flaky tests, improving coverage |
+| `documentation-engineering` | ADRs, API docs, docs-as-code pipelines, technical writing | **NO UNDOCUMENTED IRREVERSIBLE DECISION** | Establishing doc standards, generating API refs, runbooks |
+| `devops-automation` | CI/CD, IaC (Terraform), Kubernetes, progressive delivery, secrets | **NO DEPLOY WITHOUT A TESTED ROLLBACK PATH** | Setting up CI/CD, migrating to IaC, deployment strategies |
+| `observability-engineering` | Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting | **NO ALERT WITHOUT AN OWNER AND A RUNBOOK LINK** | Setting up observability, debugging production, SLO design |
+| `architecture-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices with trade-offs | **NO PATTERN WITHOUT A STATED TRADE-OFF** | Starting new project, refactoring legacy, evaluating patterns |
 
 ### Security & Quality Skills
 

@@ -124,30 +124,32 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 
  ```
  1. LINT
-    ├── Linter passes with zero errors (configurable: warnings may be allowed)
-    ├── Formatter passes (code is idempotent under formatter)
-    └── No lint rule disable comments without team-approved exception list
-    └── Use the per-stack config from dev-craft `references/lint-rules.md`
-       (ruff UP rules for Python; ESLint id-length + no-explicit-any for TS/JS;
-        clippy/gofmt/RuboCop/PSR-12 for other stacks). These enforce no
-        single-char/cryptic names and no legacy/deprecated idioms.
+     ├── Linter passes with zero errors (configurable: warnings may be allowed)
+     ├── Formatter passes (code is idempotent under formatter)
+     └── No lint rule disable comments without team-approved exception list
+     └── Use the per-stack config from dev-craft `references/lint-rules.md`
+        (ruff UP rules for Python; ESLint id-length + no-explicit-any for TS/JS;
+         clippy/gofmt/RuboCop/PSR-12 for other stacks). These enforce no
+         single-char/cryptic names and no legacy/deprecated idioms.
 
-2. TYPE CHECK
-   ├── Type checker passes (tsc, mypy, pyright, flow, etc.)
-   ├── Strict mode where enabled — no implicit any
-   └── No type assertion casts without justification
+ 2. TYPE CHECK
+     ├── Type checker passes (tsc, mypy, pyright, flow, etc.)
+     ├── Strict mode where enabled — no implicit any
+     └── No type assertion casts without justification
 
-3. TEST
-   ├── Full test suite passes (unit + integration + e2e where configured)
-   ├── No flaky tests identified (test passes 3/3 consecutive runs)
-   ├── Coverage does not decrease from baseline (if coverage configured)
-   └── New code has ≥ 80% coverage (configurable per project)
+ 3. TEST
+     ├── Full test suite passes (unit + integration + e2e where configured)
+     ├── No flaky tests identified (test passes 3/3 consecutive runs)
+     ├── Coverage does not decrease from baseline (if coverage configured)
+     └── New code has ≥ 80% coverage (configurable per project)
+     **Gate 2 runs the test plan `testing-strategies` produced — it does not
+     decide test type or shape; that decision happens upstream, before BUILD.**
 
-4. BUILD
-   ├── Production build succeeds (webpack, vite, tsc, cargo build, etc.)
-   ├── Bundle size within threshold (configurable — alert if > 10% increase)
-   └── No new warnings introduced
-```
+ 4. BUILD
+     ├── Production build succeeds (webpack, vite, tsc, cargo build, etc.)
+     ├── Bundle size within threshold (configurable — alert if > 10% increase)
+     └── No new warnings introduced
+ ```
 
 **Pass criteria:** All four check categories must pass. No exceptions. If lint fails, the pipeline stops — do not run tests.
 

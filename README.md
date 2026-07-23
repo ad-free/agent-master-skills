@@ -28,6 +28,17 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `agent-orchestration` | Multi-agent parallel builds with git worktree isolation | NO PARALLEL AGENTS WITHOUT A SHARED CONTRACT |
 | `dispatching-parallel-agents` | Parallel execution of independent tasks | NO PARALLEL DISPATCH WITHOUT INDEPENDENCE VERIFICATION |
 
+### Specialized Engineering Skills
+
+| Skill | Purpose | Iron Law / Key Principle |
+|-------|---------|--------------------------|
+| `api-design` | Design robust APIs (REST, GraphQL, gRPC) with versioning, docs, security | Design for consumers first; make it evolvable; explicit over implicit |
+| `testing-strategies` | Comprehensive testing: unit, integration, e2e, contract, property-based | Test behavior, not implementation; pyramid over ice cream cone |
+| `documentation-engineering` | ADRs, API docs, docs-as-code pipelines, technical writing | Documentation is code: versioned, reviewed, tested, deployed |
+| `devops-automation` | CI/CD, IaC (Terraform), Kubernetes, progressive delivery, secrets | Everything as code; pipeline as product; progressive delivery |
+| `observability-engineering` | Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting | Observability > monitoring; SLOs over alerts; three pillars unified |
+| `architecture-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices patterns | Architecture serves the problem; start simple; extract when pain proven |
+
 ### Quality & Safety
 
 | Skill | Purpose | Iron Law |

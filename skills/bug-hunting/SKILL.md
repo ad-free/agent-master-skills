@@ -309,15 +309,17 @@ The agent now traces through each vulnerability class by reading the actual code
 - `User.create(req.body)` or `db.users.insert(req.body)` — mass assignment
 - Password reset token is `md5(userId + date)` — predictable
 - Login always returns success, no lockout tracking
-
 ### A05: Security Misconfiguration
 
 **Agent reads config files to verify:**
+
 1. CORS: `Access-Control-Allow-Origin: *` with `credentials: true`?
 2. Headers: CSP, HSTS, X-Frame-Options, X-Content-Type-Options present?
 3. Debug mode: `DEBUG=true`, `NODE_ENV=development`, `DJANGO_DEBUG=True` in production config?
 4. Directory listing: static file server without `index` fallback?
 5. Stack traces: error handler returns full error objects in production?
+
+**API attack surface note:** If the API's auth/rate-limit model was never explicitly decided (see `api-design`), that absence is itself a finding — not something to infer and move past.
 
 ### A06: Vulnerable Components
 
