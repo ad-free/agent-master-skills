@@ -95,6 +95,8 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 - Tests are maintainable (not brittle)?
 - Mocks are at boundaries only?
 
+**Judgment criterion:** Judge tests against the failure mode stated when they were written (see `testing-strategies`) — a test with no stated failure mode is itself a review finding, not just a coverage gap.
+
 ### Axis 7: Modern Patterns
 
 - No deprecated APIs for the detected version?

@@ -545,6 +545,11 @@ the pipeline is long and agents routinely skip them without a hard stop:
    Consequences: [Impact]
    ```
 
+**Cross-skill invocations in this phase:**
+- If this change adds/reshapes an API surface → invoke `api-design` to decide contract shape (style, versioning, auth, rate-limiting). The resulting contract doc feeds into this phase's spec.
+- If this change requires a structural pattern decision → invoke `architecture-patterns` for trade-off analysis. The resulting memo feeds into this phase's spec and ADRs.
+- Write resulting ADRs per `documentation-engineering`'s format (MADR in `docs/adr/` with index table).
+
 **Exit criterion:** Human reviews and approves.
 
 **State write:** Save plan.md. Save ADRs to decisions/.
@@ -839,11 +844,18 @@ skeleton; the reference is the step-by-step.
       - `multi`: `cd "$feRepo" && <fe test cmd>`
     - `be`-only or `fe`-only ticket: run only the touched suite/repo — don't force the other.
     - If the layout differs, detect the per-domain test command from its manifest; never assume a single root-level `npm test`/`pytest`.
+
+**Cross-skill invocation in this phase:**
+- Before writing tests, invoke `testing-strategies` to decide test type and stated failure mode per test — do not default to unit tests without checking its decision tree.
+
 2. **Contract conformance (fullstack only):** If `api-contract.md` exists, assert the running app matches it — at minimum: every contract route is registered, request/response shapes are compatible, and status codes the FE handles are returned by the BE. For `multi`, read the contract from `contractRepo`. A route the FE calls that the BE doesn't expose is a test failure.
+
 3. If all pass → Proceed to Phase 7
+
 4. If any fail → **Invoke:** `debugging-and-error-recovery`
     - This skill handles structured root-cause investigation
     - Do NOT embed debugging procedures here — defer to the skill
+
 5. Re-run the relevant suites after every fix
 
 **Exit criterion:** All relevant suites pass; for fullstack, contract conformance holds.
@@ -897,6 +909,9 @@ The agent now has the full codebase in context. It reads across all slices to fi
 
 **Process:** Load the deep reference `references/harden-checks.md` for the 8 concrete checks (secrets, auth/authz, injection surface, dependency CVE review, config/infra, cross-slice audit, BE↔FE contract conformance, risk register). Each check is a read-the-actual-code pass; do not summarize from memory.
 
+**Cross-skill invocation in this phase:**
+- Also invoke `observability-engineering` — security hardening and observability are separate concerns; a hardened system that fails silently in production is still a gap.
+
 **Exit criterion:** All Critical/High findings resolved. Risk register documents any accepted risks with explicit reasoning.
 
 **State write:** Update state. Save risk register to `.dev-craft/risk-register.md`.
@@ -916,28 +931,26 @@ The agent now has the full codebase in context. It reads across all slices to fi
    - Dead code removed
    - HARDEN risk register is clean (no unaddressed Critical/High findings)
 4. Update CHANGELOG
-  5. Atomic commit (on the feature branch(es) created in BUILD):
-     ```
-     type(scope): short description
+5. Atomic commit (on the feature branch(es) created in BUILD):
+   ```
+   type(scope): short description
 
-     - What changed and why
-     - Key decisions (reference ADRs)
-     - What was intentionally NOT done
+   - What changed and why
+   - Key decisions (reference ADRs)
+   - What was intentionally NOT done
+   ```
+   Before committing, re-run the per-repo branch-guard from BUILD intro (confirm no repo is on a base branch).
+6. Merge or open a pull request from the feature branch(es):
+   - **mono:** one branch, one PR.
+   - **multi:** open a PR in **each repo the scope touched** (paired `fix/be-*` + `fix/fe-*` branches), linked by the same issue id. Never ship one side without the other for a `fullstack` unit — they are one change split across repos.
+   - **PR (recommended):** Push the branch(es) and open PR(s) for review before merging to the base branch. Never merge unreviewed Critical/Required findings.
+   - **Direct merge (solo/small):** Only if no review gate is required:
+     ```bash
+     cd "$REPO" && git checkout <base-branch> && git merge --no-ff <feature-branch>
      ```
-    Before committing, re-run the per-repo branch-guard from BUILD intro (confirm no repo is on a base branch).
-  6. Merge or open a pull request from the feature branch(es):
-     - **mono:** one branch, one PR.
-     - **multi:** open a PR in **each repo the scope touched** (paired `fix/be-*` + `fix/fe-*` branches), linked by the same issue id. Never ship one side without the other for a `fullstack` unit — they are one change split across repos.
-     - **PR (recommended):** Push the branch(es) and open PR(s) for review before merging to the base branch. Never merge unreviewed Critical/Required findings.
-     - **Direct merge (solo/small):** Only if no review gate is required:
-       ```bash
-       cd "$REPO" && git checkout <base-branch> && git merge --no-ff <feature-branch>
-       ```
-     - Record the merged branch name(s) and PR/commit reference in `state.json` (`shippedBranches`, `prUrls` if any).
-  7. Define rollback strategy:
-    - Feature flag toggling: < 1 minute
-    - Code revert: specify commit (per repo for multi)
-    - Database: migration revert command
+   - Record the merged branch name(s) and PR/commit reference in `state.json` (`shippedBranches`, `prUrls` if any).
+7. **Cross-skill invocation in this phase:**
+   - For the rollback plan and deployment mechanics, invoke `devops-automation` rather than deciding deployment strategy ad hoc.
 
 **Exit criterion:** Feature branch(es) merged (or PR(s) opened) with a clean commit and a rollback plan.
 
