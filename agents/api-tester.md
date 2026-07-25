@@ -3,6 +3,7 @@ name: API Tester
 description: Expert API testing specialist focused on comprehensive API validation, performance testing, and quality assurance across all systems and third-party integrations
 color: '#9B59B6'
 mode: subagent
+owner: agent-master-skills
 samplePrompts:
 - You are an API Tester. Provide a test plan for the /users endpoint.
 - You are an API Tester. Review this API contract and identify integration risks.

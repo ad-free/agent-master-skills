@@ -32,7 +32,7 @@ Converts UI screenshots and images into structured, machine-readable design spec
 │ Layer 1: Pillow + K-means (ALWAYS RUNS)            │
 │ - Dominant colors with area percentages             │
 │ - Image dimensions + aspect ratio                   │
-│ - Light${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/dark mode detection                         │
+│ - Light/dark mode detection                         │
 │ - Layout regions (header, sidebar, main)            │
 │ - Edge density analysis                             │
 ├─────────────────────────────────────────────────────┤
@@ -51,73 +51,21 @@ Converts UI screenshots and images into structured, machine-readable design spec
 
 ## Quick Start
 
-### Basic Analysis (Layer 1 only)
+All commands run from `skills/`. Common flags:
+
+| Flag | Description |
+|------|-------------|
+| `--image <path>` | Input image (required) |
+| `--format <fmt>` | Output format: `md`, `json`, `css`, `scss`, `tailwind`, `w3c` |
+| `--gemini` | Enable Gemini Vision analysis |
+| `--guided` | Use guided questions fallback |
+| `--code <fw>` | Generate component: `react`, `vue`, `html` |
+| `--design-system` | Generate full design system |
+| `--output <path>` | Output file path |
 
 ```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --format md
+python scripts/analyze.py --image screenshot.png --format json --gemini
 ```
-
-> **Important:** All commands must be run from the `skills${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` directory. The scripts use relative imports that assume this working directory.
-
-### Full Analysis with Gemini
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --gemini --format json
-```
-
-### Export to CSS Variables
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --format css --output styles.css
-```
-
-### Export to Tailwind Config
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --format tailwind --output tailwind.config.js
-```
-
-### Export to W3C Design Tokens
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --format w3c --output tokens.json
-```
-
-### Generate Guided Questions
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --guided
-```
-
-### Generate React Component
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --code react --component-name LoginPage --output LoginPage.tsx
-```
-
-### Generate Vue Component
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --code vue --component-name LoginPage --output LoginPage.vue
-```
-
-### Generate HTML Page
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --code html --output index.html
-```
-
-### Generate Complete Design System
-
-```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --design-system --output .${PROJECT_ROOT}/
-```
-
-This creates a complete design system with:
-- `design-system.json` - Full token data
-- `tokens.css` - CSS custom properties
-- `tailwind.config.js` - Tailwind configuration
-- `DESIGN-SPEC.md` - Human-readable spec
 
 ## Output Formats
 
@@ -150,59 +98,14 @@ This creates a complete design system with:
 
 ## Output Schema
 
-```json
-{
-  "meta": {
-    "source": "screenshot.png",
-    "analyzed_at": "2026-07-12T10:30:00Z",
-    "analysis_layers": ["pillow+kmeans", "layout-detection", "gemini-vision"]
-  },
-  "image": {
-    "width": 1440,
-    "height": 900,
-    "aspect_ratio": "16:10",
-    "format": "png"
-  },
-  "colors": {
-    "dominant": ["#1a1a2e", "#16213e", "#0f3460", "#e94560", "#ffffff"],
-    "palette": {
-      "primary": "#1a1a2e",
-      "secondary": "#16213e",
-      "accent": "#e94560",
-      "background": "#ffffff",
-      "text": "#1a1a2e"
-    },
-    "mode": "dark"
-  },
-  "layout": {
-    "layout_type": "sidebar-main",
-    "has_header": true,
-    "has_footer": false,
-    "has_sidebar": true,
-    "sidebar_position": "left",
-    "sidebar_width_percent": 20,
-    "estimated_grid_columns": 1,
-    "spacing_hint": "normal",
-    "complexity_score": 0.45
-  },
-  "components": [
-    {"type": "navigation", "confidence": 0.95, "region": "top"},
-    {"type": "sidebar", "confidence": 0.90, "region": "left"}
-  ],
-  "design_tokens": {
-    "colors": { "primary": "#1a1a2e", "accent": "#e94560" },
-    "spacing": { "unit": "8px", "scale": "normal" },
-    "border_radius": { "style": "rounded", "value": "8px" }
-  }
-}
-```
+See `references/output-schema.json` for the full output structure.
 
 ## Setup & Installation
 
 ### Quick Setup (using uv - recommended)
 
 ```bash
-cd skills${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/image-to-design-spec
+cd skills/image-to-design-spec
 uv venv --python 3.13
 uv pip install Pillow numpy
 ```
@@ -210,23 +113,23 @@ uv pip install Pillow numpy
 ### Manual Setup (using pip)
 
 ```bash
-cd skills${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/image-to-design-spec
+cd skills/image-to-design-spec
 pip install Pillow numpy
 ```
 
 ### Running from Any Location
 
-The scripts must be run from the `skills${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` directory:
+The scripts must be run from the `skills/` directory:
 
 ```bash
-cd skills${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/image-to-design-spec
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image ${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/screenshot.png --format md
+cd skills/image-to-design-spec
+python scripts/analyze.py --image /screenshot.png --format md
 ```
 
 Or use absolute paths:
 
 ```bash
-python ${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image ${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/screenshot.png --format md
+python /analyze.py --image /screenshot.png --format md
 ```
 
 ## Prerequisites
@@ -254,59 +157,15 @@ python -c "from google import genai; print('Gemini OK')"
 
 ## Integration with Other Skills
 
-### dev-craft Integration
-
-In Phase 2 (ALIGN), after stack detection:
-
-```markdown
-### Image Analysis (if screenshot provided)
-
- 1. Run: `python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image <path> --format json --output .dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/image-analysis.json`
-2. Review extracted data:
-   ```
-   IMAGE ANALYSIS:
-   - Colors: [primary, secondary, accent, background]
-   - Layout: sidebar-main (left sidebar, 20%)
-   - Components: [nav, sidebar, cards]
-   - Mode: dark
-   → Confirm these observations.
-   ```
-3. Add to ALIGN assumptions for DESIGN phase
-```
-
-### ui-craft Integration
-
-In Phase 2 (ALIGN), for design system creation:
-
-```markdown
-### Design System from Image
-
-1. Run: `python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image <path> --format json`
-2. Generate design tokens directly from extracted colors
-3. Create `.ui-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/MASTER.md` from analysis
-4. Skip manual token definition
-```
-
-### planning-and-task-breakdown Integration
-
-In Step 1 (Enter Plan Mode):
-
-```markdown
-### Step 0: Image Analysis (if screenshot provided)
-
-1. Run: `python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image <path> --format md`
-2. Use output to enrich requirements:
-   - Add detected components to task list
-   - Add colors to design token tasks
-   - Add layout to structure tasks
-3. Continue to Step 1 with enriched context
-```
+- **dev-craft ALIGN phase:** `python scripts/analyze.py --image <path> --format json --output .dev-craft/image-analysis.json` → add results to ALIGN assumptions
+- **ui-craft ALIGN phase:** Generate design tokens directly, create `.ui-craft/MASTER.md` from analysis, skip manual token definition
+- **planning Step 0:** Run `--format md`, add detected components/colors/layout to task list before Step 1
 
 ## Scripts
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `analyze.py` | Core orchestrator | `python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image <path>` |
+| `analyze.py` | Core orchestrator | `python scripts/analyze.py --image <path>` |
 | `extract_colors.py` | Color extraction module | Imported by analyze.py |
 | `extract_layout.py` | Layout detection module | Imported by analyze.py |
 | `export_tokens.py` | Multi-format export | Imported by analyze.py |
@@ -316,13 +175,13 @@ In Step 1 (Enter Plan Mode):
 ### Custom Color Count
 
 ```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --colors 8
+python scripts/analyze.py --image screenshot.png --colors 8
 ```
 
 ### Combine Gemini + Guided
 
 ```bash
-python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image screenshot.png --gemini --guided
+python scripts/analyze.py --image screenshot.png --gemini --guided
 ```
 
 ### Programmatic Usage
@@ -339,31 +198,31 @@ output = export(result, "css")
 
 When Gemini is unavailable, use guided questions:
 
-1. Run `python scripts${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image <path> --guided`
+1. Run `python scripts/analyze.py --image <path> --guided`
 2. Present questions to user
 3. User answers questions
 4. Feed answers into design spec
-5. Continue with planning${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/building
+5. Continue with planning/building
 
-See `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fallback-workflow.md` for detailed guide.
+See `references/fallback-workflow.md` for detailed guide.
 
 ## References
 
 | Document | Purpose |
 |----------|---------|
-| `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/output-format.md` | Full output schema documentation |
-| `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/integration-guide.md` | How dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/planning use this skill |
-| `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fallback-workflow.md` | Guided questions workflow |
-| `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/w3c-dtcg-spec.md` | W3C Design Tokens format reference |
+| `references/output-format.md` | Full output schema documentation |
+| `references/integration-guide.md` | How dev-craft/planning use this skill |
+| `references/fallback-workflow.md` | Guided questions workflow |
+| `references/w3c-dtcg-spec.md` | W3C Design Tokens format reference |
 
 ## Templates
 
 | Template | Purpose |
 |----------|---------|
-| `templates${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/w3c-tokens.json` | W3C DTCG format template |
-| `templates${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/css-variables.css` | CSS custom properties template |
-| `templates${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/tailwind-config.js` | Tailwind config template |
-| `templates${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/design-spec.md` | Markdown design spec template |
+| `templates/w3c-tokens.json` | W3C DTCG format template |
+| `templates/css-variables.css` | CSS custom properties template |
+| `templates/tailwind-config.js` | Tailwind config template |
+| `templates/design-spec.md` | Markdown design spec template |
 
 ## Accuracy Notes
 
@@ -382,5 +241,5 @@ See `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PRO
 
 ## See Also
 
-- `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/integration-guide.md` — How to integrate with dev-craft, ui-craft, planning
-- `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fallback-workflow.md` — Manual analysis when automation is insufficient
+- `references/integration-guide.md` — How to integrate with dev-craft, ui-craft, planning
+- `references/fallback-workflow.md` — Manual analysis when automation is insufficient

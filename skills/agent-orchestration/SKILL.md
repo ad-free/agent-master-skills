@@ -29,7 +29,7 @@ Split large features across multiple agents (backend, frontend, mobile) working 
 - No clear shared contract (API, schema, etc.) exists yet
 
 **Topology (mono vs multi):** This skill coordinates agents on a **shared codebase**. Two layouts apply:
-- `mono` — one repo containing BE + FE (e.g. `backend${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` + `frontend${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`). Use `git worktree` isolation below.
+- `mono` — one repo containing BE + FE (e.g. `backend/` + `frontend/`). Use `git worktree` isolation below.
 - `multi` — separate BE repo and FE repo (two checkouts). `git worktree` cannot span repos, so use **separate clones + paired branches** instead (see Multi-Repo Variant). The shared contract still applies, but lives in the BE repo (`contractRepo`) as `api-contract.md`, aligned with dev-craft's SCOPE gate (§0.2).
 
 This skill's state must align with dev-craft's SCOPE record: read `topology`, `scope`, `mode`, `repos`, `contractRepo`, and `linkedBranches` from the active dev-craft run so agents branch and read the contract consistently.
@@ -52,9 +52,9 @@ A `git worktree` is a separate working directory linked to the same repository. 
 main repository/
 ├── .git/                  # shared object store
 ├── src/                   # main checkout (usually main branch)
-├── ..${PROJECT_ROOT}/        # worktree on api-slice branch
-├── ..${PROJECT_ROOT}/        # worktree on web-slice branch
-└── ..${PROJECT_ROOT}/     # worktree on mobile-slice branch
+├── ../        # worktree on api-slice branch
+├── ../        # worktree on web-slice branch
+└── ../     # worktree on mobile-slice branch
 ```
 
 Each worktree shares **git objects** (history, commits) but has **independent** working trees, indexes, and HEAD refs.
@@ -63,13 +63,13 @@ Each worktree shares **git objects** (history, commits) but has **independent** 
 
 The contract (canonical file: `api-contract.md`; OpenAPI YAML content allowed when tooling supports it) defines:
 - Endpoints, methods, and paths
-- Request${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/response schemas
+- Request/response schemas
 - Error codes and statuses
 - Authentication requirements
 
-It lives in the **master agent's workspace** and is consumed (not modified) by worker agents. For `mono`, the master keeps it on a `contract`${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/feature branch; for `multi`, it lives in `contractRepo` (the BE repo) on the paired feature branch — matching dev-craft's SCOPE convention. Do NOT maintain a separate long-lived `contract` branch; the contract travels on the feature branch(es).
+It lives in the **master agent's workspace** and is consumed (not modified) by worker agents. For `mono`, the master keeps it on a `contract`/feature branch; for `multi`, it lives in `contractRepo` (the BE repo) on the paired feature branch — matching dev-craft's SCOPE convention. Do NOT maintain a separate long-lived `contract` branch; the contract travels on the feature branch(es).
 
-### Master${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Worker Agent Pattern
+### Master/Worker Agent Pattern
 
 | Role | Responsibility |
 |------|---------------|
@@ -100,16 +100,16 @@ Run from the main repository root:
 
 ```bash
 # Create worktrees for each agent
-git worktree add ..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-api api-slice
-git worktree add ..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-web web-slice
-git worktree add ..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-mobile mobile-slice
+git worktree add ../project-api api-slice
+git worktree add ../project-web web-slice
+git worktree add ../project-mobile mobile-slice
 ```
 
 Each worktree:
-- Lives in a **sibling directory** (e.g., `..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-api` relative to the repo root)
+- Lives in a **sibling directory** (e.g., `../project-api` relative to the repo root)
 - Is on its own **branch** (`api-slice`, `web-slice`, `mobile-slice`)
-- Shares the **same `.git${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` object store** — no duplication of history
-- Can `push`${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`pull` independently
+- Shares the **same `.git/` object store** — no duplication of history
+- Can `push`/`pull` independently
 
 ### Branch Strategy (mono)
 
@@ -136,7 +136,7 @@ main ──────┬────────────── api-slice �
 git worktree list
 
 # Remove a worktree when done
-git worktree remove ..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-api
+git worktree remove ../project-api
 git branch -D api-slice      # remove branch if no longer needed
 
 # Prune stale worktree references
@@ -145,23 +145,12 @@ git worktree prune
 
 ### Multi-Repo Variant (`multi` topology)
 
-When BE and FE are **separate repos**, `git worktree` cannot isolate across them — a worktree shares one `.git${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`. Instead, use **separate clones with paired branches**:
+When BE and FE are **separate repos**, use **separate clones with paired branches** instead of worktrees:
 
-```bash
-# Two independent repos; each gets its own feature branch, linked by issue id
-cd "$beRepo" && git checkout -b "feat${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fs-user-auth"
-cd "$feRepo" && git checkout -b "feat${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fs-user-auth"   # same name = trivial pairing
-
-# OR scope-prefixed names per dev-craft SCOPE §0.2 step 5:
-cd "$beRepo" && git checkout -b "feat${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/be-user-auth"
-cd "$feRepo" && git checkout -b "feat${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fe-user-auth"
-```
-
-Rules for `multi`:
-- **Contract:** write `api-contract.md` in `contractRepo` (BE repo by default). The FE repo reads it from there (or a synced mirror copy). Never keep two drifting copies.
-- **State:** each repo keeps its own `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` / `.ui-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` state; the SCOPE record's `linkedBranches` ties them (`{ be: "feat${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/be-user-auth", fe: "feat${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fe-user-auth" }`).
-- **Integration:** run per-repo suites, then contract conformance (every FE-called route exists in BE, shapes match, status codes handled). Merge${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/PR each repo's branch; ship both sides together for a fullstack unit.
-- The master agent still owns the contract and integration merge — isolation is by clone, not worktree.
+- **Contract:** `api-contract.md` lives in `contractRepo` (BE repo); FE reads from there. Never two drifting copies.
+- **State:** each repo keeps its own `.dev-craft/` / `.ui-craft/`; `linkedBranches` in SCOPE ties them.
+- **Integration:** run per-repo suites then contract conformance. Merge/PR each repo's branch; ship together.
+- Master agent still owns the contract and integration merge.
 
 The master agent is loaded first. It:
 
@@ -181,7 +170,7 @@ The master agent is loaded first. It:
 
 ### Backend Agent
 
-1. Checks out its worktree (e.g., `..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-api` on `api-slice`)
+1. Checks out its worktree (e.g., `../project-api` on `api-slice`)
 2. Reads the API contract from master
 3. Implements endpoints, models, middleware, data access
 4. Runs backend tests against the contract
@@ -189,7 +178,7 @@ The master agent is loaded first. It:
 
 ### Frontend Agent
 
-1. Checks out its worktree (e.g., `..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-web` on `web-slice`)
+1. Checks out its worktree (e.g., `../project-web` on `web-slice`)
 2. Generates API client from the contract (e.g., `openapi-generator`, `orval`, `tRPC`)
 3. Builds UI components against the generated client
 4. Mocks API responses until backend is stable
@@ -197,7 +186,7 @@ The master agent is loaded first. It:
 
 ### Mobile Agent
 
-1. Checks out its worktree (e.g., `..${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/project-mobile` on `mobile-slice`)
+1. Checks out its worktree (e.g., `../project-mobile` on `mobile-slice`)
 2. Generates mobile API client from the contract
 3. Builds mobile screens against the contract
 4. Uses mock data until backend stabilises
@@ -320,41 +309,13 @@ Conflicts during integration are **true conflicts** (not structural noise) and r
 
 ## Gotchas
 
-### Worktree Disk Usage
-
-**Issue:** Each worktree is a full checkout of the repository. For large repos with many worktrees, disk usage can grow significantly.
-
-**Mitigation:** The `.git${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` directory is shared (not duplicated). Only working tree files are duplicated. Remove worktrees as soon as they are merged.
-
-### Stale Worktrees
-
-**Issue:** Worktrees left behind after branches are deleted. The worktree directory still exists on disk with no corresponding branch.
-
-**Mitigation:** Always run `git worktree remove <path>` before deleting branches. Periodically run `git worktree prune`.
-
-### Contract Drift
-
-**Issue:** Workers accidentally modify the contract file in their worktree, creating subtle incompatibilities.
-
-**Mitigation:** Set the contract file as read-only in worker workspaces. Use CI to validate that the contract matches the committed `api-contract.md` on the feature branch. Enforce contract change protocol.
-
-### Git Ref Management
-
-**Issue:** Each worktree has its own `HEAD`, `ORIG_HEAD`, `FETCH_HEAD`, etc. Running `git gc` can fail if worktrees reference objects that another worktree needs.
-
-**Mitigation:** Run `git gc` from the main repository only. Use `git worktree list` to verify no stale worktree references exist before garbage collection.
-
-### Worktree Nesting
-
-**Issue:** Creating a worktree inside another worktree is not supported by git. Worktrees must be siblings.
-
-**Mitigation:** Always create worktrees as siblings of the main repository, not nested within another worktree.
-
-### Cross-Platform Path Issues
-
-**Issue:** Git worktree paths are absolute and stored in `.git${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`. Moving the repository on disk can break worktree references.
-
-**Mitigation:** Avoid moving the repository while worktrees exist. If you must move it, run `git worktree repair` afterward.
+| Gotcha | Mitigation |
+|--------|------------|
+| Contract Drift — workers modify the contract file | Set contract read-only in worker workspaces; CI validates against committed version |
+| Stale Worktrees — dirs left after branches deleted | `git worktree remove <path>` before deleting branches; periodic `git worktree prune` |
+| Worktree Nesting — unsupported inside other worktrees | Always create worktrees as siblings of main repo |
+| Disk Usage — full checkout per worktree | `.git/` is shared; remove worktrees as soon as merged |
+| Cross-Platform Paths — absolute paths break on repo move | Run `git worktree repair` after moving repo |
 
 ## Integration with Other Skills
 
@@ -386,23 +347,7 @@ verification-before-completion
 
 ### Shared Memory Convention
 
-All agents in an orchestration share a common prefix for their memory directories:
-
-```
-.project-api${PROJECT_ROOT}/       # backend agent memory
-.project-web${PROJECT_ROOT}/        # frontend agent memory
-.project-mobile${PROJECT_ROOT}/    # mobile agent memory
-```
-
-The master agent maintains a top-level orchestration state:
-
-```
-.agent-orchestration/
-├── state.json           # overall status of all agents
-├── contract.yaml        # canonical API contract
-├── decisions/           # ADRs for contract changes
-└── sessions/            # handoff docs per agent
-```
+Agents share a project-prefix pattern (`.project-api/`, `.project-web/`). Master maintains `.agent-orchestration/` with `state.json`, `contract.yaml`, `decisions/`, and `sessions/`.
 
 ### Exit Criteria
 
@@ -412,5 +357,5 @@ Before claiming completion, load `verification-before-completion` and verify:
 - [ ] Integration tests pass
 - [ ] API contract finalised and committed to `main`
 - [ ] No stale worktrees remain
-- [ ] `.agent-orchestration${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` state archived or removed
+- [ ] `.agent-orchestration/` state archived or removed
 - [ ] CI passes on `main` after merge

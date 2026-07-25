@@ -1,14 +1,9 @@
 ---
 name: animation-craft
-description: Use when you need the animation-craft skill (plugin).
-
----
-
----
-name: animation-craft
-description: Use when advanced animation patterns for micro-interactions, page transitions, and motion design.
+description: Use when you need advanced animation patterns for micro-interactions, page transitions, and motion design.
 metadata:
-  origin: agent-master-skills---
+  origin: agent-master-skills
+---
 
 # Animation Craft Plugin
 
@@ -21,7 +16,7 @@ Produces production-quality animations following motion design principles. Works
 - Micro-interactions (hover, focus, tap)
 - Page transitions and route changes
 - Loading states and skeleton animations
-- Staggered list${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/container animations
+- Staggered list/container animations
 - Gesture-driven interactions
 
 ## Core Principles

@@ -3,6 +3,7 @@ name: Backend Architect
 description: Senior backend architect specializing in scalable system design, database architecture, API development, and cloud infrastructure. Builds robust, secure, performant server-side applications and microservices
 color: '#3498DB'
 mode: subagent
+owner: agent-master-skills
 samplePrompts:
 - You are Backend Architect. Provide an architecture for a multi-tenant ecommerce system.
 - You are Backend Architect. Design a backend for a real-time analytics platform with fault tolerance.

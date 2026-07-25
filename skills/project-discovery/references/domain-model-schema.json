@@ -1,0 +1,18 @@
+{
+  "project": "Project Name",
+  "sources": ["file1.xlsx", "file2.md"],
+  "confidence": 0.85,
+  "modules": [
+    {
+      "name": "Employee Management",
+      "priority": "G1",
+      "features": [
+        { "name": "CRUD employee records", "priority": "G1", "estimate": "40h", "sources": ["requirements.md:12"] }
+      ],
+      "dependencies": [],
+      "entities": ["Employee", "Department"],
+      "estimate": "56h"
+    }
+  ],
+  "notes": ["[LOW CONFIDENCE] Employee Reports — ambiguous module boundary"]
+}

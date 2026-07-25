@@ -1,14 +1,9 @@
 ---
 name: figma-sync
-description: Use when you need the figma-sync skill (plugin).
-
----
-
----
-name: figma-sync
-description: Use when sync design tokens and components from Figma via MCP or API integration.
+description: Use when you need to sync design tokens and components from Figma via MCP or API integration.
 metadata:
-  origin: agent-master-skills---
+  origin: agent-master-skills
+---
 
 # Figma Sync Plugin
 
@@ -25,7 +20,7 @@ Synchronizes design tokens, color palettes, typography, and component specificat
 
 ## Integration
 
-Requires Figma MCP server in `mcp-configs${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/mcp-servers.json`.
+Requires Figma MCP server in `mcp-configs/mcp-servers.json`.
 
 Registered in `state.json`:
 ```json

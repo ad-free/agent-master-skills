@@ -64,7 +64,7 @@ NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 
 ## Verification Checklist
 
-Before any completion claim, you MUST:
+Before any completion claim, you MUST check all boxes with **fresh** output from this session:
 
 ```
 VERIFICATION EVIDENCE:
@@ -75,8 +75,6 @@ VERIFICATION EVIDENCE:
 - [ ] Manual test: [what you tested and result]
 ```
 
-**Every box must be checked with FRESH output from this session.**
-
 ## The Fresh Evidence Rule
 
 ```
@@ -84,7 +82,7 @@ Evidence older than your last code change is INVALID.
 ```
 
 **Timeline:**
-1. You write${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/modify code
+1. You write/modify code
 2. You run tests → they pass (evidence captured)
 3. You modify MORE code
 4. Step 2 evidence is now INVALID
@@ -98,7 +96,7 @@ When claiming work is complete, you MUST provide:
 
 ```
 COMPLETION CLAIM:
-Feature: [what was built${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fixed]
+Feature: [what was built/fixed]
 Evidence:
 - Tests: [command] → [output summary]
 - Lint: [command] → [0 errors]
@@ -126,7 +124,7 @@ Status: COMPLETE
 ## Red Flags — STOP and Verify
 
 - About to say "done" without running tests
-- About to commit without lint${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/type check
+- About to commit without lint/type check
 - About to move to next phase without evidence
 - About to report status without proof
 - "I'm confident it works"
@@ -137,29 +135,7 @@ Status: COMPLETE
 
 ## Verification Gates
 
-### Gate 1: Before Any Code Change
-- [ ] Existing tests pass (baseline)
-
-### Gate 2: After Each Slice
-- [ ] New tests pass
-- [ ] Existing tests still pass
-- [ ] Lint passes
-- [ ] Type check passes
-- [ ] Build succeeds
-
-### Gate 3: Before Completion Claim
-- [ ] Full test suite passes
-- [ ] Lint passes on all changed files
-- [ ] Type check passes
-- [ ] Build succeeds
-- [ ] Manual verification complete
-- [ ] No debug artifacts remain
-
-### Gate 4: Before Commit
-- [ ] All Gate 3 checks
-- [ ] Secrets scanner passes
-- [ ] Dead code removed
-- [ ] Commit message is clear
+Apply the Verification Checklist at three points: before changes (baseline tests pass), after each slice (new + existing tests, lint, type, build), and before claiming done (full suite + manual verification + no debug artifacts). Before committing, also run a secrets scanner and ensure no dead code remains.
 
 ## The Verification Script
 
