@@ -4,10 +4,6 @@ description: Use when you need to ingest existing specifications (Excel, CSV, te
   MD) and extract a domain model, features, priorities, and dependencies.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- http
-- file
 
 ---
 

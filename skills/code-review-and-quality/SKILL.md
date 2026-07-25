@@ -4,10 +4,6 @@ description: Use when reviewing code or receiving review feedback. Eight-axis qu
   assessment before merging any change.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- git
-- python
 
 ---
 

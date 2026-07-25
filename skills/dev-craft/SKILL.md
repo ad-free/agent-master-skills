@@ -4,11 +4,6 @@ description: Use when running a full-stack engineering pipeline with persistent 
   state for long-lived work and phased delivery.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- python
-- git
-- shell
 
 ---
 

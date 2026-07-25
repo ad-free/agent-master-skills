@@ -4,10 +4,6 @@ description: Use when you need a layered quality validation pipeline (lint${PROJ
   security scan, and LLM judgment) before merging.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- git
-- python
 
 ---
 

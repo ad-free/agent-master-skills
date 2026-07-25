@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: figma-sync
+description: Use when you need the figma-sync skill (plugin).
 
 ---
 

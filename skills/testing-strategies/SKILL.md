@@ -9,10 +9,6 @@ description: "Use when deciding WHAT kind of test to write for a change \u2014 u
 metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
-owner: noname.spyware@gmail.com
-allowedTools:
-- python
-- shell
 
 ---
 

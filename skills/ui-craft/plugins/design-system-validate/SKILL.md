@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: design-system-validate
+description: Use when you need the design-system-validate skill (plugin).
 
 ---
 

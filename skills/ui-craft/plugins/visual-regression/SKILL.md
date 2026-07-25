@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: visual-regression
+description: Use when you need the visual-regression skill (plugin).
 
 ---
 

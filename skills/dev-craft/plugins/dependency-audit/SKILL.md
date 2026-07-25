@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: dependency-audit
+description: Use when you need the dependency-audit skill (plugin).
 
 ---
 

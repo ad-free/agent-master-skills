@@ -4,10 +4,6 @@ description: Use when about to claim a task is complete; require fresh verificat
   evidence rather than assumptions.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
 
 ---
 

@@ -4,10 +4,6 @@ description: Use when you have a spec and need work broken into ordered, verifia
   tasks with acceptance criteria.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
 
 ---
 

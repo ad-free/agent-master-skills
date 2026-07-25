@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: security-audit
+description: Use when you need the security-audit skill (plugin).
 
 ---
 

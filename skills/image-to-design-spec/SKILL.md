@@ -4,10 +4,6 @@ description: Use when analyzing UI screenshots or images to generate structured 
   specs with colors, layout, components, and design tokens.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
 
 ---
 

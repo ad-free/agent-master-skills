@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: accessibility-deep
+description: Use when you need the accessibility-deep skill (plugin).
 
 ---
 

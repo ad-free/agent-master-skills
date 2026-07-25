@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: performance-profiling
+description: Use when you need the performance-profiling skill (plugin).
 
 ---
 

@@ -4,10 +4,6 @@ description: Use when the input is vague or incomplete and you need to produce a
   spec with user stories, acceptance criteria, and a domain model.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- http
-- file
 
 ---
 

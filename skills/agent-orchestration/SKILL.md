@@ -4,12 +4,6 @@ description: Use when orchestrating multiple agents to work in parallel on the s
   project, enforcing isolation, contracts, and conflict management.
 metadata:
   origin: agent-master-skills
-owner: noname.spyware@gmail.com
-allowedTools:
-- ai
-- http
-- git
-- shell
 
 ---
 

@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: animation-craft
+description: Use when you need the animation-craft skill (plugin).
 
 ---
 

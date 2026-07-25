@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: database-migrations
+description: Use when you need the database-migrations skill (plugin).
 
 ---
 

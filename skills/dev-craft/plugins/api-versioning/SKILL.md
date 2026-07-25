@@ -1,8 +1,6 @@
 ---
-owner: noname.spyware@gmail.com
-allowedTools:
-- file
-- http
+name: api-versioning
+description: Use when you need the api-versioning skill (plugin).
 
 ---
 

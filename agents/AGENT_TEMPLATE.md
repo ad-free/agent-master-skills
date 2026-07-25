@@ -2,11 +2,10 @@
 name: Example Agent
 description: Short description of the agent's role and responsibilities
 mode: subagent
-version: 0.1.0
-owner: noname.spyware@gmail.com
-allowedTools: [none]
 samplePrompts:
-  - "Describe your role and give a short example usage prompt."
+- Describe your role and give a short example usage prompt.
+version: 0.1.0
+
 ---
 
 # Example Agent
