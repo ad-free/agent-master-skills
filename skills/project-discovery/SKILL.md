@@ -23,7 +23,7 @@ Activate this skill when **any** of these conditions are true:
 |-----------|---------|
 | User has existing spec files | PRD, functional spec, requirements doc |
 | User has spreadsheets with requirements | Excel sheets listing features, modules, entities |
-| User has estimates or cost sheets | Cost${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/effort tables mapped to features |
+| User has estimates or cost sheets | Cost/effort tables mapped to features |
 | User is migrating from another system | Legacy docs, exported data, old requirement artifacts |
 | User pastes raw requirements in chat | Bullet lists, numbered items, free-form text |
 | User says "I have all the requirements in this file" | Any file attachment with domain info |
@@ -40,7 +40,7 @@ Activate this skill when **any** of these conditions are true:
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌────────────┐     ┌─────────────────────┐
 │ Raw files/  │────▶│ project-discovery │────▶│ DOMAIN.md  │────▶│ dev-craft (REQUIRE) │
-│ paste${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/text  │     │ (this skill)      │     │            │     │ planning-and-task   │
+│ paste/text  │     │ (this skill)      │     │            │     │ planning-and-task   │
 └─────────────┘     └──────────────────┘     └────────────┘     └─────────────────────┘
 ```
 
@@ -52,10 +52,10 @@ Identify the format of each input file:
 
 | Extension | Type | Parser Strategy |
 |-----------|------|-----------------|
-| `.xlsx` / `.xls` | Excel | Read sheets, extract named ranges, scan rows${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/columns for entity headers |
+| `.xlsx` / `.xls` | Excel | Read sheets, extract named ranges, scan rows/columns for entity headers |
 | `.csv` | Comma-separated | Parse headers and rows, detect named entities in first column |
-| `.md` | Markdown | Parse headings, bullet lists, tables, code blocks, bold${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/italic patterns |
-| `.txt` | Plain text | Line-by-line scan, detect sections via blank lines, detect lists via indentation${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/bullets |
+| `.md` | Markdown | Parse headings, bullet lists, tables, code blocks, bold/italic patterns |
+| `.txt` | Plain text | Line-by-line scan, detect sections via blank lines, detect lists via indentation/bullets |
 | `.pdf` | PDF | Extract text via `pdftotext` or `python -m pdfminer`, then treat as `.txt` |
 
 ```
@@ -75,16 +75,6 @@ Entities are the core nouns of the domain (tables, classes, domain objects). Sca
 - **Glossary patterns** — Bold terms, definitions, "entity" or "table" keywords
 - **Common domain suffixes**: `-ment`, `-ion`, `-ance`, `-ory`, `-er`, `-or`
 
-```python
-# Pseudocode for entity extraction
-entities = []
-for line in lines:
-    if matches_pascal_case(line) and is_noun(line):
-        entities.append(line.strip())
-    if line.startswith("## ") and line not in common_headers:
-        entities.append(line.replace("## ", "").strip())
-```
-
 **Heuristics:**
 - Nouns used **3+ times** across the document → probable entity
 - Appears in **feature descriptions** as subject → probable entity
@@ -96,19 +86,11 @@ Features are capabilities or functions the system must provide. Look for:
 
 - **Bullet points** (`-`, `*`, `+`)
 - **Numbered items** (`1.`, `2.`, `(a)`, `(b)`)
-- **Task${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/checklist items** (`- [ ]`, `- [x]`)
+- **Task/checklist items** (`- [ ]`, `- [x]`)
 - **Table rows** with feature descriptions
 - **"Must", "Should", "Shall"** statements
 - **User story patterns** (`As a...`, `I want to...`, `So that...`)
 - **Use case labels** (`UC-01`, `US-001`, `FR-01`)
-
-```
-FEATURE DETECTION:
-  Bullet count: 24
-  Numbered items: 12
-  User story patterns: 5
-  Total candidate features: 18
-```
 
 **Boundary heuristic:** A feature is a single capability. If a bullet contains "and" or "or", it may be two features merged — flag for user review.
 
@@ -118,7 +100,7 @@ Priorities tell us what to build first. Look for:
 
 | Pattern | Normalized Priority |
 |---------|-------------------|
-| `G1`, `G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3` | Group 1 (Critical), Group 2 (Important), Group 3 (Nice-to-have) |
+| `G1`, `G1/G3` | Group 1 (Critical), Group 2 (Important), Group 3 (Nice-to-have) |
 | `P0`, `P1`, `P2`, `P3` | P0=Blocker, P1=Critical, P2=Important, P3=Nice-to-have |
 | `Must-have`, `Should-have`, `Could-have`, `Won't-have` | MoSCoW mapping → M=G1, S=G2, C=G3 |
 | `High`, `Medium`, `Low` | High=G1, Medium=G2, Low=G3 |
@@ -141,13 +123,6 @@ Look for numerical estimates associated with features:
 
 Extract as raw values — do not normalize (users understand their own units).
 
-```
-EFFORT SCAN:
-  Features with estimates: 12${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/18
-  Estimate units: hours (6), SP (3), t-shirt (3)
-  $ cost mentioned for: 4 features
-```
-
 ### Step 6: Identify Dependency Relationships
 
 Dependencies connect entities and features. Look for:
@@ -159,87 +134,11 @@ Dependencies connect entities and features. Look for:
 - **Cross-reference patterns:** `(see Employee)`, `cf. Attendance`, `-> Payroll`
 - **Module groupings:** Features grouped under a heading may share dependencies
 
-```python
-dependency_graph = {
-    "Payroll": {"Employee", "Attendance"},  # Payroll needs Employee + Attendance
-    "Attendance": {"Employee", "Shift"},
-    "Reports": {"Payroll", "Attendance"},
-}
-```
-
 **Low confidence detection:** Use **textual proximity** — if two entity names appear within 3 sentences of each other repeatedly, flag as a possible implicit dependency.
 
 ## Domain Model Extraction
 
-Once scanning is complete, synthesize into a structured domain model following this template:
-
-```markdown
-# Domain Model — [Project Name]
-
-> Extracted from: `requirements.xlsx`, `spec.md`
-> Extraction confidence: 85%
-> Date: 2026-07-14
-
-## Modules
-
-### Module: Employee Management
-  **Priority:** G1 (Critical)
-  **Features:**
-    - CRUD employee records (G1)
-    - Department assignment (G1)
-    - Role-based access control (G2)
-    - Employee self-service portal (G3)
-  **Dependencies:** None (foundation module)
-  **Entities:** Employee, Department, Role
-  **Estimate:** ~120 hours (G1 features: 80h, G2: 30h, G3: 10h)
-
-### Module: Attendance Tracking
-  **Priority:** G1 (Critical)
-  **Features:**
-    - Clock in${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/out via biometric (G1)
-    - Manual attendance entry (G2)
-    - Leave request and approval (G1)
-    - Shift scheduling (G2)
-  **Dependencies:** Employee Management
-  **Entities:** Attendance, Leave, Shift, Approval
-  **Estimate:** ~90 hours
-
-### Module: Payroll Processing
-  **Priority:** G1 (Critical)
-  **Features:**
-    - Monthly payroll calculation (G1)
-    - Tax deduction computation (G1)
-    - Payslip generation (G2)
-    - Bank file export (G3)
-  **Dependencies:** Employee Management, Attendance Tracking
-  **Entities:** Payroll, TaxSlab, Payslip, BankFile
-  **Estimate:** ~150 hours
-
-## Entity Relationship Summary
-
-```
-Employee ──1:N──▶ Attendance ──1:1──▶ Payroll
-Employee ──1:1──▶ Department
-Employee ──1:N──▶ Leave
-Leave ────N:1───▶ Approval
-Payroll ──N:1───▶ TaxSlab
-```
-
-## Priority Distribution
-
-| Priority | Feature Count | Est. Hours |
-|----------|--------------|------------|
-| G1       | 8            | 220h       |
-| G2       | 6            | 100h       |
-| G3       | 4            | 40h        |
-| Unknown  | 0            | 0h         |
-
-## Extraction Notes
-
-- [LOW CONFIDENCE] "Employee Reports" in spec.md:23 — could be a feature of Employee module OR a separate Reporting module. Flagged for user.
-- [AMBIGUOUS] Feature "Manage users" appears in both Employee and Admin sections. May need deduplication.
-- [INFERRED] Dependency from Payroll → Attendance was not explicitly stated but inferred from field references (hours_worked, overtime).
-```
+See the template structure in the [Output File](#output-file-domainmd) section below.
 
 ### Confidence Scoring
 
@@ -248,8 +147,8 @@ Each extraction dimension gets a confidence score:
 | Dimension | High Confidence (90%+) | Medium Confidence (70-89%) | Low Confidence (<70%) |
 |-----------|----------------------|---------------------------|-----------------------|
 | Entities | Explicit heading, 3+ references | Named once, no clear definition | Inferred from context, not directly named |
-| Features | Bullet${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/numbered list with verb | Sentence with "shall${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/must" | Implied capability, passive mention |
-| Priorities | Explicit label (G1, P1, MoSCoW) | Phase${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/grouping membership | Inferred from ordering${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/emphasis |
+| Features | Bullet/numbered list with verb | Sentence with "shall/must" | Implied capability, passive mention |
+| Priorities | Explicit label (G1, P1, MoSCoW) | Phase/grouping membership | Inferred from ordering/emphasis |
 | Dependencies | "depends on", explicit cross-ref | Shared entity between features | Proximity-based inference |
 | Estimates | Numeric with unit | T-shirt size or complexity label | Vague time reference |
 
@@ -260,7 +159,7 @@ Each extraction dimension gets a confidence score:
 Save the complete extracted model to `DOMAIN.md` at the project root (or a user-specified path):
 
 ```
-${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/DOMAIN.md
+/DOMAIN.md
 ```
 
 **File structure:**
@@ -271,28 +170,7 @@ ${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/DOMA
 5. **Extraction Notes** — all flags, low-confidence items, ambiguities
 6. **Raw Data Appendix** — original text snippets mapped to extracted items (for traceability)
 
-### Example Output
 
-```markdown
-# Domain Model — Payroll System
-
-> Extracted from: `PRD_v2.docx`, `estimates.xlsx`, `requirements.md`
-> Extraction confidence: 82%
-> Date: 2026-07-14
-
-## Modules
-
-### Module: Employee Management
-  Priority: G1
-  Features:
-    - Employee record CRUD (G1, 40h) [source: requirements.md:12]
-    - Department transfer (G2, 16h) [source: PRD_v2.docx:45]
-  Dependencies: None
-  Entities: Employee, Department
-  Estimate: 56h
-
-...
-```
 
 ## Validation
 
@@ -317,32 +195,13 @@ Before finalizing the output, run validation checks:
 
 ### User Presentation
 
-Present findings to user in this format:
+Present findings to user in this compact format:
 
 ```
-Extraction Results
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Source files: (3) PRD_v2.docx, estimates.xlsx, requirements.md
-Overall confidence: 82% — Good
-
-Modules detected: 3
-  ─ Employee Management (G1) — 6 features — 56h
-  ─ Attendance Tracking (G1) — 5 features — 90h
-  ─ Payroll Processing (G1) — 4 features — 150h
-
-Entities detected: 9
-  Employee, Department, Attendance, Leave, Shift, Approval, Payroll, TaxSlab, Payslip
-
-Dependencies: 2
-  Attendance → Employee, Payroll → Employee + Attendance
-
-⚠ Ambiguous items requiring your input:
-  1. [LOW CONFIDENCE] "Employee Reports" — separate module or Employee feature?
-  2. [AMBIGUOUS] "Manage users" — duplicate in Employee and Admin?
-  3. [UNKNOWN PRIORITY] Feature "Dashboard view" has no priority assigned
-
-Accept this domain model? (Y${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/n) ...
+Extraction Results — Source: (3) files | Confidence: 82%
+Modules: Employee Mgmt(G1), Attendance(G1), Payroll(G1)
+Entities: 9 · Dependencies: 2
+⚠ Ambiguous: Employee Reports, Manage users, Dashboard priority
 ```
 
 ## Handoff: DOMAIN.md → dev-craft
@@ -355,8 +214,8 @@ DOMAIN.md
     ▼
 dev-craft — REQUIRE phase
     │ Read DOMAIN.md
-    │ Extract requirements from each module${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/feature
-    │ Prioritize based on G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3
+    │ Extract requirements from each module/feature
+    │ Prioritize based on G1/G3
     │ Build dependency order
     │
     ▼
@@ -421,81 +280,11 @@ planning-and-task-breakdown — PLAN phase
 
 ### Parsing Edge Cases
 - **Tables in markdown:** Multi-line cell content can break naive parsers. Use a proper MD parser (e.g., `python-markdown` with table extension).
-- **Excel merged cells:** Can cause empty rows${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/columns in parsed output. Detect and skip.
+- **Excel merged cells:** Can cause empty rows/columns in parsed output. Detect and skip.
 - **Track changes / comments in documents:** Can insert spurious text. Flag if detected.
 - **Image-based PDFs:** Cannot extract text. Inform user: "PDF appears to contain scanned images — no text could be extracted. Please provide text-based source."
 
-## Quick Reference Card
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                 PROJECT DISCOVERY                        │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  1. Detect file types (xlsx${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/pdf)             │
-│  2. Scan for entities (nouns, headings, table rows)     │
-│  3. Scan for features (bullets, user stories, use cases)│
-│  4. Scan for priorities (G1-G3, MoSCoW, P0-P3)         │
-│  5. Scan for estimates (hours, SP, $, t-shirt)         │
-│  6. Identify dependencies (explicit + inferred)         │
-│  7. Build domain model (modules + features)             │
-│  8. Calculate confidence scores                         │
-│  9. Present to user for validation                      │
-│ 10. Write DOMAIN.md                                     │
-│ 11. Hand off to dev-craft REQUIRE phase                 │
-│                                                         │
-│  Confidence: ≥70% auto-proceed, 50-69% flag, <50% abort│
-│  Output: DOMAIN.md at project root                      │
-│  Next: dev-craft → planning-and-task-breakdown          │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
 
 ## Appendix B: JSON Model Schema
 
-The internal model representation is a JSON file that DOMAIN.md is generated from:
-
-```json
-{
-  "project": "Project Name",
-  "sources": ["file1.xlsx", "file2.md"],
-  "confidence": 0.85,
-  "modules": [
-    {
-      "name": "Employee Management",
-      "priority": "G1",
-      "features": [
-        { "name": "CRUD employee records", "priority": "G1", "estimate": "40h", "sources": ["requirements.md:12"] }
-      ],
-      "dependencies": [],
-      "entities": ["Employee", "Department"],
-      "estimate": "56h"
-    }
-  ],
-  "notes": ["[LOW CONFIDENCE] Employee Reports — ambiguous module boundary"]
-}
-```
-
-## Integration
-
-```
-project-discovery (this skill)
-        │
-        ▼
-dev-craft (REQUIRE phase)
-   Reads DOMAIN.md, produces structured requirements
-        │
-        ▼
-planning-and-task-breakdown
-   Breaks features into implementable tasks
-        │
-        ▼
-dev-craft (ALIGN + DESIGN + BUILD ...)
-   Full implementation pipeline
-```
-
-**Used with:**
-- `dev-craft` — DOMAIN.md feeds REQUIRE phase, then ALIGN for architecture
-- `planning-and-task-breakdown` — Feature list feeds task decomposition
-- `verification-before-completion` — Validate features against extracted requirements
-- `context-engineering` — Set up context with extracted domain model for downstream agents
+See `references/domain-model-schema.json`

@@ -39,6 +39,9 @@ User Request Received
 │           ├── Parallel work → dispatching-parallel-agents
 │           └── Other → plan first, then execute
 │
+ ├── Creating or modifying skills?
+ │   └── Yes → skill-creator
+ │
  ├── Is this frontend/UI work?
  │   ├── Yes → ui-craft (if the user explicitly asks for dev-craft anyway, dev-craft's own Skill Alignment Check §0.2 step 3a will catch the mismatch and surface it)
  │   └── No → dev-craft
@@ -98,6 +101,7 @@ does not copy those rules; they have one source of truth.
 | Reviewing code | `code-review-and-quality` |
 | Security audit / bug bounty | `bug-hunting` |
 | Multiple independent tasks | `dispatching-parallel-agents` |
+| Creating or modifying skills | `skill-creator` |
 | Vague idea / missing requirements | `product-thinking` |
 | Screenshot/image as reference | `image-to-design-spec` |
 
@@ -217,6 +221,58 @@ See [`PLUGIN-SYSTEM.md`](./PLUGIN-SYSTEM.md) for plugin architecture, format, re
 See [`WORKFLOW-BUNDLES.md`](./WORKFLOW-BUNDLES.md) for pre-configured workflows (SaaS MVP, Admin Dashboard, E-commerce, Landing Page).
 
 ---
+
+
+## Phase Templates (Shared)
+
+Common phase structures used by both dev-craft and ui-craft. Reference these instead of duplicating.
+
+### Template: Human Checkpoint
+```
+**Exit criterion:** Human explicitly approves [what] with yes/no.
+
+**State write:** Save [key data] to state.json.
+```
+
+### Template: Gate with Evidence
+```
+**Exit criterion (HARD GATE):** [Condition]. [Failure mode] is the failure this prevents.
+
+**Evidence required:**
+- [ ] [Check 1]: [command] → [expected output]
+- [ ] [Check 2]: [command] → [expected output]
+```
+
+### Template: Resume Logic
+```
+**Resume Logic:**
+
+| Scenario | Behavior |
+|---|---|
+| No state dir | Phase X if codebase exists, Phase Y if greenfield |
+| State exists + complete | Ask: "New feature? Start fresh?" |
+| State exists + incomplete | Load context.md, restore slice progress |
+| Context near limit | Generate handoff doc, resume next session |
+```
+
+### Template: Branch Isolation
+```
+**Branch isolation (mandatory):** Every run starts on a dedicated feature branch — never commit directly to `main`/`develop`. 
+
+**Base-branch guard (enforced before every commit):** Treat `main`, `master`, `develop` as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first.
+```
+
+### Template: Verification Checklist
+```
+VERIFICATION EVIDENCE:
+- [ ] Tests: [command] → [X passed, Y failed]
+- [ ] Lint: [command] → [0 errors]
+- [ ] Type check: [command] → [0 errors]
+- [ ] Build: [command] → [success]
+- [ ] Manual test: [what you tested and result]
+
+**Fresh Evidence Rule:** Evidence older than last code change is INVALID. Re-run.
+```
 
 ## Cross-Skill Communication Protocol
 

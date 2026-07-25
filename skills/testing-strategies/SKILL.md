@@ -4,10 +4,10 @@ description: "Use when deciding WHAT kind of test to write for a change \u2014 u
   \ vs integration vs e2e vs contract vs property-based, and what failure mode each\
   \ test covers. Do NOT use for \"did tests pass\" (see verification-before-completion)\
   \ or \"review my test coverage\" (see code-review-and-quality). Do NOT use for writing\
-  \ the test code itself (that's BUILD work once the test type${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/failure-mode\
+  \ the test code itself (that's BUILD work once the test type/failure-mode\
   \ is decided)."
 metadata:
-  origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
+  origin: adapted from ECC and addyosmani/agent-skills
   version: 1
 
 ---
@@ -27,11 +27,11 @@ Every test must declare what specific failure it detects: "this test fails if X 
 ## Decision tree
 
 1. **What fails if this code is wrong?**
-   - A pure function's output → **unit test** (fast, deterministic, no I${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/O). → `reference${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/unit-test-patterns.md`
-   - A database query or external API call → **integration test** (real DB${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/service or Testcontainers). → `reference${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/integration-test-patterns.md`
-   - A user-facing flow across the stack → **e2e test** (Playwright${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Cypress, critical paths only). → `reference${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/e2e-test-patterns.md`
-   - A contract between producer${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/consumer (API, message schema) → **contract test** (Pact for consumer-driven, schema validation for provider). → `reference${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/contract-test-patterns.md`
-   - Complex logic with many input combinations → **property-based test** (Hypothesis${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fast-check, find edge cases humans miss). → `reference${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/property-based-test-patterns.md`
+   - A pure function's output → **unit test** (fast, deterministic, no I/O). → `reference/unit-test-patterns.md`
+   - A database query or external API call → **integration test** (real DB/service or Testcontainers). → `reference/integration-test-patterns.md`
+   - A user-facing flow across the stack → **e2e test** (Playwright/Cypress, critical paths only). → `reference/e2e-test-patterns.md`
+   - A contract between producer/consumer (API, message schema) → **contract test** (Pact for consumer-driven, schema validation for provider). → `reference/contract-test-patterns.md`
+   - Complex logic with many input combinations → **property-based test** (Hypothesis/fast-check, find edge cases humans miss). → `reference/property-based-test-patterns.md`
 
 2. **Where does this test run in CI?**
    - Unit: every PR, < 30s total
@@ -41,15 +41,15 @@ Every test must declare what specific failure it detects: "this test fails if X 
    - Property-based: every PR (fast) + nightly deep run (more iterations)
 
 3. **What's the failure mode statement?**
-   - Required for every test: `${PROJECT_ROOT}/ Failure mode: this test fails if [specific behavior] breaks`
+   - Required for every test: `/ Failure mode: this test fails if [specific behavior] breaks`
    - Examples:
-     - `${PROJECT_ROOT}/ Failure mode: this test fails if discount calculation returns wrong amount for gold tier`
-     - `${PROJECT_ROOT}/ Failure mode: this test fails if ${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/orders endpoint returns 500 when DB is down`
-     - `${PROJECT_ROOT}/ Failure mode: this test fails if checkout flow doesn't send confirmation email`
+     - `/ Failure mode: this test fails if discount calculation returns wrong amount for gold tier`
+     - `/ Failure mode: this test fails if /orders endpoint returns 500 when DB is down`
+     - `/ Failure mode: this test fails if checkout flow doesn't send confirmation email`
 
 4. **Flaky test protocol:**
-   - If a test flakes > 1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/20 runs: quarantine immediately (`@pytest.mark.flaky`), fix or delete within 48h
-   - Root cause before re-enable: timing? shared state? external dependency? → `reference${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/flaky-test-protocol.md`
+   - If a test flakes > 1/20 runs: quarantine immediately (`@pytest.mark.flaky`), fix or delete within 48h
+   - Root cause before re-enable: timing? shared state? external dependency? → `reference/flaky-test-protocol.md`
 
 ## Output
 

@@ -1,14 +1,9 @@
 ---
 name: performance-profiling
-description: Use when you need the performance-profiling skill (plugin).
-
----
-
----
-name: performance-profiling
-description: Use when performance bottleneck detection and optimization for backend services.
+description: Use when you need performance bottleneck detection and optimization for backend services.
 metadata:
-  origin: agent-master-skills---
+  origin: agent-master-skills
+---
 
 # Performance Profiling Plugin
 
@@ -30,7 +25,7 @@ Systematic performance analysis for backend services. Identifies bottlenecks thr
 |-------|----------|---------|
 | Node.js | `clinic` | `clinic doctor -- node server.js` |
 | Python | `cProfile` / `py-spy` | `python -m cProfile -o output.prof script.py` |
-| Go | `pprof` | `go tool pprof htt${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/heap` |
+| Go | `pprof` | `go tool pprof htt/heap` |
 | Rust | `perf` / `flamegraph` | `cargo flamegraph` |
 
 ## Query Analysis

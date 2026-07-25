@@ -13,7 +13,8 @@ skills/
 │   │   ├── database-migrations/
 │   │   ├── api-versioning/
 │   │   ├── performance-profiling/
-│   │   └── dependency-audit/
+│   │   ├── dependency-audit/
+│   │   └── language-rules/         # TS/Python/Go/Rust conventions
 │   ├── scripts/
 │   └── references/
 ├── ui-craft/
@@ -23,7 +24,9 @@ skills/
 │   │   ├── visual-regression/
 │   │   ├── design-system-validate/
 │   │   ├── accessibility-deep/
-│   │   └── animation-craft/
+│   │   ├── animation-craft/
+│   │   ├── design-intelligence/    # Design system generation
+│   │   └── anti-slop/              # Anti-generic UI rules
 │   ├── scripts/
 │   └── references/
 └── PLUGIN-SYSTEM.md                # This file
@@ -65,6 +68,7 @@ Plugins are registered in `state.json`:
 | `api-versioning` | API version management | Public APIs |
 | `performance-profiling` | Performance bottleneck detection | Optimization |
 | `dependency-audit` | Dependency vulnerability scanning | Security |
+| `language-rules` | Language-specific conventions (TS/Python/Go/Rust) | BUILD & REVIEW |
 
 ### ui-craft Plugins
 
@@ -75,6 +79,8 @@ Plugins are registered in `state.json`:
 | `design-system-validate` | Validate against design system | Consistency |
 | `accessibility-deep` | WCAG 2.2 AAA compliance | Accessibility |
 | `animation-craft` | Advanced animation patterns | Micro-interactions |
+| `design-intelligence` | Design system generation (palettes, typography, styles) | New UI projects |
+| `anti-slop` | Anti-generic UI rules (no emoji icons, proper spacing) | BUILD quality |
 
 ## Best Practices
 

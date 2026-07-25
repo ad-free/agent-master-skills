@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "source": "screenshot.png",
+    "analyzed_at": "2026-07-12T10:30:00Z",
+    "analysis_layers": ["pillow+kmeans", "layout-detection", "gemini-vision"]
+  },
+  "image": {
+    "width": 1440,
+    "height": 900,
+    "aspect_ratio": "16:10",
+    "format": "png"
+  },
+  "colors": {
+    "dominant": ["#1a1a2e", "#16213e", "#0f3460", "#e94560", "#ffffff"],
+    "palette": {
+      "primary": "#1a1a2e",
+      "secondary": "#16213e",
+      "accent": "#e94560",
+      "background": "#ffffff",
+      "text": "#1a1a2e"
+    },
+    "mode": "dark"
+  },
+  "layout": {
+    "layout_type": "sidebar-main",
+    "has_header": true,
+    "has_footer": false,
+    "has_sidebar": true,
+    "sidebar_position": "left",
+    "sidebar_width_percent": 20,
+    "estimated_grid_columns": 1,
+    "spacing_hint": "normal",
+    "complexity_score": 0.45
+  },
+  "components": [
+    {"type": "navigation", "confidence": 0.95, "region": "top"},
+    {"type": "sidebar", "confidence": 0.90, "region": "left"}
+  ],
+  "design_tokens": {
+    "colors": { "primary": "#1a1a2e", "accent": "#e94560" },
+    "spacing": { "unit": "8px", "scale": "normal" },
+    "border_radius": { "style": "rounded", "value": "8px" }
+  }
+}

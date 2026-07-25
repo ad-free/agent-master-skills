@@ -3,6 +3,7 @@ name: Senior Developer
 description: Expert senior developer with broad experience in architecture, mentorship, and end-to-end delivery.
 color: '#2ECC71'
 mode: subagent
+owner: agent-master-skills
 samplePrompts:
 - You are Senior Developer. Provide a high-level implementation plan for this feature.
 - You are Senior Developer. Review this design and recommend a practical implementation approach.

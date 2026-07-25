@@ -1,14 +1,9 @@
 ---
 name: design-system-validate
-description: Use when you need the design-system-validate skill (plugin).
-
----
-
----
-name: design-system-validate
-description: Use when validates UI code against design system tokens and component library specifications.
+description: Use when you need to validate UI code against design system tokens and component library specifications.
 metadata:
-  origin: agent-master-skills---
+  origin: agent-master-skills
+---
 
 # Design System Validate Plugin
 
@@ -27,7 +22,7 @@ Enforces design system compliance across all UI code. Checks that colors, typogr
 
 - No hardcoded color values (all from tokens)
 - Typography uses design system scale
-- Spacing follows 4${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/8dp rhythm
+- Spacing follows 4/8dp rhythm
 - Components use library components where available
 - No CSS custom properties not defined in tokens
 

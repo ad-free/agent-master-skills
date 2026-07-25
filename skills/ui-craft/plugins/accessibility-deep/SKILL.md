@@ -1,14 +1,9 @@
 ---
 name: accessibility-deep
-description: Use when you need the accessibility-deep skill (plugin).
-
----
-
----
-name: accessibility-deep
-description: Use when wCAG 2.2 AAA compliance auditing with automated and manual testing patterns.
+description: Use when you need WCAG 2.2 AAA compliance auditing with automated and manual testing patterns.
 metadata:
-  origin: agent-master-skills---
+  origin: agent-master-skills
+---
 
 # Accessibility Deep Plugin
 
@@ -18,8 +13,8 @@ Deep accessibility audit beyond basic checks. Covers WCAG 2.2 Level AAA requirem
 
 ## When to Use
 
-- Accessibility compliance required (legal${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/regulatory)
-- After initial a11y checks pass (basic Level A${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/AA)
+- Accessibility compliance required (legal/regulatory)
+- After initial a11y checks pass (basic Level A/AA)
 - User base includes people with disabilities
 - Public sector or regulated industry applications
 
@@ -27,7 +22,7 @@ Deep accessibility audit beyond basic checks. Covers WCAG 2.2 Level AAA requirem
 
 1. **Automated** — axe-core, Lighthouse, WAVE
 2. **Keyboard** — Full keyboard navigation audit
-3. **Screen reader** — NVDA${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/VoiceOver flow testing
+3. **Screen reader** — NVDA/VoiceOver flow testing
 4. **Cognitive** — Reading level, focus management, reduced motion
 5. **Color** — Contrast ≥ 7:1 (AAA), non-color indicators
 

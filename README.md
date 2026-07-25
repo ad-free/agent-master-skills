@@ -56,6 +56,16 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `context-engineering` | Agent context setup, memory hierarchy, session continuity, context rotation |
 | `image-to-design-spec` | Screenshot → design tokens, layout detection, design system generation |
 
+### Plugins
+
+Beyond the core skills, two pipelines have plugin systems for extending functionality:
+
+| Pipeline | Plugin | Phase | Purpose |
+|----------|--------|-------|---------|
+| `dev-craft` | `language-rules` | BUILD / REVIEW | Language-specific conventions for TS, Python, Go, Rust |
+| `ui-craft` | `design-intelligence` | DESIGN | Structured design system generation (palettes, typography, styles) |
+| `ui-craft` | `anti-slop` | BUILD | Anti-generic UI rules — no emoji icons, proper spacing, intentional gradients |
+
 ## Pipeline Flow
 
 ```
@@ -85,9 +95,12 @@ product-thinking ─────────────────────
       ├── [3]   DESIGN     — spec + ADRs + task list
       ├── [3.5] BUILD-ORDER— dependency sequencing (for multi-module)
       ├── [4]   SOURCE     — official docs verification
-      ├── [5]   BUILD      — TDD + SECURE + MATCH + git worktree
+       ├── [5]   BUILD      — TDD + SECURE + MATCH + git worktree
+       │         └── Plugins: language-rules (language conventions), tdd-enforcer
+       ├── [6]   TEST       — full suite + debugging
       ├── [6]   TEST       — full suite + debugging
-      ├── [7]   REVIEW     — code-review-and-quality (8 axes)
+       ├── [7]   REVIEW     — code-review-and-quality (8 axes)
+       │         └── Plugins: language-rules (style checks), security-audit
       ├── [8]   HARDEN     — cross-cutting security (7 checks)
       └── [9]   SHIP       — commit + rollback plan
 
