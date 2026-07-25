@@ -15,7 +15,7 @@ AGENTS_DIR = os.path.join(ROOT, "agents")
 
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
 
-REQUIRED = ["name", "description", "mode", "owner", "samplePrompts"]
+REQUIRED = ["name", "description", "mode", "samplePrompts"]
 OPTIONAL = ["version", "allowedTools"]
 ALLOWED_TOOLS = {"python", "bash", "git", "docker", "kubectl", "none"}
 
