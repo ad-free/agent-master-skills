@@ -1,10 +1,6 @@
 ---
-name: Agents README
-description: Instructions for managing agent persona files in this folder
-mode: assistant
-owner: dev-team@example.com
-samplePrompts:
-	- "Explain the agent folder structure and validation rules."
+owner: noname.spyware@gmail.com
+
 ---
 
 Agents directory

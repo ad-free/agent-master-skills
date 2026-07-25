@@ -1,8 +1,11 @@
 ---
 name: code-review-and-quality
-description: Use when reviewing code or receiving review feedback. Eight-axis quality assessment before merging any change.
+description: Use when reviewing code or receiving review feedback. Eight-axis quality
+  assessment before merging any change.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Code Review & Quality

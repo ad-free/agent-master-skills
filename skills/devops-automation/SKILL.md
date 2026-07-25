@@ -1,9 +1,14 @@
 ---
 name: devops-automation
-description: Use when deciding deployment mechanics, rollback strategy, CI${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/CD pipeline shape, or infrastructure-as-code choices. Do NOT use for "is this ready to deploy" (see quality-gates) or for writing the pipeline YAML itself (that's plain BUILD work once the strategy is decided).
+description: Use when deciding deployment mechanics, rollback strategy, CI${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/CD
+  pipeline shape, or infrastructure-as-code choices. Do NOT use for "is this ready
+  to deploy" (see quality-gates) or for writing the pipeline YAML itself (that's plain
+  BUILD work once the strategy is decided).
 metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
+owner: noname.spyware@gmail.com
+
 ---
 
 # devops-automation

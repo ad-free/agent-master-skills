@@ -1,9 +1,16 @@
 ---
 name: api-design
-description: Use when designing a new API surface or changing an existing one — choosing REST vs GraphQL vs gRPC, versioning strategy, auth${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/rate-limiting shape. Do NOT use for implementing an endpoint inside an already-decided API shape (that's plain BUILD work). Do NOT use for reviewing an existing API's security posture after the fact (see bug-hunting).
+description: "Use when designing a new API surface or changing an existing one \u2014\
+  \ choosing REST vs GraphQL vs gRPC, versioning strategy, auth${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/rate-limiting\
+  \ shape. Do NOT use for implementing an endpoint inside an already-decided API shape\
+  \ (that's plain BUILD work). Do NOT use for reviewing an existing API's security\
+  \ posture after the fact (see bug-hunting)."
 metadata:
-  origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills (api-and-interface-design)
+  origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
+    (api-and-interface-design)
   version: 1
+owner: noname.spyware@gmail.com
+
 ---
 
 # api-design

@@ -1,8 +1,11 @@
 ---
 name: verification-before-completion
-description: Use when about to claim a task is complete; require fresh verification evidence rather than assumptions.
+description: Use when about to claim a task is complete; require fresh verification
+  evidence rather than assumptions.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Verification Before Completion

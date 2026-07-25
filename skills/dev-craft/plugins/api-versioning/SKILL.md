@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: api-versioning
 description: Use when aPI version management with deprecation policies, migration guides, and backward compatibility patterns.
 metadata:

@@ -1,8 +1,11 @@
 ---
 name: debugging-and-error-recovery
-description: Use when tests fail, builds break, or behavior doesn't match expectations. Systematic root-cause investigation, not guessing.
+description: Use when tests fail, builds break, or behavior doesn't match expectations.
+  Systematic root-cause investigation, not guessing.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Debugging & Error Recovery

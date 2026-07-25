@@ -1,9 +1,16 @@
 ---
 name: architecture-patterns
-description: Use when choosing a structural pattern for a system or module — hexagonal${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/clean architecture, DDD, event-driven, microservices decomposition. Do NOT use for scanning an existing codebase for smells (see dev-craft's ARCH-SCAN phase, which this skill supports but doesn't replace) and do NOT use to justify a pattern chosen for resume-driven reasons rather than the problem's actual shape.
+description: "Use when choosing a structural pattern for a system or module \u2014\
+  \ hexagonal${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/clean\
+  \ architecture, DDD, event-driven, microservices decomposition. Do NOT use for scanning\
+  \ an existing codebase for smells (see dev-craft's ARCH-SCAN phase, which this skill\
+  \ supports but doesn't replace) and do NOT use to justify a pattern chosen for resume-driven\
+  \ reasons rather than the problem's actual shape."
 metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
+owner: noname.spyware@gmail.com
+
 ---
 
 # architecture-patterns

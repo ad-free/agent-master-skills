@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: animation-craft
 description: Use when advanced animation patterns for micro-interactions, page transitions, and motion design.
 metadata:

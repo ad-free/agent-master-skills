@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: design-system-validate
 description: Use when validates UI code against design system tokens and component library specifications.
 metadata:

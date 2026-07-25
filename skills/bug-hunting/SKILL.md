@@ -1,8 +1,11 @@
 ---
 name: bug-hunting
-description: Use when conducting security audits, penetration tests, or systematic vulnerability discovery across a codebase.
+description: Use when conducting security audits, penetration tests, or systematic
+  vulnerability discovery across a codebase.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Bug Hunting

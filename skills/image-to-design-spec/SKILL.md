@@ -1,8 +1,11 @@
 ---
 name: image-to-design-spec
-description: Use when analyzing UI screenshots or images to generate structured design specs with colors, layout, components, and design tokens.
+description: Use when analyzing UI screenshots or images to generate structured design
+  specs with colors, layout, components, and design tokens.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # image-to-design-spec

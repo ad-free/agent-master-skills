@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: dependency-audit
 description: Use when dependency vulnerability scanning, license compliance, and supply chain security.
 metadata:

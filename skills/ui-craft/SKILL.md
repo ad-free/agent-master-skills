@@ -1,8 +1,12 @@
 ---
 name: ui-craft
-description: Use when converting UI${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/UX prompts into design tokens, component code, and visual previews with pipeline state in `.ui-craft`.
+description: Use when converting UI${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/UX
+  prompts into design tokens, component code, and visual previews with pipeline state
+  in `.ui-craft`.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # ui-craft

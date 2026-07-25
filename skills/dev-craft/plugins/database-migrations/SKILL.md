@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: database-migrations
 description: Use when safe migration patterns for schema changes with rollback, data backfill, and zero-downtime deployment.
 metadata:

@@ -1,9 +1,16 @@
 ---
 name: testing-strategies
-description: Use when deciding WHAT kind of test to write for a change — unit vs integration vs e2e vs contract vs property-based, and what failure mode each test covers. Do NOT use for "did tests pass" (see verification-before-completion) or "review my test coverage" (see code-review-and-quality). Do NOT use for writing the test code itself (that's BUILD work once the test type${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/failure-mode is decided).
+description: "Use when deciding WHAT kind of test to write for a change \u2014 unit\
+  \ vs integration vs e2e vs contract vs property-based, and what failure mode each\
+  \ test covers. Do NOT use for \"did tests pass\" (see verification-before-completion)\
+  \ or \"review my test coverage\" (see code-review-and-quality). Do NOT use for writing\
+  \ the test code itself (that's BUILD work once the test type${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/failure-mode\
+  \ is decided)."
 metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
+owner: noname.spyware@gmail.com
+
 ---
 
 # testing-strategies

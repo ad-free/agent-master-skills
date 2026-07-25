@@ -1,9 +1,13 @@
 ---
 name: documentation-engineering
-description: Use when deciding doc format, ADR process, API reference generation, or docs-as-code pipeline — not for writing the content of a specific ADR or guide (that's plain writing work once the format is decided).
+description: "Use when deciding doc format, ADR process, API reference generation,\
+  \ or docs-as-code pipeline \u2014 not for writing the content of a specific ADR\
+  \ or guide (that's plain writing work once the format is decided)."
 metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
+owner: noname.spyware@gmail.com
+
 ---
 
 # documentation-engineering

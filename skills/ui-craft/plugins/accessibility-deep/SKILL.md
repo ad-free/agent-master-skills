@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: accessibility-deep
 description: Use when wCAG 2.2 AAA compliance auditing with automated and manual testing patterns.
 metadata:

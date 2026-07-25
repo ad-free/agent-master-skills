@@ -1,8 +1,11 @@
 ---
 name: context-engineering
-description: Use when managing agent session context, memory hierarchy, and session continuity to prevent context pollution.
+description: Use when managing agent session context, memory hierarchy, and session
+  continuity to prevent context pollution.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Context Engineering

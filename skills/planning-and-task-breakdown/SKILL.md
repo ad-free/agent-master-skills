@@ -1,8 +1,11 @@
 ---
 name: planning-and-task-breakdown
-description: Use when you have a spec and need work broken into ordered, verifiable tasks with acceptance criteria.
+description: Use when you have a spec and need work broken into ordered, verifiable
+  tasks with acceptance criteria.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 Skill Chain: product-thinking (PRODUCT.md) → project-discovery (DOMAIN.md)

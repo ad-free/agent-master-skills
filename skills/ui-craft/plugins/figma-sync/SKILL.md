@@ -1,4 +1,8 @@
 ---
+owner: noname.spyware@gmail.com
+---
+
+---
 name: figma-sync
 description: Use when sync design tokens and components from Figma via MCP or API integration.
 metadata:

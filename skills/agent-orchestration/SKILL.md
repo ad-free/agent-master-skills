@@ -1,8 +1,11 @@
 ---
 name: agent-orchestration
-description: Use when orchestrating multiple agents to work in parallel on the same project, enforcing isolation, contracts, and conflict management.
+description: Use when orchestrating multiple agents to work in parallel on the same
+  project, enforcing isolation, contracts, and conflict management.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Agent Orchestration

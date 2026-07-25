@@ -1,18 +1,5 @@
 ---
-name: security-audit
-description: Use when deep security verification for dev-craft HARDEN phase. Agent-driven code reading and reasoning — no external tools required.
-metadata:
-  origin: agent-master-skills---
-
-# Security Audit Plugin
-
-## Overview
-
-An extended cross-cutting security verification that supplements the built-in HARDEN phase checks. The agent performs every check by reading the code it wrote — no SAST tools, no secrets scanners, no dependency auditors needed.
-
-**When to invoke:** After Phase 8 (HARDEN) built-in checks complete, if the code handles auth, payments, PII, or sensitive data.
-
-**Philosophy:** The agent has the full codebase in context. It can trace every data flow, read every config, and reason about every vulnerability class. Tools are never required — only speed optimizations when available.
+owner: noname.spyware@gmail.com
 
 ---
 

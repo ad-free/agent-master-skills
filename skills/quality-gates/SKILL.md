@@ -1,8 +1,11 @@
 ---
 name: quality-gates
-description: Use when you need a layered quality validation pipeline (lint${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/test, security scan, and LLM judgment) before merging.
+description: Use when you need a layered quality validation pipeline (lint${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/test,
+  security scan, and LLM judgment) before merging.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Quality Gates

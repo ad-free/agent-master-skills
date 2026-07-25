@@ -1,9 +1,15 @@
 ---
 name: observability-engineering
-description: Use when deciding what to log, measure, trace, and alert on for a service — the observability contract. Do NOT use for "is this service secure" (see bug-hunting) or "is this hardened" (see dev-craft HARDEN, which invokes this skill). Do NOT use for implementing the instrumentation itself (that's BUILD work once the contract is decided).
+description: "Use when deciding what to log, measure, trace, and alert on for a service\
+  \ \u2014 the observability contract. Do NOT use for \"is this service secure\" (see\
+  \ bug-hunting) or \"is this hardened\" (see dev-craft HARDEN, which invokes this\
+  \ skill). Do NOT use for implementing the instrumentation itself (that's BUILD work\
+  \ once the contract is decided)."
 metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
+owner: noname.spyware@gmail.com
+
 ---
 
 # observability-engineering

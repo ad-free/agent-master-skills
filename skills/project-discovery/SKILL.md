@@ -1,8 +1,11 @@
 ---
 name: project-discovery
-description: Use when you need to ingest existing specifications (Excel, CSV, text, MD) and extract a domain model, features, priorities, and dependencies.
+description: Use when you need to ingest existing specifications (Excel, CSV, text,
+  MD) and extract a domain model, features, priorities, and dependencies.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Project Discovery — Domain Model Extraction

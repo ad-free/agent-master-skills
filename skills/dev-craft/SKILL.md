@@ -1,8 +1,11 @@
 ---
 name: dev-craft
-description: Use when running a full-stack engineering pipeline with persistent `.dev-craft` state for long-lived work and phased delivery.
+description: Use when running a full-stack engineering pipeline with persistent `.dev-craft`
+  state for long-lived work and phased delivery.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # dev-craft

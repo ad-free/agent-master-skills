@@ -1,8 +1,11 @@
 ---
 name: dispatching-parallel-agents
-description: Use when you have multiple independent tasks that can run concurrently. Parallel execution for non-dependent work.
+description: Use when you have multiple independent tasks that can run concurrently.
+  Parallel execution for non-dependent work.
 metadata:
   origin: agent-master-skills
+owner: noname.spyware@gmail.com
+
 ---
 
 # Dispatching Parallel Agents
