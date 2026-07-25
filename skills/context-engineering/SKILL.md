@@ -5,6 +5,9 @@ description: Use when managing agent session context, memory hierarchy, and sess
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

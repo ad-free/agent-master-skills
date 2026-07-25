@@ -10,6 +10,9 @@ metadata:
     (api-and-interface-design)
   version: 1
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

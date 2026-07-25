@@ -5,6 +5,10 @@ description: Use when running a full-stack engineering pipeline with persistent 
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- python
+- git
+- shell
 
 ---
 

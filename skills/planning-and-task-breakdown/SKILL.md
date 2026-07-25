@@ -5,6 +5,9 @@ description: Use when you have a spec and need work broken into ordered, verifia
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

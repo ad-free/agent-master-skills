@@ -5,6 +5,10 @@ description: Use when conducting security audits, penetration tests, or systemat
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- shell
+- git
+- http
 
 ---
 

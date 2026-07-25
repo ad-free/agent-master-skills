@@ -8,6 +8,12 @@ metadata:
   origin: adapted from ECC and addyosmani${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/agent-skills
   version: 1
 owner: noname.spyware@gmail.com
+allowedTools:
+- shell
+- docker
+- kubernetes
+- terraform
+- git
 
 ---
 

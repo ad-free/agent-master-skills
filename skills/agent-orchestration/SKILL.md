@@ -5,6 +5,11 @@ description: Use when orchestrating multiple agents to work in parallel on the s
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- ai
+- http
+- git
+- shell
 
 ---
 

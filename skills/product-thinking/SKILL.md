@@ -5,6 +5,9 @@ description: Use when the input is vague or incomplete and you need to produce a
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- http
+- file
 
 ---
 

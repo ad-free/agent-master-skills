@@ -1,5 +1,8 @@
 ---
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

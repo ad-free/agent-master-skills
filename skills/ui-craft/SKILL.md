@@ -6,6 +6,9 @@ description: Use when converting UI${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

@@ -5,6 +5,9 @@ description: Use when you have multiple independent tasks that can run concurren
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

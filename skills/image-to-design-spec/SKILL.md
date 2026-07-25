@@ -5,6 +5,9 @@ description: Use when analyzing UI screenshots or images to generate structured 
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- file
+- http
 
 ---
 

@@ -5,6 +5,9 @@ description: Use when you need to ingest existing specifications (Excel, CSV, te
 metadata:
   origin: agent-master-skills
 owner: noname.spyware@gmail.com
+allowedTools:
+- http
+- file
 
 ---
 
