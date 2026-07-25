@@ -197,3 +197,35 @@ project-discovery ─────→ DOMAIN.md
 ```
 
 See `skills/SHARED.md` for the complete skill inventory and decision tree.
+
+## Examples
+
+Sample sessions are provided under `examples/` to help you try the pipelines locally.
+
+- `examples/dev-craft-session.md` — end-to-end dev-craft demo (API server scaffold).
+- `examples/api-design-session.md` — API design contract → OpenAPI → scaffold.
+- `examples/ui-craft-session.md` — UI component library sketch + Storybook.
+
+## Runbook
+
+Validator and test helpers are available in `tools/`:
+
+ - Run skill validator:
+
+```bash
+python tools/validate_skills.py
+```
+
+ - Run agent validator:
+
+```bash
+python tools/validate_agents.py
+```
+
+ - Run tests:
+
+```bash
+python -m pytest -q
+```
+
+Use `${PROJECT_ROOT}` in docs and examples to avoid absolute path leakage.
