@@ -1,8 +1,10 @@
 ---
 name: project-discovery
-description: "Ingest existing specifications (Excel, CSV, text, MD) and extract domain model, features, priorities, and dependencies. Bridges raw requirements to structured plan."
+description: Use when you need to ingest existing specifications (Excel, CSV, text,
+  MD) and extract a domain model, features, priorities, and dependencies.
 metadata:
   origin: agent-master-skills
+
 ---
 
 # Project Discovery — Domain Model Extraction
@@ -21,7 +23,7 @@ Activate this skill when **any** of these conditions are true:
 |-----------|---------|
 | User has existing spec files | PRD, functional spec, requirements doc |
 | User has spreadsheets with requirements | Excel sheets listing features, modules, entities |
-| User has estimates or cost sheets | Cost/effort tables mapped to features |
+| User has estimates or cost sheets | Cost${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/effort tables mapped to features |
 | User is migrating from another system | Legacy docs, exported data, old requirement artifacts |
 | User pastes raw requirements in chat | Bullet lists, numbered items, free-form text |
 | User says "I have all the requirements in this file" | Any file attachment with domain info |
@@ -38,7 +40,7 @@ Activate this skill when **any** of these conditions are true:
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌────────────┐     ┌─────────────────────┐
 │ Raw files/  │────▶│ project-discovery │────▶│ DOMAIN.md  │────▶│ dev-craft (REQUIRE) │
-│ paste/text  │     │ (this skill)      │     │            │     │ planning-and-task   │
+│ paste${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/text  │     │ (this skill)      │     │            │     │ planning-and-task   │
 └─────────────┘     └──────────────────┘     └────────────┘     └─────────────────────┘
 ```
 
@@ -50,10 +52,10 @@ Identify the format of each input file:
 
 | Extension | Type | Parser Strategy |
 |-----------|------|-----------------|
-| `.xlsx` / `.xls` | Excel | Read sheets, extract named ranges, scan rows/columns for entity headers |
+| `.xlsx` / `.xls` | Excel | Read sheets, extract named ranges, scan rows${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/columns for entity headers |
 | `.csv` | Comma-separated | Parse headers and rows, detect named entities in first column |
-| `.md` | Markdown | Parse headings, bullet lists, tables, code blocks, bold/italic patterns |
-| `.txt` | Plain text | Line-by-line scan, detect sections via blank lines, detect lists via indentation/bullets |
+| `.md` | Markdown | Parse headings, bullet lists, tables, code blocks, bold${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/italic patterns |
+| `.txt` | Plain text | Line-by-line scan, detect sections via blank lines, detect lists via indentation${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/bullets |
 | `.pdf` | PDF | Extract text via `pdftotext` or `python -m pdfminer`, then treat as `.txt` |
 
 ```
@@ -94,7 +96,7 @@ Features are capabilities or functions the system must provide. Look for:
 
 - **Bullet points** (`-`, `*`, `+`)
 - **Numbered items** (`1.`, `2.`, `(a)`, `(b)`)
-- **Task/checklist items** (`- [ ]`, `- [x]`)
+- **Task${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/checklist items** (`- [ ]`, `- [x]`)
 - **Table rows** with feature descriptions
 - **"Must", "Should", "Shall"** statements
 - **User story patterns** (`As a...`, `I want to...`, `So that...`)
@@ -116,7 +118,7 @@ Priorities tell us what to build first. Look for:
 
 | Pattern | Normalized Priority |
 |---------|-------------------|
-| `G1`, `G1/G2/G3` | Group 1 (Critical), Group 2 (Important), Group 3 (Nice-to-have) |
+| `G1`, `G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3` | Group 1 (Critical), Group 2 (Important), Group 3 (Nice-to-have) |
 | `P0`, `P1`, `P2`, `P3` | P0=Blocker, P1=Critical, P2=Important, P3=Nice-to-have |
 | `Must-have`, `Should-have`, `Could-have`, `Won't-have` | MoSCoW mapping → M=G1, S=G2, C=G3 |
 | `High`, `Medium`, `Low` | High=G1, Medium=G2, Low=G3 |
@@ -141,7 +143,7 @@ Extract as raw values — do not normalize (users understand their own units).
 
 ```
 EFFORT SCAN:
-  Features with estimates: 12/18
+  Features with estimates: 12${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/18
   Estimate units: hours (6), SP (3), t-shirt (3)
   $ cost mentioned for: 4 features
 ```
@@ -194,7 +196,7 @@ Once scanning is complete, synthesize into a structured domain model following t
 ### Module: Attendance Tracking
   **Priority:** G1 (Critical)
   **Features:**
-    - Clock in/out via biometric (G1)
+    - Clock in${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/out via biometric (G1)
     - Manual attendance entry (G2)
     - Leave request and approval (G1)
     - Shift scheduling (G2)
@@ -246,8 +248,8 @@ Each extraction dimension gets a confidence score:
 | Dimension | High Confidence (90%+) | Medium Confidence (70-89%) | Low Confidence (<70%) |
 |-----------|----------------------|---------------------------|-----------------------|
 | Entities | Explicit heading, 3+ references | Named once, no clear definition | Inferred from context, not directly named |
-| Features | Bullet/numbered list with verb | Sentence with "shall/must" | Implied capability, passive mention |
-| Priorities | Explicit label (G1, P1, MoSCoW) | Phase/grouping membership | Inferred from ordering/emphasis |
+| Features | Bullet${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/numbered list with verb | Sentence with "shall${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/must" | Implied capability, passive mention |
+| Priorities | Explicit label (G1, P1, MoSCoW) | Phase${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/grouping membership | Inferred from ordering${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/emphasis |
 | Dependencies | "depends on", explicit cross-ref | Shared entity between features | Proximity-based inference |
 | Estimates | Numeric with unit | T-shirt size or complexity label | Vague time reference |
 
@@ -258,7 +260,7 @@ Each extraction dimension gets a confidence score:
 Save the complete extracted model to `DOMAIN.md` at the project root (or a user-specified path):
 
 ```
-D:\Projects\agent-master-skills\DOMAIN.md
+${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/DOMAIN.md
 ```
 
 **File structure:**
@@ -340,7 +342,7 @@ Dependencies: 2
   2. [AMBIGUOUS] "Manage users" — duplicate in Employee and Admin?
   3. [UNKNOWN PRIORITY] Feature "Dashboard view" has no priority assigned
 
-Accept this domain model? (Y/n) ...
+Accept this domain model? (Y${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/n) ...
 ```
 
 ## Handoff: DOMAIN.md → dev-craft
@@ -353,8 +355,8 @@ DOMAIN.md
     ▼
 dev-craft — REQUIRE phase
     │ Read DOMAIN.md
-    │ Extract requirements from each module/feature
-    │ Prioritize based on G1/G2/G3
+    │ Extract requirements from each module${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/feature
+    │ Prioritize based on G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3
     │ Build dependency order
     │
     ▼
@@ -419,7 +421,7 @@ planning-and-task-breakdown — PLAN phase
 
 ### Parsing Edge Cases
 - **Tables in markdown:** Multi-line cell content can break naive parsers. Use a proper MD parser (e.g., `python-markdown` with table extension).
-- **Excel merged cells:** Can cause empty rows/columns in parsed output. Detect and skip.
+- **Excel merged cells:** Can cause empty rows${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/columns in parsed output. Detect and skip.
 - **Track changes / comments in documents:** Can insert spurious text. Flag if detected.
 - **Image-based PDFs:** Cannot extract text. Inform user: "PDF appears to contain scanned images — no text could be extracted. Please provide text-based source."
 
@@ -430,7 +432,7 @@ planning-and-task-breakdown — PLAN phase
 │                 PROJECT DISCOVERY                        │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  1. Detect file types (xlsx/csv/md/txt/pdf)             │
+│  1. Detect file types (xlsx${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/pdf)             │
 │  2. Scan for entities (nouns, headings, table rows)     │
 │  3. Scan for features (bullets, user stories, use cases)│
 │  4. Scan for priorities (G1-G3, MoSCoW, P0-P3)         │

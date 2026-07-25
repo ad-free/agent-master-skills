@@ -1,8 +1,10 @@
 ---
 name: dispatching-parallel-agents
-description: Use when you have multiple independent tasks that can run concurrently. Parallel execution for non-dependent work.
+description: Use when you have multiple independent tasks that can run concurrently.
+  Parallel execution for non-dependent work.
 metadata:
   origin: agent-master-skills
+
 ---
 
 # Dispatching Parallel Agents
@@ -16,7 +18,7 @@ Run independent tasks simultaneously. Don't wait for one task when you can start
 ## When to Use
 
 - Multiple independent test files to run
-- Multiple files to create/modify (no dependencies)
+- Multiple files to create${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/modify (no dependencies)
 - Multiple searches to perform
 - Multiple reviews to conduct
 - Multiple reports to generate
@@ -120,7 +122,7 @@ Use the right model for each task:
 
 | Task Type | Model | Reason |
 |-----------|-------|--------|
-| Mechanical (1-2 files, clear spec) | Fast/cheap model | Simple execution — use platform's fastest available |
+| Mechanical (1-2 files, clear spec) | Fast${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/cheap model | Simple execution — use platform's fastest available |
 | Integration (multiple files) | Standard | Needs judgment |
 | Architecture (design decisions) | Most capable | Needs deep reasoning |
 | Review (quality assessment) | Standard or capable | Needs judgment |
@@ -137,7 +139,7 @@ PARALLEL STATUS:
 - Agent 2: [task] → [status]
 - Agent 3: [task] → [status]
 
-Completed: [count]/[total]
+Completed: [count]${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/[total]
 Failed: [count]
 ```
 
@@ -168,7 +170,7 @@ Failed: [count]
 If parallel agents create conflicts:
 
 1. **Stop** — don't try to fix conflicts in parallel
-2. **Identify** — what files/methods conflicted
+2. **Identify** — what files${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/methods conflicted
 3. **Resolve** — manually merge or re-sequence
 4. **Prevent** — next time, verify independence better
 

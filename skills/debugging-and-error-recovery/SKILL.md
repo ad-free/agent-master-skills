@@ -1,8 +1,10 @@
 ---
 name: debugging-and-error-recovery
-description: Use when tests fail, builds break, or behavior doesn't match expectations. Systematic root-cause investigation, not guessing.
+description: Use when tests fail, builds break, or behavior doesn't match expectations.
+  Systematic root-cause investigation, not guessing.
 metadata:
   origin: agent-master-skills
+
 ---
 
 # Debugging & Error Recovery
@@ -49,7 +51,7 @@ REPRODUCE → LOCALIZE → REDUCE → FIX
 Make the failure happen reliably.
 
 **Steps:**
-1. Run the failing test/command exactly as specified
+1. Run the failing test${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/command exactly as specified
 2. Capture the full error output
 3. Identify the exact conditions that trigger the failure
 4. Confirm it fails every time (not flaky)
@@ -115,8 +117,8 @@ Before fixing, gather:
 EVIDENCE:
 - Error message: [exact text]
 - Stack trace: [relevant frames]
-- Last working state: [commit/timestamp]
-- Changes since then: [git log/diff]
+- Last working state: [commit${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/timestamp]
+- Changes since then: [git log${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/diff]
 - Environment: [OS, versions, config]
 - Reproduction steps: [exact sequence]
 ```

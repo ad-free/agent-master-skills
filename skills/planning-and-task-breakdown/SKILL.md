@@ -1,8 +1,10 @@
 ---
 name: planning-and-task-breakdown
-description: Breaks work into ordered, verifiable tasks. Use when you have a spec and need implementable units with acceptance criteria.
+description: Use when you have a spec and need work broken into ordered, verifiable
+  tasks with acceptance criteria.
 metadata:
   origin: agent-master-skills
+
 ---
 
 Skill Chain: product-thinking (PRODUCT.md) → project-discovery (DOMAIN.md)
@@ -24,14 +26,14 @@ This skill can consume:
 - Spec text or user description — free-form requirements
 - Existing task list — refine and reorder
 
-If PRODUCT.md or DOMAIN.md is available, load it first to get the module/feature structure.
+If PRODUCT.md or DOMAIN.md is available, load it first to get the module${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/feature structure.
 If the input is still vague, suggest running `product-thinking` first.
 
 ## When to Use
 
 - You have a spec and need implementable units
 - Task feels too large or vague to start
-- Work needs parallelization across agents/sessions
+- Work needs parallelization across agents${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/sessions
 - Need to communicate scope to human
 - Implementation order isn't obvious
 
@@ -58,7 +60,7 @@ NO IMPLEMENTATION WITHOUT A WRITTEN PLAN
 Before planning, analyze any visual reference material:
 
 ```bash
-python ~/.config/opencode/skills/image-to-design-spec/scripts/analyze.py --image <path> --format md
+python ~${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/analyze.py --image <path> --format md
 ```
 
 Use output to enrich requirements:
@@ -72,7 +74,7 @@ VISUAL REFERENCE ANALYSIS:
 - Layout: [detected layout type]
 - Components: [detected components]
 - Colors: [extracted palette]
-- Mode: [light/dark]
+- Mode: [light${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/dark]
 → Added to requirements context.
 ```
 
@@ -90,7 +92,7 @@ Output is a plan document, not implementation.
 
 ### Step 2: Collect Everything
 
-Gather from prompt/file:
+Gather from prompt${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/file:
 
 ```
 COLLECTED:
@@ -130,7 +132,7 @@ When PRODUCT.md or DOMAIN.md is available:
 Example extract from PRODUCT.md:
 ```
 Module: Employee (G1) — CRUD, documents, org chart → depends on Auth
-Module: Attendance (G1) — clock in/out, shifts, overtime → depends on Employee
+Module: Attendance (G1) — clock in${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/out, shifts, overtime → depends on Employee
 ```
 
 This avoids redundant questioning and keeps context focused on planning structure.
@@ -141,9 +143,9 @@ Check against reality:
 
 ```
 VERIFIED:
-- Feasible: [yes/no with reasoning]
+- Feasible: [yes${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/no with reasoning]
 - Existing patterns: [what's already there]
-- Dependencies: [available/needed]
+- Dependencies: [available${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/needed]
 - Risk areas: [what could go wrong]
 ```
 
@@ -171,7 +173,7 @@ Map what depends on what:
 ```
 Database schema
     │
-    ├── API models/types
+    ├── API models${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/types
     │       │
     │       ├── API endpoints
     │       │       │
@@ -231,17 +233,17 @@ Each task follows this structure:
 **Dependencies:** [Task numbers or "None"]
 
 **Files likely touched:**
-- `src/path/to/file.ts`
-- `tests/path/to/test.ts`
+- `src${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/file.ts`
+- `tests${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/test.ts`
 
-**Estimated scope:** [XS/S/M/L]
+**Estimated scope:** [XS${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/L]
 ```
 
 > **REQ-IDs are mandatory for spec-driven work.** Every task must cite the source-spec
 > requirement row(s) it satisfies. A task with no `Requirement refs:` is a symptom that
 > the plan is being written from memory, not from the spec — the exact failure mode that
 > drops P1 requirements. If you cannot cite a REQ-ID, either the requirement was never
-> extracted (go back to Step 0/Step 2) or the task is out of scope.
+> extracted (go back to Step 0${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Step 2) or the task is out of scope.
 
 ### Step 8: Order and Checkpoint
 
@@ -283,7 +285,7 @@ still omit 6 P1 requirements. Do this review yourself — do not delegate it.
 **1. Extract requirements from the source spec (exhaustive, literal):**
    - Read the spec line by line. For every capability, constraint, or non-functional
      rule, write one requirement row. Preserve the spec's own priority markers
-     (`[REQUIRED P1]`, `🔴`, `G1/G2/G3`, `⚪ [FUTURE PHASE]`) verbatim.
+     (`[REQUIRED P1]`, `🔴`, `G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3`, `⚪ [FUTURE PHASE]`) verbatim.
    - Capture *concrete* constraints as requirements, not prose
      (e.g. "JWT payload = only user_id + company_id + permission_version" → a row).
    - If a source spec was not provided, skip this step and note it.
@@ -294,7 +296,7 @@ still omit 6 P1 requirements. Do this review yourself — do not delegate it.
    `Requirement refs:` and acceptance criteria verify it.
 
 4. **Build the traceability matrix** and save to `requirements.md` (consumed by
-   dev-craft/ui-craft as the COVERAGE GATE artifact):
+   dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/ui-craft as the COVERAGE GATE artifact):
 
    ```markdown
    # Requirements Traceability Matrix — <feature>
@@ -306,7 +308,7 @@ still omit 6 P1 requirements. Do this review yourself — do not delegate it.
    |--------|----------|-------------------------------|----------------|--------|
    | REQ-001 | P1 | employee_code via PG SEQUENCE | Task 1 | ✅ |
    | REQ-011 | P1 | cross-day shifts, UTC+7 display | Task 4 | ⚠️ GAP |
-   | REQ-027 | G1 | leave: full/half/hourly + carry-forward | — | ❌ GAP |
+   | REQ-027 | G1 | leave: full${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/hourly + carry-forward | — | ❌ GAP |
 
    ## Gaps
    - REQ-011: no task covers UTC+7 presentation conversion
@@ -319,22 +321,22 @@ still omit 6 P1 requirements. Do this review yourself — do not delegate it.
 
 6. **Resolve gaps before writing the plan:**
    - Every P1 / G1 requirement **must** have a traced task. Add missing tasks.
-   - G2/G3 gaps may be deferred **only with explicit human acknowledgement**.
-   - Do NOT write the final plan (Step 10) until P1/G1 coverage is 100%.
+   - G2${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3 gaps may be deferred **only with explicit human acknowledgement**.
+   - Do NOT write the final plan (Step 10) until P1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G1 coverage is 100%.
 
 **Exit criterion (HARD GATE):** 100% of P1 + G1 requirements traced to a task with
 acceptance criteria. This gate is what prevents "pipeline ran, requirements missing."
 
 ### Step 10: Write the Plan
 
-Save to `docs/plans/YYYY-MM-DD-feature-name.md`.
+Save to `docs${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/YYYY-MM-DD-feature-name.md`.
 
 ## Task Sizing
 
 | Size | Files | Scope | Example |
 |------|-------|-------|---------|
-| XS | 1 | Single function/config | Add validation rule |
-| S | 1-2 | One component/endpoint | New API endpoint |
+| XS | 1 | Single function${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/config | Add validation rule |
+| S | 1-2 | One component${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/endpoint | New API endpoint |
 | M | 3-5 | One feature slice | User registration flow |
 | L | 5-8 | Multi-component | Search with filtering |
 | XL | 8+ | **Too large — break down** | — |
@@ -384,12 +386,12 @@ Module: Employee (G1)
 
 Module: Attendance (G1)
   Features:
-    - Clock in/out
+    - Clock in${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/out
     - Shift management
     - Overtime calculation
   Dependencies: Employee, Shift
   Slices:
-    - Clock in/out API
+    - Clock in${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/out API
     - Attendance dashboard
 ```
 
@@ -404,7 +406,7 @@ When planning large projects, order tasks by dependency chain so each phase prod
 | Phase 3: Processing | Payroll, Tax | Depend on Attendance + Employee |
 | Phase 4: Evaluation | KPI, Review | Depend on Employee + Payroll |
 | Phase 5: Extended | Recruitment, Onboarding | Stand-alone modules |
-| Phase 6: Mobile/Integration | API consumers | Need stable API from all phases |
+| Phase 6: Mobile${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Integration | API consumers | Need stable API from all phases |
 
 **Bad**: Build Payroll directly (missing Employee + Attendance data)
 **Good**: Employee → Attendance → Payroll (each phase produces usable output)
@@ -414,7 +416,7 @@ When planning large projects, order tasks by dependency chain so each phase prod
 The PLAN.md is the handoff document to dev-craft. It must contain enough structure for the ALIGN phase to consume directly.
 
 ```markdown
-# PLAN.md — [Feature/Project Name]
+# PLAN.md — [Feature${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Project Name]
 
 Generated from: [PRODUCT.md / DOMAIN.md / spec text]
 
@@ -469,7 +471,7 @@ G3 (Nice to have): [features]
 ## Risks and Mitigations
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| [Risk] | [High/Med/Low] | [Strategy] |
+| [Risk] | [High${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Low] | [Strategy] |
 
 ## Open Questions
 - [Question needing human input]
@@ -480,9 +482,9 @@ G3 (Nice to have): [features]
 - **Plan document:** `PLAN.md` at project root (for dev-craft consumption). For **multi-repo** topology (separate BE + FE repos), place `PLAN.md` and the traceability matrix in the BE repo (`contractRepo`) so both sides reference one plan; or split per repo when the work is fully independent. dev-craft's SCOPE gate carries the `topology` decision.
 - **Task list:** included in PLAN.md under each phase
 - **Traceability matrix:** `requirements.md` at project root (the COVERAGE GATE artifact — consumed by dev-craft `[3.7] REQUIREMENTS-EXTRACTION` and ui-craft `[3.7]`)
-- **Legacy archive (optional):** `docs/plans/YYYY-MM-DD-feature.md` for historical record
+- **Legacy archive (optional):** `docs${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/YYYY-MM-DD-feature.md` for historical record
 
-> **Multi-repo verification:** a fullstack ticket across two repos needs tests/build run in *both* repos. When generating acceptance criteria, list the per-repo verify command (e.g. `cd be-repo && pytest` **and** `cd fe-repo && npm test`), not a single root command.
+> **Multi-repo verification:** a fullstack ticket across two repos needs tests${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/build run in *both* repos. When generating acceptance criteria, list the per-repo verify command (e.g. `cd be-repo && pytest` **and** `cd fe-repo && npm test`), not a single root command.
 
 ## Parallelization
 
@@ -529,7 +531,7 @@ Before starting implementation:
 - [ ] Every task has acceptance criteria
 - [ ] Every task has verification step
 - [ ] Every task cites `Requirement refs:` (REQ-IDs) from the source spec
-- [ ] `requirements.md` traceability matrix exists and P1/G1 coverage is 100%
+- [ ] `requirements.md` traceability matrix exists and P1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G1 coverage is 100%
 - [ ] Task dependencies identified and ordered
 - [ ] No task touches more than ~5 files
 - [ ] Checkpoints exist between phases

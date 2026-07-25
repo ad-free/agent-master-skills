@@ -1,0 +1,7 @@
+{
+  "currentPhase": "BUILD",
+  "completedPhases": ["SCOPE", "ALIGN", "BUILD"],
+  "slices": ["slice-1"],
+  "sessionFile": "sessions/session-20260725-1.md",
+  "task": "sample"
+}
