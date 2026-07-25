@@ -1,6 +1,6 @@
 ---
 name: product-thinking
-description: "Structured idea refinement: from vague concept to clear spec with user stories, acceptance criteria, and domain model. Use when input is unclear or incomplete."
+description: Use when the input is vague or incomplete and you need to produce a structured spec with user stories, acceptance criteria, and a domain model.
 metadata:
   origin: agent-master-skills
 ---
@@ -78,7 +78,7 @@ Problem     Triangulation Extraction  Sequencing
 
 1. **Suggest module structure** — Based on the detected domain template (see Domain Templates below), propose a list of modules. Each module is a coherent group of features.
 2. **Verify with user** — "Here are the modules I think we need. Are there any I'm missing? Any that don't belong?"
-3. **Mark In/Out** — Explicitly list what's in scope and what's out of scope. This is the single most important de-risking step.
+3. **Mark In${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Out** — Explicitly list what's in scope and what's out of scope. This is the single most important de-risking step.
 4. **Identify integration points** — Does this system need to talk to external services (payment gateways, email, SMS, calendar APIs)?
 
 **Scope Rules:**
@@ -92,7 +92,7 @@ Problem     Triangulation Extraction  Sequencing
 - [ ] In-scope / out-of-scope boundaries are documented
 - [ ] Integration points identified
 
-**Output:** Section 2 of PRODUCT.md (Module List with In/Out boundaries)
+**Output:** Section 2 of PRODUCT.md (Module List with In${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Out boundaries)
 
 **User checkpoint:** "Are these the right modules? Anything you'd add or remove?"
 
@@ -106,7 +106,7 @@ Problem     Triangulation Extraction  Sequencing
 2. **User stories** — For key features, write a user story: "As a [role], I want to [action] so that [benefit]."
 3. **Acceptance criteria** — For complex features, add 1–3 conditions of satisfaction.
 4. **Examples & edge cases** — Note specific examples ("A manager can approve leave requests up to 5 days; >5 days needs director approval").
-5. **UI hints** — Optionally note if a feature is list/detail/form/dashboard/modal/etc.
+5. **UI hints** — Optionally note if a feature is list${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/etc.
 
 **Feature quality checklist:**
 - [ ] Each feature is concrete (not "improve UX" — define what improvement means)
@@ -128,7 +128,7 @@ Problem     Triangulation Extraction  Sequencing
 
    | Tier | Label | Definition |
    |------|-------|------------|
-   | G1 | Core/Foundation | Required for MVP. Nothing ships without this. |
+   | G1 | Core${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Foundation | Required for MVP. Nothing ships without this. |
    | G2 | Important | High value but can wait for v1.1 or v2. |
    | G3 | Nice-to-have | Polish, analytics, advanced features. Future. |
 
@@ -139,10 +139,10 @@ Problem     Triangulation Extraction  Sequencing
 4. **Estimate complexity** — Rough: Small / Medium / Large per module (purely directional, not a commitment).
 
 **Checklist:**
-- [ ] Every module has a G1/G2/G3 priority
+- [ ] Every module has a G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G3 priority
 - [ ] Dependencies between modules are documented
 - [ ] Build sequence is suggested
-- [ ] Complexity is estimated (S/M/L)
+- [ ] Complexity is estimated (S${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/L)
 
 **Output:** Section 4 of PRODUCT.md (Priority, Dependencies, Build Sequence)
 
@@ -155,14 +155,14 @@ When the user gives keywords, map them to a domain template. If keywords span mu
 | Keywords | Likely Domain | Primary Entity |
 |----------|---------------|----------------|
 | employees, payroll, attendance, hiring, onboarding, performance review, leave, timesheet | **HRM** | Employee |
-| leads, deals, pipeline, contacts, accounts, opportunities, territory, quota | **CRM** | Contact/Lead |
+| leads, deals, pipeline, contacts, accounts, opportunities, territory, quota | **CRM** | Contact${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Lead |
 | products, cart, checkout, orders, inventory, shipping, returns, reviews | **E-commerce** | Product |
 | purchase order, vendor, procurement, warehouse, BOM, production, work order | **ERP** | Inventory Item |
 | users, organizations, teams, billing, subscription, roles, permissions, API keys | **SaaS** | Account |
 | patients, appointments, prescriptions, billing, insurance, charts, lab results | **Healthcare** | Patient |
-| courses, lessons, students, enrollment, grades, assessments, certificates | **EdTech** | Course/Student |
+| courses, lessons, students, enrollment, grades, assessments, certificates | **EdTech** | Course${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Student |
 | transactions, accounts, budgets, invoices, expenses, reconciliation, reports | **Fintech** | Transaction |
-| bookings, reservations, inventory, pricing, availability, calendar, reviews | **Logistics/Hospitality** | Booking |
+| bookings, reservations, inventory, pricing, availability, calendar, reviews | **Logistics${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Hospitality** | Booking |
 | articles, pages, media, categories, tags, authors, publishing, SEO | **CMS** | Content Item |
 
 **If no match:** Ask the user to describe the primary entity in their system. That usually reveals the domain.
@@ -177,13 +177,13 @@ These are reference skeletons. Adapt, don't copy blindly.
 
 ### HRM Template
 ```
-Modules: Employee Management, Attendance & Timesheets, Leave Management, Payroll, Recruitment, Performance/KPI, Training
+Modules: Employee Management, Attendance & Timesheets, Leave Management, Payroll, Recruitment, Performance${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/KPI, Training
 Primary Actors: Employee, Manager, HR Admin, Payroll Specialist
 ```
 
 ### CRM Template
 ```
-Modules: Contact Mgmt, Lead Mgmt, Opportunity Mgmt, Quote/Proposal, Contract Mgmt, Marketing Campaigns, Support/Ticket, Reports
+Modules: Contact Mgmt, Lead Mgmt, Opportunity Mgmt, Quote${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Proposal, Contract Mgmt, Marketing Campaigns, Support${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Ticket, Reports
 Primary Actors: Sales Rep, Manager, Marketer, Support Agent, Admin
 ```
 
@@ -245,7 +245,7 @@ The skill MUST produce a file named `PRODUCT.md` in the project root (or a user-
 ## 2. Scope
 
 ### Modules
-| Module | Purpose | In/Out |
+| Module | Purpose | In${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Out |
 |--------|---------|--------|
 | [Module 1] | [1-line purpose] | ✅ In scope |
 | [Module 2] | [1-line purpose] | ✅ In scope |
@@ -283,7 +283,7 @@ The skill MUST produce a file named `PRODUCT.md` in the project root (or a user-
 
 ### Build Sequence
 1. **Phase 1 (G1):** Module 1 → Module 2 (core workflow)
-2. **Phase 2 (G1/G2):** Module 3 + Module 4 (supporting features)
+2. **Phase 2 (G1${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/G2):** Module 3 + Module 4 (supporting features)
 3. **Phase 3 (G2):** Module 5 + Module 6 (enhancements)
 4. **Phase 4 (G3):** Module 7 (polish, analytics, reports)
 
@@ -342,7 +342,7 @@ PRODUCT.md
 
 **Handoff message template:**
 ```
-Product spec is ready at [path/PRODUCT.md].
+Product spec is ready at [path${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/PRODUCT.md].
 
 Domain: [domain]
 Modules: [module list — N modules]
@@ -362,7 +362,7 @@ Ready for [planning-and-task-breakdown / dev-craft].
 1. **One question at a time.** Never dump a list of 10 questions. Ask 1–2, get answers, then proceed.
 2. **Verify assumptions out loud.** "I'm assuming this is a B2B SaaS because you mentioned organizations and billing. Is that right?"
 3. **Be explicit about what's out of scope.** Undefined boundaries are the #1 source of scope creep. Write it down.
-4. **Use concrete examples.** "When you say 'approval workflow', do you mean a manager sees a pending item and clicks approve/reject, or is there a multi-step chain?"
+4. **Use concrete examples.** "When you say 'approval workflow', do you mean a manager sees a pending item and clicks approve${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/reject, or is there a multi-step chain?"
 5. **Suggest, don't dictate.** "A typical CRM has these modules..." not "You need these modules."
 6. **Match user vocabulary.** If the user says "workers" instead of "employees", use "workers" in the spec unless they agree to standardize.
 7. **Document decisions.** When the user makes a call, capture it in PRODUCT.md immediately.
@@ -478,7 +478,7 @@ User Request Received
 |-------|-----------|
 | 1 Domain & Problem | Marketplace / Freelance Platform. Users: Client, Designer, Admin. Problem: Designers need curated clients without race-to-bottom pricing; clients need vetted designers. |
 | 2 Scope Triangulation | Modules: Profiles, Job Listings, Proposals, Contracts, Payments, Reviews, Messaging, Admin Dashboard. Out: time tracking, design tools, escrow (future). |
-| 3 Feature Extraction | Job Listings → "As a client, I want to post a job with budget/deliverables so designers can apply." AC: requires title, desc, budget, category; auto-post or admin approval. Proposals → "As a designer, I want to submit a proposal with rate and portfolio so clients can evaluate me." |
+| 3 Feature Extraction | Job Listings → "As a client, I want to post a job with budget${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/deliverables so designers can apply." AC: requires title, desc, budget, category; auto-post or admin approval. Proposals → "As a designer, I want to submit a proposal with rate and portfolio so clients can evaluate me." |
 | 4 Priority & Sequencing | G1: Auth, Profiles, Listings, Proposals. G2: Contracts, Payments, Messaging. G3: Reviews, Analytics, Escrow. Dependencies: Payments ← Contracts ← Proposals ← Profiles ← Auth |
 
 **Handoff:** PRODUCT.md → `planning-and-task-breakdown`

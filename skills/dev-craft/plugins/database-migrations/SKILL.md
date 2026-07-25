@@ -1,9 +1,8 @@
 ---
 name: database-migrations
-description: Safe migration patterns for schema changes with rollback, data backfill, and zero-downtime deployment.
+description: Use when safe migration patterns for schema changes with rollback, data backfill, and zero-downtime deployment.
 metadata:
-  origin: agent-master-skills
----
+  origin: agent-master-skills---
 
 # Database Migrations Plugin
 

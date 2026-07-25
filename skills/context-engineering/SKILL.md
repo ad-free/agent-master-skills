@@ -1,6 +1,6 @@
 ---
 name: context-engineering
-description: "Manage agent context: setup, memory hierarchy, session continuity, context rotation. Ensures agents have the right information at the right time."
+description: Use when managing agent session context, memory hierarchy, and session continuity to prevent context pollution.
 metadata:
   origin: agent-master-skills
 ---
@@ -59,9 +59,9 @@ Task details, partial results, immediate decisions
 
 ### Level 2 — Project Context (persistent)
 
-Long-lived project knowledge stored per run in `.dev-craft/runs/<slug>/` (registry in `.dev-craft/index.json`). Always available (compressed).
+Long-lived project knowledge stored per run in `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` (registry in `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/index.json`). Always available (compressed).
 
-> **Multi-repo note:** when dev-craft's SCOPE gate reports `topology: multi` (separate BE + FE repos), each repo keeps its own `.dev-craft/` / `.ui-craft/` state. Shared knowledge (the API contract, the SCOPE record) lives in `contractRepo` (the BE repo) and is referenced by the other repo — do not duplicate it per repo. Handoffs that span repos must name which repo's `.dev-craft/` they live in.
+> **Multi-repo note:** when dev-craft's SCOPE gate reports `topology: multi` (separate BE + FE repos), each repo keeps its own `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` / `.ui-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` state. Shared knowledge (the API contract, the SCOPE record) lives in `contractRepo` (the BE repo) and is referenced by the other repo — do not duplicate it per repo. Handoffs that span repos must name which repo's `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/` they live in.
 
 | File | Purpose |
 |------|---------|
@@ -80,7 +80,7 @@ Fetched as needed: official docs, codebase files, MDN. Load only what's needed �
 
 ### Level 5 — Handoff History (archival)
 
-Session records in `.dev-craft/runs/<slug>/sessions/session-YYYYMMDD-N.md`. Only the latest is loaded on resume.
+Session records in `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/session-YYYYMMDD-N.md`. Only the latest is loaded on resume.
 
 ```
 Persistence:     Working < Project < Skill < Reference < Handoff
@@ -128,9 +128,9 @@ Estimate before loading. If a doc is 3k tokens and only 1k remains in budget, do
 
 ### At 70% full (~5k tokens remaining in 16k window):
 
- 1. **Generate handoff** to `.dev-craft/runs/<slug>/sessions/session-YYYYMMDD-N.md`:
+ 1. **Generate handoff** to `.dev-craft${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/session-YYYYMMDD-N.md`:
    - Current phase + completed phases
-   - Completed slices/modules
+   - Completed slices${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/modules
    - Active decisions (ADRs in progress)
    - Next steps (ordered)
    - Known issues / blockers
@@ -139,14 +139,14 @@ Estimate before loading. If a doc is 3k tokens and only 1k remains in budget, do
 
 3. **Tell user:**
    ```
-   Context nearing limit. Session saved to sessions/session-YYYYMMDD-N.md.
+   Context nearing limit. Session saved to sessions${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/session-YYYYMMDD-N.md.
    Run same command to resume — state loads automatically.
    ```
 
 ### On Resume:
 
 1. Detect `state.json` → load current phase + slices
-2. Load latest handoff from `sessions/`
+2. Load latest handoff from `sessions${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`
 3. Load `domain.md` + `plan.md` into Level 2
 4. Skip completed phases, resume at current phase
 5. Report: "Resuming [phase]. Completed [list]. Next: [next step]."
@@ -168,7 +168,7 @@ Mobile Agent:    API contract + mobile domain subset + platform conventions + gl
 1. No agent needs the full project context — only what's relevant
 2. Shared context is limited to: API contract, compressed domain model, conventions, glossary
 3. Master agent maintains the holistic view and resolves conflicts
-4. Per-agent handoffs stored in `.agent-orchestration/sessions/`
+4. Per-agent handoffs stored in `.agent-orchestration${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`
 5. Context isolation prevents backend details leaking into frontend agent
 
 ---
@@ -210,7 +210,7 @@ Every dev-craft phase has a context budget. The HANDOFF phase follows this skill
 
 ### agent-orchestration
 
-Master agent loads this skill for context slicing. Each worker gets a Level 2 subset via `.agent-orchestration/state.json`.
+Master agent loads this skill for context slicing. Each worker gets a Level 2 subset via `.agent-orchestration${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/state.json`.
 
 ### dispatching-parallel-agents
 
@@ -246,7 +246,7 @@ Agent uses outdated plan or superseded ADRs after project has evolved.
 
 15 handoff documents, none clearly the latest.
 
-**Fix:** Strict naming: `session-YYYYMMDD-N.md`. Maintain `sessions/index.md` pointing to latest. state.json always references current handoff.
+**Fix:** Strict naming: `session-YYYYMMDD-N.md`. Maintain `sessions${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/index.md` pointing to latest. state.json always references current handoff.
 
 ### 5. Over-Compression
 
@@ -262,7 +262,7 @@ state.json says BUILD but implementation hasn't caught up.
 
 ### 7. Tool Output Bloat
 
-A single bash/read call returns 10k+ lines that bloat context.
+A single bash${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/read call returns 10k+ lines that bloat context.
 
 **Fix:** Use output limits, grep for patterns, summarize. If output > 2k lines, summarize before adding to context. "If I wouldn't read it all, I shouldn't paste it all."
 
@@ -288,4 +288,4 @@ A single bash/read call returns 10k+ lines that bloat context.
 - `dispatching-parallel-agents` — Parallel execution with isolated context
 - `quality-gates` — LLM-Judge context budget for evaluation
 - `verification-before-completion` — Evidence gates for state.json accuracy
-- `skills/SHARED.md` — Cross-skill communication and handoff format
+- `skills${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/SHARED.md` — Cross-skill communication and handoff format

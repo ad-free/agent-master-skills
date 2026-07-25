@@ -1,9 +1,8 @@
 ---
 name: visual-regression
-description: Playwright/Cypress screenshot comparison for visual testing and regression detection.
+description: Use when playwright${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Cypress screenshot comparison for visual testing and regression detection.
 metadata:
-  origin: agent-master-skills
----
+  origin: agent-master-skills---
 
 # Visual Regression Plugin
 

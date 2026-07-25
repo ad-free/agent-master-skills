@@ -43,7 +43,7 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 
 ### Axis 1: Correctness
 
-- Does code match the spec/requirements?
+- Does code match the spec${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/requirements?
 - Are edge cases handled (null, empty, boundary, error)?
 - Are error paths handled (not just happy path)?
 - Are return types correct?
@@ -52,7 +52,7 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 ### Axis 2: Readability
 
 - Are names clear and consistent?
-- **No single-character or cryptic identifiers** (`x`, `d`, `tmp`, `res`) outside a tight loop scope — see dev-craft `references/lint-rules.md` gate.
+- **No single-character or cryptic identifiers** (`x`, `d`, `tmp`, `res`) outside a tight loop scope — see dev-craft `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/lint-rules.md` gate.
 - Is control flow straightforward (no deep nesting, no clever tricks)?
 - Does each function have a clear single responsibility?
 - Would a new developer understand this code?
@@ -68,23 +68,23 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 
 - Any N+1 query patterns?
 - Any unbounded loops or unconstrained data?
-- Any synchronous I/O that should be async?
+- Any synchronous I${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/O that should be async?
 - Any missing pagination on lists?
 - Any large objects on hot paths?
 
 ### Axis 5: Security
 
 - Input validated at boundaries?
-- Secrets out of code/logs?
+- Secrets out of code${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/logs?
 - Parameterized queries (no string concatenation)?
 - External data treated as untrusted?
-- Any auth/authorization bypass?
+- Any auth${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/authorization bypass?
 - Any unsafe deserialization?
 
 **Regex security — review every regex in the diff:**
 - ReDoS risk: nested quantifiers `(a+)+b`, overlapping alternatives `(a|aa)+b`, unbounded `(.*a)*` patterns?
 - User-controlled regex: `new RegExp(userInput)` without `re.escape()`?
-- Missing anchors: `/\d+/` without `^...$` allows partial match bypass?
+- Missing anchors: `${PROJECT_ROOT}/ without `^...$` allows partial match bypass?
 - Unicode safety: missing `u` flag in JS? Wrong dot-all behavior? `\w` Unicode scope matches intent?
 - Bounded repetition: user-controlled `{m,n}` with large ranges causing ReDoS?
 
@@ -102,8 +102,8 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 - No deprecated APIs for the detected version?
 - Code follows current-version docs?
 - Source citations for correct version?
-- Lint/format/tests pass?
-- **No legacy typing / deprecated idioms** — varies by stack (Python `Optional[X]`→`X | None`; TS `any`→`unknown`, `var`→`const`; etc.). Blocked by the stack's native linter per dev-craft `references/lint-rules.md`.
+- Lint${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/tests pass?
+- **No legacy typing / deprecated idioms** — varies by stack (Python `Optional[X]`→`X | None`; TS `any`→`unknown`, `var`→`const`; etc.). Blocked by the stack's native linter per dev-craft `references${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/lint-rules.md`.
 
 
 ### Axis 8: Conventions
@@ -116,17 +116,17 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 
 **Naming:**
 - Files: match existing case convention (kebab, camel, Pascal, snake)?
-- Functions/variables: match existing naming style?
-- Types/interfaces: match existing prefix/suffix convention?
+- Functions${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/variables: match existing naming style?
+- Types${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/interfaces: match existing prefix${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/suffix convention?
 
 **Imports & exports:**
 - Import style matches existing code (absolute vs relative, grouped vs inline)?
 - Export style matches (named vs default)?
-- Existing code uses barrel/index exports — does new code follow?
+- Existing code uses barrel${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/index exports — does new code follow?
 
 **Error handling:**
 - Does the new code use the same error handling pattern as existing code?
-- (try/catch vs Result types vs error boundaries)?
+- (try${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/catch vs Result types vs error boundaries)?
 
 **Code structure:**
 - Does the new code follow the same file-per-component or grouped approach?
@@ -134,7 +134,7 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 
 **Testing:**
 - Do new tests follow the same framework and assertion style?
-- Same describe/it structure or test() calls?
+- Same describe${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/it structure or test() calls?
 
 | Severity | Meaning | Action |
 |----------|---------|--------|
@@ -146,7 +146,7 @@ Review code across ALL eight axes. Missing one axis means incomplete review.
 ## Review Output Format
 
 ```markdown
-## Review: [Feature/Fix Name]
+## Review: [Feature${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/Fix Name]
 
 **Verdict:** [APPROVED / CHANGES REQUESTED]
 

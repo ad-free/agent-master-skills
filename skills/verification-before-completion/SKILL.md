@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use before claiming any task is complete. Requires fresh evidence, not assumptions. Prevents false completion claims.
+description: Use when about to claim a task is complete; require fresh verification evidence rather than assumptions.
 metadata:
   origin: agent-master-skills
 ---
@@ -82,7 +82,7 @@ Evidence older than your last code change is INVALID.
 ```
 
 **Timeline:**
-1. You write/modify code
+1. You write${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/modify code
 2. You run tests → they pass (evidence captured)
 3. You modify MORE code
 4. Step 2 evidence is now INVALID
@@ -96,7 +96,7 @@ When claiming work is complete, you MUST provide:
 
 ```
 COMPLETION CLAIM:
-Feature: [what was built/fixed]
+Feature: [what was built${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/fixed]
 Evidence:
 - Tests: [command] → [output summary]
 - Lint: [command] → [0 errors]
@@ -124,7 +124,7 @@ Status: COMPLETE
 ## Red Flags — STOP and Verify
 
 - About to say "done" without running tests
-- About to commit without lint/type check
+- About to commit without lint${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/type check
 - About to move to next phase without evidence
 - About to report status without proof
 - "I'm confident it works"

@@ -1,9 +1,8 @@
 ---
 name: api-versioning
-description: API version management with deprecation policies, migration guides, and backward compatibility patterns.
+description: Use when aPI version management with deprecation policies, migration guides, and backward compatibility patterns.
 metadata:
-  origin: agent-master-skills
----
+  origin: agent-master-skills---
 
 # API Versioning Plugin
 
@@ -22,8 +21,8 @@ Manages API version lifecycle: introduction, deprecation, sunset. Ensures breaki
 
 | Strategy | When to Use |
 |----------|-------------|
-| URL path (`/v1/`, `/v2/`) | Simple, explicit. Best for major breaking changes. |
-| Header (`Accept: application/vnd.api+json;version=2`) | Cleaner URLs, harder to discover. |
+| URL path (`${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`, `${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/`) | Simple, explicit. Best for major breaking changes. |
+| Header (`Accept: application${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}${PROJECT_ROOT}/vnd.api+json;version=2`) | Cleaner URLs, harder to discover. |
 | Query param (`?v=2`) | Easy to test. Can be forgotten by clients. |
 
 ## Deprecation Policy

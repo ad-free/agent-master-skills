@@ -1,9 +1,8 @@
 ---
 name: dependency-audit
-description: Dependency vulnerability scanning, license compliance, and supply chain security.
+description: Use when dependency vulnerability scanning, license compliance, and supply chain security.
 metadata:
-  origin: agent-master-skills
----
+  origin: agent-master-skills---
 
 # Dependency Audit Plugin
 
