@@ -2,7 +2,11 @@
 name: Code Reviewer
 description: Expert code review specialist. Use IMMEDIATELY after writing or modifying code. Performs security, correctness, maintainability, and performance reviews with confidence-based filtering.
 model: big-pickle
-tools: Read, Grep, Glob, Bash
+tools:
+  Read: true
+  Grep: true
+  Glob: true
+  Bash: true
 mode: subagent
 max-steps: 15
 version: 1.0.0

@@ -2,7 +2,13 @@
 name: Frontend Developer
 description: Frontend implementation specialist for React, Vue, Svelte, TypeScript, CSS, and modern tooling. Use for component development, state management, performance, and accessibility.
 model: big-pickle
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools:
+  Read: true
+  Write: true
+  Edit: true
+  Bash: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 12
 version: 1.0.0

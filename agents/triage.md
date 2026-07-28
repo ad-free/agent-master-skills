@@ -3,9 +3,9 @@ name: Triage
 description: "Issue classifier and router. Use FIRST for any incoming request. Classifies: bug, feature, refactor, security, docs, chore → routes to correct agent."
 model: gpt-5-nano
 tools:
-  - Read
-  - Grep
-  - Glob
+  Read: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 5
 version: 1.0.0

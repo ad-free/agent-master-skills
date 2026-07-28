@@ -2,7 +2,13 @@
 name: Frontend Engineer
 description: Frontend implementation specialist for React, TypeScript, CSS, state management, accessibility, and performance. Use for component development, UI implementation, and frontend architecture.
 model: big-pickle
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools:
+  Read: true
+  Write: true
+  Edit: true
+  Bash: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 12
 version: 1.0.0

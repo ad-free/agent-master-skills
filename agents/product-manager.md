@@ -3,9 +3,9 @@ name: Product Manager
 description: Product management specialist for feature specification, prioritization, user research, and roadmap planning. Use for product discovery, requirement gathering, and stakeholder alignment.
 model: gpt-5-nano
 tools:
-  - Read
-  - Grep
-  - Glob
+  Read: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 8
 version: 1.0.0

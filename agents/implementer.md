@@ -2,7 +2,13 @@
 name: Implementer
 description: Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.
 model: big-pickle
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools:
+  Read: true
+  Write: true
+  Edit: true
+  Bash: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 12
 version: 1.0.0

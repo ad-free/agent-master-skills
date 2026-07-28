@@ -2,7 +2,11 @@
 name: Quality Engineer
 description: Expert QA and testing engineer specializing in test strategy, test automation, integration testing, e2e testing, and quality processes across web, mobile, and API systems.
 model: big-pickle
-tools: Read, Grep, Glob, Bash
+tools:
+  Read: true
+  Grep: true
+  Glob: true
+  Bash: true
 mode: subagent
 max-steps: 10
 version: 1.0.0

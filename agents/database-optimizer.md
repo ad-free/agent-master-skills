@@ -2,7 +2,13 @@
 name: Database Optimizer
 description: Database performance specialist for query optimization, index design, schema review, and scaling strategies. Use for slow queries, schema design, and database scaling.
 model: deepseek-v4-flash-free
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools:
+  Read: true
+  Write: true
+  Edit: true
+  Bash: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 10
 version: 1.0.0

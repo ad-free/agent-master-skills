@@ -2,7 +2,11 @@
 name: Backend Architect
 description: Backend architecture specialist for system design, scalability patterns, database design, and API architecture. Use for architectural decisions, system design reviews, and technical strategy.
 model: nemotron-3-ultra-free
-tools: Read, Grep, Glob, Bash
+tools:
+  Read: true
+  Grep: true
+  Glob: true
+  Bash: true
 mode: subagent
 max-steps: 12
 version: 1.0.0

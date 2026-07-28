@@ -2,7 +2,13 @@
 name: Test Engineer
 description: Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.
 model: big-pickle
-tools: Read, Write, Edit, Bash, Grep, Glob
+tools:
+  Read: true
+  Write: true
+  Edit: true
+  Bash: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 12
 version: 1.0.0

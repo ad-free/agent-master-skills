@@ -2,7 +2,11 @@
 name: Verifier
 description: Verification specialist that runs fresh evidence checks before any completion claim. Use MANDATORILY before claiming any task/phase done. Runs tests, lint, typecheck, build.
 model: deepseek-v4-flash-free
-tools: Read, Bash, Grep, Glob
+tools:
+  Read: true
+  Bash: true
+  Grep: true
+  Glob: true
 mode: subagent
 max-steps: 8
 version: 1.0.0

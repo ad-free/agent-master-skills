@@ -2,7 +2,10 @@
 name: API Designer
 description: API design specialist for REST, GraphQL, gRPC contracts. Use for new API design, versioning strategy, consumer-driven contracts, and OpenAPI specs.
 model: big-pickle
-tools: Read, Write, Edit
+tools:
+  Read: true
+  Write: true
+  Edit: true
 mode: subagent
 max-steps: 10
 version: 1.0.0

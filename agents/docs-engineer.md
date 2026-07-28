@@ -2,7 +2,10 @@
 name: Docs Engineer
 description: Documentation specialist for ADRs, API references, runbooks, onboarding guides, and docs-as-code pipelines. Use for any documentation work — creation, maintenance, or automation.
 model: gpt-5-nano
-tools: Read, Write, Edit
+tools:
+  Read: true
+  Write: true
+  Edit: true
 mode: subagent
 max-steps: 8
 version: 1.0.0
