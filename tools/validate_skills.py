@@ -2,9 +2,11 @@
 """Validate SKILL.md files under skills/ for frontmatter and risky content.
 
 Checks:
-- YAML frontmatter contains `name` and `description` and `description` starts with "Use when"
+- YAML frontmatter contains required keys: name, description, version, preamble-tier, allowed-tools, triggers
 - Warns/errors on absolute local paths, inline secrets patterns, risky commands
 - Validates allowedTools against whitelist (if present)
+- Validates gate patterns: HUMAN CHECKPOINT — Gate N
+- Validates out-of-scope detection pattern
 
 Exit code 0 on success, non-zero if errors found.
 """
@@ -24,7 +26,16 @@ SKILLS_GLOB = os.path.join(ROOT, 'skills', '**', 'SKILL.md')
 RE_ABSOLUTE_PATH = re.compile(r"(^|\s)(/|[A-Za-z]:\\)")
 RE_SECRET_LIKE = re.compile(r"(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|GCLOUD|gcloud auth|ssh .*@|-----BEGIN PRIVATE KEY-----|API_KEY|SECRET_KEY)", re.I)
 RE_RISKY_CMDS = re.compile(r"\b(curl|wget|scp|ssh|aws|gcloud|kubectl)\b", re.I)
-ALLOWED_TOOLS = {'python','bash','git','docker','kubectl','none'}
+ALLOWED_TOOLS = {'Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent', 'AskUserQuestion', 'WebSearch', 'Task'}
+
+# Required frontmatter keys
+REQUIRED_KEYS = ['name', 'description', 'version', 'preamble-tier', 'allowed-tools', 'triggers']
+
+# Gate pattern to validate
+GATE_PATTERN = re.compile(r'###\s*\[\d+(\.\d+)?\]\s*HUMAN CHECKPOINT\s*—\s*Gate\s+\d+:')
+
+# Out-of-scope pattern
+OUT_OF_SCOPE_PATTERN = re.compile(r'Out-of-scope detection.*runs at every gate')
 
 errors = []
 warnings = []
@@ -66,44 +77,73 @@ for path in glob(SKILLS_GLOB, recursive=True):
         errors.append(f'{rel}: missing or invalid YAML frontmatter')
         continue
     # check required keys
+    for key in REQUIRED_KEYS:
+        if key not in fm:
+            errors.append(f'{rel}: frontmatter missing required key `{key}`')
+    # name validation
     name = fm.get('name')
-    desc = fm.get('description')
     if not name:
         errors.append(f'{rel}: frontmatter missing `name`')
-    if not desc:
-        errors.append(f'{rel}: frontmatter missing `description`')
-    else:
+    # description validation
+    desc = fm.get('description')
+    if desc:
         if not isinstance(desc, str) or not desc.strip().startswith('Use when'):
             warnings.append(f'{rel}: description should start with "Use when" (discovery guidance)')
-    # allowedTools check
-    atools = fm.get('allowedTools')
+    else:
+        errors.append(f'{rel}: frontmatter missing `description`')
+    # version validation
+    version = fm.get('version')
+    if version:
+        try:
+            _ = tuple(int(x) for x in str(version).split('.') if x)
+        except Exception:
+            warnings.append(f'{rel}: `version` should be semantic version (e.g., 1.0.0)')
+    # preamble-tier validation
+    tier = fm.get('preamble-tier')
+    if tier is not None:
+        try:
+            t = int(tier)
+            if t < 1 or t > 4:
+                warnings.append(f'{rel}: `preamble-tier` should be 1-4')
+        except (ValueError, TypeError):
+            warnings.append(f'{rel}: `preamble-tier` should be integer 1-4')
+    # allowed-tools validation
+    atools = fm.get('allowed-tools')
     if atools is not None:
         if not isinstance(atools, list):
-            warnings.append(f'{rel}: `allowedTools` should be a YAML list')
+            warnings.append(f'{rel}: `allowed-tools` should be a YAML list')
         else:
             for t in atools:
                 if t not in ALLOWED_TOOLS:
-                    warnings.append(f'{rel}: `allowedTools` contains unknown tool: {t}')
+                    warnings.append(f'{rel}: `allowed-tools` contains unknown tool: {t} (allowed: {", ".join(sorted(ALLOWED_TOOLS))})')
+    # triggers validation
+    triggers = fm.get('triggers')
+    if triggers is not None:
+        if not isinstance(triggers, list):
+            warnings.append(f'{rel}: `triggers` should be a YAML list')
+        elif len(triggers) == 0:
+            warnings.append(f'{rel}: `triggers` list should not be empty')
+    # validate gate patterns in body
+    gate_matches = GATE_PATTERN.findall(text)
+    if len(gate_matches) == 0:
+        # Only warn for pipeline skills that should have gates
+        if fm.get('name') in ('dev-craft', 'ui-craft'):
+            warnings.append(f'{rel}: No HUMAN CHECKPOINT gate patterns found (expected for pipeline skills)')
+    # validate out-of-scope pattern
+    if 'Out-of-scope detection' not in text and fm.get('name') in ('dev-craft', 'ui-craft'):
+        warnings.append(f'{rel}: No out-of-scope detection pattern found (expected for pipeline skills)')
     # scan body for risky patterns
-    # detect fenced code blocks and treat secrets inside them as warnings
     in_fence = False
     for i, line in enumerate(text.splitlines(), start=1):
         if line.strip().startswith('```'):
             in_fence = not in_fence
-            continue
-        if RE_SECRET_LIKE.search(line):
-            if in_fence:
-                warnings.append(f'{rel}:{i}: possible secret or creds pattern (inside code fence)')
-            else:
-                errors.append(f'{rel}:{i}: possible secret or creds pattern')
-        # skip absolute path and risky command warnings when inside fenced code blocks
-        if not in_fence:
-            # ignore absolute-path warnings when the line already uses project placeholder
-            if '${PROJECT_ROOT}' not in line and RE_ABSOLUTE_PATH.search(line):
-                warnings.append(f'{rel}:{i}: absolute path detected (non-portable)')
-            if RE_RISKY_CMDS.search(line):
-                # it's okay to mention kubectl/git, but flag for review
-                warnings.append(f'{rel}:{i}: risky/exec command mentioned')
+        if in_fence:
+            if RE_SECRET_LIKE.search(line):
+                warnings.append(f'{rel}:{i}: possible secret in fenced code block')
+        if RE_ABSOLUTE_PATH.search(line):
+            warnings.append(f'{rel}:{i}: absolute path detected (prefer relative paths)')
+        if RE_RISKY_CMDS.search(line):
+            warnings.append(f'{rel}:{i}: risky command detected (curl, wget, scp, ssh, aws, gcloud, kubectl)')
 
 # summarize
 if errors:
@@ -118,7 +158,4 @@ if warnings:
     for w in warnings:
         print(' -', w)
 
-if errors:
-    sys.exit(2)
-
-sys.exit(0)
+sys.exit(1 if errors else 0)

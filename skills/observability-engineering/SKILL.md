@@ -5,11 +5,24 @@ description: "Use when deciding what to log, measure, trace, and alert on for a 
   \ bug-hunting) or \"is this hardened\" (see dev-craft HARDEN, which invokes this\
   \ skill). Do NOT use for implementing the instrumentation itself (that's BUILD work\
   \ once the contract is decided)."
+model: nemotron-3-ultra-free
+version: 1.0.0
+preamble-tier: 3
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "observability"
+  - "monitoring"
+  - "logging"
+  - "telemetry"
+  - "instrument"
 metadata:
   origin: adapted from ECC and addyosmani/agent-skills
-  version: 1
+  version: 1.0.0
+  preferred-model: nemotron-3-ultra-free
 
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # observability-engineering
 

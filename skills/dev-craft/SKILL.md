@@ -1,11 +1,36 @@
 ---
 name: dev-craft
-description: Use when running a full-stack engineering pipeline with persistent `.dev-craft`
-  state for long-lived work and phased delivery.
+description: |
+  Run the 15-phase full-stack engineering pipeline with persistent `.dev-craft` state.
+  Use for new features, refactoring, multi-module work, or resuming sessions.
+  Invoked by: planner → implementer → verifier.
+version: 1.2.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - Agent
+  - AskUserQuestion
+  - Task
+triggers:
+  - "build this feature"
+  - "run dev-craft"
+  - "start a new feature"
+  - "resume my work"
+  - "implement the plan"
 metadata:
   origin: agent-master-skills
-
+  preferred-model: big-pickle
+  phase-count: 15
+  topology-support: [mono, multi]
+  plugins: [language-rules, tdd-enforcer, security-audit]
 ---
+
+TOKEN CEILING: ~15K tokens. If skill exceeds, extract sections to references/.
 
 # dev-craft
 
@@ -25,11 +50,13 @@ Turns a prompt into production-quality code. Phases have clear goals, exit crite
 
 ## The Iron Law
 
+<HARD-GATE>
 ```
 NO CODE WITHOUT DESIGN APPROVAL
 ```
 
 Implementation without approved spec = wasted hours of rework.
+</HARD-GATE>
 
 After ANY request, output STATUS (phase, next step, state). When the human gives ad-hoc fixes, route through STATUS resume — never silently edit.
 
@@ -45,6 +72,7 @@ This format is the minimum — add context as needed, but never omit it entirely
 
 ### State Integrity Mandate (non-negotiable)
 
+<HARD-GATE>
 Every task run — whether `build` or `ticket` — MUST persist its progress to `.dev-craft/`:
 
 1. **Load state before any phase.** If `state.json` exists, read it. Detect `currentPhase`, `lastSession`, and resume logic.
@@ -55,6 +83,7 @@ Every task run — whether `build` or `ticket` — MUST persist its progress to 
 4. **Verify state after ad-hoc fixes.** If the human requests a fix outside the phase loop, update `state.json`'s `buildFixes` and `testResults` before closing.
 
 A simple mental model: *if a context crash happens right now, the next session should resume from the correct phase.* If you can't confidently say that, the state is stale — update it.
+</HARD-GATE>
 
 ---
 
@@ -185,6 +214,7 @@ SHIP → Commit + ADRs + rollback plan
 
 ### Non-Negotiable Gates (applied across ALL phases)
 
+<HARD-GATE>
 These gates fire at specific points and block progress if not satisfied. They exist because
 the pipeline is long and agents routinely skip them without a hard stop:
 
@@ -194,6 +224,7 @@ the pipeline is long and agents routinely skip them without a hard stop:
 | **Skill Alignment** | SCOPE §0.2 step 3a | Classification is `fe` (frontend) but the running skill is dev-craft without a recorded `skillOverride` | Surface to user, get explicit approval or switch to ui-craft |
 | **Session Exists** | Before BUILD phase | No `sessions/session-YYYYMMDD-N.md` exists for this run | Create session file first (see checklist above) |
 | **Standing Navigation** | After ANY request finishes | Agent finishes a response without stating current phase + next step | This is a text-output rule — output MUST include "Current phase: X. Next: Y" or equivalent |
+</HARD-GATE>
 
 ---
 
@@ -577,7 +608,45 @@ Use the template in `references/phase-templates.md` (Estimation Template section
 
 ---
 
-### [3.5] BUILD-ORDER — Module Dependency Sequencing
+### [3.8] HUMAN CHECKPOINT — Gate 2: DESIGN/ESTIMATION → SOURCE/BUILD
+
+**Before proceeding to SOURCE/BUILD, present this summary to the human:**
+
+```
+GATE 2 — DESIGN APPROVED / ESTIMATION ACKNOWLEDGED
+──────────────────────────────────────────────────
+Spec: <one-line summary>
+ADRs: <N> written
+Slices: <N> defined
+Build order: <N> modules / <N> slices
+Estimated effort: <hours/days>
+Next phase: SOURCE (doc verification) → BUILD (TDD per slice)
+
+Proceed to SOURCE/BUILD? [y/n/m/s]
+```
+
+- `y` = proceed to SOURCE/BUILD
+- `n` = stop, await instruction
+- `m` = modify DESIGN/ESTIMATION (re-enter with guidance)
+- `s` = split — create follow-up ticket for out-of-scope items, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed. Await human direction.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md` with issue overview, then proceed.
+
+**Out-of-scope detection (runs at every gate):**
+If during this phase you discovered issues/bugs/improvements NOT in the current PLAN:
+1. Document in `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`:
+   - Discovered during: <phase>
+   - Issue: <description>
+   - Impact: <Low/Medium/High/Critical>
+   - Related to current PLAN: No
+   - Recommended action: Create follow-up ticket / Defer to retro
+2. Ask: "Create follow-up ticket? [y/n]"
+3. If yes → create ticket (GitHub Issue if `gh` available, else local markdown)
+
+**State write:** Record gate decision in `state.json.phaseDecisions["DESIGN"]`.
+
+---
 
 **Goal:** Determine optimal build sequence based on module dependencies and priorities.
 
@@ -709,7 +778,8 @@ PRODUCT.md / DOMAIN.md). If no source spec exists, skip this phase.
 
 6. **Present the matrix + gaps to the human.** Do not auto-skip gaps.
 
-**Exit criterion (HARD GATE):** Every `[REQUIRED P1]` and `G1` requirement is traced to
+<HARD-GATE>
+**Exit criterion:** Every `[REQUIRED P1]` and `G1` requirement is traced to
 a task with an acceptance criterion. G2/G3 gaps may be deferred **only with explicit
 human acknowledgement** (record in state.json `deferredRequirements`).
 
@@ -717,10 +787,50 @@ human acknowledgement** (record in state.json `deferredRequirements`).
   add the missing tasks. Do NOT proceed to BUILD.
 - This gate is non-negotiable: building with known P1 coverage gaps is the exact failure
   this phase exists to prevent.
+</HARD-GATE>
 
 **State write:** Save `.dev-craft/requirements.md`. Record `requirementsExtracted`,
 `coverageGaps`, and `deferredRequirements` in state.json. Set
 `phases.REQUIREMENTS_EXTRACTION = "completed"` only after the gate passes.
+
+---
+
+### [3.7.5] HUMAN CHECKPOINT — Gate 1: REQUIREMENTS-EXTRACTION → DESIGN
+
+**Before proceeding to DESIGN, present this summary to the human:**
+
+```
+GATE 1 — REQUIREMENTS-EXTRACTION COMPLETE
+──────────────────────────────────────────
+Requirements extracted: <N>
+P1/G1 traced: <N> / <N>
+Gaps: <N> (P1/G1: <N>, G2/G3: <N>)
+Deferred: <list or "none">
+Next phase: DESIGN (spec + ADRs + task breakdown)
+
+Proceed to DESIGN? [y/n/m/s]
+```
+
+- `y` = proceed to DESIGN
+- `n` = stop, await instruction
+- `m` = modify REQUIREMENTS-EXTRACTION (re-run with guidance)
+- `s` = split — create follow-up ticket for out-of-scope items, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed. Await human direction.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md` with issue overview, then proceed.
+
+**Out-of-scope detection (runs at every gate):**
+If during this phase you discovered issues/bugs/improvements NOT in the current PLAN:
+1. Document in `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`:
+   - Discovered during: <phase>
+   - Issue: <description>
+   - Impact: <Low/Medium/High/Critical>
+   - Related to current PLAN: No
+   - Recommended action: Create follow-up ticket / Defer to retro
+2. Ask: "Create follow-up ticket? [y/n]"
+3. If yes → create ticket (GitHub Issue if `gh` available, else local markdown)
+
+**State write:** Record gate decision in `state.json.phaseDecisions["REQUIREMENTS-EXTRACTION"]`.
 
 ---
 
@@ -790,9 +900,11 @@ Prefer OpenAPI YAML inside the `.md` file when tooling supports it.
 
 **Goal:** Implement one vertical slice at a time. Every slice is verified for security as it's written — not deferred to a batch scan.
 
+<HARD-GATE>
 **Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`develop`. The branch keeps in-progress work isolated and reviewable. For `multi` topology, the branch is created in **every repo the scope touches** (see SCOPE §0.2 step 6 "Branch per unit of work"), and each repo's `state.json` records its own `activeBranch`; the SCOPE record links them via `linkedBranches`. A BE-only or FE-only `multi` unit branches only its own repo.
 
 **Base-branch guard (enforced before every commit, in every repo):** Treat `main`, `master`, `develop` (and each repo's configured default branch) as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
+</HARD-GATE>
 
 1. **Resolve the branch name(s)** (deterministic, from SCOPE §0.2 step 6 "Branch per unit of work"):
     - `mono`: one `activeBranch`.
@@ -873,6 +985,37 @@ skeleton; the reference is the step-by-step.
 
 ---
 
+### [6.5] HUMAN CHECKPOINT — Gate 3: TEST → REVIEW
+
+**Before proceeding to REVIEW, present this summary to the human:**
+
+```
+GATE 3 — TEST SUITES PASS
+──────────────────────────
+Suites run: <N> (BE: <N>, FE: <N>)
+Tests passed: <N> / <N>
+Contract conformance: <PASS/FAIL/SKIP>
+Coverage: <X>% (threshold: <Y>%)
+Flaky tests: <N> (quarantined: <N>)
+Next phase: REVIEW (7-axis audit + lint gate)
+
+Proceed to REVIEW? [y/n/m/s]
+```
+
+- `y` = proceed to REVIEW
+- `n` = stop, await instruction
+- `m` = re-run tests with modifications (add tests, fix flaky)
+- `s` = split — create follow-up ticket for out-of-scope test issues, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to REVIEW. Await human direction.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["TEST"]`.
+
+---
+
 ### [7] REVIEW — Quality Audit
 
 **Goal:** Quality gate before shipping.
@@ -910,6 +1053,36 @@ requirement in the traceability matrix verified against the built code.
 
 ---
 
+### [7.5] HUMAN CHECKPOINT — Gate 4: REVIEW → HARDEN
+
+**Before proceeding to HARDEN, present this summary to the human:**
+
+```
+GATE 4 — REVIEW COMPLETE
+────────────────────────
+Findings: Critical <N> | High <N> | Medium <N> | Low <N>
+Critical/High resolved: <Y/N>
+P1/G1 requirements verified: <N> / <N>
+Lint gate: <PASS/FAIL>
+Next phase: HARDEN (cross-cutting security + observability)
+
+Proceed to HARDEN? [y/n/m/s]
+```
+
+- `y` = proceed to HARDEN
+- `n` = stop, await instruction
+- `m` = modify REVIEW (re-run with guidance)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to HARDEN.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["REVIEW"]`.
+
+---
+
 ### [8] HARDEN — Cross-Cutting Security Verification
 
 **Goal:** Verify security across all slices, not within individual slices. Catch cross-cutting issues that per-slice SECURE checks miss.
@@ -929,41 +1102,109 @@ The agent now has the full codebase in context. It reads across all slices to fi
 
 ---
 
-### [9] SHIP — Docs + Commit + Finalize
+### [8.5] HUMAN CHECKPOINT — Gate 5: HARDEN → SHIP
 
-**Goal:** Deliver with full traceability.
+**Before proceeding to SHIP, present this summary to the human:**
+
+```
+GATE 5 — HARDEN COMPLETE
+────────────────────────
+Critical/High findings: <N> (resolved: <N>)
+Risk register: <N> risks (<N> accepted, <N> mitigated)
+Observability: <instrumented / gaps noted>
+Cross-slice audit: <PASS/FAIL>
+BE↔FE contract: <PASS/FAIL>
+Next phase: SHIP (automated release via ship skill)
+
+Proceed to SHIP? [y/n/m/s]
+```
+
+- `y` = proceed to SHIP
+- `n` = stop, await instruction
+- `m` = modify HARDEN (re-run with guidance)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to SHIP.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["HARDEN"]`.
+
+---
+
+### [9] SHIP — Automated Release Workflow
+
+**Goal:** Automated, gated release from feature branch to PR using the `ship` skill.
+
+**Uses:** `ship` skill (one-command: test → review → version → changelog → commit → push → PR)
 
 **Process:**
 
-1. Update ADRs for any BUILD/HARDEN decisions
-2. Update CONTEXT.md with new terms
-3. Final verification:
-   - Lint + type + test + build all pass
-   - Dead code removed
-   - HARDEN risk register is clean (no unaddressed Critical/High findings)
-4. Update CHANGELOG
-5. Atomic commit (on the feature branch(es) created in BUILD):
-   ```
-   type(scope): short description
+1. **Run `ship` skill** — non-interactive automated workflow:
+   - Base branch guard (abort if on main/master/develop)
+   - Sync with base branch
+   - Full test suite (Gate: all pass)
+   - Lint + typecheck (Gate: 0 errors)
+   - Pre-landing code review via `code-review-and-quality`
+   - Security scan (secrets, deps)
+   - Coverage check (Gate: meets threshold)
+   - Plan verification (all G1 slices DONE)
+   - Version bump (MAJOR/MINOR ask user, PATCH auto)
+   - CHANGELOG update
+   - Commit + push
+   - Create PR with generated body
 
-   - What changed and why
-   - Key decisions (reference ADRs)
-   - What was intentionally NOT done
-   ```
-   Before committing, re-run the per-repo branch-guard from BUILD intro (confirm no repo is on a base branch).
-6. Merge or open a pull request from the feature branch(es):
-   - **mono:** one branch, one PR.
-   - **multi:** open a PR in **each repo the scope touched** (paired `fix/be-*` + `fix/fe-*` branches), linked by the same issue id. Never ship one side without the other for a `fullstack` unit — they are one change split across repos.
-   - **PR (recommended):** Push the branch(es) and open PR(s) for review before merging to the base branch. Never merge unreviewed Critical/Required findings.
-   - **Direct merge (solo/small):** Only if no review gate is required:
-     ```bash
-     cd "$REPO" && git checkout <base-branch> && git merge --no-ff <feature-branch>
-     ```
-   - Record the merged branch name(s) and PR/commit reference in `state.json` (`shippedBranches`, `prUrls` if any).
-7. **Cross-skill invocation in this phase:**
-   - For the rollback plan and deployment mechanics, invoke `devops-automation` rather than deciding deployment strategy ad hoc.
+2. **Only stop for:**
+   - On base branch (abort)
+   - Unresolvable merge conflicts (show conflicts)
+   - New test failures (pre-existing flaky = triaged)
+   - Review ASK items needing user judgment
+   - MAJOR/MINOR version bump (ask)
+   - Coverage below threshold (hard gate with override)
+   - Incomplete G1 slices (hard gate with override)
 
-**Exit criterion:** Feature branch(es) merged (or PR(s) opened) with a clean commit and a rollback plan.
+3. **Output:** PR URL with full verification report
+
+**Gate:** All deterministic gates (tests, lint, typecheck, security, coverage) + human override on soft gates.
+
+**State write:** `state.json` → `shipCompleted: true`, `prUrl`, `version`, `shippedBranches`
+
+**See also:** `ship` skill for full automation details, `verification-before-completion` for gate definitions.
+
+---
+
+### [9.5] HUMAN CHECKPOINT — Gate 6: SHIP → MR-PR-REVIEW
+
+**After SHIP completes, present this summary to the human:**
+
+```
+GATE 6 — SHIP COMPLETE / PR CREATED
+───────────────────────────────────
+PR: <PR URL>
+Version: <vX.Y.Z>
+Branch: <feature branch>
+Tests: <N> passed
+Coverage: <X>%
+Lint/Typecheck: PASS
+Next: mr-pr-review (peer review on GitHub/GitLab)
+
+Proceed to mr-pr-review? [y/n/m/s]
+```
+
+- `y` = proceed to mr-pr-review (load `mr-pr-review` skill)
+- `n` = stop, await instruction
+- `m` = modify SHIP (re-run with guidance)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to mr-pr-review.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["SHIP"]`.
+
+**Next skill:** `skill("mr-pr-review")` with context: `prUrl`, `branch`, `diffPath`, `requirementsPath`.
 
 ---
 
@@ -1066,6 +1307,58 @@ The agent now has the full codebase in context. It reads across all slices to fi
 ## Workflow Orchestration
 
 For complex features spanning multiple domains. Load `references/cross-skill.md` for workflow tables, orchestration patterns, and cross-skill communication protocols.
+
+---
+
+## Outputs / Handoffs
+
+On completion of each phase, invokes next skill with context:
+
+| Phase | Next Skill | Context Passed |
+|-------|------------|----------------|
+| REQUIREMENTS-EXTRACTION | `skill("grilling")` | `planPath`, `requirementsPath`, `domainPath` |
+| grilling complete | `skill("dev-craft")` | `riskRegisterPath`: "risk-register.md" |
+| BUILD (per slice) | `skill("code-review-and-quality")` | `slicePath`, `diffPath` |
+| code-review complete | `skill("verification-before-completion")` | `slicePath` |
+| All slices done | `skill("quality-gates")` | `state.json` |
+| quality-gates pass | `skill("ship")` | `state.json`, `prUrl` |
+| ship complete | `skill("mr-pr-review")` | `prUrl`, `branch`, `diffPath`, `requirementsPath` |
+| mr-pr-review complete | `skill("documentation-engineering")` | `prUrl`, `features`, `decisions` |
+| docs complete | `skill("learn")` | `releaseNotes`, `learnings` |
+
+---
+
+### [9.7] HUMAN CHECKPOINT — Gate 7: MR-PR-REVIEW → DOCUMENTATION
+
+**After mr-pr-review completes, present this summary to the human:**
+
+```
+GATE 7 — PEER REVIEW COMPLETE
+─────────────────────────────
+PR: <PR URL>
+Review verdict: <APPROVE / REQUEST_CHANGES / COMMENT>
+Reviewers: <N> (approvals: <N>)
+Security review: <PASS/FAIL/NOT_REQUIRED>
+Performance review: <PASS/FAIL/NOT_REQUIRED>
+Docs required: <YES/NO>
+Next: documentation-engineering (local markdown generation)
+
+Proceed to documentation? [y/n/m/s]
+```
+
+- `y` = proceed to documentation-engineering
+- `n` = stop, await instruction
+- `m` = modify (request changes, re-run mr-pr-review)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to documentation.
+**If `s`:** Create `.dev-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["MR_PR_REVIEW"]`.
+
+**Next skill:** `skill("documentation-engineering")` with context: `prUrl`, `features`, `decisions`.
 
 ---
 

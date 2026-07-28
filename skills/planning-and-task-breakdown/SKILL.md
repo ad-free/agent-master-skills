@@ -1,11 +1,32 @@
 ---
 name: planning-and-task-breakdown
-description: Use when you have a spec and need work broken into ordered, verifiable
-  tasks with acceptance criteria.
+description: |
+  Decompose specs into ordered, verifiable tasks with acceptance criteria.
+  Use when you have a spec (PRODUCT.md/DOMAIN.md) and need implementable units.
+  Invoked by: planner → implementer.
+version: 1.1.0
+preamble-tier: 2
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
+triggers:
+  - "plan this feature"
+  - "break down this task"
+  - "create implementation plan"
+  - "split this into tasks"
 metadata:
   origin: agent-master-skills
-
+  output: PLAN.md
+  preferred-model: nemotron-3-ultra-free
+  integrates-with: [product-thinking, project-discovery, dev-craft, ui-craft]
 ---
+
+TOKEN CEILING: ~10K tokens. If skill exceeds, extract sections to references/.
 
 # Planning & Task Breakdown
 
@@ -478,3 +499,12 @@ Can't check all boxes? Plan is incomplete. Don't start.
 
 Upstream: `product-thinking` (PRODUCT.md) → `project-discovery` (DOMAIN.md).  
 Downstream: `dev-craft` / `ui-craft` consume PLAN.md.
+
+## Outputs / Handoffs
+
+On completion, invokes: `skill("grilling")` with context:
+  - `planPath`: "PLAN.md"
+  - `requirementsPath`: "requirements.md" (if exists)
+  - `domainPath`: "DOMAIN.md" (if exists)
+
+**Grilling** performs adversarial review of the plan, outputs `risk-register.md`, then invokes `skill("dev-craft")` or `skill("ui-craft")` for implementation.

@@ -6,11 +6,23 @@ description: "Use when deciding WHAT kind of test to write for a change \u2014 u
   \ or \"review my test coverage\" (see code-review-and-quality). Do NOT use for writing\
   \ the test code itself (that's BUILD work once the test type/failure-mode\
   \ is decided)."
+model: nemotron-3-ultra-free
+version: 1.0.0
+preamble-tier: 3
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "test strategy"
+  - "testing approach"
+  - "what to test"
+  - "test plan"
 metadata:
   origin: adapted from ECC and addyosmani/agent-skills
-  version: 1
+  version: 1.0.0
+  preferred-model: nemotron-3-ultra-free
 
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # testing-strategies
 

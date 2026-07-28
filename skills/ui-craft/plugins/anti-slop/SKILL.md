@@ -1,11 +1,25 @@
 ---
 name: anti-slop
 description: Use when building UI components to enforce anti-generic design rules — no emoji icons, no generic gradients, proper spacing, and motion that follows design principles.
+model: gpt-5-nano
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "anti slop"
+  - "generic design"
+  - "ai generated ui"
+  - "design quality"
+  - "ui consistency"
+disable-model-invocation: true
 metadata:
   origin: agent-master-skills
   plugin-for: ui-craft
   phase: BUILD
+  preferred-model: gpt-5-nano
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Anti-Slop Plugin
 

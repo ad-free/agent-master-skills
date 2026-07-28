@@ -1,11 +1,31 @@
 ---
 name: bug-hunting
-description: Use when conducting security audits, penetration tests, or systematic
-  vulnerability discovery across a codebase.
+description: |
+  Systematic security vulnerability discovery: Recon → Scan → Test → Exploit → Disclose.
+  Use for security audits, pre-release reviews, and vulnerability assessments.
+  Invoked by: security-auditor, code-reviewer.
+version: 1.1.0
+preamble-tier: 4
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - AskUserQuestion
+triggers:
+  - "security audit"
+  - "vulnerability scan"
+  - "penetration test"
+  - "find security issues"
 metadata:
   origin: agent-master-skills
-
+  preferred-model: nemotron-3-ultra-free
+  phases: 5
+  proof-required: true
+  integrates-with: [code-review-and-quality, verification-before-completion, dev-craft]
 ---
+
+TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Bug Hunting
 
@@ -360,6 +380,16 @@ After each fix:
 - Raw string concatenation in DB queries
 - `exec()`/`shell_exec()` with user data
 - Secrets committed to any tracked file
+
+## Outputs / Handoffs
+
+On completion, invokes: `skill("code-review-and-quality")` with context:
+  - `findingsPath`: "bug-hunt-report.md"
+  - `severityCounts`: {critical: N, high: N, medium: N, low: N}
+  - `regressionTests`: [paths]
+
+Then: `skill("verification-before-completion")` to verify fixes
+Then: `skill("learn")` to capture security learnings
 
 ## Integration
 

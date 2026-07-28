@@ -56,6 +56,19 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `context-engineering` | Agent context setup, memory hierarchy, session continuity, context rotation |
 | `image-to-design-spec` | Screenshot → design tokens, layout detection, design system generation |
 
+### New High-Value Skills (v2.0+)
+
+| Skill | Purpose | Source | When to Use |
+|-------|---------|--------|-------------|
+| `token-budget` | Token estimation, user-chosen response depth, context compression | ECC | Response length control, context window management |
+| `learn` | Persistent project learnings DB (search, prune, export, stats) | gstack | Cross-session knowledge capture |
+| `retro` | Weekly engineering retrospective with git analysis | gstack | Sprint/weekly reflection, trend tracking |
+| `ship` | One-command automated release (test → review → version → changelog → PR) | gstack | Ready to deploy, want full automation |
+| `cost-optimizer` | Model routing (Haiku/Sonnet), budget tracking, prompt caching | ECC | LLM API cost control |
+| `grilling` | Adversarial stress-test of plans/designs | mattpocock | Plan validation, risk identification |
+| `handoff` | Agent-to-agent and session-to-session context transfer | mattpocock | Context rotation, multi-agent coordination |
+| `agent-router` | Single entry point: maps request → agent → skill chain | New (bootstrap) | First skill to load; routes all work |
+
 ### Plugins
 
 Beyond the core skills, two pipelines have plugin systems for extending functionality:
@@ -87,6 +100,10 @@ product-thinking ─────────────────────
       (validate → dependency map → vertical slices → tasks)
         │
         ▼
+    grilling ───────────────────────────→ risk-register.md
+      (adversarial stress-test of plan)
+        │
+        ▼
     dev-craft ──────────────────────────→ Shipped code
       ├── [0]   LOAD       — initialize or resume
       ├── [0.5] REQUIRE    — load PRODUCT.md / DOMAIN.md
@@ -95,14 +112,14 @@ product-thinking ─────────────────────
       ├── [3]   DESIGN     — spec + ADRs + task list
       ├── [3.5] BUILD-ORDER— dependency sequencing (for multi-module)
       ├── [4]   SOURCE     — official docs verification
-       ├── [5]   BUILD      — TDD + SECURE + MATCH + git worktree
-       │         └── Plugins: language-rules (language conventions), tdd-enforcer
-       ├── [6]   TEST       — full suite + debugging
+      ├── [5]   BUILD      — TDD + SECURE + MATCH + git worktree
+      │         └── Plugins: language-rules (language conventions), tdd-enforcer
       ├── [6]   TEST       — full suite + debugging
-       ├── [7]   REVIEW     — code-review-and-quality (8 axes)
-       │         └── Plugins: language-rules (style checks), security-audit
+      ├── [7]   REVIEW     — code-review-and-quality (8 axes)
+      │         └── Plugins: language-rules (style checks), security-audit
       ├── [8]   HARDEN     — cross-cutting security (7 checks)
-      └── [9]   SHIP       — commit + rollback plan
+      ├── [9]   SHIP       — automated via `ship` skill
+      └── [H]   HANDOFF    — context rotation via `handoff` skill
 
     For large projects (>3 modules):
       agent-orchestration splits agents via git worktree:
@@ -111,14 +128,49 @@ product-thinking ─────────────────────
         └── Mobile agent    (mobile app)
 
     Pre-merge validation:
-      quality-gates ──→ Gate 1 (Structure) → Gate 2 (Deterministic)
-                      → Gate 3 (Security)  → Gate 4 (Convention)
-                      → Gate 5 (LLM-Judge)
+      quality-gates ──→ Gate 0 (Schema) → Gate 1 (Structure) → Gate 2 (Deterministic)
+                      → Gate 3 (Security)  → Gate 4 (Convention) → Gate 5 (LLM-Judge)
 
     Throughout:
       context-engineering manages memory, rotation, and handoffs
       debugging-and-error-recovery handles any failures
+      token-budget controls response depth
+      cost-optimizer routes models for cost efficiency
+      learn captures cross-session learnings
+      retro runs weekly retrospectives
 ```
+
+## Agent Registry (27 Agents)
+
+### Core Pipeline Agents
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| `planner` | nemotron-3-ultra-free | Creates PLAN.md from spec |
+| `implementer` | big-pickle | TDD implementation |
+| `verifier` | deepseek-v4-flash-free | Fresh evidence gates |
+| `gatekeeper` | gpt-5-nano | Always-active guardrails |
+| `triage` | gpt-5-nano | Classify + route requests |
+
+### Domain Specialists
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| `api-designer` | big-pickle | API contracts, OpenAPI |
+| `database-engineer` | deepseek-v4-flash-free | Schema, migrations, queries |
+| `frontend-engineer` | big-pickle | React, TS, CSS, a11y |
+| `devops-engineer` | deepseek-v4-flash-free | CI/CD, Terraform, K8s |
+| `security-auditor` | big-pickle | Threat model, code review |
+| `debugger` | nemotron-3-ultra-free | Root-cause investigation |
+| `test-engineer` | big-pickle | Test strategy, flaky fixes |
+| `docs-engineer` | gpt-5-nano | ADRs, API docs, runbooks |
+
+### Meta / Orchestration
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| `orchestrator` | nemotron-3-ultra-free | Multi-agent coordination |
+| `context-guard` | gpt-5-nano | Context rotation, handoffs |
+| `retro-analyst` | deepseek-v4-flash-free | Weekly retrospectives |
+
+All agents use **free OpenCode Zen models** (Nemotron 3 Ultra, Big Pickle, DeepSeek V4 Flash, GPT-5 Nano, etc.)
 
 ## Getting Started
 
@@ -154,7 +206,15 @@ In `opencode.json`:
       "dev-craft": "allow",
       "agent-orchestration": "allow",
       "quality-gates": "allow",
-      "context-engineering": "allow"
+      "context-engineering": "allow",
+      "agent-router": "allow",
+      "token-budget": "allow",
+      "learn": "allow",
+      "retro": "allow",
+      "ship": "allow",
+      "cost-optimizer": "allow",
+      "grilling": "allow",
+      "handoff": "allow"
     }
   }
 }
@@ -164,18 +224,23 @@ In `opencode.json`:
 
 **From a vague idea:**
 > "I want to build a task management app"
-> → Agent loads `product-thinking` → refines into spec
+> → Agent loads `agent-router` → routes to `planner`
+> → `product-thinking` → refines into spec
 > → `planning-and-task-breakdown` → PLAN.md
+> → `grilling` → risk-register.md
 > → `dev-craft` → builds it
 
 **From existing spec files:**
 > "Here's my requirements.xlsx with the feature list"
-> → Agent loads `project-discovery` → DOMAIN.md
+> → Agent loads `agent-router` → routes to `planner`
+> → `project-discovery` → DOMAIN.md
 > → `planning-and-task-breakdown` → PLAN.md
+> → `grilling` → risk-register.md
 > → `dev-craft` → builds it
 
 **For large multi-module projects:**
 > "Build an HRM system with 13 modules"
+> → `agent-router` → `planner` + `orchestrator`
 > → `product-thinking` → `planning-and-task-breakdown`
 > → `dev-craft` (master) + `agent-orchestration` (backend/frontend/mobile)
 > → `quality-gates` before merge
@@ -191,22 +256,47 @@ In `opencode.json`:
 ## Integration Map
 
 ```
-product-thinking ──────→ PRODUCT.md
+Entry: agent-router (bootstrap)
     │
-project-discovery ─────→ DOMAIN.md
+    ├── product-thinking / project-discovery (if vague/specs)
+    │       │
+    │       ▼
+    ├── planning-and-task-breakdown ──→ PLAN.md
+    │       │
+    │       ▼
+    │   grilling (adversarial review) ──→ risk-register.md
+    │       │
+    │       ▼
+    ├── dev-craft / ui-craft (main pipelines)
+    │       │
+    │       ├── Phase 0-2: SCOPE, ALIGN, DESIGN
+    │       │   └── Plugins: architecture-patterns, api-design, design-intelligence
+    │       │
+    │       ├── Phase 3-5: SOURCE, BUILD, TEST
+    │       │   └── Uses: debugging-and-error-recovery, testing-strategies
+    │       │   └── Parallel: dispatching-parallel-agents
+    │       │   └── Multi-agent: agent-orchestration (git worktrees)
+    │       │
+    │       ├── Phase 6: REVIEW
+    │       │   └── Uses: code-review-and-quality (8-axis + gates)
+    │       │
+    │       ├── Phase 7: HARDEN
+    │       │   └── Uses: quality-gates (6 gates), bug-hunting (security)
+    │       │
+    │       ├── Phase 8: SHIP
+    │       │   └── Uses: ship (automated), verification-before-completion
+    │       │
+    │       └── Phase H: HANDOFF
+    │           └── Uses: handoff protocol, learn (capture)
     │
-    └──→ planning-and-task-breakdown ──→ PLAN.md
-              │
-              ▼
-         dev-craft ───────────────────────→ Shipped code
-           │  │  │
-           │  │  └──→ quality-gates (pre-merge)
-           │  │
-           │  └──→ agent-orchestration (multi-agent)
-           │
-           └──→ debugging-and-error-recovery (failures)
-           └──→ code-review-and-quality (review)
-           └──→ context-engineering (memory)
+    ├── cost-optimizer (background, routes models)
+    ├── token-budget (user-facing depth control)
+    ├── context-engineering (manages context window)
+    │
+    └── Weekly: retro → learn
+
+Verification Gates (every slice):
+    verification-before-completion → quality-gates → ship
 ```
 
 See `skills/SHARED.md` for the complete skill inventory and decision tree.
@@ -223,19 +313,19 @@ Sample sessions are provided under `examples/` to help you try the pipelines loc
 
 Validator and test helpers are available in `tools/`:
 
- - Run skill validator:
+  - Run skill validator:
 
 ```bash
 python tools/validate_skills.py
 ```
 
- - Run agent validator:
+  - Run agent validator:
 
 ```bash
 python tools/validate_agents.py
 ```
 
- - Run tests:
+  - Run tests:
 
 ```bash
 python -m pytest -q

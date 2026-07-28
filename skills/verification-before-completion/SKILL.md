@@ -1,11 +1,31 @@
 ---
 name: verification-before-completion
-description: Use when about to claim a task is complete; require fresh verification
-  evidence rather than assumptions.
+description: |
+  Enforce fresh verification evidence before any completion claim. 5 gates: structure → deterministic → security → convention → LLM judge.
+  Use MANDATORILY before claiming any task, phase, or feature complete.
+  Invoked by: verifier, implementer, gatekeeper.
+version: 2.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+triggers:
+  - "verify this is done"
+  - "run verification gates"
+  - "check completion"
+  - "run tests and lint"
 metadata:
   origin: agent-master-skills
-
+  gates: 5
+  fresh-evidence-rule: true
+  preferred-model: nemotron-3-ultra-free
+  integrates-with: [quality-gates, code-review-and-quality, dev-craft, ship, shipper]
+  source-enhancements: ECC verification gates (deterministic-before-LLM-judge)
 ---
+
+TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Verification Before Completion
 
@@ -133,9 +153,30 @@ Status: COMPLETE
 
 **All of these mean: Run the verification now.**
 
-## Verification Gates
+## Verification Gates (from ECC - Deterministic Before LLM Judge)
 
 Apply the Verification Checklist at three points: before changes (baseline tests pass), after each slice (new + existing tests, lint, type, build), and before claiming done (full suite + manual verification + no debug artifacts). Before committing, also run a secrets scanner and ensure no dead code remains.
+
+### Gate Ordering (CRITICAL - Deterministic First)
+
+**NEVER invoke LLM judge (Gate 5) if Gates 1-4 fail.**
+
+```
+Gate 1: STRUCTURE      → Gate 2: DETERMINISTIC  → Gate 3: SECURITY
+    │                        │                        │
+    ▼                        ▼                        ▼
+Gate 4: CONVENTION   → Gate 5: LLM-JUDGE     → [COMPLETE]
+```
+
+| Gate | Name | Checks | Must Pass Before |
+|------|------|--------|------------------|
+| 1 | Structure | Files exist, git clean, configs valid | Gate 2 |
+| 2 | Deterministic | Tests, Lint, Typecheck, Build | Gate 3 |
+| 3 | Security | Secrets scan, dependency audit | Gate 4 |
+| 4 | Convention | Format, commit msg, branch name | Gate 5 |
+| 5 | LLM Judge | Code review quality, architecture alignment | — |
+
+This prevents expensive LLM evaluations on code that fails basic checks.
 
 ## The Verification Script
 

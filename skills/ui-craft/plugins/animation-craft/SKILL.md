@@ -1,9 +1,22 @@
 ---
 name: animation-craft
 description: Use when you need advanced animation patterns for micro-interactions, page transitions, and motion design.
+model: big-pickle
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "animation"
+  - "motion design"
+  - "micro interaction"
+  - "page transition"
+  - "css animation"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Animation Craft Plugin
 

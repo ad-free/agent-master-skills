@@ -15,9 +15,29 @@ AGENTS_DIR = os.path.join(ROOT, "agents")
 
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
 
-REQUIRED = ["name", "description", "mode", "samplePrompts"]
-OPTIONAL = ["version", "allowedTools"]
-ALLOWED_TOOLS = {"python", "bash", "git", "docker", "kubectl", "none"}
+REQUIRED = ["name", "description", "model", "tools", "mode", "max-steps", "samplePrompts", "version", "owner"]
+OPTIONAL = ["color"]
+
+# Free models available in OpenCode Zen
+FREE_MODELS = {
+    "nemotron-3-ultra-free",
+    "nemotron-3-super-free",
+    "deepseek-v4-flash-free",
+    "mimo-v2.5-free",
+    "big-pickle",
+    "gpt-5-nano",
+    "minimax-m2.5-free",
+    "ling-3.0-flash-free",
+    "north-mini-code-free",
+    "laguna-s-2.1-free",
+    "glm-5-free",
+}
+
+# Tools available in OpenCode
+ALLOWED_TOOLS = {
+    "Read", "Write", "Edit", "Bash", "Grep", "Glob",
+    "Agent", "AskUserQuestion", "WebSearch", "Task"
+}
 
 
 def try_parse_yaml(text):
@@ -73,25 +93,38 @@ def validate_file(path):
     if meta.get('mode') not in ('subagent', 'assistant'):
         return False, "invalid mode (must be 'subagent' or 'assistant')"
 
-    # optional validations
+    # model validation
+    model = meta.get('model')
+    if model not in FREE_MODELS:
+        return False, f"model '{model}' not in known free models: {', '.join(sorted(FREE_MODELS))}"
+
+    # tools validation
+    tools = meta.get('tools')
+    if isinstance(tools, str):
+        tool_list = [x.strip() for x in tools.split(',') if x.strip()]
+    elif isinstance(tools, list):
+        tool_list = tools
+    else:
+        return False, "tools must be a comma-separated string or list"
+    for t in tool_list:
+        if t not in ALLOWED_TOOLS:
+            return False, f"tools contains unknown tool: {t} (allowed: {', '.join(sorted(ALLOWED_TOOLS))})"
+
+    # max-steps validation
+    max_steps = meta.get('max-steps')
+    try:
+        ms = int(max_steps)
+        if ms < 1 or ms > 50:
+            return False, "max-steps must be between 1 and 50"
+    except (ValueError, TypeError):
+        return False, "max-steps must be an integer"
+
+    # version validation
     if 'version' in meta:
         try:
-            # simple semantic version-ish check
             _ = tuple(int(x) for x in str(meta.get('version')).split('.') if x)
         except Exception:
             return False, "invalid version format"
-
-    if 'allowedTools' in meta:
-        at = meta.get('allowedTools')
-        if isinstance(at, str):
-            items = [x.strip() for x in at.split(',') if x.strip()]
-        elif isinstance(at, list):
-            items = at
-        else:
-            return False, "allowedTools must be a list or comma-separated string"
-        for item in items:
-            if item not in ALLOWED_TOOLS:
-                return False, f"allowedTools contains unknown tool: {item}"
 
     # samplePrompts must be a non-empty list
     sp = meta.get('samplePrompts')

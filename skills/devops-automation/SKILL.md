@@ -4,11 +4,24 @@ description: Use when deciding deployment mechanics, rollback strategy, CI/CD
   pipeline shape, or infrastructure-as-code choices. Do NOT use for "is this ready
   to deploy" (see quality-gates) or for writing the pipeline YAML itself (that's plain
   BUILD work once the strategy is decided).
+model: deepseek-v4-flash-free
+version: 1.1.0
+preamble-tier: 3
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion, Task]
+triggers:
+  - "deploy"
+  - "ci/cd"
+  - "infrastructure"
+  - "devops"
+  - "pipeline"
 metadata:
   origin: adapted from ECC and addyosmani/agent-skills
-  version: 1
+  preferred-model: deepseek-v4-flash-free
+  version: 1.1.0
 
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # devops-automation
 
