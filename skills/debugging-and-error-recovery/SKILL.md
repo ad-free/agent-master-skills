@@ -1,11 +1,30 @@
 ---
 name: debugging-and-error-recovery
-description: Use when tests fail, builds break, or behavior doesn't match expectations.
-  Systematic root-cause investigation, not guessing.
+description: |
+  4-phase systematic root-cause investigation: Reproduce → Localize → Reduce → Fix.
+  Use when tests fail, builds break, or behavior is unexpected — no guessing.
+  Invoked by: debugger, implementer, test-engineer.
+version: 1.1.0
+preamble-tier: 4
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
+triggers:
+  - "debug this failure"
+  - "test is failing"
+  - "find root cause"
+  - "investigate this error"
 metadata:
   origin: agent-master-skills
-
+  preferred-model: nemotron-3-ultra-free
+  phases: 4
+  integrates-with: [verification-before-completion, dev-craft, test-engineer]
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Debugging & Error Recovery
 

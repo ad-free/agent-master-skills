@@ -1,12 +1,35 @@
 ---
 name: ui-craft
-description: Use when converting UI/UX
-  prompts into design tokens, component code, and visual previews with pipeline state
-  in `.ui-craft`.
+description: |
+  Run the 10-phase frontend development pipeline with persistent `.ui-craft` state.
+  Use for UI/UX features, design system work, component libraries, or resuming sessions.
+  Invoked by: planner → frontend-engineer → verifier.
+version: 1.1.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - Agent
+  - AskUserQuestion
+  - Task
+triggers:
+  - "build this UI"
+  - "run ui-craft"
+  - "design this component"
+  - "implement the design"
+  - "create design tokens"
 metadata:
   origin: agent-master-skills
-
+  phase-count: 10
+  plugins: [design-intelligence, anti-slop]
+  preferred-model: big-pickle
 ---
+
+TOKEN CEILING: ~15K tokens. If skill exceeds, extract sections to references/.
 
 # ui-craft
 
@@ -32,11 +55,13 @@ Skip any phase. Edit any phase. The pipeline serves you.
 
 ## The Iron Law
 
+<HARD-GATE>
 ```
 NO UI WITHOUT DESIGN SYSTEM
 ```
 
 UI without design tokens = inconsistent, inaccessible, unmaintainable code.
+</HARD-GATE>
 
 ## Memory System
 
@@ -406,13 +431,54 @@ If no source spec exists, skip this phase.
 
 6. **Present matrix + gaps.** Do not auto-skip.
 
-**Exit criterion (HARD GATE):** Every P1/G1 UI requirement traced to a task + acceptance
+<HARD-GATE>
+**Exit criterion:** Every P1/G1 UI requirement traced to a task + acceptance
 criterion. G2/G3 gaps deferrable **only with explicit human acknowledgement** (recorded
 in state.json `deferredRequirements`). Building UI with unresolved P1/G1 coverage gaps is
 the failure this phase prevents.
+</HARD-GATE>
 
 **State write:** Save `.ui-craft/requirements.md`; record `requirementsExtracted`,
 `coverageGaps`, `deferredRequirements` in state.json.
+
+---
+
+### [3.8] HUMAN CHECKPOINT — Gate 1: REQUIREMENTS-EXTRACTION → SOURCE
+
+**Before proceeding to SOURCE, present this summary to the human:**
+
+```
+GATE 1 — UI REQUIREMENTS-EXTRACTION COMPLETE
+──────────────────────────────────────────────
+UI Requirements extracted: <N>
+P1/G1 traced: <N> / <N>
+Gaps: <N> (P1/G1: <N>, G2/G3: <N>)
+Deferred: <list or "none">
+Next phase: SOURCE (doc verification) → BUILD
+
+Proceed to SOURCE? [y/n/m/s]
+```
+
+- `y` = proceed to SOURCE
+- `n` = stop, await instruction
+- `m` = modify REQUIREMENTS-EXTRACTION (re-run with guidance)
+- `s` = split — create follow-up ticket for out-of-scope items, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to SOURCE. Await human direction.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md` with issue overview, then proceed.
+
+**Out-of-scope detection (runs at every gate):**
+If during this phase you discovered issues/bugs/improvements NOT in the current PLAN:
+1. Document in `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`:
+   - Discovered during: <phase>
+   - Issue: <description>
+   - Impact: <Low/Medium/High/Critical>
+   - Related to current PLAN: No
+   - Recommended action: Create follow-up ticket / Defer to retro
+2. Ask: "Create follow-up ticket? [y/n]"
+3. If yes → create ticket (GitHub Issue if `gh` available, else local markdown)
+
+**State write:** Record gate decision in `state.json.phaseDecisions["REQUIREMENTS-EXTRACTION"]`.
 
 ---
 
@@ -450,13 +516,53 @@ the failure this phase prevents.
 
 ---
 
+### [4.5] HUMAN CHECKPOINT — Gate 2: SOURCE → BUILD
+
+**Before proceeding to BUILD, present this summary to the human:**
+
+```
+GATE 2 — SOURCE VERIFIED / ESTIMATION ACKNOWLEDGED
+──────────────────────────────────────────────────
+Dependencies verified: <N> / <N>
+Estimation acknowledged: <Y/N>
+Slices defined: <N>
+Next phase: BUILD (TDD per slice)
+
+Proceed to BUILD? [y/n/m/s]
+```
+
+- `y` = proceed to BUILD
+- `n` = stop, await instruction
+- `m` = modify SOURCE (re-enter with guidance)
+- `s` = split — create follow-up ticket for out-of-scope items, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to BUILD. Await human direction.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md` with issue overview, then proceed.
+
+**Out-of-scope detection (runs at every gate):**
+If during this phase you discovered issues/bugs/improvements NOT in the current PLAN:
+1. Document in `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`:
+   - Discovered during: <phase>
+   - Issue: <description>
+   - Impact: <Low/Medium/High/Critical>
+   - Related to current PLAN: No
+   - Recommended action: Create follow-up ticket / Defer to retro
+2. Ask: "Create follow-up ticket? [y/n]"
+3. If yes → create ticket (GitHub Issue if `gh` available, else local markdown)
+
+**State write:** Record gate decision in `state.json.phaseDecisions["SOURCE"]`.
+
+---
+
 ### [5] BUILD — Generate UI Code + Secure-by-Construction
 
 **Goal:** Generate tokens, component code, and preview per slice. Every UI slice is verified for security as it's written.
 
+<HARD-GATE>
 **Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`develop`. For `multi` topology with `fullstack` scope, the FE branch is created in the FE repo **paired** with the BE branch in the BE repo (see dev-craft SCOPE §0.2 step 5): `fix/fe-payroll-142` alongside `fix/be-payroll-142`. Each repo's `state.json` records its own `activeBranch`; `linkedBranches` ties them. A FE-only unit branches only the FE repo.
 
 **Base-branch guard (enforced before every commit):** Treat `main`, `master`, `develop` (and the repo's configured default branch) as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
+</HARD-GATE>
 
 1. **Resolve the branch name** (deterministic, from SCOPE when fullstack, else derived here):
     - `mono`: one `activeBranch` in this repo.
@@ -492,21 +598,41 @@ the failure this phase prevents.
     - Tests: Vitest + React Testing Library + jest-axe
     - Icons: lucide-react, heroicons, phosphor, tabler
 
+### [5.5] HUMAN CHECKPOINT — Per-Slice Gate (runs at START of each slice)
+
+**Before starting each slice, present this summary:**
+
+```
+SLICE GATE — <Slice Name/ID> (<N> of <Total>)
+──────────────────────────────────────────
+Slice: <one-line description>
+Requirements: <UI-REQ-IDs covered>
+Branch: <activeBranch>
+Prev slice: <prev slice name> — <commit hash or "none">
+Next slice: <next slice name or "none">
+Ready to start? [y/n/m/s]
+```
+
+- `y` = proceed with this slice (TDD loop)
+- `n` = stop, await instruction
+- `m` = modify slice scope (re-plan this slice)
+- `s` = split — create follow-up ticket, defer this slice
+
+**If `n` or `m`:** STOP. Do not start slice. Await human direction.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed to next slice or stop.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record slice gate decision in `state.json.phaseDecisions["BUILD_slice_<N>"]`.
+
+---
+
 3. **SECURE** — Agent determines what the UI slice touches, then runs matching checks. Load `references/secure-checks.md` for the full check tree (user data, forms, storage, API calls, regex) and output format.
 
 4. Generate HTML style guide preview
 5. Run lint/type checks → must pass
 
 **Rules:**
-- Version-correct patterns only
-- Scope discipline — don't touch code outside slice
-- One slice at a time
-- Accessibility gates: contrast ≥ 4.5:1, focus visible, touch ≥ 44px
-- **SECURE before lint** — Security first, then code quality
-
-**Exit criterion:** All slices implemented, committed, and security-verified.
-
-**State write:** Save `activeBranch` (the current unit's branch), `branches` map, slices, and security notes to state.json.
 
 ---
 
@@ -534,6 +660,36 @@ read-the-actual-diff pass; do not summarize from memory.
 requirement in the traceability matrix verified against the built UI.
 
 **State write:** Save review findings.
+
+---
+
+### [6.5] HUMAN CHECKPOINT — Gate 4: REVIEW → HARDEN
+
+**Before proceeding to HARDEN, present this summary to the human:**
+
+```
+GATE 4 — REVIEW COMPLETE
+────────────────────────
+Findings: Critical <N> | High <N> | Medium <N> | Low <N>
+Critical/High resolved: <Y/N>
+P1/G1 requirements verified: <N> / <N>
+Lint gate: <PASS/FAIL>
+Next phase: HARDEN (polish + dark mode + responsive + cross-cutting security)
+
+Proceed to HARDEN? [y/n/m/s]
+```
+
+- `y` = proceed to HARDEN
+- `n` = stop, await instruction
+- `m` = modify REVIEW (re-run with guidance)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to HARDEN.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["REVIEW"]`.
 
 ---
 
@@ -583,6 +739,38 @@ Each point is a read-the-actual-code pass; do not summarize from memory.
 
 ---
 
+### [7.5] HUMAN CHECKPOINT — Gate 5: HARDEN → SHIP
+
+**Before proceeding to SHIP, present this summary to the human:**
+
+```
+GATE 5 — HARDEN COMPLETE
+────────────────────────
+Critical/High findings: <N> (resolved: <N>)
+Dark mode: <PASS/FAIL>
+Responsive: <PASS/FAIL>
+Performance: <PASS/FAIL>
+Cross-slice security: <PASS/FAIL>
+BE↔FE contract: <PASS/FAIL>
+Next phase: SHIP (commit + rollback plan)
+
+Proceed to SHIP? [y/n/m/s]
+```
+
+- `y` = proceed to SHIP
+- `n` = stop, await instruction
+- `m` = modify HARDEN (re-run with guidance)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to SHIP.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["HARDEN"]`.
+
+---
+
 ### [8] SHIP — Docs + Commit + Finalize
 
 **Goal:** Deliver with full traceability.
@@ -614,7 +802,70 @@ Each point is a read-the-actual-code pass; do not summarize from memory.
 
 ---
 
-### [H] HANDOFF — Cross-Session Context
+### [8.5] HUMAN CHECKPOINT — Gate 6: SHIP → MR-PR-REVIEW
+
+**After SHIP completes, present this summary to the human:**
+
+```
+GATE 6 — SHIP COMPLETE / COMMIT PUSHED
+───────────────────────────────────────
+Commit: <commit hash>
+Branch: <feature branch>
+Lint/Type/Build: PASS
+Next: mr-pr-review (peer review on GitHub/GitLab)
+
+Proceed to mr-pr-review? [y/n/m/s]
+```
+
+- `y` = proceed to mr-pr-review (load `mr-pr-review` skill)
+- `n` = stop, await instruction
+- `m` = modify SHIP (re-run with guidance)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to mr-pr-review.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["SHIP"]`.
+
+**Next skill:** `skill("mr-pr-review")` with context: `prUrl`, `branch`, `diffPath`, `requirementsPath`.
+
+---
+
+### [8.7] HUMAN CHECKPOINT — Gate 7: MR-PR-REVIEW → DOCUMENTATION
+
+**After mr-pr-review completes, present this summary to the human:**
+
+```
+GATE 7 — PEER REVIEW COMPLETE
+─────────────────────────────
+PR: <PR URL>
+Review verdict: <APPROVE / REQUEST_CHANGES / COMMENT>
+Reviewers: <N> (approvals: <N>)
+Security review: <PASS/FAIL/NOT_REQUIRED>
+Performance review: <PASS/FAIL/NOT_REQUIRED>
+Docs required: <YES/NO>
+Next: documentation-engineering (local markdown generation)
+
+Proceed to documentation? [y/n/m/s]
+```
+
+- `y` = proceed to documentation-engineering
+- `n` = stop, await instruction
+- `m` = modify (request changes, re-run mr-pr-review)
+- `s` = split — create follow-up ticket, then proceed
+
+**If `n` or `m`:** STOP. Do not proceed to documentation.
+**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
+
+**Out-of-scope detection:** Same as Gate 1.
+
+**State write:** Record gate decision in `state.json.phaseDecisions["MR_PR_REVIEW"]`.
+
+**Next skill:** `skill("documentation-engineering")` with context: `prUrl`, `features`, `decisions`.
+
+---
 
 **When:** Context > 80% full, or human says "continue later".
 

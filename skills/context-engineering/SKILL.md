@@ -1,11 +1,33 @@
 ---
 name: context-engineering
-description: Use when managing agent session context, memory hierarchy, and session
-  continuity to prevent context pollution.
+description: |
+  Context management system: memory hierarchy, rotation, handoff, pollution prevention.
+  Use for long sessions, multi-agent coordination, session resumption, and context budgeting.
+  Invoked by: all agents at session start, context-guard, orchestrator.
+version: 2.0.0
+preamble-tier: 1
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
+triggers:
+  - "manage context"
+  - "session context"
+  - "prevent context drift"
+  - "resume session"
+  - "handoff context"
 metadata:
   origin: agent-master-skills
-
+  preferred-model: nemotron-3-ultra-free
+  memory-levels: 5
+  integrates-with: [learn, retro, dev-craft, agent-orchestration, token-budget, cost-optimizer, handoff, context-guard]
 ---
+
+TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Context Engineering
 
@@ -234,6 +256,20 @@ Gate 5 (LLM-Judge) operates within defined budget. If diff > 4k tokens, split in
 - [ ] Latest handoff loaded on resume (not an old one)
 - [ ] Cross-agent context sliced per role — no leaking across boundaries
 - [ ] ADRs and decisions from latest session, not stale
+- [ ] Token budget tracked via `token-budget` skill
+- [ ] Cost tracking via `cost-optimizer` skill
+
+---
+
+## Outputs / Handoffs
+
+On context rotation (>70%): invokes `skill("handoff")` with context:
+  - `handoffPath`: ".dev-craft/runs/<slug>/handoff-<timestamp>.md"
+  - `statePath`: ".dev-craft/runs/<slug>/state.json"
+
+On session resume: loads `handoff` + `state.json` + `domain.md` + `plan.md`
+
+On cross-agent coordination: invokes `skill("agent-orchestration")` for context slicing
 
 ---
 
@@ -244,4 +280,5 @@ Gate 5 (LLM-Judge) operates within defined budget. If diff > 4k tokens, split in
 - `dispatching-parallel-agents` — Parallel execution with isolated context
 - `quality-gates` — LLM-Judge context budget for evaluation
 - `verification-before-completion` — Evidence gates for state.json accuracy
+- `skills/references/handoff-protocol.md` — Standardized handoff format
 - `skills/SHARED.md` — Cross-skill communication and handoff format

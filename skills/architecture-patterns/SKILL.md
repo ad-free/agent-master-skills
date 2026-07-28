@@ -6,11 +6,23 @@ description: "Use when choosing a structural pattern for a system or module \u20
   \ an existing codebase for smells (see dev-craft's ARCH-SCAN phase, which this skill\
   \ supports but doesn't replace) and do NOT use to justify a pattern chosen for resume-driven\
   \ reasons rather than the problem's actual shape."
+model: nemotron-3-ultra-free
+version: 1.0.0
+preamble-tier: 3
+allowed-tools: [Read, Write, Edit, Grep, Glob, AskUserQuestion]
+triggers:
+  - "architecture review"
+  - "pattern decision"
+  - "architecture decision"
+  - "choose pattern"
 metadata:
   origin: adapted from ECC and addyosmani/agent-skills
-  version: 1
+  preferred-model: nemotron-3-ultra-free
+  version: 1.0.0
 
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # architecture-patterns
 

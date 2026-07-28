@@ -39,19 +39,31 @@ User Request Received
 │           ├── Parallel work → dispatching-parallel-agents
 │           └── Other → plan first, then execute
 │
- ├── Creating or modifying skills?
- │   └── Yes → skill-creator
- │
- ├── Is this frontend/UI work?
- │   ├── Yes → ui-craft (if the user explicitly asks for dev-craft anyway, dev-craft's own Skill Alignment Check §0.2 step 3a will catch the mismatch and surface it)
- │   └── No → dev-craft
- │
- ├── Is this an infra / IaC / deploy change?
- │   └── Yes → dev-craft + Infra Safety Checklist (see the user's global AGENTS.md §4.1)
- │
- ├── Is this a security concern?
+├── Creating or modifying skills?
+│   └── Yes → skill-creator
+│
+├── Is this frontend/UI work?
+│   ├── Yes → ui-craft (if the user explicitly asks for dev-craft anyway, dev-craft's own Skill Alignment Check §0.2 step 3a will catch the mismatch and surface it)
+│   └── No → dev-craft
+│
+├── Is this an infra / IaC / deploy change?
+│   └── Yes → dev-craft + Infra Safety Checklist (see the user's global AGENTS.md §4.1)
+│
+├── Is this a security concern?
 │   ├── Yes → bug-hunting (deep) or security-audit plugin (automated)
 │   └── No → continue above
+│
+├── Token budget / context management?
+│   └── Yes → token-budget, context-engineering, learn
+│
+├── Weekly retrospective / learning capture?
+│   └── Yes → retro, learn
+│
+├── Automated ship/release?
+│   └── Yes → ship
+│
+├── Cost optimization / model routing?
+│   └── Yes → cost-optimizer
 │
 └── Are you about to claim completion?
     └── Yes → verification-before-completion
@@ -104,6 +116,11 @@ does not copy those rules; they have one source of truth.
 | Creating or modifying skills | `skill-creator` |
 | Vague idea / missing requirements | `product-thinking` |
 | Screenshot/image as reference | `image-to-design-spec` |
+| Token budget / context management | `token-budget` |
+| Persistent learning / memory | `learn` |
+| Weekly retrospective | `retro` |
+| Automated release / ship | `ship` |
+| Cost optimization / model routing | `cost-optimizer` |
 
 ---
 
@@ -125,13 +142,20 @@ does not copy those rules; they have one source of truth.
 ### Skill Chaining Pattern
 
 ```
-1. planning → creates plan
-2. dev-craft or ui-craft → executes plan
-3. debugging → fixes failures during build
-4. code-review → quality gate before merge
-5. bug-hunting → security audit before deployment
-6. HARDEN (dev-craft) → security scan + hardening
-7. verification → proves completion
+1. product-thinking / project-discovery → PRODUCT.md / DOMAIN.md
+2. planning-and-task-breakdown → PLAN.md
+3. grilling (adversarial review of plan)
+4. dev-craft / ui-craft → executes plan
+   ├── dev-craft phases use: architecture-patterns, api-design, testing-strategies, devops-automation
+   ├── ui-craft phases use: design-intelligence, anti-slop, testing-strategies
+   ├── Both use: debugging-and-error-recovery (failures)
+5. code-review-and-quality → per-slice review
+6. verification-before-completion → per-slice evidence
+7. quality-gates → pre-merge layered validation
+8. bug-hunting → security audit (pre-deploy)
+9. ship → automated release
+10. learn → capture learnings
+11. retro → weekly retrospective
 ```
 
 ---
@@ -140,77 +164,106 @@ does not copy those rules; they have one source of truth.
 
 ### Core Pipelines
 
-| Skill | Purpose | Lines |
-|-------|---------|-------|
-| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1142 |
-| `ui-craft` | Frontend development pipeline (10 phases) | 813 |
+| Skill | Purpose | Lines | Version | Preamble Tier |
+|-------|---------|-------|---------|---------------|
+| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1142 | 1.2.0 | 3 |
+| `ui-craft` | Frontend development pipeline (10 phases) | 813 | 1.1.0 | 3 |
 
 ### Specialized Engineering Skills
 
-| Skill | Purpose | Iron Law | When to Use |
-|-------|---------|----------|-------------|
-| `api-design` | Design robust APIs with REST, GraphQL, gRPC patterns, versioning, security | **NO ENDPOINT WITHOUT A CONSUMER-STATED CONTRACT** | Designing new APIs, evaluating existing, planning versioning |
-| `testing-strategies` | Comprehensive testing: unit, integration, e2e, contract, property-based | **NO TEST WITHOUT A STATED FAILURE MODE** | Setting up test strategy, debugging flaky tests, improving coverage |
-| `documentation-engineering` | ADRs, API docs, docs-as-code pipelines, technical writing | **NO UNDOCUMENTED IRREVERSIBLE DECISION** | Establishing doc standards, generating API refs, runbooks |
-| `devops-automation` | CI/CD, IaC (Terraform), Kubernetes, progressive delivery, secrets | **NO DEPLOY WITHOUT A TESTED ROLLBACK PATH** | Setting up CI/CD, migrating to IaC, deployment strategies |
-| `observability-engineering` | Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting | **NO ALERT WITHOUT AN OWNER AND A RUNBOOK LINK** | Setting up observability, debugging production, SLO design |
-| `architecture-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices with trade-offs | **NO PATTERN WITHOUT A STATED TRADE-OFF** | Starting new project, refactoring legacy, evaluating patterns |
+| Skill | Purpose | Iron Law | When to Use | Version | Tier |
+|-------|---------|----------|-------------|---------|------|
+| `api-design` | Design robust APIs with REST, GraphQL, gRPC patterns, versioning, security | **NO ENDPOINT WITHOUT A CONSUMER-STATED CONTRACT** | Designing new APIs, evaluating existing, planning versioning | 1.0.0 | 3 |
+| `testing-strategies` | Comprehensive testing: unit, integration, e2e, contract, property-based | **NO TEST WITHOUT A STATED FAILURE MODE** | Setting up test strategy, debugging flaky tests, improving coverage | 1.0.0 | 3 |
+| `documentation-engineering` | ADRs, API docs, docs-as-code pipelines, technical writing | **NO UNDOCUMENTED IRREVERSIBLE DECISION** | Establishing doc standards, generating API refs, runbooks | 1.0.0 | 3 |
+| `devops-automation` | CI/CD, IaC (Terraform), Kubernetes, progressive delivery, secrets | **NO DEPLOY WITHOUT A TESTED ROLLBACK PATH** | Setting up CI/CD, migrating to IaC, deployment strategies | 1.0.0 | 3 |
+| `observability-engineering` | Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting | **NO ALERT WITHOUT AN OWNER AND A RUNBOOK LINK** | Setting up observability, debugging production, SLO design | 1.0.0 | 3 |
+| `architecture-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices with trade-offs | **NO PATTERN WITHOUT A STATED TRADE-OFF** | Starting new project, refactoring legacy, evaluating patterns | 1.0.0 | 2 |
 
 ### Security & Quality Skills
 
-| Skill | Purpose | When to Use |
-|-------|---------|-------------|
-| `bug-hunting` | Systematic vulnerability discovery (5-phase: Recon → Scan → Test → Exploit → Disclosure) | Security audit, bug bounty, pre-release review |
-| `code-review-and-quality` | Code review protocols (8-axis review) | Reviewing code, receiving review feedback |
+| Skill | Purpose | When to Use | Version | Tier |
+|-------|---------|-------------|---------|------|
+| `bug-hunting` | Systematic vulnerability discovery (5-phase: Recon → Scan → Test → Exploit → Disclosure) | Security audit, bug bounty, pre-release review | 1.0.0 | 4 |
+| `code-review-and-quality` | Code review protocols (8-axis review with confidence gates) | Reviewing code, receiving review feedback | 1.2.0 | 3 |
 
 ### Essential Skills
 
-| Skill | Purpose | When to Use |
-|-------|---------|-------------|
-| `planning-and-task-breakdown` | Breaks work into ordered, verifiable tasks | Have a spec, need implementable units |
-| `agent-orchestration` | Parallel multi-agent builds with isolated workspaces + shared API contract | Large project, 3+ modules, or parallel BE/FE/mobile agents |
-| `debugging-and-error-recovery` | Root-cause investigation (4-phase methodology) | Tests fail, bugs reported, unexpected behavior |
-| `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete |
-| `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist |
-| `image-to-design-spec` | Analyzes screenshots → design tokens | User provides visual reference material |
+| Skill | Purpose | When to Use | Version | Tier |
+|-------|---------|-------------|---------|------|
+| `planning-and-task-breakdown` | Breaks work into ordered, verifiable tasks | Have a spec, need implementable units | 1.1.0 | 2 |
+| `agent-orchestration` | Parallel multi-agent builds with isolated workspaces + shared API contract | Large project, 3+ modules, or parallel BE/FE/mobile agents | 1.1.0 | 3 |
+| `debugging-and-error-recovery` | Root-cause investigation (4-phase methodology) | Tests fail, bugs reported, unexpected behavior | 1.0.0 | 4 |
+| `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete | 1.0.0 | 3 |
+| `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist | 1.1.0 | 3 |
+| `image-to-design-spec` | Analyzes screenshots → design tokens | User provides visual reference material | 1.0.0 | 3 |
+| `skill-creator` | Create/modify skills for agent-master-skills | Building new skills, improving existing | 1.0.0 | 2 |
+
+### New High-Value Skills (v2.0+)
+
+| Skill | Purpose | Source | When to Use | Version | Tier |
+|-------|---------|--------|-------------|---------|------|
+| `token-budget` | Token estimation, user-chosen response depth, context compression | ECC | Response length control, context window management | 1.0.0 | 4 |
+| `learn` | Persistent project learnings DB (search, prune, export, stats) | gstack | Cross-session knowledge capture | 1.0.0 | 1 |
+| `retro` | Weekly engineering retrospective with git analysis | gstack | Sprint/weekly reflection, trend tracking | 1.0.0 | 1 |
+| `ship` | One-command automated release (test → review → version → changelog → PR) | gstack | Ready to deploy, want full automation | 1.0.0 | 3 |
+| `cost-optimizer` | Model routing (Haiku/Sonnet), budget tracking, prompt caching | ECC | LLM API cost control | 1.0.0 | 4 |
+| `grilling` | Adversarial stress-test of plans/designs | mattpocock | Plan validation, risk identification | 1.0.0 | 2 |
+| `handoff` | Agent-to-agent and session-to-session context transfer | mattpocock | Context rotation, multi-agent coordination | 1.0.0 | 1 |
+| `agent-router` | Single entry point: maps request → agent → skill chain | New (bootstrap) | First skill to load; routes all work | 1.0.0 | 1 |
+
+---
 
 ### Skill Integration Map
 
 ```
-dev-craft Pipeline Phases → Essential Skills
-├── Phase 1: ARCH-SCAN → (standalone)
-├── Phase 2: ALIGN → (standalone) + image-to-design-spec (if screenshot)
-├── Phase 3: DESIGN → (standalone)
-├── Phase 4: SOURCE → (standalone)
-├── Phase 5: BUILD → uses debugging-and-error-recovery
-├── Phase 6: TEST → uses debugging-and-error-recovery
-├── Phase 7: REVIEW → uses code-review-and-quality
-├── Phase 8: HARDEN → uses security-audit plugin + bug-hunting (if registered)
-├── Phase 9: SHIP → uses verification-before-completion
-└── Phase H: HANDOFF → (standalone)
+Entry Point
+    │
+    ▼
+agent-router (bootstrap) ──→ routes to pipeline
+    │
+    ├── product-thinking / project-discovery (if vague/specs)
+    │       │
+    │       ▼
+    ├── planning-and-task-breakdown ──→ PLAN.md
+    │       │
+    │       ▼
+    │   grilling (adversarial review)
+    │       │
+    │       ▼
+    ├── dev-craft / ui-craft (main pipelines)
+    │       │
+    │       ├── Phase 0-2: SCOPE, ALIGN, DESIGN
+    │       │   └── Plugins: architecture-patterns, api-design, design-intelligence
+    │       │
+    │       ├── Phase 3-5: SOURCE, BUILD, TEST
+    │       │   └── Uses: debugging-and-error-recovery, testing-strategies
+    │       │   └── Parallel: dispatching-parallel-agents
+    │       │   └── Multi-agent: agent-orchestration (git worktrees)
+    │       │
+    │       ├── Phase 6: REVIEW
+    │       │   └── Uses: code-review-and-quality (8-axis + gates)
+    │       │
+    │       ├── Phase 7: HARDEN
+    │       │   └── Uses: quality-gates (5 gates), bug-hunting (security)
+    │       │
+    │       ├── Phase 8: SHIP
+    │       │   └── Uses: ship (automated), verification-before-completion
+    │       │
+    │       └── Phase H: HANDOFF
+    │           └── Uses: handoff protocol, learn (capture)
+    │
+    ├── cost-optimizer (runs in background, routes models)
+    ├── token-budget (user-facing depth control)
+    ├── context-engineering (manages context window)
+    │
+    └── Weekly: retro → learn
 
-ui-craft Pipeline Phases → Essential Skills
-├── Phase 0: LOAD → (standalone)
-├── Phase 1: AUDIT → (standalone)
-├── Phase 2: ALIGN → (standalone) + image-to-design-spec (if screenshot)
-├── Phase 3: DESIGN → (standalone)
-├── Phase 4: SOURCE → (standalone)
-├── Phase 5: BUILD → uses debugging-and-error-recovery
-├── Phase 6: REVIEW → uses code-review-and-quality + UI Security Axis 8
-├── Phase 7: HARDEN → uses verification-before-completion
-├── Phase 8: SHIP → uses verification-before-completion
-└── Phase H: HANDOFF → (standalone)
-
-planning-and-task-breakdown → image-to-design-spec (if screenshot in Step 0)
-
-Cross-Cutting → dispatching-parallel-agents
-└── Any phase with independent tasks → parallel execution
-
-├── Phase 0.5: REQUIRE → domain discovery from specs
-├── Phase 3.5: BUILD-ORDER → module dependency sequencing
-├── Throughout: Complex multi-agent → uses agent-orchestration
-├── Pre-merge: → uses quality-gates (layered validation)
+Verification Gates (every slice):
+    verification-before-completion → quality-gates → ship
 ```
+
+---
 
 ## Plugin System
 
@@ -221,7 +274,6 @@ See [`PLUGIN-SYSTEM.md`](./PLUGIN-SYSTEM.md) for plugin architecture, format, re
 See [`WORKFLOW-BUNDLES.md`](./WORKFLOW-BUNDLES.md) for pre-configured workflows (SaaS MVP, Admin Dashboard, E-commerce, Landing Page).
 
 ---
-
 
 ## Phase Templates (Shared)
 
@@ -274,9 +326,11 @@ VERIFICATION EVIDENCE:
 **Fresh Evidence Rule:** Evidence older than last code change is INVALID. Re-run.
 ```
 
+---
+
 ## Cross-Skill Communication Protocol
 
-### State File Schema
+### State File Schema (Extended v2.0)
 
 Both dev-craft and ui-craft use compatible `state.json` formats, stored per run under
 `.dev-craft/runs/<slug>/state.json` (registry in `.dev-craft/index.json`):
@@ -298,6 +352,22 @@ Both dev-craft and ui-craft use compatible `state.json` formats, stored per run 
   "crossSkill": {
     "backendSliceNeeded": ["auth-api"],
     "apiContract": ".dev-craft/runs/<slug>/api-contract.md"
+  },
+  "learningsCaptured": [
+    {"id": "learn-001", "text": "Stripe webhook idempotency requires sorting by created timestamp", "source": "verification", "timestamp": "2026-01-15T10:30:00Z"}
+  ],
+  "retroHistory": [
+    {"date": "2026-01-10", "file": ".dev-craft/retros/2026-01-10.md", "actionItems": 3}
+  ],
+  "tokenUsage": {
+    "total": 125000,
+    "byAgent": {"planner": 15000, "implementer": 85000, "verifier": 5000},
+    "lastRotation": "2026-01-15T09:00:00Z"
+  },
+  "costTracking": {
+    "totalUSD": 0.00,
+    "byModel": {"nemotron-3-ultra-free": 0.00, "big-pickle": 0.00, "deepseek-v4-flash-free": 0.00},
+    "budgetUSD": 10.00
   }
 }
 ```
@@ -357,3 +427,55 @@ Both pipelines share `context.md` for consistent terminology:
 3. **Shared state** — Keep both pipelines' state files in sync
 4. **Regular handoffs** — Switch pipelines at natural boundaries
 5. **Unified testing** — Both pipelines contribute to E2E tests
+
+---
+
+## Agent Registry (v2.0)
+
+All 27 agents with model assignments and tool restrictions:
+
+### Core Pipeline Agents
+| Agent | Model | Tools | Max Steps | Purpose |
+|-------|-------|-------|-----------|---------|
+| `planner` | nemotron-3-ultra-free | Read, Grep, Glob, Bash | 15 | Creates PLAN.md from spec |
+| `implementer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | TDD implementation |
+| `verifier` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 8 | Fresh evidence gates |
+| `gatekeeper` | gpt-5-nano | Read, Bash, Grep, Glob | 5 | Always-active guardrails |
+| `triage` | gpt-5-nano | Read, Grep, Glob | 5 | Classify + route requests |
+
+### Domain Specialists
+| Agent | Model | Tools | Max Steps | Purpose |
+|-------|-------|-------|-----------|---------|
+| `api-designer` | big-pickle | Read, Write, Edit | 10 | API contracts, OpenAPI |
+| `database-engineer` | deepseek-v4-flash-free | Read, Write, Edit, Bash, Grep, Glob | 10 | Schema, migrations, queries |
+| `frontend-engineer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | React, TS, CSS, a11y |
+| `devops-engineer` | deepseek-v4-flash-free | Read, Write, Edit, Bash, Grep, Glob | 12 | CI/CD, Terraform, K8s |
+| `security-auditor` | big-pickle | Read, Grep, Glob, Bash | 12 | Threat model, code review |
+| `debugger` | nemotron-3-ultra-free | Read, Grep, Glob, Bash | 15 | Root-cause investigation |
+| `test-engineer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | Test strategy, flaky fixes |
+| `docs-engineer` | gpt-5-nano | Read, Write, Edit | 8 | ADRs, API docs, runbooks |
+
+### Meta / Orchestration
+| Agent | Model | Tools | Max Steps | Purpose |
+|-------|-------|-------|-----------|---------|
+| `orchestrator` | nemotron-3-ultra-free | Agent, Read, Bash, Grep, Glob | 20 | Multi-agent coordination |
+| `context-guard` | gpt-5-nano | Read, Bash | 3 | Context rotation, handoffs |
+| `retro-analyst` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 10 | Weekly retrospectives |
+
+### Legacy Agents (Aliased to Specialists)
+| Legacy Agent | Now Use |
+|--------------|---------|
+| `senior-developer` | `planner` + `implementer` |
+| `backend-architect` | `api-designer` + `database-engineer` |
+| `frontend-developer` | `frontend-engineer` |
+| `code-reviewer` | `verifier` (auto) + `security-auditor` (security) |
+| `application-security-engineer` | `security-auditor` |
+| `database-optimizer` | `database-engineer` |
+| `performance-benchmarker` | `test-engineer` + `debugger` |
+| `devops-engineer` | `devops-engineer` (upgraded) |
+| `ai-engineer` | `implementer` (ML tasks) |
+| `api-tester` | `test-engineer` |
+| `quality-engineer` | `test-engineer` + `verifier` |
+| `mobile-developer` | `frontend-engineer` (mobile) |
+| `product-manager` | `planner` + `product-thinking` skill |
+| `technical-writer` | `docs-engineer` |

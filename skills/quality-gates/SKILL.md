@@ -1,25 +1,44 @@
 ---
 name: quality-gates
-description: Use when you need a layered quality validation pipeline (lint/test,
-  security scan, and LLM judgment) before merging.
+description: |
+  Layered validation pipeline: Structure → Deterministic → Security → Convention → LLM Judge.
+  Use before merging PRs, after BUILD phase, before releases, or in CI/CD.
+  Invoked by: verifier, gatekeeper, shipper.
+version: 1.1.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+triggers:
+  - "run quality gates"
+  - "validate before merge"
+  - "pre-merge checks"
+  - "run all checks"
 metadata:
   origin: agent-master-skills
-
+  gates: 5
+  deterministic-first: true
+  preferred-model: gpt-5-nano
+  integrates-with: [verification-before-completion, code-review-and-quality, dev-craft]
 ---
+
+TOKEN CEILING: ~10K tokens. If skill exceeds, extract sections to references/.
 
 # Quality Gates
 
 ## Overview
 
-A layered validation pipeline inspired by advanced evaluation methodologies. Code quality is ensured through five sequential gates before any merge. Each gate is harder to pass than the last, and earlier gates must be green before later gates run. This prevents expensive LLM evaluations on code that fails basic checks.
+A layered validation pipeline inspired by advanced evaluation methodologies. Code quality is ensured through **six** sequential gates before any merge. Each gate is harder to pass than the last, and earlier gates must be green before later gates run. This prevents expensive LLM evaluations on code that fails basic checks.
 
 **Core principle:** Deterministic checks first. LLM judgment second. Never waste a judge on code that can't lint.
 
 ```
-Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURITY)
-      │                          │                           │
-      ▼                          ▼                           ▼
-  Gate 4 (CONVENTION)  ──►  Gate 5 (LLM-JUDGE)  ──►  [MERGE]
+Gate 0 (SCHEMA)     ──►  Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURITY)
+      │                          │                          │                           │
+      ▼                          ▼                          ▼                           ▼
+   Gate 4 (CONVENTION)  ──►  Gate 5 (LLM-JUDGE)  ──►  [MERGE]
 ```
 
 ---
@@ -64,11 +83,37 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 - **Signal-to-noise:** A failing test gives you a specific line. A failing judge gives you a paragraph.
 
 **Short-circuit rules:**
+- Gate 0 fail → HALT. Invalid schema = cannot proceed.
 - Gate 1 fail → HALT. No point running anything else.
 - Gate 2 fail → HALT. Fix lint/build before anything else.
 - Gate 3 fail → HALT. Security issues block merge by policy.
 - Gate 4 fail → WARN. Convention violations flag but may not block (configurable).
 - Gate 5 fail → REVIEW. Judge findings need human verification (judges can be wrong).
+
+---
+
+## Gate 0: Schema & Token Ceiling (Pre-Gate)
+
+**Goal:** Catch structural/schema issues and token budget problems BEFORE any other gate runs. This gate runs instantly and catches failures that would make downstream gates meaningless.
+
+**Checks:**
+
+```
+1. SCHEMA VALIDATION
+   ├── JSON/YAML/TOML configs parse without errors
+   ├── TypeScript: tsconfig.json valid, no "paths" resolution errors
+   ├── Database migrations: SQL syntax valid, no dangling references
+   ├── API contracts: OpenAPI/GraphQL schema valid
+   ├── Package manifests: package.json, Cargo.toml, pyproject.toml valid
+   └── State files: .dev-craft/state.json valid JSON
+
+2. TOKEN CEILING GUARDRAIL (from gstack)
+   ├── Estimate skill/agent context load
+   ├── Warning at 40K tokens (~160KB) — "Watch for feature bloat"
+   ├── Hard stop at 80% context window — "Context rotation required"
+   └── Philosophy: "Modern models have 200K-1M windows, but 40K skill content is the limit for focus"
+
+**Pass criteria:** All schemas valid. Token usage within budget. If token budget exceeded → trigger `context-engineering` rotation protocol.
 
 ---
 
@@ -106,7 +151,7 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 
 ---
 
-### Gate 2: Deterministic
+### Gate 3: Deterministic
 
 **Goal:** All machine-verifiable quality checks pass. These are binary — pass or fail — with no subjectivity.
 
@@ -145,7 +190,7 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 
 ---
 
-### Gate 3: Security
+### Gate 4: Security
 
 **Goal:** Identify security vulnerabilities that deterministic tools miss. Scans for secrets, auth gaps, and injection vectors.
 
@@ -182,7 +227,7 @@ Gate 1 (STRUCTURE)  ──►  Gate 2 (DETERMINISTIC)  ──►  Gate 3 (SECURI
 
 ---
 
-### Gate 4: Convention
+### Gate 5: Convention
 
 Delegated to `code-review-and-quality` Axis 8:
 
@@ -194,7 +239,7 @@ Gate 4 passes when `code-review-and-quality` Axis 8 passes with no Required or C
 
 ---
 
-### Gate 5: LLM-Judge
+### Gate 6: LLM-Judge
 
 **Goal:** Apply LLM judgment to code quality aspects that cannot be deterministically verified. This is the most expensive gate and should only run after Gates 1-4 pass.
 

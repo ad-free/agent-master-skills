@@ -1,11 +1,34 @@
 ---
 name: agent-orchestration
-description: Use when orchestrating multiple agents to work in parallel on the same
-  project, enforcing isolation, contracts, and conflict management.
+description: |
+  Coordinate multiple agents (backend, frontend, mobile) in parallel using git worktrees.
+  Use for large features requiring parallel BE/FE/Mobile execution with shared contracts.
+  Invoked by: orchestrator agent.
+version: 1.1.0
+preamble-tier: 3
+allowed-tools:
+  - Agent
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - Task
+triggers:
+  - "orchestrate parallel agents"
+  - "run backend and frontend in parallel"
+  - "coordinate multiple agents"
+  - "split work across agents"
 metadata:
   origin: agent-master-skills
-
+  preferred-model: big-pickle
+  topology-support: [mono, multi]
+  contract-required: true
+  integrates-with: [dev-craft, dispatching-parallel-agents]
 ---
+
+TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Agent Orchestration
 

@@ -1,11 +1,32 @@
 ---
 name: project-discovery
-description: Use when you need to ingest existing specifications (Excel, CSV, text,
-  MD) and extract a domain model, features, priorities, and dependencies.
+description: |
+  Parse existing spec files (Excel, CSV, MD, PDF, text) into structured DOMAIN.md.
+  Use when user provides requirement documents — before planning or dev-craft.
+  Invoked by: triage, planner.
+version: 1.1.0
+preamble-tier: 2
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+triggers:
+  - "parse this spec file"
+  - "extract domain from requirements"
+  - "convert Excel to domain model"
+  - "ingest requirement documents"
 metadata:
   origin: agent-master-skills
-
+  output: DOMAIN.md
+  supported-formats: [xlsx, csv, md, pdf, txt]
+  preferred-model: nemotron-3-ultra-free
+  integrates-with: [dev-craft, planning-and-task-breakdown]
 ---
+
+TOKEN CEILING: ~10K tokens. If skill exceeds, extract sections to references/.
 
 # Project Discovery — Domain Model Extraction
 
@@ -235,6 +256,12 @@ planning-and-task-breakdown — PLAN phase
 | `dev-craft` | Extracted modules, features, priorities, entities | Feed DOMAIN.md path to dev-craft REQUIRE phase |
 | `planning-and-task-breakdown` | Feature list with dependencies | Pass module feature list for task breakdown |
 | `verification-before-completion` | Feature acceptance conditions | Reference features in verification checklist |
+
+## Outputs / Handoffs
+
+On completion, invokes: `skill("planning-and-task-breakdown")` with context:
+  - `domainPath`: "DOMAIN.md"
+  - `specFiles`: [...] (original input files)
 
 ## Guidelines
 

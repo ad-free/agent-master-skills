@@ -1,11 +1,30 @@
 ---
 name: dispatching-parallel-agents
-description: Use when you have multiple independent tasks that can run concurrently.
-  Parallel execution for non-dependent work.
+description: |
+  Run independent tasks simultaneously using subagents. Use when multiple tasks
+  have no dependencies and can execute concurrently.
+  Invoked by: implementer, orchestrator, test-engineer.
+version: 1.1.0
+preamble-tier: 3
+allowed-tools:
+  - Agent
+  - Read
+  - Bash
+  - Grep
+  - Glob
+triggers:
+  - "run these in parallel"
+  - "dispatch parallel agents"
+  - "execute concurrently"
+  - "run tests in parallel"
 metadata:
   origin: agent-master-skills
-
+  preferred-model: big-pickle
+  independence-verification: required
+  integrates-with: [agent-orchestration, dev-craft]
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Dispatching Parallel Agents
 

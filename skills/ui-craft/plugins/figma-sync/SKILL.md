@@ -1,9 +1,23 @@
 ---
 name: figma-sync
 description: Use when you need to sync design tokens and components from Figma via MCP or API integration.
+model: gpt-5-nano
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "figma sync"
+  - "design tokens sync"
+  - "figma to code"
+  - "design import"
+  - "token export"
+disable-model-invocation: true
 metadata:
   origin: agent-master-skills
+  preferred-model: gpt-5-nano
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Figma Sync Plugin
 

@@ -1,11 +1,24 @@
 ---
 name: language-rules
 description: Use when you need language-specific coding conventions and style enforcement for TypeScript, Python, Go, or Rust during the BUILD or REVIEW phase.
+model: big-pickle
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "language conventions"
+  - "code style"
+  - "linting rules"
+  - "language best practices"
+  - "coding standards"
 metadata:
   origin: agent-master-skills
   plugin-for: dev-craft
   phase: BUILD | REVIEW
+  preferred-model: big-pickle
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Language Rules Plugin
 

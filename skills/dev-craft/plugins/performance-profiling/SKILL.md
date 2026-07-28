@@ -1,9 +1,22 @@
 ---
 name: performance-profiling
 description: Use when you need performance bottleneck detection and optimization for backend services.
+model: big-pickle
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "performance profiling"
+  - "bottleneck detection"
+  - "load testing"
+  - "query optimization"
+  - "slow endpoint"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Performance Profiling Plugin
 

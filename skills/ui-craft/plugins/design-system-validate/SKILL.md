@@ -1,9 +1,23 @@
 ---
 name: design-system-validate
 description: Use when you need to validate UI code against design system tokens and component library specifications.
+model: gpt-5-nano
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "design system validation"
+  - "token compliance"
+  - "design audit"
+  - "component validation"
+  - "design system check"
+disable-model-invocation: true
 metadata:
   origin: agent-master-skills
+  preferred-model: gpt-5-nano
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Design System Validate Plugin
 

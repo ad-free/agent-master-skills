@@ -1,11 +1,24 @@
 ---
 name: tdd-enforcer
 description: Use when you need to enforce strict Test-Driven Development (RED-GREEN-REFACTOR) in the dev-craft BUILD phase. No production code without a failing test first.
+model: big-pickle
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "tdd"
+  - "test driven development"
+  - "red green refactor"
+  - "test first"
+  - "enforce tdd"
 metadata:
   origin: agent-master-skills
   plugin-for: dev-craft
   phase: BUILD
+  preferred-model: big-pickle
 ---
+
+<!-- TOKEN CEILING: ~5K -->
 
 # TDD Enforcer Plugin
 

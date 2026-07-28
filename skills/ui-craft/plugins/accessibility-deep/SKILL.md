@@ -1,9 +1,22 @@
 ---
 name: accessibility-deep
 description: Use when you need WCAG 2.2 AAA compliance auditing with automated and manual testing patterns.
+model: big-pickle
+version: 1.0.0
+preamble-tier: 1
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "accessibility"
+  - "wcag"
+  - "a11y audit"
+  - "screen reader"
+  - "accessibility compliance"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 ---
+
+<!-- TOKEN CEILING: ~2K -->
 
 # Accessibility Deep Plugin
 

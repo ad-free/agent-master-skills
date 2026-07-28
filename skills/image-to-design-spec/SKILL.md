@@ -2,10 +2,22 @@
 name: image-to-design-spec
 description: Use when analyzing UI screenshots or images to generate structured design
   specs with colors, layout, components, and design tokens.
+model: big-pickle
+version: 1.0.0
+preamble-tier: 2
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "analyze image"
+  - "extract design"
+  - "image to design"
+  - "screenshot to spec"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 
 ---
+
+TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # image-to-design-spec
 

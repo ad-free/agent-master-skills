@@ -5,12 +5,25 @@ description: "Use when designing a new API surface or changing an existing one \
   \ shape. Do NOT use for implementing an endpoint inside an already-decided API shape\
   \ (that's plain BUILD work). Do NOT use for reviewing an existing API's security\
   \ posture after the fact (see bug-hunting)."
+model: big-pickle
+version: 1.0.0
+preamble-tier: 3
+allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+triggers:
+  - "design api"
+  - "api contract"
+  - "api design"
+  - "rest api"
+  - "graphql"
 metadata:
   origin: adapted from ECC and addyosmani/agent-skills
     (api-and-interface-design)
-  version: 1
+  preferred-model: big-pickle
+  version: 1.0.0
 
 ---
+
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # api-design
 

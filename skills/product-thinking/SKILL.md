@@ -1,11 +1,34 @@
 ---
 name: product-thinking
-description: Use when the input is vague or incomplete and you need to produce a structured
-  spec with user stories, acceptance criteria, and a domain model.
+description: |
+  Transform vague ideas into structured product specifications through 4-round refinement.
+  Use when input is vague, incomplete, or "I have an idea..." — before planning.
+  Invoked by: triage, planner, product-manager.
+version: 1.1.0
+preamble-tier: 2
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
+triggers:
+  - "I have an idea"
+  - "vague requirements"
+  - "help me plan this product"
+  - "refine this concept"
+  - "create a spec from idea"
 metadata:
   origin: agent-master-skills
-
+  output: PRODUCT.md
+  rounds: 4
+  preferred-model: nemotron-3-ultra-free
+  integrates-with: [planning-and-task-breakdown, project-discovery]
 ---
+
+TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Product Thinking — Idea Refinement Engine
 

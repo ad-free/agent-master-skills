@@ -1,127 +1,104 @@
 ---
 name: token-budget
-description: Use when you need to enforce per-phase token caps, hard stops, and handoff triggers to prevent runaway context consumption.
+description: |
+  Token budget management: user chooses response depth before answer. Use when user wants to control
+  response length, mentions tokens/budget/depth, or says "brief/detailed/exhaustive".
+  TRIGGER: "token budget", "token count", "response length", "short version", "brief", "detailed", "exhaustive".
+  DO NOT TRIGGER when: user already set level this session, answer is trivially one line, "token" means auth/payment.
+model: gpt-5-nano
+tools: Read, Bash, AskUserQuestion
+preamble-tier: 4
+version: 1.0.0
+allowed-tools:
+  - Read
+  - Bash
+  - AskUserQuestion
+triggers:
+  - "token budget"
+  - "token count"
+  - "response length"
+  - "short version"
+  - "brief answer"
+  - "detailed answer"
+  - "exhaustive answer"
 metadata:
   origin: agent-master-skills
+  source: ECC token-budget-advisor
+  preferred-model: big-pickle
 ---
 
-# Token Budget
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
-## Overview
+# Token Budget Advisor (TBA)
 
-Enforces hard token limits per phase. When budget exhausted, forces handoff/compaction. Prevents runaway agents from burning tokens on low-value work.
+Intercept the response flow to offer the user a choice about response depth **before** answering.
 
-**Core principle:** Budget is a constraint, not a suggestion. Hard stop means hard stop.
+## When to Use
 
----
+- User wants to control how long or detailed a response is
+- User mentions tokens, budget, depth, or response length
+- User says "short version", "tldr", "brief", "al 25%", "exhaustive", etc.
+- Any time the user wants to choose depth/detail level upfront
 
-## Per-Phase Token Caps (Default)
+**Do not trigger** when: user already set a level this session (maintain it silently), or the answer is trivially one line.
 
-| Phase | Cap (tokens) | Warning At | Purpose |
-|-------|--------------|------------|---------|
-| `ALIGN` | 8,000 | 6,400 | Scope, assumptions, design dials |
-| `DESIGN` | 12,000 | 9,600 | Design system, tokens, ADRs |
-| `SOURCE` | 6,000 | 4,800 | Doc fetching, version verification |
-| `BUILD/slice` | 12,000 | 9,600 | Per component/page implementation |
-| `REVIEW` | 8,000 | 6,400 | Multi-axis audit |
-| `HARDEN` | 6,000 | 4,800 | Polish, dark mode, responsive |
-| `SHIP` | 4,000 | 3,200 | Commit, docs, rollback plan |
-| `HANDOFF` | 2,000 | 1,600 | Session save + resume prep |
+## How It Works
 
-**Total per run (dev-craft full pipeline): ~64,000 tokens max**
+### Step 1 — Estimate Input Tokens
 
----
+Use the repository's canonical context-budget heuristics:
 
-## Budget Enforcement Rules
+- Prose: `words × 1.3`
+- Code-heavy or mixed/code blocks: `chars / 4`
 
-### Warning (80%)
-- Log: `TOKEN WARNING: Phase X at 80% (Y/Z tokens). Prepare to wrap up.`
-- Agent MUST start closing current work
-- No new sub-tasks allowed
+For mixed content, use the dominant content type and keep the estimate heuristic.
 
-### Hard Stop (100%)
-- Log: `TOKEN LIMIT: Phase X exhausted (Y/Z tokens). HANDOFF REQUIRED.`
-- Agent MUST:
-  1. Save current progress to state.json
-  2. Generate handoff doc
-  3. Stop all work
-  4. Report status to human
-- **No exceptions.** Continue = budget violation.
+### Step 2 — Estimate Response Size by Complexity
 
-### Overspend Penalty
-If agent exceeds cap:
-- Next phase budget reduced by 20%
-- Human must approve continuation
-- Logged in state.json for audit
+Classify the prompt, then apply the multiplier range to get the full response window:
 
----
+| Complexity | Multiplier Range | Example Prompts |
+|------------|------------------|-----------------|
+| Trivial (fact lookup, yes/no) | 0.1 – 0.3x | "What's 2+2?", "Is this valid JSON?" |
+| Simple (explain concept, short code) | 0.5 – 1.0x | "Explain useReducer", "Write a regex for email" |
+| Standard (implement feature, debug) | 1.5 – 3.0x | "Build auth API", "Fix this test failure" |
+| Complex (architect system, refactor) | 3.0 – 6.0x | "Design microservices for X", "Refactor legacy auth" |
 
-## Budget Tracking
+### Step 3 — Offer User Choice
 
-Track in `state.json`:
+Present four depth levels. User picks ONE. Maintain choice for session.
 
-```json
-{
-  "tokenBudget": {
-    "phase": "BUILD",
-    "slice": "dashboard",
-    "cap": 12000,
-    "used": 9800,
-    "warning": 9600,
-    "status": "OK"  // OK | WARNING | EXCEEDED
-  }
-}
+```
+## Token Budget — Choose Response Depth
+
+**Estimated input**: ~2,400 tokens
+**Complexity**: Standard (1.5–3.0x multiplier)
+**Projected full response**: 3,600 – 7,200 tokens
+
+Choose depth:
+
+1. **Brief (25%)** — TL;DR, key points only, ~900–1,800 tokens
+2. **Standard (100%)** — Full answer with examples, ~3,600–7,200 tokens
+3. **Detailed (200%)** — Comprehensive + alternatives + reasoning, ~7,200–14,400 tokens
+4. **Exhaustive (400%)** — Everything: edge cases, trade-offs, full code, ~14,400–28,800 tokens
+
+Reply with: 1, 2, 3, or 4 (or "brief"/"standard"/"detailed"/"exhaustive")
 ```
 
-Update after each major tool call (Read, Write, Edit, Bash, Task).
+### Step 4 — Enforce Budget
 
----
+Once user chooses, tailor response to fit. Use progressive disclosure:
+- Brief: Answer only, no fluff
+- Standard: Answer + key examples
+- Detailed: Answer + examples + alternatives + reasoning
+- Exhaustive: Everything above + edge cases + full code + trade-off tables
 
-## Phase Budget Allocation Strategy
+## Integration
 
-| Phase | Typical Items | Buffer |
-|-------|--------------|--------|
-| ALIGN (8k) | Questions (500ea), stack detection (1k), scope (2k) | ~4k |
-| DESIGN (12k) | Design system (4k), ADRs (1.5k×3), tokens (2k), preview (2k) | ~2.5k |
-| BUILD (12k/slice) | Component (3k), tests (2k), security/lint/type (2.5k), preview (1k) | ~3.5k |
-| REVIEW (8k) | Code review axes (4k), UI axes (3k), findings (1k) | — |
-| HARDEN (6k) | Dark mode (1.5k), responsive (1.5k), animation (1k), cleanup (1k), security (1k) | — |
+- Called by `agent-router` at session start if user hints at depth preference
+- Can be invoked mid-session via `/token-budget` command
+- Respects `context-engineering` token ceiling guardrails
 
----
+## Output Format
 
-## Compaction Triggers
-
-| Trigger | context-engineering Action |
-|---------|---------------------------|
-| Budget > 80% | Prep handoff doc, identify L0 to drop |
-| Budget = 100% | Force compaction, generate handoff |
-| Phase complete < 60% budget | Surplus rolls to next phase (max +20%) |
-| Phase complete > 100% budget | Next phase -20%, human approval |
-
----
-
-## Integration with context-engineering
-
-Integration mirrors Compaction Triggers above: budget warning → prep handoff, hard stop → force compaction, phase complete → archive to L2, session resume → load handoff + reset budget.
-
----
-
-
-
----
-
-## Configuration Override
-
-Per-project `.token-budget.json`:
-
-```json
-{
-  "phases": {
-    "BUILD": { "cap": 15000, "warning_pct": 0.8 },
-    "DESIGN": { "cap": 10000 }
-  },
-  "global_cap": 80000
-}
-```
-
-
+Always output the choice menu first. Wait for user selection. Then answer at chosen depth.
