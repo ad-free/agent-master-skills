@@ -1,7 +1,6 @@
 ---
 name: Context Guard
 description: Context window monitor that enforces rotation at 60% usage, generates handoff documents, and prevents context drift. Runs as background monitor across all agent sessions.
-model: gpt-5-nano
 tools:
   Read: true
   Bash: true

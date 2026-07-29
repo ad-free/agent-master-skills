@@ -1,7 +1,6 @@
 ---
 name: Mobile Developer
 description: Mobile development specialist for React Native, Expo, iOS, Android, and cross-platform frameworks. Use for mobile app architecture, native modules, and app store deployment.
-model: big-pickle
 tools:
   Read: true
   Write: true

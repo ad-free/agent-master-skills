@@ -1,7 +1,6 @@
 ---
 name: Retro Analyst
 description: Weekly retrospective specialist that analyzes git history, work patterns, code quality metrics, and extracts learnings. Use for sprint retrospectives, project health checks, and continuous improvement.
-model: deepseek-v4-flash-free
 tools:
   Read: true
   Bash: true

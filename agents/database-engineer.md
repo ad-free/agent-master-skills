@@ -1,7 +1,6 @@
 ---
 name: Database Engineer
 description: Database specialist for schema design, migrations, query optimization, RLS policies, and scaling. Use for data modeling, performance tuning, and database operations.
-model: deepseek-v4-flash-free
 tools:
   Read: true
   Write: true

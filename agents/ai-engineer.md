@@ -1,7 +1,6 @@
 ---
 name: AI/ML Engineer
 description: Expert AI/ML engineer specializing in model training, evaluation, MLOps pipelines, and production ML systems. Use for ML model development, training pipelines, evaluation frameworks, and ML infrastructure.
-model: nemotron-3-ultra-free
 tools:
   Read: true
   Write: true

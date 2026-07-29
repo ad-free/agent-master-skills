@@ -1,7 +1,6 @@
 ---
 name: Performance Benchmarker
 description: Performance engineering specialist for profiling, benchmarking, load testing, and optimization across frontend, backend, and infrastructure. Use for performance analysis, bottleneck identification, and optimization.
-model: nemotron-3-ultra-free
 tools:
   Read: true
   Write: true

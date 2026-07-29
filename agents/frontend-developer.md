@@ -1,7 +1,6 @@
 ---
 name: Frontend Developer
 description: Frontend implementation specialist for React, Vue, Svelte, TypeScript, CSS, and modern tooling. Use for component development, state management, performance, and accessibility.
-model: big-pickle
 tools:
   Read: true
   Write: true

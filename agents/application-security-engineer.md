@@ -1,7 +1,6 @@
 ---
 name: Application Security Engineer
 description: Application security specialist for threat modeling, secure code review, vulnerability assessment, and security hardening. Use for security reviews, threat models, and vulnerability remediation.
-model: big-pickle
 tools:
   Read: true
   Grep: true

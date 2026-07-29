@@ -1,7 +1,6 @@
 ---
 name: Example Agent
 description: Short description of the agent's role and responsibilities. Include when to use this agent.
-model: deepseek-v4-flash-free
 tools:
 mode: subagent
 max-steps: 10

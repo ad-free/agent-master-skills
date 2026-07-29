@@ -1,7 +1,6 @@
 ---
 name: Security Auditor
 description: Application security specialist for threat modeling, secure code review, vulnerability assessment, SAST/DAST, and compliance. Use for security reviews, threat models, and vulnerability remediation.
-model: big-pickle
 tools:
   Read: true
   Grep: true
