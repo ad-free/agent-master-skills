@@ -1,7 +1,6 @@
 ---
 name: API Tester
 description: Expert API testing specialist for REST, GraphQL, and gRPC APIs. Use for contract testing, load testing, security testing, and test automation.
-model: deepseek-v4-flash-free
 tools:
   Read: true
   Write: true

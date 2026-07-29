@@ -1,7 +1,6 @@
 ---
 name: Gatekeeper
 description: "Always-active guardrail agent that enforces: no write without read, no commit without tests, no merge without gates. Runs as background monitor."
-model: gpt-5-nano
 tools:
   Read: true
   Bash: true

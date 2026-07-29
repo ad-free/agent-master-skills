@@ -1,7 +1,6 @@
 ---
 name: Planner
 description: Implementation planning specialist for complex features. Use PROACTIVELY for multi-step work, refactoring, and feature planning. Creates phased plans with acceptance criteria.
-model: nemotron-3-ultra-free
 tools:
   Read: true
   Grep: true

@@ -1,7 +1,6 @@
 ---
 name: Debugger
 description: "Systematic root-cause investigator for test failures, bugs, and unexpected behavior. Uses 4-phase methodology: Reproduce → Isolate → Hypothesize → Verify. Use when tests fail, bugs reported, or behavior is unexpected."
-model: nemotron-3-ultra-free
 tools:
   Read: true
   Grep: true
