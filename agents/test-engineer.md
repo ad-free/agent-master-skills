@@ -1,6 +1,7 @@
 ---
 name: Test Engineer
 description: Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.
+model: big-pickle
 tools:
   Read: true
   Write: true

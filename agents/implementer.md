@@ -1,6 +1,7 @@
 ---
 name: Implementer
 description: Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.
+model: big-pickle
 tools:
   Read: true
   Write: true

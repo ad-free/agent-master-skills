@@ -1,6 +1,7 @@
 ---
 name: Senior Developer
 description: Expert senior developer with broad experience in architecture, mentorship, and end-to-end delivery. Use for implementation planning, design review, and pragmatic technical leadership.
+model: nemotron-3-ultra-free
 tools:
   Read: true
   Write: true

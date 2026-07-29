@@ -1,6 +1,7 @@
 ---
 name: Frontend Engineer
 description: Frontend implementation specialist for React, TypeScript, CSS, state management, accessibility, and performance. Use for component development, UI implementation, and frontend architecture.
+model: big-pickle
 tools:
   Read: true
   Write: true

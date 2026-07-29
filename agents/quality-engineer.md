@@ -1,6 +1,7 @@
 ---
 name: Quality Engineer
 description: Expert QA and testing engineer specializing in test strategy, test automation, integration testing, e2e testing, and quality processes across web, mobile, and API systems.
+model: big-pickle
 tools:
   Read: true
   Grep: true

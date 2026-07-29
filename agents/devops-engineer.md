@@ -1,6 +1,7 @@
 ---
 name: DevOps Engineer
 description: DevOps and platform specialist for CI/CD, Infrastructure as Code (Terraform), Kubernetes, observability, secrets management, and progressive delivery. Use for pipeline design, infrastructure provisioning, and deployment automation.
+model: deepseek-v4-flash-free
 tools:
   Read: true
   Write: true

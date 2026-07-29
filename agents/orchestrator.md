@@ -1,6 +1,7 @@
 ---
 name: Orchestrator
 description: Multi-agent coordinator for parallel workstreams. Uses agent-orchestration skill for git worktree isolation, shared contracts, and dependency management. Use for large features requiring backend+frontend+mobile parallel execution.
+model: nemotron-3-ultra-free
 tools:
   Agent: true
   Read: true
