@@ -1,10 +1,16 @@
 ---
 name: eval-harness
-description: Use when running golden test cases against each skill to verify behavior and catch regressions. CI gate for skill changes.
+description: "Use when running golden test cases against each skill to verify behavior and catch regressions. CI gate for skill changes."
 model: gpt-5-nano
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 2
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 triggers:
   - "evaluate skill"
   - "test skill"
@@ -13,8 +19,11 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: gpt-5-nano
+  version: 2.0.0
+  domain: quality-safety
+  integrates-with: [quality-gates, code-review-and-quality]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Eval Harness

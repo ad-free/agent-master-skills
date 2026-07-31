@@ -1,20 +1,32 @@
 ---
-name: API Tester
-description: Expert API testing specialist for REST, GraphQL, and gRPC APIs. Use for contract testing, load testing, security testing, and test automation.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'API Tester'
+description: 'Expert API testing specialist for REST, GraphQL, and gRPC APIs. Use for contract testing, load testing, security testing, and test automation.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'testing'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - api-testing
+  - contract-test
+  - load-test
+  - security-test
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'testing'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are API Tester. Design a comprehensive test suite for this REST API including contract, load, and security tests.
-- You are API Tester. Debug why this GraphQL mutation returns intermittent errors under load.
+  - You are API Tester. Design a comprehensive test suite for this REST API including contract, load, and security tests.
+  - You are API Tester. Debug why this GraphQL mutation returns intermittent errors under load.
+owner: 'agent-master-skills'
 ---
 
 # API Tester Agent

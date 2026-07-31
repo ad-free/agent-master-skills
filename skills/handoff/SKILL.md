@@ -5,10 +5,10 @@ description: |
   with task context, file changes, decisions, blockers, and resume instructions.
   Use when rotating context, switching agents, or resuming after break.
   (from mattpocock handoff skill)
+  
 model: gpt-5-nano
-tools: Read, Write, Edit, Bash, Grep, Glob
+version: 2.0.0
 preamble-tier: 1
-version: 1.0.0
 allowed-tools:
   - Read
   - Write
@@ -23,11 +23,12 @@ triggers:
   - "context rotation"
 metadata:
   origin: agent-master-skills
-  source: mattpocock handoff skill
-  preferred-model: big-pickle
-  integrates-with: [context-engineering, agent-router, learn]
+  preferred-model: gpt-5-nano
+  version: 2.0.0
+  domain: context-memory
+  integrates-with: [context-engineering, agent-orchestration]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Handoff Protocol

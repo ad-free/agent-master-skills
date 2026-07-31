@@ -1,18 +1,30 @@
 ---
-name: Quality Engineer
-description: Expert QA and testing engineer specializing in test strategy, test automation, integration testing, e2e testing, and quality processes across web, mobile, and API systems.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Quality Engineer'
+description: 'Expert QA and testing engineer specializing in test strategy, test automation, integration testing, e2e testing, and quality processes across web, mobile, and API systems.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'quality'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - qa
+  - test-strategy
+  - quality-process
+  - coverage
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'quality'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Quality Engineer. Design a test strategy for a payment processing microservice.
-- You are Quality Engineer. Review this test suite for coverage gaps and flaky tests.
+  - You are Quality Engineer. Design a test strategy for a payment processing microservice.
+  - You are Quality Engineer. Review this test suite for coverage gaps and flaky tests.
+owner: 'agent-master-skills'
 ---
 
 # Quality Engineer Agent

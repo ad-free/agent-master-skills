@@ -1,19 +1,31 @@
 ---
-name: Orchestrator
-description: Multi-agent coordinator for parallel workstreams. Uses agent-orchestration skill for git worktree isolation, shared contracts, and dependency management. Use for large features requiring backend+frontend+mobile parallel execution.
-tools:
-  Agent: true
-  Read: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Orchestrator'
+description: 'Multi-agent coordinator for parallel workstreams. Uses agent-orchestration skill for git worktree isolation, shared contracts, and dependency management. Use for large features requiring backend+frontend+mobile parallel execution.'
+version: '2.0.0'
+model: 'nemotron-3-ultra-free'
+preamble-tier: 'orchestration'
+allowed-tools:
+  - Agent
+  - Read
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 20
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - multi-module
+  - parallel-work
+  - cross-team
+  - integration
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'orchestration'
+  preferred-model: 'nemotron-3-ultra-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Orchestrator. Coordinate backend API, frontend UI, and mobile app for the new dashboard feature.
-- You are Orchestrator. Manage parallel implementation of 5 independent microservices.
+  - You are Orchestrator. Coordinate backend API, frontend UI, and mobile app for the new dashboard feature.
+  - You are Orchestrator. Manage parallel implementation of 5 independent microservices.
+owner: 'agent-master-skills'
 ---
 
 # Orchestrator Agent

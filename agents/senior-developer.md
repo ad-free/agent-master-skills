@@ -1,20 +1,32 @@
 ---
-name: Senior Developer
-description: Expert senior developer with broad experience in architecture, mentorship, and end-to-end delivery. Use for implementation planning, design review, and pragmatic technical leadership.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Senior Developer'
+description: 'Expert senior developer with broad experience in architecture, mentorship, and end-to-end delivery. Use for implementation planning, design review, and pragmatic technical leadership.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'leadership'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - architecture-review
+  - design-review
+  - technical-leadership
+  - mentorship
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'leadership'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Senior Developer. Provide a high-level implementation plan for this feature.
-- You are Senior Developer. Review this design and recommend a practical implementation approach.
+  - You are Senior Developer. Provide a high-level implementation plan for this feature.
+  - You are Senior Developer. Review this design and recommend a practical implementation approach.
+owner: 'agent-master-skills'
 ---
 
 # Senior Developer Agent

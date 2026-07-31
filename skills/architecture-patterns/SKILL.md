@@ -1,27 +1,29 @@
 ---
 name: architecture-patterns
-description: "Use when choosing a structural pattern for a system or module \u2014\
-  \ hexagonal/clean\
-  \ architecture, DDD, event-driven, microservices decomposition. Do NOT use for scanning\
-  \ an existing codebase for smells (see dev-craft's ARCH-SCAN phase, which this skill\
-  \ supports but doesn't replace) and do NOT use to justify a pattern chosen for resume-driven\
-  \ reasons rather than the problem's actual shape."
+description: "Use when choosing a structural pattern for a system or module — hexagonal/clean architecture, DDD, event-driven, microservices decomposition. Do NOT use for scanning an existing codebase for smells (see dev-craft's ARCH-SCAN phase, which this skill supports but doesn't replace) and do NOT use to justify a pattern chosen for resume-driven reasons rather than the problem's actual shape."
 model: nemotron-3-ultra-free
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 3
-allowed-tools: [Read, Write, Edit, Grep, Glob, AskUserQuestion]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - AskUserQuestion
 triggers:
   - "architecture review"
   - "pattern decision"
   - "architecture decision"
   - "choose pattern"
 metadata:
-  origin: adapted from ECC and addyosmani/agent-skills
+  origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-  version: 1.0.0
-
+  version: 2.0.0
+  domain: specialized-engineering
+  integrates-with: [dev-craft, planning-and-task-breakdown]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # architecture-patterns

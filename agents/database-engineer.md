@@ -1,20 +1,33 @@
 ---
-name: Database Engineer
-description: Database specialist for schema design, migrations, query optimization, RLS policies, and scaling. Use for data modeling, performance tuning, and database operations.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Database Engineer'
+description: 'Database specialist for schema design, migrations, query optimization, RLS policies, and scaling. Use for data modeling, performance tuning, and database operations.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'data'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - database
+  - schema
+  - migration
+  - query
+  - data-model
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'data'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Database Engineer. Design a schema for a multi-tenant SaaS with row-level security.
-- You are Database Engineer. Optimize this slow query and create necessary indexes.
+  - You are Database Engineer. Design a schema for a multi-tenant SaaS with row-level security.
+  - You are Database Engineer. Optimize this slow query and create necessary indexes.
+owner: 'agent-master-skills'
 ---
 
 # Database Engineer Agent

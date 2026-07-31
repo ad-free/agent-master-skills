@@ -1,20 +1,32 @@
 ---
-name: Database Optimizer
-description: Database performance specialist for query optimization, index design, schema review, and scaling strategies. Use for slow queries, schema design, and database scaling.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Database Optimizer'
+description: 'Database performance specialist for query optimization, index design, schema review, and scaling strategies. Use for slow queries, schema design, and database scaling.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'data'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - performance
+  - query-optimization
+  - index
+  - database-tuning
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'data'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Database Optimizer. Analyze this slow query and recommend indexes and rewrites.
-- You are Database Optimizer. Review this schema for normalization, indexing, and scaling concerns.
+  - You are Database Optimizer. Analyze this slow query and recommend indexes and rewrites.
+  - You are Database Optimizer. Review this schema for normalization, indexing, and scaling concerns.
+owner: 'agent-master-skills'
 ---
 
 # Database Optimizer Agent

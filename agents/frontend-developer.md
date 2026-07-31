@@ -1,20 +1,32 @@
 ---
-name: Frontend Developer
-description: Frontend implementation specialist for React, Vue, Svelte, TypeScript, CSS, and modern tooling. Use for component development, state management, performance, and accessibility.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Frontend Developer'
+description: 'Frontend implementation specialist for React, Vue, Svelte, TypeScript, CSS, and modern tooling. Use for component development, state management, performance, and accessibility.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'implementation'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - ui-implementation
+  - component
+  - react
+  - frontend
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'implementation'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Frontend Developer. Build a accessible, responsive form with React Hook Form and Zod validation.
-- You are Frontend Developer. Optimize this React component tree for re-render performance.
+  - You are Frontend Developer. Build a accessible, responsive form with React Hook Form and Zod validation.
+  - You are Frontend Developer. Optimize this React component tree for re-render performance.
+owner: 'agent-master-skills'
 ---
 
 # Frontend Developer Agent

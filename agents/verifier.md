@@ -1,18 +1,30 @@
 ---
-name: Verifier
-description: Verification specialist that runs fresh evidence checks before any completion claim. Use MANDATORILY before claiming any task/phase done. Runs tests, lint, typecheck, build.
-tools:
-  Read: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Verifier'
+description: 'Verification specialist that runs fresh evidence checks before any completion claim. Use MANDATORILY before claiming any task/phase done. Runs tests, lint, typecheck, build.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'verification'
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 8
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - verification
+  - quality-gate
+  - pre-merge
+  - completion-check
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'verification'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Verifier. Run all verification gates for the auth slice and report results.
-- You are Verifier. Check if this PR meets all quality gates before merge.
+  - You are Verifier. Run all verification gates for the auth slice and report results.
+  - You are Verifier. Check if this PR meets all quality gates before merge.
+owner: 'agent-master-skills'
 ---
 
 # Verifier Agent
@@ -110,5 +122,5 @@ or
 3. `skill("learn")` — record learnings
 
 ## Handoff
-On PASS: invoke `shipper` (if final) or `implementer` (next slice)
+On PASS: invoke `verifier` (if final) or `implementer` (next slice)
 On FAIL: invoke `debugger` with failure details

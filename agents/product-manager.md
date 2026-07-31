@@ -1,17 +1,30 @@
 ---
-name: Product Manager
-description: Product management specialist for feature specification, prioritization, user research, and roadmap planning. Use for product discovery, requirement gathering, and stakeholder alignment.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Product Manager'
+description: 'Product management specialist for feature specification, prioritization, user research, and roadmap planning. Use for product discovery, requirement gathering, and stakeholder alignment.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'product'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 8
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - product
+  - feature-spec
+  - prioritization
+  - roadmap
+  - prd
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'product'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Product Manager. Write a PRD for a user onboarding flow with success metrics.
-- You are Product Manager. Prioritize these feature requests using RICE scoring.
+  - You are Product Manager. Write a PRD for a user onboarding flow with success metrics.
+  - You are Product Manager. Prioritize these feature requests using RICE scoring.
+owner: 'agent-master-skills'
 ---
 
 # Product Manager Agent

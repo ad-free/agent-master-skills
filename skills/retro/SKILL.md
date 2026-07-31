@@ -5,10 +5,10 @@ description: |
   with persistent history and trend tracking. Team-aware: per-person contributions with praise and growth areas.
   Use when asked "weekly retro", "what did we ship", "engineering retrospective".
   Proactively suggest at end of work week or sprint.
+  
 model: deepseek-v4-flash-free
-tools: Read, Write, Bash, Grep, Glob, AskUserQuestion
+version: 2.0.0
 preamble-tier: 4
-version: 1.0.0
 allowed-tools:
   - Read
   - Write
@@ -23,30 +23,12 @@ triggers:
   - "sprint retrospective"
 metadata:
   origin: agent-master-skills
-  source: gstack retro skill
-  output: .dev-craft/retros/YYYY-MM-DD.md
-  preferred-model: nemotron-3-ultra-free
-  gbrain:
-    schema: 1
-    context_queries:
-      - id: prior-retros
-        kind: filesystem
-        glob: "~/.dev-craft/retros/*.md"
-        sort: mtime_desc
-        limit: 5
-        render_as: "## Prior Retros for This Project"
-      - id: recent-timeline
-        kind: filesystem
-        glob: "~/.dev-craft/timeline.jsonl"
-        tail: 30
-        render_as: "## Recent Timeline Events"
-      - id: recent-learnings
-        kind: filesystem
-        glob: "~/.dev-craft/learnings/learnings.jsonl"
-        tail: 10
-        render_as: "## Recent Learnings"
+  preferred-model: deepseek-v4-flash-free
+  version: 2.0.0
+  domain: context-memory
+  integrates-with: [learn, context-engineering]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # /retro — Weekly Engineering Retrospective

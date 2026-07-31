@@ -4,7 +4,9 @@ description: |
   Coordinate multiple agents (backend, frontend, mobile) in parallel using git worktrees.
   Use for large features requiring parallel BE/FE/Mobile execution with shared contracts.
   Invoked by: orchestrator agent.
-version: 1.1.0
+  
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 3
 allowed-tools:
   - Agent
@@ -22,12 +24,12 @@ triggers:
   - "split work across agents"
 metadata:
   origin: agent-master-skills
-  preferred-model: big-pickle
-  topology-support: [mono, multi]
-  contract-required: true
-  integrates-with: [dev-craft, dispatching-parallel-agents]
+  preferred-model: nemotron-3-ultra-free
+  version: 2.0.0
+  domain: planning-execution
+  integrates-with: [dev-craft, ui-craft, dispatching-parallel-agents]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Agent Orchestration

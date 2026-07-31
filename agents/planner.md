@@ -1,18 +1,30 @@
 ---
-name: Planner
-description: Implementation planning specialist for complex features. Use PROACTIVELY for multi-step work, refactoring, and feature planning. Creates phased plans with acceptance criteria.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Planner'
+description: 'Implementation planning specialist for complex features. Use PROACTIVELY for multi-step work, refactoring, and feature planning. Creates phased plans with acceptance criteria.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'planning'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 15
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - feature-request
+  - refactoring
+  - multi-step
+  - new-project
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'planning'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Planner. Create a phased implementation plan for this payment system refactoring.
-- You are Planner. Break down this feature request into ordered, verifiable tasks with acceptance criteria.
+  - You are Planner. Create a phased implementation plan for this payment system refactoring.
+  - You are Planner. Break down this feature request into ordered, verifiable tasks with acceptance criteria.
+owner: 'agent-master-skills'
 ---
 
 # Planner Agent

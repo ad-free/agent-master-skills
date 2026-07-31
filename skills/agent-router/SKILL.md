@@ -4,11 +4,10 @@ description: |
   Primary entry point for all agent work. Single bootstrap skill that maps user requests to the
   correct agent and skill chain. Use FIRST in every session — routes vague ideas, specs, bugs,
   features, reviews, and deployments to the right specialist. User-invoked only.
+  
 model: gpt-5-nano
-tools: Read, Grep, Glob, AskUserQuestion
+version: 2.0.0
 preamble-tier: 1
-version: 1.0.0
-disable-model-invocation: true
 allowed-tools:
   - Read
   - Grep
@@ -22,10 +21,11 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: gpt-5-nano
-  bootstrap: true
-  user-invoked-only: true
+  version: 2.0.0
+  domain: planning-execution
+  integrates-with: [product-thinking, planning-and-task-breakdown, dev-craft, ui-craft]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Agent Router — Bootstrap Skill

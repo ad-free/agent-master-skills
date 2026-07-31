@@ -4,7 +4,9 @@ description: |
   Layered validation pipeline: Structure → Deterministic → Security → Convention → LLM Judge.
   Use before merging PRs, after BUILD phase, before releases, or in CI/CD.
   Invoked by: verifier, gatekeeper, shipper.
-version: 1.1.0
+  
+model: gpt-5-nano
+version: 2.0.0
 preamble-tier: 3
 allowed-tools:
   - Read
@@ -18,12 +20,12 @@ triggers:
   - "run all checks"
 metadata:
   origin: agent-master-skills
-  gates: 5
-  deterministic-first: true
   preferred-model: gpt-5-nano
+  version: 2.0.0
+  domain: security-quality
   integrates-with: [verification-before-completion, code-review-and-quality, dev-craft]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~10K tokens. If skill exceeds, extract sections to references/.
 
 # Quality Gates

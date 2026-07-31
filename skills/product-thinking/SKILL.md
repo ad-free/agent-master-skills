@@ -4,7 +4,9 @@ description: |
   Transform vague ideas into structured product specifications through 4-round refinement.
   Use when input is vague, incomplete, or "I have an idea..." — before planning.
   Invoked by: triage, planner, product-manager.
-version: 1.1.0
+  
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 2
 allowed-tools:
   - Read
@@ -22,12 +24,12 @@ triggers:
   - "create a spec from idea"
 metadata:
   origin: agent-master-skills
-  output: PRODUCT.md
-  rounds: 4
   preferred-model: nemotron-3-ultra-free
+  version: 2.0.0
+  domain: product-discovery
   integrates-with: [planning-and-task-breakdown, project-discovery]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Product Thinking — Idea Refinement Engine

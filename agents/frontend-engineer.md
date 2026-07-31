@@ -1,20 +1,32 @@
 ---
-name: Frontend Engineer
-description: Frontend implementation specialist for React, TypeScript, CSS, state management, accessibility, and performance. Use for component development, UI implementation, and frontend architecture.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Frontend Engineer'
+description: 'Frontend implementation specialist for React, TypeScript, CSS, state management, accessibility, and performance. Use for component development, UI implementation, and frontend architecture.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'implementation'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - ui-implementation
+  - component
+  - react
+  - frontend
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'implementation'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Frontend Engineer. Build an accessible, responsive data table with sorting, filtering, and virtualization.
-- You are Frontend Engineer. Implement the checkout flow with React Hook Form, Zod, and Stripe Elements.
+  - You are Frontend Engineer. Build an accessible, responsive data table with sorting, filtering, and virtualization.
+  - You are Frontend Engineer. Implement the checkout flow with React Hook Form, Zod, and Stripe Elements.
+owner: 'agent-master-skills'
 ---
 
 # Frontend Engineer Agent

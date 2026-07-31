@@ -1,20 +1,33 @@
 ---
-name: AI/ML Engineer
-description: Expert AI/ML engineer specializing in model training, evaluation, MLOps pipelines, and production ML systems. Use for ML model development, training pipelines, evaluation frameworks, and ML infrastructure.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'AI/ML Engineer'
+description: 'Expert AI/ML engineer specializing in model training, evaluation, MLOps pipelines, and production ML systems. Use for ML model development, training pipelines, evaluation frameworks, and ML infrastructure.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'ml'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - ml
+  - training
+  - model
+  - mlops
+  - ai
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'ml'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are AI/ML Engineer. Design a training pipeline for a text classification model with evaluation and monitoring.
-- You are AI/ML Engineer. Debug why this model's validation metrics diverge from training metrics.
+  - You are AI/ML Engineer. Design a training pipeline for a text classification model with evaluation and monitoring.
+  - You are AI/ML Engineer. Debug why this model's validation metrics diverge from training metrics.
+owner: 'agent-master-skills'
 ---
 
 # AI/ML Engineer Agent

@@ -4,7 +4,9 @@ description: |
   Parse existing spec files (Excel, CSV, MD, PDF, text) into structured DOMAIN.md.
   Use when user provides requirement documents — before planning or dev-craft.
   Invoked by: triage, planner.
-version: 1.1.0
+  
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 2
 allowed-tools:
   - Read
@@ -20,12 +22,12 @@ triggers:
   - "ingest requirement documents"
 metadata:
   origin: agent-master-skills
-  output: DOMAIN.md
-  supported-formats: [xlsx, csv, md, pdf, txt]
   preferred-model: nemotron-3-ultra-free
-  integrates-with: [dev-craft, planning-and-task-breakdown]
+  version: 2.0.0
+  domain: product-discovery
+  integrates-with: [product-thinking, planning-and-task-breakdown]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~10K tokens. If skill exceeds, extract sections to references/.
 
 # Project Discovery — Domain Model Extraction

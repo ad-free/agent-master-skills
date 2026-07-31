@@ -1,18 +1,30 @@
 ---
-name: Performance Benchmarker
-description: Performance engineering specialist for profiling, benchmarking, load testing, and optimization across frontend, backend, and infrastructure. Use for performance analysis, bottleneck identification, and optimization.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-mode: subagent
+name: 'Performance Benchmarker'
+description: 'Performance engineering specialist for profiling, benchmarking, load testing, and optimization across frontend, backend, and infrastructure. Use for performance analysis, bottleneck identification, and optimization.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'performance'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - performance
+  - benchmark
+  - load-test
+  - profiling
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'performance'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Performance Benchmarker. Profile this API and identify the top 3 bottlenecks.
-- You are Performance Benchmarker. Design a load test scenario for 10K concurrent users.
+  - You are Performance Benchmarker. Profile this API and identify the top 3 bottlenecks.
+  - You are Performance Benchmarker. Design a load test scenario for 10K concurrent users.
+owner: 'agent-master-skills'
 ---
 
 # Performance Benchmarker Agent

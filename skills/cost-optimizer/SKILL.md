@@ -5,10 +5,10 @@ description: |
   retry logic, and prompt caching. Use when building applications that call LLM APIs, processing batches
   with varying complexity, need to stay within API budget, or optimizing cost without sacrificing quality.
   (from ECC cost-aware-llm-pipeline)
+  
 model: nemotron-3-ultra-free
-tools: Read, Write, Edit, Bash, Grep, Glob
+version: 2.0.0
 preamble-tier: 4
-version: 1.0.0
 allowed-tools:
   - Read
   - Write
@@ -24,9 +24,11 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-  source: ECC cost-aware-llm-pipeline
+  version: 2.0.0
+  domain: context-memory
+  integrates-with: [token-budget, dev-craft]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Cost-Aware LLM Pipeline

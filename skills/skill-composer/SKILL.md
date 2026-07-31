@@ -1,21 +1,27 @@
 ---
 name: skill-composer
-description: Use when you need dynamic skill chaining from a task graph. Analyzes task dependencies and composes optimal skill execution order with shared context.
+description: "Use when you need dynamic skill chaining from a task graph. Analyzes task dependencies and composes optimal skill execution order with shared context."
 model: deepseek-v4-flash-free
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 2
-allowed-tools: [Read, Grep, Glob, AskUserQuestion]
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - AskUserQuestion
 triggers:
   - "compose skills"
   - "skill chain"
   - "orchestrate skills"
   - "task graph"
-disable-model-invocation: true
 metadata:
   origin: agent-master-skills
   preferred-model: deepseek-v4-flash-free
+  version: 2.0.0
+  domain: tooling
+  integrates-with: [skill-creator, agent-router]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Skill Composer

@@ -4,10 +4,10 @@ description: |
   Persistent project learnings manager. Search, prune, export learnings across sessions.
   Use when asked "what have we learned", "show learnings", "prune stale learnings", "export learnings".
   Proactively suggest when user asks "didn't we fix this before?".
+  
 model: gpt-5-nano
-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
+version: 2.0.0
 preamble-tier: 4
-version: 1.0.0
 allowed-tools:
   - Read
   - Write
@@ -25,11 +25,12 @@ triggers:
   - "learnings stats"
 metadata:
   origin: agent-master-skills
-  source: gstack learn skill
-  storage: .dev-craft/learnings/learnings.jsonl
-  preferred-model: big-pickle
+  preferred-model: gpt-5-nano
+  version: 2.0.0
+  domain: context-memory
+  integrates-with: [retro, context-engineering]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Project Learnings Manager

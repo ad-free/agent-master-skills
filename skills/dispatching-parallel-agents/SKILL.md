@@ -4,7 +4,9 @@ description: |
   Run independent tasks simultaneously using subagents. Use when multiple tasks
   have no dependencies and can execute concurrently.
   Invoked by: implementer, orchestrator, test-engineer.
-version: 1.1.0
+  
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 3
 allowed-tools:
   - Agent
@@ -19,11 +21,12 @@ triggers:
   - "run tests in parallel"
 metadata:
   origin: agent-master-skills
-  preferred-model: big-pickle
-  independence-verification: required
+  preferred-model: nemotron-3-ultra-free
+  version: 2.0.0
+  domain: planning-execution
   integrates-with: [agent-orchestration, dev-craft]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Dispatching Parallel Agents

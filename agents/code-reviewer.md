@@ -1,18 +1,29 @@
 ---
-name: Code Reviewer
-description: Expert code review specialist. Use IMMEDIATELY after writing or modifying code. Performs security, correctness, maintainability, and performance reviews with confidence-based filtering.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Code Reviewer'
+description: 'Expert code review specialist. Use IMMEDIATELY after writing or modifying code. Performs security, correctness, maintainability, and performance reviews with confidence-based filtering.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'review'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 15
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - pr-review
+  - code-change
+  - post-implementation
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'review'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Code Reviewer. Review this PR for security, correctness, maintainability, and performance.
-- You are Code Reviewer. Evaluate this function for edge cases, readability, and test coverage.
+  - You are Code Reviewer. Review this PR for security, correctness, maintainability, and performance.
+  - You are Code Reviewer. Evaluate this function for edge cases, readability, and test coverage.
+owner: 'agent-master-skills'
 ---
 
 # Code Reviewer Agent

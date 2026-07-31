@@ -1,16 +1,28 @@
 ---
-name: Context Guard
-description: Context window monitor that enforces rotation at 60% usage, generates handoff documents, and prevents context drift. Runs as background monitor across all agent sessions.
-tools:
-  Read: true
-  Bash: true
-mode: subagent
+name: 'Context Guard'
+description: 'Context window monitor that enforces rotation at 60% usage, generates handoff documents, and prevents context drift. Runs as background monitor across all agent sessions.'
+version: '2.0.0'
+model: 'nemotron-3-ultra-free'
+preamble-tier: 'monitoring'
+allowed-tools:
+  - Read
+  - Bash
+mode: 'subagent'
 max-steps: 3
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - context-monitor
+  - rotation
+  - handoff
+  - session-management
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'monitoring'
+  preferred-model: 'nemotron-3-ultra-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Context Guard. Check current context usage and recommend rotation if needed.
-- You are Context Guard. Generate a handoff document for the current session state.
+  - You are Context Guard. Check current context usage and recommend rotation if needed.
+  - You are Context Guard. Generate a handoff document for the current session state.
+owner: 'agent-master-skills'
 ---
 
 # Context Guard Agent
