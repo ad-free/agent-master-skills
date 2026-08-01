@@ -4,7 +4,9 @@ description: |
   Technical documentation specialist for ADRs, API references, runbooks, onboarding guides, and docs-as-code pipelines.
   Use when documentation needs creating, updating, or automating.
   Includes interactive type selection and local markdown generation.
-version: 1.0.0
+  
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 3
 allowed-tools:
   - Read
@@ -26,10 +28,11 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-  integrates-with: [dev-craft, ui-craft, mr-pr-review, learn, handoff]
-  templates: [adr, runbook, api-doc, user-guide, changelog, onboarding]
+  version: 2.0.0
+  domain: specialized-engineering
+  integrates-with: [dev-craft, ui-craft, planning-and-task-breakdown]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Documentation Engineering

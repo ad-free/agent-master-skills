@@ -1,20 +1,31 @@
 ---
 name: skill-creator
-description: Create new skills, modify and improve existing skills for the agent-master-skills library. Use when the user wants to create a skill from scratch, edit or optimize an existing skill, or add a plugin. Follows the skill-composer integration pattern for dependency-aware loading.
+description: "Create new skills, modify and improve existing skills for the agent-master-skills library. Use when the user wants to create a skill from scratch, edit or optimize an existing skill, or add a plugin. Follows the skill-composer integration pattern for dependency-aware loading."
 model: deepseek-v4-flash-free
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 2
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
 triggers:
   - "create skill"
   - "modify skill"
   - "new skill"
   - "edit skill"
   - "skill template"
-disable-model-invocation: true
-preferred-model: deepseek-v4-flash-free
+metadata:
+  origin: agent-master-skills
+  preferred-model: deepseek-v4-flash-free
+  version: 2.0.0
+  domain: tooling
+  integrates-with: [skill-composer, agent-router]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Skill Creator

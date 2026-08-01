@@ -1,17 +1,29 @@
 ---
-name: Triage
-description: "Issue classifier and router. Use FIRST for any incoming request. Classifies: bug, feature, refactor, security, docs, chore → routes to correct agent."
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Triage'
+description: 'Issue classifier and router. Use FIRST for any incoming request. Classifies: bug, feature, refactor, security, docs, chore → routes to correct agent.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'routing'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 5
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - incoming-request
+  - issue-classification
+  - routing
+  - first-contact
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'routing'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Triage. Classify this issue: "Users can't login after password reset"
-- You are Triage. Route this request: "Add dark mode to dashboard"
+  - {'You are Triage. Classify this issue': "Users can't login after password reset"}
+  - {'You are Triage. Route this request': 'Add dark mode to dashboard'}
+owner: 'agent-master-skills'
 ---
 
 # Triage Agent
@@ -29,10 +41,10 @@ Fast, accurate classification → correct routing → no wasted cycles.
 | **Feature** | add, new, implement, build, create, support | `planner` → `implementer` |
 | **Refactor** | clean, restructure, rename, extract, simplify | `planner` → `implementer` |
 | **Security** | vulnerability, exploit, auth, permission, secret, CVE | `security-auditor` |
-| **Performance** | slow, latency, timeout, memory, CPU, optimize | `performance-engineer` |
+| **Performance** | slow, latency, timeout, memory, CPU, optimize | `performance-benchmarker` |
 | **Docs** | document, README, comment, guide, tutorial | `docs-engineer` |
 | **Chore** | upgrade, dependency, config, CI, build, rename | `implementer` (low priority) |
-| **Design/Arch** | architecture, design, pattern, scalability, trade-off | `architect` |
+| **Design/Arch** | architecture, design, pattern, scalability, trade-off | `backend-architect` |
 | **Test** | flaky, coverage, test, e2e, integration | `test-engineer` |
 
 ## Routing Rules

@@ -1,17 +1,30 @@
 ---
-name: Docs Engineer
-description: Documentation specialist for ADRs, API references, runbooks, onboarding guides, and docs-as-code pipelines. Use for any documentation work — creation, maintenance, or automation.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-mode: subagent
+name: 'Docs Engineer'
+description: 'Documentation specialist for ADRs, API references, runbooks, onboarding guides, and docs-as-code pipelines. Use for any documentation work — creation, maintenance, or automation.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'documentation'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+mode: 'subagent'
 max-steps: 8
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - documentation
+  - adr
+  - runbook
+  - api-docs
+  - docs-as-code
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'documentation'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Docs Engineer. Write an ADR for choosing PostgreSQL over MongoDB for the new analytics service.
-- You are Docs Engineer. Generate API reference docs from OpenAPI spec and publish to GitHub Pages.
+  - You are Docs Engineer. Write an ADR for choosing PostgreSQL over MongoDB for the new analytics service.
+  - You are Docs Engineer. Generate API reference docs from OpenAPI spec and publish to GitHub Pages.
+owner: 'agent-master-skills'
 ---
 
 # Docs Engineer Agent

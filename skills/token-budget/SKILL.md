@@ -5,10 +5,10 @@ description: |
   response length, mentions tokens/budget/depth, or says "brief/detailed/exhaustive".
   TRIGGER: "token budget", "token count", "response length", "short version", "brief", "detailed", "exhaustive".
   DO NOT TRIGGER when: user already set level this session, answer is trivially one line, "token" means auth/payment.
+  
 model: gpt-5-nano
-tools: Read, Bash, AskUserQuestion
+version: 2.0.0
 preamble-tier: 4
-version: 1.0.0
 allowed-tools:
   - Read
   - Bash
@@ -23,10 +23,12 @@ triggers:
   - "exhaustive answer"
 metadata:
   origin: agent-master-skills
-  source: ECC token-budget-advisor
-  preferred-model: big-pickle
+  preferred-model: gpt-5-nano
+  version: 2.0.0
+  domain: context-memory
+  integrates-with: [context-engineering, cost-optimizer]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Token Budget Advisor (TBA)

@@ -38,6 +38,17 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `devops-automation` | CI/CD, IaC (Terraform), Kubernetes, progressive delivery, secrets | Everything as code; pipeline as product; progressive delivery |
 | `observability-engineering` | Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting | Observability > monitoring; SLOs over alerts; three pillars unified |
 | `architecture-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices patterns | Architecture serves the problem; start simple; extract when pain proven |
+| `database-migrations` | Safe schema changes with rollback, backfill, and zero-downtime deployment | NO MIGRATION WITHOUT A BACKUP AND ROLLBACK PLAN | Planning and executing database migrations | 2.0.0 |
+| `backend-patterns` | Hexagonal, layered, CQRS, repository, saga, event sourcing patterns | NO DEPENDENCY VIOLATION IN THE DOMAIN LAYER | Structuring backend services with clean architecture | 2.0.0 |
+| `refactor-and-cleanup` | Dead code removal, duplication elimination, naming, complexity reduction | NO REFACTORING WITHOUT A TEST SAFETY NET | Cleaning up technical debt and code quality | 2.0.0 |
+
+### Frontend & UI Skills
+
+| Skill | Purpose | Iron Law / Key Principle |
+|-------|---------|--------------------------|
+| `ui-component-builder` | Build accessible, modular React/Vue/Tailwind components with design tokens | NO COMPONENT WITHOUT DESIGN TOKEN CONSISTENCY | Building modern, responsive, accessible UI components | 2.0.0 |
+| `design-system-auditor` | Audit UI code for design consistency, responsiveness, performance, and WCAG | NO UI WITHOUT DESIGN TOKEN COMPLIANCE | Validating UI against design tokens and accessibility standards | 2.0.0 |
+| `animation-and-interactions` | CSS/Framer Motion animations, micro-interactions, and visual polish | NO ANIMATION WITHOUT PERFORMANCE BUDGET | Crafting smooth animations without performance degradation | 2.0.0 |
 
 ### Quality & Safety
 
@@ -47,6 +58,11 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `code-review-and-quality` | 8-axis code review protocol | NO CODE WITHOUT REVIEW EVIDENCE |
 | `verification-before-completion` | Evidence gates before claiming done | NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE |
 | `debugging-and-error-recovery` | Systematic root-cause investigation | NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST |
+| `bug-hunting` | Deep security vulnerability discovery | NO ATTACK SURFACE WITHOUT INTENTIONAL PROBING |
+| `subagent-driven-development` | Parallel sub-agent feature development with worktree isolation and shared contracts | NO SUBAGENT STARTS WITHOUT A SHARED CONTRACT | Coordinating sub-agents in isolated worktrees for large features | 2.0.0 |
+| `systematic-debugging` | Structured root-cause investigation with hypothesis falsification | NO FIX WITHOUT ROOT CAUSE IDENTIFIED | Debugging failing tests, unexpected behavior, and regressions | 2.0.0 |
+| `api-contract-designer` | OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data | NO INTEGRATION WITHOUT A SIGNED CONTRACT | Designing FE-BE integration contracts and generating types | 2.0.0 |
+| `qa-and-edge-case-tester` | Automated test generation, edge-case analysis, boundary testing | NO TEST WITHOUT A STATED FAILURE MODE | Generating tests, analyzing edge cases, suppressing false positives | 2.0.0 |
 | `bug-hunting` | Deep security vulnerability discovery | NO ATTACK SURFACE WITHOUT INTENTIONAL PROBING |
 
 ### Context & Memory
@@ -67,7 +83,37 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `cost-optimizer` | Model routing (Haiku/Sonnet), budget tracking, prompt caching | ECC | LLM API cost control |
 | `grilling` | Adversarial stress-test of plans/designs | mattpocock | Plan validation, risk identification |
 | `handoff` | Agent-to-agent and session-to-session context transfer | mattpocock | Context rotation, multi-agent coordination |
+
+### Batch 1 — New Skills (v2.1)
+
+| Skill | Domain | Purpose |
+|-------|--------|---------|
+| `database-migrations` | Coding & Engineering | Safe schema changes with rollback, backfill, and zero-downtime deployment |
+| `backend-patterns` | Coding & Engineering | Hexagonal, layered, CQRS, repository, saga, event sourcing implementation patterns |
+| `refactor-and-cleanup` | Coding & Engineering | Dead code removal, duplication elimination, naming, complexity reduction |
+| `subagent-driven-development` | Orchestration & Frameworks | Parallel sub-agent feature development with worktree isolation and shared contracts |
+| `systematic-debugging` | Orchestration & Frameworks | Structured root-cause investigation with hypothesis falsification |
 | `agent-router` | Single entry point: maps request → agent → skill chain | New (bootstrap) | First skill to load; routes all work |
+
+### Batch 2 — New Skills (v2.1)
+
+| Skill | Domain | Purpose |
+|-------|--------|---------|
+| `ui-component-builder` | Frontend & UI | Build accessible, modular React/Vue/Tailwind components with design tokens |
+| `design-system-auditor` | Frontend & UI | Audit UI code for design consistency, responsiveness, performance, and WCAG |
+| `animation-and-interactions` | Frontend & UI | CSS/Framer Motion animations, micro-interactions, and visual polish |
+| `api-contract-designer` | Specialized Integration | OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data |
+| `qa-and-edge-case-tester` | Specialized Integration | Automated test generation, edge-case analysis, boundary testing |
+
+### Batch 3 — New Skills (v2.1)
+
+| Skill | Domain | Purpose |
+|-------|--------|---------|
+| `architecture-decision-records` | Architecture & Specialized | Draft, evaluate, and maintain ADRs and trade-off matrices |
+| `secops-and-vulnerability-scanner` | Security & Specialized | Static analysis, OWASP Top 10, dependency audit, secrets detection |
+| `performance-profiler-and-tuner` | Performance & Specialized | Bottleneck analysis, memory leak detection, query optimization, profiling |
+| `context-compressor-and-pruner` | Orchestration & Specialized | Context window management, summarization, stale context pruning |
+| `agent-evaluator-and-benchmark` | Orchestration & Specialized | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis |
 
 ### Plugins
 

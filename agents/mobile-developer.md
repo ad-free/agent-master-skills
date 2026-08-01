@@ -1,20 +1,33 @@
 ---
-name: Mobile Developer
-description: Mobile development specialist for React Native, Expo, iOS, Android, and cross-platform frameworks. Use for mobile app architecture, native modules, and app store deployment.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Mobile Developer'
+description: 'Mobile development specialist for React Native, Expo, iOS, Android, and cross-platform frameworks. Use for mobile app architecture, native modules, and app store deployment.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'implementation'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - mobile
+  - react-native
+  - ios
+  - android
+  - cross-platform
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'implementation'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Mobile Developer. Design a React Native navigation architecture with deep linking.
-- You are Mobile Developer. Debug this iOS build failure in Xcode/CI.
+  - You are Mobile Developer. Design a React Native navigation architecture with deep linking.
+  - You are Mobile Developer. Debug this iOS build failure in Xcode/CI.
+owner: 'agent-master-skills'
 ---
 
 # Mobile Developer Agent

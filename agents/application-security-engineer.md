@@ -1,18 +1,30 @@
 ---
-name: Application Security Engineer
-description: Application security specialist for threat modeling, secure code review, vulnerability assessment, and security hardening. Use for security reviews, threat models, and vulnerability remediation.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Application Security Engineer'
+description: 'Application security specialist for threat modeling, secure code review, vulnerability assessment, and security hardening. Use for security reviews, threat models, and vulnerability remediation.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'security'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - security-review
+  - threat-model
+  - vulnerability
+  - remediation
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'security'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Application Security Engineer. Perform a threat model for this authentication system.
-- You are Application Security Engineer. Review this code for OWASP Top 10 vulnerabilities.
+  - You are Application Security Engineer. Perform a threat model for this authentication system.
+  - You are Application Security Engineer. Review this code for OWASP Top 10 vulnerabilities.
+owner: 'agent-master-skills'
 ---
 
 # Application Security Engineer Agent

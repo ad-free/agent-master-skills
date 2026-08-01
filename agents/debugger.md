@@ -1,18 +1,30 @@
 ---
-name: Debugger
-description: "Systematic root-cause investigator for test failures, bugs, and unexpected behavior. Uses 4-phase methodology: Reproduce → Isolate → Hypothesize → Verify. Use when tests fail, bugs reported, or behavior is unexpected."
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Debugger'
+description: 'Systematic root-cause investigator for test failures, bugs, and unexpected behavior. Uses 4-phase methodology: Reproduce → Isolate → Hypothesize → Verify. Use when tests fail, bugs reported, or behavior is unexpected.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'debugging'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 15
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - test-failure
+  - bug-report
+  - unexpected-behavior
+  - regression
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'debugging'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Debugger. This test fails intermittently — find the root cause.
-- You are Debugger. The API returns 500 on POST /orders but works on GET — investigate.
+  - You are Debugger. This test fails intermittently — find the root cause.
+  - You are Debugger. The API returns 500 on POST /orders but works on GET — investigate.
+owner: 'agent-master-skills'
 ---
 
 # Debugger Agent

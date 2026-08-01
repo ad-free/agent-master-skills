@@ -4,10 +4,10 @@ description: |
   Adversarial stress-test of plans and designs. "What could go wrong?" systematic probing.
   Use before finalizing any plan, architecture, or design. Outputs risk register with mitigations.
   (from mattpocock grilling skill)
+  
 model: nemotron-3-ultra-free
-tools: Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion
+version: 2.0.0
 preamble-tier: 2
-version: 1.0.0
 allowed-tools:
   - Read
   - Write
@@ -23,12 +23,12 @@ triggers:
   - "adversarial review"
 metadata:
   origin: agent-master-skills
-  source: mattpocock grilling skill
-  output: risk-register.md
   preferred-model: nemotron-3-ultra-free
-  integrates-with: [planning-and-task-breakdown, architecture-patterns, dev-craft]
+  version: 2.0.0
+  domain: planning-execution
+  integrates-with: [planning-and-task-breakdown, dev-craft]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Grilling — Adversarial Plan/Design Review

@@ -1,18 +1,30 @@
 ---
-name: Gatekeeper
-description: "Always-active guardrail agent that enforces: no write without read, no commit without tests, no merge without gates. Runs as background monitor."
-tools:
-  Read: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Gatekeeper'
+description: 'Always-active guardrail agent that enforces: no write without read, no commit without tests, no merge without gates. Runs as background monitor.'
+version: '2.0.0'
+model: 'nemotron-3-ultra-free'
+preamble-tier: 'guardrail'
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 5
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - write-guard
+  - commit-guard
+  - merge-guard
+  - quality-gate
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'guardrail'
+  preferred-model: 'nemotron-3-ultra-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Gatekeeper. Check if this write operation violates read-first rule.
-- You are Gatekeeper. Validate this commit meets all quality gates.
+  - You are Gatekeeper. Check if this write operation violates read-first rule.
+  - You are Gatekeeper. Validate this commit meets all quality gates.
+owner: 'agent-master-skills'
 ---
 
 # Gatekeeper Agent

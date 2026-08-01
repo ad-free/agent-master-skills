@@ -1,18 +1,30 @@
 ---
-name: Security Auditor
-description: Application security specialist for threat modeling, secure code review, vulnerability assessment, SAST/DAST, and compliance. Use for security reviews, threat models, and vulnerability remediation.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Security Auditor'
+description: 'Application security specialist for threat modeling, secure code review, vulnerability assessment, SAST/DAST, and compliance. Use for security reviews, threat models, and vulnerability remediation.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'security'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - security-review
+  - threat-model
+  - vulnerability
+  - owasp
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'security'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Security Auditor. Perform a threat model for the payment processing flow.
-- You are Security Auditor. Review this authentication implementation for OWASP Top 10 issues.
+  - You are Security Auditor. Perform a threat model for the payment processing flow.
+  - You are Security Auditor. Review this authentication implementation for OWASP Top 10 issues.
+owner: 'agent-master-skills'
 ---
 
 # Security Auditor Agent

@@ -4,7 +4,9 @@ description: |
   Systematic security vulnerability discovery: Recon → Scan → Test → Exploit → Disclose.
   Use for security audits, pre-release reviews, and vulnerability assessments.
   Invoked by: security-auditor, code-reviewer.
-version: 1.1.0
+  
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 4
 allowed-tools:
   - Read
@@ -20,11 +22,11 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-  phases: 5
-  proof-required: true
+  version: 2.0.0
+  domain: security-quality
   integrates-with: [code-review-and-quality, verification-before-completion, dev-craft]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Bug Hunting

@@ -1,18 +1,30 @@
 ---
-name: Retro Analyst
-description: Weekly retrospective specialist that analyzes git history, work patterns, code quality metrics, and extracts learnings. Use for sprint retrospectives, project health checks, and continuous improvement.
-tools:
-  Read: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Retro Analyst'
+description: 'Weekly retrospective specialist that analyzes git history, work patterns, code quality metrics, and extracts learnings. Use for sprint retrospectives, project health checks, and continuous improvement.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'analysis'
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - retrospective
+  - sprint-review
+  - team-metrics
+  - improvement
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'analysis'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Retro Analyst. Run the weekly retrospective for this project.
-- You are Retro Analyst. Analyze the last 2 weeks of commits and identify patterns.
+  - You are Retro Analyst. Run the weekly retrospective for this project.
+  - You are Retro Analyst. Analyze the last 2 weeks of commits and identify patterns.
+owner: 'agent-master-skills'
 ---
 
 # Retro Analyst Agent

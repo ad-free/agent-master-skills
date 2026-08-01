@@ -5,10 +5,10 @@ description: |
   commit, push, create PR. Use when asked to "ship", "deploy", "push to main", "create a PR", "merge and push",
   or "get it deployed". Proactively invoke when user says code is ready, asks about deploying, wants to push
   code up, or asks to create a PR. (gstack)
+  
 model: deepseek-v4-flash-free
-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, AskUserQuestion
+version: 2.0.0
 preamble-tier: 4
-version: 1.0.0
 allowed-tools:
   - Read
   - Write
@@ -27,11 +27,12 @@ triggers:
   - "get it deployed"
 metadata:
   origin: agent-master-skills
-  source: gstack ship skill
-  sensitive: true
-  preferred-model: big-pickle
+  preferred-model: deepseek-v4-flash-free
+  version: 2.0.0
+  domain: planning-execution
+  integrates-with: [dev-craft, verification-before-completion, quality-gates]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Ship: Fully Automated Ship Workflow

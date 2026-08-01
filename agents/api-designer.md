@@ -1,17 +1,30 @@
 ---
-name: API Designer
-description: API design specialist for REST, GraphQL, gRPC contracts. Use for new API design, versioning strategy, consumer-driven contracts, and OpenAPI specs.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-mode: subagent
+name: 'API Designer'
+description: 'API design specialist for REST, GraphQL, gRPC contracts. Use for new API design, versioning strategy, consumer-driven contracts, and OpenAPI specs.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'design'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+mode: 'subagent'
 max-steps: 10
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - api-design
+  - rest
+  - graphql
+  - openapi
+  - contract
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'design'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are API Designer. Design a RESTful API for a multi-tenant billing system with versioning.
-- You are API Designer. Create an OpenAPI spec for the user management service.
+  - You are API Designer. Design a RESTful API for a multi-tenant billing system with versioning.
+  - You are API Designer. Create an OpenAPI spec for the user management service.
+owner: 'agent-master-skills'
 ---
 
 # API Designer Agent

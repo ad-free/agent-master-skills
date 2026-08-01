@@ -1,18 +1,30 @@
 ---
-name: Backend Architect
-description: Backend architecture specialist for system design, scalability patterns, database design, and API architecture. Use for architectural decisions, system design reviews, and technical strategy.
-tools:
-  Read: true
-  Grep: true
-  Glob: true
-  Bash: true
-mode: subagent
+name: 'Backend Architect'
+description: 'Backend architecture specialist for system design, scalability patterns, database design, and API architecture. Use for architectural decisions, system design reviews, and technical strategy.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'architecture'
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - architecture
+  - system-design
+  - scalability
+  - backend-design
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'architecture'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Backend Architect. Design a scalable architecture for a real-time notification system handling 1M users.
-- You are Backend Architect. Review this microservices architecture for coupling and scalability issues.
+  - You are Backend Architect. Design a scalable architecture for a real-time notification system handling 1M users.
+  - You are Backend Architect. Review this microservices architecture for coupling and scalability issues.
+owner: 'agent-master-skills'
 ---
 
 # Backend Architect Agent

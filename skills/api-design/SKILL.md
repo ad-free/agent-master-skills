@@ -1,14 +1,17 @@
 ---
 name: api-design
-description: "Use when designing a new API surface or changing an existing one \u2014\
-  \ choosing REST vs GraphQL vs gRPC, versioning strategy, auth/rate-limiting\
-  \ shape. Do NOT use for implementing an endpoint inside an already-decided API shape\
-  \ (that's plain BUILD work). Do NOT use for reviewing an existing API's security\
-  \ posture after the fact (see bug-hunting)."
+description: "Use when designing a new API surface or changing an existing one — choosing REST vs GraphQL vs gRPC, versioning strategy, auth/rate-limiting shape. Do NOT use for implementing an endpoint inside an already-decided API shape (that's plain BUILD work). Do NOT use for reviewing an existing API's security posture after the fact (see bug-hunting)."
 model: big-pickle
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 3
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
 triggers:
   - "design api"
   - "api contract"
@@ -16,13 +19,13 @@ triggers:
   - "rest api"
   - "graphql"
 metadata:
-  origin: adapted from ECC and addyosmani/agent-skills
-    (api-and-interface-design)
+  origin: agent-master-skills
   preferred-model: big-pickle
-  version: 1.0.0
-
+  version: 2.0.0
+  domain: specialized-engineering
+  integrates-with: [dev-craft, planning-and-task-breakdown, bug-hunting]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # api-design

@@ -1,14 +1,20 @@
 ---
 name: observability-engineering
-description: "Use when deciding what to log, measure, trace, and alert on for a service\
-  \ \u2014 the observability contract. Do NOT use for \"is this service secure\" (see\
-  \ bug-hunting) or \"is this hardened\" (see dev-craft HARDEN, which invokes this\
-  \ skill). Do NOT use for implementing the instrumentation itself (that's BUILD work\
-  \ once the contract is decided)."
+description: |
+  Use when deciding what to log, measure, trace, and alert on for a service — the observability contract.
+  Do NOT use for "is this service secure" (see bug-hunting) or "is this hardened" (see dev-craft HARDEN, which invokes this skill).
+  Do NOT use for implementing the instrumentation itself (that's BUILD work once the contract is decided).
 model: nemotron-3-ultra-free
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 3
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
 triggers:
   - "observability"
   - "monitoring"
@@ -16,12 +22,13 @@ triggers:
   - "telemetry"
   - "instrument"
 metadata:
-  origin: adapted from ECC and addyosmani/agent-skills
-  version: 1.0.0
+  origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-
+  version: 2.0.0
+  domain: specialized-engineering
+  integrates-with: [dev-craft, bug-hunting, quality-gates]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # observability-engineering

@@ -5,10 +5,10 @@ description: |
   Reviews code changes with full 8-axis audit, security deep-dive, performance analysis,
   and architecture alignment. Use when a PR/MR is ready for peer review.
   NOT auto-run — human must invoke explicitly.
+  
 model: big-pickle
-tools: Read, Grep, Glob, Bash, AskUserQuestion
+version: 2.0.0
 preamble-tier: 3
-version: 1.0.0
 allowed-tools:
   - Read
   - Grep
@@ -22,11 +22,12 @@ triggers:
   - "mr-pr-review"
 metadata:
   origin: agent-master-skills
-  review-depth: full
-  preferred-model: nemotron-3-ultra-free
-  integrates-with: [code-review-and-quality, quality-gates, bug-hunting, verification-before-completion]
+  preferred-model: big-pickle
+  version: 2.0.0
+  domain: quality-safety
+  integrates-with: [code-review-and-quality, quality-gates]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # MR/PR Review Skill

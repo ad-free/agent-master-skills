@@ -1,27 +1,33 @@
 ---
 name: testing-strategies
-description: "Use when deciding WHAT kind of test to write for a change \u2014 unit\
-  \ vs integration vs e2e vs contract vs property-based, and what failure mode each\
-  \ test covers. Do NOT use for \"did tests pass\" (see verification-before-completion)\
-  \ or \"review my test coverage\" (see code-review-and-quality). Do NOT use for writing\
-  \ the test code itself (that's BUILD work once the test type/failure-mode\
-  \ is decided)."
+description: |
+  Use when deciding WHAT kind of test to write for a change — unit vs integration vs e2e vs contract vs property-based, and what failure mode each test covers.
+  Do NOT use for "did tests pass" (see verification-before-completion) or "review my test coverage" (see code-review-and-quality).
+  Do NOT use for writing the test code itself (that's BUILD work once the test type/failure-mode is decided).
 model: nemotron-3-ultra-free
-version: 1.0.0
+version: 2.0.0
 preamble-tier: 3
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+  - AskUserQuestion
 triggers:
   - "test strategy"
   - "testing approach"
   - "what to test"
   - "test plan"
 metadata:
-  origin: adapted from ECC and addyosmani/agent-skills
-  version: 1.0.0
+  origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-
+  version: 2.0.0
+  domain: specialized-engineering
+  integrates-with: [dev-craft, ui-craft, debugging-and-error-recovery, verification-before-completion]
+  source-enhancements: v2.0.0 Master Template alignment
 ---
-
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # testing-strategies

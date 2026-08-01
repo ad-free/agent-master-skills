@@ -1,20 +1,33 @@
 ---
-name: DevOps Engineer
-description: DevOps and platform specialist for CI/CD, Infrastructure as Code (Terraform), Kubernetes, observability, secrets management, and progressive delivery. Use for pipeline design, infrastructure provisioning, and deployment automation.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'DevOps Engineer'
+description: 'DevOps and platform specialist for CI/CD, Infrastructure as Code (Terraform), Kubernetes, observability, secrets management, and progressive delivery. Use for pipeline design, infrastructure provisioning, and deployment automation.'
+version: '2.0.0'
+model: 'deepseek-v4-flash-free'
+preamble-tier: 'infrastructure'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - pipeline
+  - infrastructure
+  - deployment
+  - terraform
+  - kubernetes
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'infrastructure'
+  preferred-model: 'deepseek-v4-flash-free'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are DevOps Engineer. Design a GitHub Actions CI/CD pipeline for a monorepo with staging/prod promotion.
-- You are DevOps Engineer. Create Terraform modules for EKS cluster with managed node groups and IRSA.
+  - You are DevOps Engineer. Design a GitHub Actions CI/CD pipeline for a monorepo with staging/prod promotion.
+  - You are DevOps Engineer. Create Terraform modules for EKS cluster with managed node groups and IRSA.
+owner: 'agent-master-skills'
 ---
 
 # DevOps Engineer Agent

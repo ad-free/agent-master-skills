@@ -1,20 +1,31 @@
 ---
-name: Implementer
-description: Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Implementer'
+description: 'Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'implementation'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - plan-exists
+  - slice-assigned
+  - tdd-workflow
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'implementation'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Implementer. Implement the user authentication slice per PLAN.md task 2.1.
-- You are Implementer. Build the API endpoint for payment processing with tests.
+  - You are Implementer. Implement the user authentication slice per PLAN.md task 2.1.
+  - You are Implementer. Build the API endpoint for payment processing with tests.
+owner: 'agent-master-skills'
 ---
 
 # Implementer Agent

@@ -15,8 +15,8 @@ AGENTS_DIR = os.path.join(ROOT, "agents")
 
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
 
-REQUIRED = ["name", "description", "model", "tools", "mode", "max-steps", "samplePrompts", "version", "owner"]
-OPTIONAL = ["color"]
+REQUIRED = ["name", "description", "model", "allowed-tools", "mode", "max-steps", "samplePrompts", "version", "owner"]
+OPTIONAL = ["color", "tools"]
 
 # Free models available in OpenCode Zen
 FREE_MODELS = {
@@ -98,17 +98,23 @@ def validate_file(path):
     if model not in FREE_MODELS:
         return False, f"model '{model}' not in known free models: {', '.join(sorted(FREE_MODELS))}"
 
-    # tools validation
-    tools = meta.get('tools')
-    if isinstance(tools, str):
-        tool_list = [x.strip() for x in tools.split(',') if x.strip()]
-    elif isinstance(tools, list):
-        tool_list = tools
+    # tools/allowed-tools validation (v2.0.0 uses allowed-tools, legacy uses tools)
+    tool_list = []
+    allowed_tools = meta.get('allowed-tools')
+    legacy_tools = meta.get('tools')
+    if isinstance(allowed_tools, list):
+        tool_list = allowed_tools
+    elif isinstance(allowed_tools, str):
+        tool_list = [x.strip() for x in allowed_tools.split(',') if x.strip()]
+    elif isinstance(legacy_tools, list):
+        tool_list = legacy_tools
+    elif isinstance(legacy_tools, str):
+        tool_list = [x.strip() for x in legacy_tools.split(',') if x.strip()]
     else:
-        return False, "tools must be a comma-separated string or list"
+        return False, "allowed-tools or tools must be a comma-separated string or list"
     for t in tool_list:
         if t not in ALLOWED_TOOLS:
-            return False, f"tools contains unknown tool: {t} (allowed: {', '.join(sorted(ALLOWED_TOOLS))})"
+            return False, f"allowed-tools contains unknown tool: {t} (allowed: {', '.join(sorted(ALLOWED_TOOLS))})"
 
     # max-steps validation
     max_steps = meta.get('max-steps')

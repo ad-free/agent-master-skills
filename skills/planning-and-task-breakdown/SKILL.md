@@ -1,10 +1,12 @@
 ---
 name: planning-and-task-breakdown
 description: |
-  Decompose specs into ordered, verifiable tasks with acceptance criteria.
-  Use when you have a spec (PRODUCT.md/DOMAIN.md) and need implementable units.
-  Invoked by: planner → implementer.
-version: 1.1.0
+  Decompose specs into ordered, verifiable tasks with DAG-based dependency
+  mapping and Gherkin/Given-When-Then acceptance criteria. Use when you have a
+  spec (PRODUCT.md/DOMAIN.md) and need implementable units. Invoked by: planner
+  → implementer.
+model: nemotron-3-ultra-free
+version: 2.0.0
 preamble-tier: 2
 allowed-tools:
   - Read
@@ -19,33 +21,28 @@ triggers:
   - "break down this task"
   - "create implementation plan"
   - "split this into tasks"
+  - "dependency map"
+  - "acceptance criteria"
 metadata:
   origin: agent-master-skills
   output: PLAN.md
   preferred-model: nemotron-3-ultra-free
+  version: 2.0.0
+  domain: planning
   integrates-with: [product-thinking, project-discovery, dev-craft, ui-craft]
 ---
 
-TOKEN CEILING: ~10K tokens. If skill exceeds, extract sections to references/.
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # Planning & Task Breakdown
 
-## Overview
+## Relationship to existing skills
 
-Decompose work into small, verifiable tasks with explicit acceptance criteria.
-Good task breakdown = reliable agent work.
-Every task should be small enough to implement, test, and verify in a single focused session.
-
-### Input Sources
-
-This skill can consume:
-- PRODUCT.md from `product-thinking` — structured product spec with modules, features, priorities
-- DOMAIN.md from `project-discovery` — extracted domain model with entities and dependencies
-- Spec text or user description — free-form requirements
-- Existing task list — refine and reorder
-
-If PRODUCT.md or DOMAIN.md is available, load it first to get the module/feature structure.
-If the input is still vague, suggest running `product-thinking` first.
+- `product-thinking` — produces PRODUCT.md that feeds into this skill's Step 0
+- `project-discovery` — produces DOMAIN.md that feeds into this skill's Step 0
+- `dev-craft` — consumes PLAN.md as input for implementation
+- `ui-craft` — consumes PLAN.md for frontend implementation
+- `grilling` — adversarial review of the plan before implementation
 
 ## When to Use
 
@@ -57,158 +54,58 @@ If the input is still vague, suggest running `product-thinking` first.
 
 **When NOT to use:** Single-file changes with obvious scope, or spec already has well-defined tasks.
 
-## Invocation Protocol
+## When NOT to Use
 
-**Load when:** Starting new feature, unclear scope, or task feels too large
-**Invoke via:** `skill(name="planning-and-task-breakdown")`
-**Resume to:** Feed plan into dev-craft or ui-craft ALIGN phase
+- The task is a single file with obvious scope
+- The spec is vague and hasn't been refined yet (run `product-thinking` first)
+- You're implementing without a plan (violates the Iron Law)
 
-## The Iron Law
+## Workflow
 
-```
-NO IMPLEMENTATION WITHOUT A WRITTEN PLAN
-```
+### Phase 1: EXTRACT — Gather requirements from the spec
 
-"I'll figure it out as I go" = tangled mess and rework.
+1. Read the spec (PRODUCT.md, DOMAIN.md, or user description)
+2. Extract every capability, constraint, and non-functional rule as a requirement row
+3. Preserve priority markers verbatim (`[REQUIRED P1]`, `🔴`, `G1/G3`, `⚪ [FUTURE PHASE]`)
+4. Assign each requirement a stable ID: `REQ-001`, `REQ-002`, ...
+5. Capture concrete constraints as requirements, not prose
 
-## The Planning Process
+**Exit criterion:** All requirements extracted with stable IDs and priorities.
 
-### Step 0: Image Analysis (if screenshot provided)
+### Phase 2: MAP — Build the DAG dependency graph
 
-Before planning, analyze any visual reference material:
-
-```bash
-python ~/analyze.py --image <path> --format md
-```
-
-Use output to enrich requirements:
-- Add detected components to task list
-- Add colors to design token tasks
-- Add layout to structure tasks
-- Use complexity score for task sizing
+Map what depends on what using a strict DAG (Directed Acyclic Graph):
 
 ```
-VISUAL REFERENCE ANALYSIS:
-- Layout: [detected layout type]
-- Components: [detected components]
-- Colors: [extracted palette]
-- Mode: [light/dark]
-→ Added to requirements context.
+DAG STRUCTURE:
+
+nodes = [each task]
+edges = [dependency relationships: task A → task B means A must complete before B]
+
+Rules:
+- No circular dependencies (DAG must be acyclic)
+- Every task has at most one "primary" dependency chain
+- Cross-cutting tasks (shared utilities) are roots with no upstream deps
+- Leaf nodes are the final deliverables
 ```
 
-### Step 1: Enter Plan Mode
+**DAG construction process:**
 
-Before writing any code, operate in read-only mode:
+1. List all tasks from Phase 1
+2. For each task, identify its direct dependencies (what must be done first)
+3. Detect cycles — if A depends on B and B depends on A, split or reorder
+4. Topological sort — order tasks so all dependencies come before dependents
+5. Assign phases based on dependency depth:
+   - Phase 1: Root tasks (no dependencies)
+   - Phase 2: Tasks that depend only on Phase 1
+   - Phase 3: Tasks that depend on Phase 1 + Phase 2
+   - etc.
 
-- Read the spec and relevant codebase sections
-- Identify existing patterns and conventions
-- Map dependencies between components
-- Note risks and unknowns
+**Exit criterion:** All tasks ordered in a valid DAG with no cycles, phases assigned.
 
-**Do NOT write code during planning.**
-Output is a plan document, not implementation.
+### Phase 3: DECOMPOSE — Break tasks into vertical slices
 
-### Step 2: Collect Everything
-
-Gather from prompt/file:
-
-```
-COLLECTED:
-- Core requirement: [what user wants]
-- Constraints: [time, tech, scope]
-- Assumptions: [what you think they mean]
-- Gaps: [what's missing]
-```
-
-**Sources:**
-- User's prompt or message
-- Attached files (specs, designs, docs)
-- Existing codebase (if any)
-- External references (URLs, docs)
-
-### Validate Before Trusting
-
-Before entering upstream consumption mode, verify the document is complete:
-
-- [ ] PRODUCT.md: All 6 sections populated (Domain, Scope, Features, Priority, Questions, Glossary)
-- [ ] DOMAIN.md: All modules have priorities and dependencies
-- [ ] No placeholder text ("...", "TBD", empty tables)
-- [ ] Features have explicit priorities (not all UNKNOWN)
-
-If validation fails → Fall back to normal planning mode with user questions.
-Only the sections that are incomplete need clarification — don't re-ask about documented sections.
-
-**Upstream Consumption Mode:**
-
-When PRODUCT.md or DOMAIN.md is available:
-
-1. **Extract modules directly** from the upstream document
-2. **Skip the "Ask Questions" loop** (already answered in product-thinking)
-3. **Go straight to dependency mapping and slicing**
-4. **Only ask questions about gaps**, not about already-documented features
-
-Example extract from PRODUCT.md:
-```
-Module: Employee (G1) — CRUD, documents, org chart → depends on Auth
-Module: Attendance (G1) — clock in/out, shifts, overtime → depends on Employee
-```
-
-This avoids redundant questioning and keeps context focused on planning structure.
-
-### Step 3: Verify Assumptions
-
-Check against reality:
-
-```
-VERIFIED:
-- Feasible: [yes/no with reasoning]
-- Existing patterns: [what's already there]
-- Dependencies: [available/needed]
-- Risk areas: [what could go wrong]
-```
-
-### Step 4: Ask Questions
-
-Ask ONE question at a time with best guess:
-
-```
-QUESTION: [single question]
-YOUR GUESS: [what you think]
-WHY: [reasoning]
-OPTIONS: [if applicable]
-```
-
-**Stop asking when:**
-- Core requirement is clear
-- Scope is defined
-- Major decisions made
-- You can write the plan
-
-### Step 5: Identify Dependency Graph
-
-Map what depends on what:
-
-```
-Database schema
-    │
-    ├── API models/types
-    │       │
-    │       ├── API endpoints
-    │       │       │
-    │       │       └── Frontend API client
-    │       │               │
-    │       │               └── UI components
-    │       │
-    │       └── Validation logic
-    │
-    └── Seed data / migrations
-```
-
-Implementation order: bottom-up, build foundations first.
-
-### Step 6: Slice Vertically
-
-Build one complete feature path at a time.
+Each task must be a vertical slice (schema + API + UI for fullstack, or the minimal complete unit for single-domain):
 
 **Bad (horizontal):**
 ```
@@ -223,12 +120,68 @@ Task 4: Connect everything
 Task 1: User can create account (schema + API + UI)
 Task 2: User can log in (auth schema + API + UI)
 Task 3: User can create task (task schema + API + UI)
-Task 4: User can view task list (query + API + UI)
 ```
 
-Each slice delivers working, testable functionality.
+**Exit criterion:** All tasks are vertical slices, no horizontal layering.
 
-### Step 7: Write Tasks
+### Phase 4: CRITERIA — Generate Gherkin acceptance criteria for every sub-task
+
+Every sub-task must have explicit Given-When-Then acceptance criteria:
+
+```gherkin
+Given [precondition/context]
+When [action/event]
+Then [expected outcome/observable behavior]
+And [additional observable behavior]
+```
+
+**Rules for Gherkin criteria:**
+- Every task must have at least one Given-When-Then scenario
+- Given must state the initial state/context (not the action)
+- When must be a single, testable action
+- Then must be an observable, verifiable outcome (not an implementation detail)
+- And clauses add additional observable outcomes
+- No "and the system should work" — every Then must be testable
+
+**Example:**
+```gherkin
+Task: User can create account
+
+Given I am on the registration page
+When I submit valid email, password, and name
+Then a new account is created in the database
+And I am redirected to the login page
+And a welcome email is sent to the registered address
+
+Given I am on the registration page
+When I submit with an already-registered email
+Then I see an error message "Email already in use"
+And no account is created
+```
+
+**Exit criterion:** Every task has at least one Given-When-Then scenario that is testable and observable.
+
+### Phase 5: VALIDATE — Verify the plan
+
+1. **Traceability check:** Every P1/G1 requirement from the spec is traced to at least one task
+2. **DAG check:** No circular dependencies, all dependencies are ordered correctly
+3. **Slice check:** Every task is a vertical slice (not horizontal layering)
+4. **Criteria check:** Every task has Given-When-Then acceptance criteria
+5. **Sizing check:** No task exceeds L size (5-8 files); break down XL tasks
+6. **Checkpoint check:** Verification checkpoints exist every 2-3 tasks
+7. **Dependency check:** No task starts before its dependencies are complete
+
+**Exit criterion (HARD GATE):** All validation checks pass. P1/G1 requirements 100% traced. DAG is valid. Every task has Gherkin criteria.
+
+## The Iron Law
+
+```
+NO IMPLEMENTATION WITHOUT A WRITTEN PLAN
+```
+
+"I'll figure it out as I go" = tangled mess and rework.
+
+## Task Template
 
 Each task follows this structure:
 
@@ -239,16 +192,21 @@ Each task follows this structure:
 
 **Description:** One paragraph explaining what this task accomplishes.
 
-**Acceptance criteria:**
-- [ ] [Specific, testable condition]
-- [ ] [Specific, testable condition]
+**DAG dependency:** [Task numbers this depends on, or "None"]
+**DAG dependents:** [Task numbers that depend on this, or "None"]
+**Phase:** [1-5 based on DAG depth]
+
+**Acceptance criteria (Given-When-Then):**
+```gherkin
+Given [precondition]
+When [action]
+Then [observable outcome]
+```
 
 **Verification:**
 - [ ] Tests pass: `npm test -- --grep "feature"`
 - [ ] Build succeeds: `npm run build`
 - [ ] Manual check: [what to verify]
-
-**Dependencies:** [Task numbers or "None"]
 
 **Files likely touched:**
 - `src/file.ts`
@@ -257,97 +215,11 @@ Each task follows this structure:
 **Estimated scope:** [XS/L]
 ```
 
-> **REQ-IDs are mandatory for spec-driven work.** Every task must cite the source-spec
-> requirement row(s) it satisfies. A task with no `Requirement refs:` is a symptom that
-> the plan is being written from memory, not from the spec — the exact failure mode that
-> drops P1 requirements. If you cannot cite a REQ-ID, either the requirement was never
-> extracted (go back to Step 0/Step 2) or the task is out of scope.
+> **REQ-IDs are mandatory for spec-driven work.** Every task must cite the source-spec requirement row(s) it satisfies. A task with no `Requirement refs:` is a symptom that the plan is being written from memory, not from the spec — the exact failure mode that drops P1 requirements. If you cannot cite a REQ-ID, either the requirement was never extracted (go back to Phase 1) or the task is out of scope.
 
-### Step 8: Order and Checkpoint
+> **DAG dependency is mandatory.** Every task must list its direct dependencies. A task with no `DAG dependency:` entry that depends on another task is a planning error — it will be built out of order.
 
-Arrange tasks so:
-
-1. Dependencies satisfied (foundation first)
-2. Each task leaves system in working state
-3. Verification checkpoints every 2-3 tasks
-4. High-risk tasks early (fail fast)
-
-Add explicit checkpoints:
-
-```markdown
-## Checkpoint: After Tasks 1-3
-- [ ] All tests pass
-- [ ] Application builds
-- [ ] Core user flow works end-to-end
-- [ ] Human review before proceeding
-```
-
-### Step 9: Design Review
-
-Present design in sections:
-
-1. **Architecture** — high-level structure
-2. **Components** — what we're building
-3. **Data Flow** — how data moves
-4. **Error Handling** — what happens when things fail
-5. **Testing** — how we verify it works
-
-After each section: "Does this look right so far?"
-Wait for approval before continuing.
-
-### Step 9.5: Spec Coverage Self-Review (COVERAGE GATE)
-
-This is the most important step for spec-driven work. A plan can look complete and
-still omit 6 P1 requirements. Do this review yourself — do not delegate it.
-
-**1. Extract requirements from the source spec (exhaustive, literal):**
-   - Read the spec line by line. For every capability, constraint, or non-functional
-     rule, write one requirement row. Preserve the spec's own priority markers
-     (`[REQUIRED P1]`, `🔴`, `G1/G3`, `⚪ [FUTURE PHASE]`) verbatim.
-   - Capture *concrete* constraints as requirements, not prose
-     (e.g. "JWT payload = only user_id + company_id + permission_version" → a row).
-   - If a source spec was not provided, skip this step and note it.
-
-2. **Assign each requirement a stable ID:** `REQ-001`, `REQ-002`, ...
-
-3. **Trace every requirement to a task.** Each REQ-ID must map to ≥1 task whose
-   `Requirement refs:` and acceptance criteria verify it.
-
-4. **Build the traceability matrix** and save to `requirements.md` (consumed by
-   dev-craft/ui-craft as the COVERAGE GATE artifact):
-
-   ```markdown
-   # Requirements Traceability Matrix — <feature>
-
-   Source spec: <path> (<N> lines)
-   Extracted: <M> requirements (P1: x, G1: y, G2: z, Future: w)
-
-   | REQ-ID | Priority | Requirement (verbatim clause) | Traced Task(s) | Status |
-   |--------|----------|-------------------------------|----------------|--------|
-   | REQ-001 | P1 | employee_code via PG SEQUENCE | Task 1 | ✅ |
-   | REQ-011 | P1 | cross-day shifts, UTC+7 display | Task 4 | ⚠️ GAP |
-   | REQ-027 | G1 | leave: full/hourly + carry-forward | — | ❌ GAP |
-
-   ## Gaps
-   - REQ-011: no task covers UTC+7 presentation conversion
-   - REQ-027: Leave module absent from plan
-   ```
-
-5. **Re-read the spec against the matrix.** For each section, confirm a row exists and
-   each row maps to a task. Search for skipped priority markers:
-   `grep -nE "REQUIRED P1|🔴|G1|must implement|Must have" <spec>`.
-
-6. **Resolve gaps before writing the plan:**
-   - Every P1 / G1 requirement **must** have a traced task. Add missing tasks.
-   - G2/G3 gaps may be deferred **only with explicit human acknowledgement**.
-   - Do NOT write the final plan (Step 10) until P1/G1 coverage is 100%.
-
-**Exit criterion (HARD GATE):** 100% of P1 + G1 requirements traced to a task with
-acceptance criteria. This gate is what prevents "pipeline ran, requirements missing."
-
-### Step 10: Write the Plan
-
-Save to `docs/YYYY-MM-DD-feature-name.md`.
+> **Gherkin criteria are mandatory.** Every task must have at least one Given-When-Then scenario. A task with no acceptance criteria cannot be verified and should not be implemented.
 
 ## Task Sizing
 
@@ -367,144 +239,82 @@ Save to `docs/YYYY-MM-DD-feature-name.md`.
 
 ## Module-Level Planning
 
-For large projects (3+ modules), plan at module level first instead of a flat task list:
+For large projects (3+ modules), plan at module level first:
 
 1. List all modules with priorities
-2. Map dependencies between modules
+2. Map dependencies between modules (DAG)
 3. Define build order (foundation → core → extended)
 4. Per module: define features and slices
-5. Per feature: define acceptance criteria
-
-### Module Planning Pattern
-
-```markdown
-Module: [Module Name] ([Priority])
-  Features:
-    - [Feature 1]
-    - [Feature 2]
-  Dependencies: [Other modules]
-  Slices:
-    - [Slice 1: schema + API + form]
-    - [Slice 2: query + API + table]
-```
-
-### Example (HRM)
-
-```
-Module: Employee (G1)
-  Features:
-    - CRUD employee records
-    - Document upload
-    - Org chart
-  Dependencies: Auth
-  Slices:
-    - Create employee (schema + API + form)
-    - List employees (query + API + table)
-    - Edit employee (update + API + form)
-
-Module: Attendance (G1)
-  Features:
-    - Clock in/out
-    - Shift management
-    - Overtime calculation
-  Dependencies: Employee, Shift
-  Slices:
-    - Clock in/out API
-    - Attendance dashboard
-```
+5. Per feature: define Given-When-Then acceptance criteria
 
 ## Dependency-Aware Phasing
 
-When planning large projects, order tasks by dependency chain so each phase produces usable output:
+When planning large projects, order tasks by DAG dependency chain so each phase produces usable output:
 
 | Phase | Modules | Strategy |
 |-------|---------|----------|
 | Phase 1: Foundation | Auth, Employee | No downstream dependencies — build first |
-| Phase 2: Transaction | Attendance, Leave | Depend on Employee |
-| Phase 3: Processing | Payroll, Tax | Depend on Attendance + Employee |
-| Phase 4: Evaluation | KPI, Review | Depend on Employee + Payroll |
+| Phase 2: Transaction | Attendance, Leave | Depends on Employee |
+| Phase 3: Processing | Payroll, Tax | Depends on Attendance + Employee |
+| Phase 4: Evaluation | KPI, Review | Depends on Employee + Payroll |
 | Phase 5: Extended | Recruitment, Onboarding | Stand-alone modules |
 | Phase 6: Mobile/Integration | API consumers | Need stable API from all phases |
 
-**Bad**: Build Payroll directly (missing Employee + Attendance data)
-**Good**: Employee → Attendance → Payroll (each phase produces usable output)
-
-## Plan Document Template
-
-The PLAN.md is the handoff to dev-craft. Use template at `references/PLAN.md`.
-
-## Output Files
-
-- **Plan document:** `PLAN.md` at project root (for dev-craft consumption). For **multi-repo** topology (separate BE + FE repos), place `PLAN.md` and the traceability matrix in the BE repo (`contractRepo`) so both sides reference one plan; or split per repo when the work is fully independent. dev-craft's SCOPE gate carries the `topology` decision.
-- **Task list:** included in PLAN.md under each phase
-- **Traceability matrix:** `requirements.md` at project root (the COVERAGE GATE artifact — consumed by dev-craft `[3.7] REQUIREMENTS-EXTRACTION` and ui-craft `[3.7]`)
-- **Legacy archive (optional):** `docs/YYYY-MM-DD-feature.md` for historical record
-
-> **Multi-repo verification:** a fullstack ticket across two repos needs tests/build run in *both* repos. When generating acceptance criteria, list the per-repo verify command (e.g. `cd be-repo && pytest` **and** `cd fe-repo && npm test`), not a single root command.
-
-## Parallelization
-
-**Safe to parallelize:**
-- Independent feature slices
-- Tests for implemented features
-- Documentation
-
-**Must be sequential:**
-- Database migrations
-- Shared state changes
-- Dependency chains
-
-**Needs coordination:**
-- Features sharing API contract
-- Define contract first, then parallelize
-
-## Common Rationalizations
-
-| Rationalization | Reality |
-|----------------|---------|
-| "I'll figure it out as I go" | Tangled mess and rework. 10 min planning saves hours. |
-| "Tasks are obvious" | Write them down. Explicit tasks surface hidden dependencies. |
-| "Planning is overhead" | Planning IS the task. Implementation without plan is typing. |
-| "I can hold it in my head" | Context windows are finite. Plans survive session boundaries. |
-| "This is too simple to plan" | Simple projects need plans too. Plans prevent rework. |
-
-## Red Flags — STOP and Plan
-
-- Starting implementation without written task list
-- Tasks say "implement feature" without acceptance criteria
-- No verification steps in plan
-- All tasks are XL-sized
-- No checkpoints between tasks
-- Dependency order not considered
-- Starting to code before planning
-
-**All of these mean: Stop. Plan properly.**
+**Bad:** Build Payroll directly (missing Employee + Attendance data)
+**Good:** Employee → Attendance → Payroll (each phase produces usable output)
 
 ## Verification
 
 Before starting implementation:
 
-- [ ] Every task has acceptance criteria
-- [ ] Every task has verification step
+- [ ] Every task has Given-When-Then acceptance criteria
+- [ ] Every task has DAG dependencies identified and ordered
+- [ ] DAG has no circular dependencies (valid topological sort)
 - [ ] Every task cites `Requirement refs:` (REQ-IDs) from the source spec
 - [ ] `requirements.md` traceability matrix exists and P1/G1 coverage is 100%
-- [ ] Task dependencies identified and ordered
 - [ ] No task touches more than ~5 files
-- [ ] Checkpoints exist between phases
+- [ ] Checkpoints exist every 2-3 tasks
+- [ ] Every task is a vertical slice (not horizontal layering)
 - [ ] Human has reviewed and approved plan
 
 Can't check all boxes? Plan is incomplete. Don't start.
 
 ## Integration
 
-Upstream: `product-thinking` (PRODUCT.md) → `project-discovery` (DOMAIN.md).  
+Upstream: `product-thinking` (PRODUCT.md) → `project-discovery` (DOMAIN.md).
 Downstream: `dev-craft` / `ui-craft` consume PLAN.md.
 
 ## Outputs / Handoffs
 
 On completion, invokes: `skill("grilling")` with context:
-  - `planPath`: "PLAN.md"
-  - `requirementsPath`: "requirements.md" (if exists)
-  - `domainPath`: "DOMAIN.md" (if exists)
+- `planPath`: "PLAN.md"
+- `requirementsPath`: "requirements.md" (if exists)
+- `domainPath`: "DOMAIN.md" (if exists)
 
 **Grilling** performs adversarial review of the plan, outputs `risk-register.md`, then invokes `skill("dev-craft")` or `skill("ui-craft")` for implementation.
+
+## Quality Gates
+
+- [ ] All P1/G1 requirements traced to a task with Given-When-Then criteria
+- [ ] DAG is valid (no cycles, topological sort exists)
+- [ ] Every task has DAG dependencies and dependents listed
+- [ ] Every task is a vertical slice
+- [ ] No XL-sized tasks remain (all broken down)
+- [ ] Verification checkpoints exist every 2-3 tasks
+- [ ] Human has reviewed and approved plan
+
+## Error Handling
+
+| Failure Mode | Response |
+|--------------|----------|
+| Circular dependency in DAG | Break the cycle by reordering or splitting a task |
+| Missing REQ-ID trace | Go back to Phase 1, extract the requirement |
+| No Given-When-Then criteria | Add at least one scenario per task before proceeding |
+| Task is too large (XL) | Break it down into smaller vertical slices |
+| P1/G1 requirement has no task | Add a task to cover the requirement before proceeding |
+
+## References
+
+- `references/PLAN.md` — Plan document template consumed by dev-craft
+- `references/dag-template.md` — DAG construction template and cycle detection
+- `references/gherkin-template.md` — Given-When-Then scenario template with examples

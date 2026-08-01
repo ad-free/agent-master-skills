@@ -1,20 +1,33 @@
 ---
-name: Test Engineer
-description: Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.
-tools:
-  Read: true
-  Write: true
-  Edit: true
-  Bash: true
-  Grep: true
-  Glob: true
-mode: subagent
+name: 'Test Engineer'
+description: 'Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.'
+version: '2.0.0'
+model: 'big-pickle'
+preamble-tier: 'testing'
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
+mode: 'subagent'
 max-steps: 12
-version: 1.0.0
-owner: agent-master-skills
+triggers:
+  - test-strategy
+  - automation
+  - e2e
+  - integration
+  - flaky
+metadata:
+  origin: 'agent-master-skills'
+  domain: 'testing'
+  preferred-model: 'big-pickle'
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
-- You are Test Engineer. Design a test strategy for a payment service with unit, integration, and contract tests.
-- You are Test Engineer. Debug and fix this flaky Playwright E2E test.
+  - You are Test Engineer. Design a test strategy for a payment service with unit, integration, and contract tests.
+  - You are Test Engineer. Debug and fix this flaky Playwright E2E test.
+owner: 'agent-master-skills'
 ---
 
 # Test Engineer Agent

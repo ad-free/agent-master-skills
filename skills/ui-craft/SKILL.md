@@ -1,10 +1,11 @@
 ---
 name: ui-craft
 description: |
-  Run the 10-phase frontend development pipeline with persistent `.ui-craft` state.
-  Use for UI/UX features, design system work, component libraries, or resuming sessions.
-  Invoked by: planner → frontend-engineer → verifier.
-version: 1.1.0
+  Run the 10-phase frontend development pipeline with persistent `.ui-craft`
+  state. Use for UI/UX features, design system work, component libraries, or
+  resuming sessions. Invoked by: planner → frontend-engineer → verifier.
+model: big-pickle
+version: 2.0.0
 preamble-tier: 3
 allowed-tools:
   - Read
@@ -27,20 +28,22 @@ metadata:
   phase-count: 10
   plugins: [design-intelligence, anti-slop]
   preferred-model: big-pickle
+  version: 2.0.0
+  domain: frontend
+  integrates-with: [dev-craft, design-system-validate, accessibility-deep]
 ---
 
-TOKEN CEILING: ~15K tokens. If skill exceeds, extract sections to references/.
+TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 # ui-craft
 
-## Overview
+## Relationship to existing skills
 
-Turns a UI/UX prompt into production-quality design tokens, component code, and visual previews.
-Every phase has a clear goal, exit criteria, and a human checkpoint.
-Persists state to `.ui-craft/` so work survives across sessions.
-
-**Philosophy:** Design-first, version-aware, human-orchestrated.
-Skip any phase. Edit any phase. The pipeline serves you.
+- `dev-craft` — backend pipeline; ui-craft consumes `api-contract.md` from dev-craft for fullstack work
+- `design-system-validate` — validates UI code against design system tokens and component contracts; this skill enforces those standards
+- `accessibility-deep` — WCAG 2.2 AAA compliance auditing; this skill integrates the AA checklist at every phase
+- `image-to-design-spec` — extracts design tokens from screenshots; used in ALIGN phase
+- `bug-hunting` — security methodology for frontend vulnerability discovery
 
 ## When to Use
 
@@ -78,8 +81,7 @@ UI without design tokens = inconsistent, inaccessible, unmaintainable code.
 
 ## Stack Detection + Version Resolution
 
-Run during Phase 2 (ALIGN).
-Every generated code must match exact framework version.
+Run during Phase 2 (ALIGN). Every generated code must match exact framework version.
 
 ### Version Detection Sources
 
@@ -104,20 +106,6 @@ Every generated code must match exact framework version.
 | shadcn/ui | v2 | `cn()` helper, new-york style | v1 component API |
 | TypeScript | 5.x | `satisfies`, `const` type params | legacy enums |
 
-### Version Resolution Flow
-
-```
-1. Check package.json → exact version
-2. If not found → ask user (default: latest)
-3. If "latest" → fetch from npm registry
-4. Store in state.json
-5. SOURCE: fetch docs for that version
-6. BUILD: use only valid patterns
-7. REVIEW: flag deprecated patterns
-```
-
----
-
 ## Pipeline Phases
 
 ```
@@ -140,15 +128,51 @@ HARDEN → Polish + dark mode + responsive + cross-cutting security
 SHIP → Commit + ADRs + state complete
 ```
 
-> **Why REQUIREMENTS-EXTRACTION exists:** ui-craft enforces design discipline, but on its
-> own it does not prove the UI plan covers the product spec. UI requirements
-> (a11y targets, responsive breakpoints, permission-gated components, i18n, specific
-> component libraries) get dropped the same way backend ones do. This phase traces every
-> UI requirement to a concrete design/component task **before** any component is built.
+## Design Token Usage Alignment
 
----
+Every component must consume design tokens, not hardcoded values:
 
-### [0] LOAD — Initialize or Resume
+- **Colors:** Use `color-primary`, `color-surface`, `color-text` tokens — never hex/rgb literals in component code
+- **Spacing:** Use `space-xs`, `space-sm`, `space-md`, `space-lg`, `space-xl` tokens
+- **Typography:** Use `font-size-body`, `font-size-heading`, `line-height`, `font-weight` tokens
+- **Radii:** Use `radius-sm`, `radius-md`, `radius-lg` tokens
+- **Shadows:** Use `shadow-sm`, `shadow-md`, `shadow-lg` tokens
+- **Breakpoints:** Use `breakpoint-sm`, `breakpoint-md`, `breakpoint-lg`, `breakpoint-xl` tokens
+
+**Component contract rule:** If a component accepts a `className` prop, it must forward it. If it accepts a `variant` prop, it must map to design tokens — never inline styles for variants.
+
+## WCAG 2.1 AA Accessibility Checklist
+
+Every component must pass these checks before BUILD completes:
+
+- [ ] **Color contrast:** All text meets 4.5:1 contrast ratio (3:1 for large text)
+- [ ] **Focus indicators:** All interactive elements have visible focus states
+- [ ] **Keyboard navigation:** All interactive elements reachable and operable via keyboard
+- [ ] **ARIA labels:** Interactive elements have descriptive `aria-label` or visible text
+- [ ] **Semantic HTML:** Use appropriate elements (`button`, `nav`, `main`, `article`, etc.)
+- [ ] **Heading hierarchy:** Headings follow h1 → h2 → h3 order, no skipping levels
+- [ ] **Touch targets:** All interactive elements have minimum 44x44px touch target
+- [ ] **Text resize:** Text scales to 200% without loss of content or functionality
+- [ ] **Reduced motion:** `prefers-reduced-motion` respected; no essential animations blocked
+- [ ] **Screen reader:** Content makes sense when read in DOM order; no `aria-hidden` on interactive elements
+- [ ] **Error handling:** Form errors are associated with fields via `aria-describedby`; error messages are programmatically linked
+- [ ] **Landmarks:** Page has `main`, `nav`, and `aside` landmarks where appropriate
+
+## Component Contract Standards
+
+Every component must adhere to these contracts (from `design-system-validate`):
+
+1. **Props interface:** All props typed with an explicit interface, no `any`
+2. **Default props:** All optional props have sensible defaults
+3. **Children:** Components that accept children must handle `undefined` gracefully
+4. **Event handlers:** All event handlers are optional unless the component requires them
+5. **Ref forwarding:** Components that need DOM access forward refs via `React.forwardRef`
+6. **Test contract:** Every component has a test file that validates the contract (props, rendering, events, accessibility)
+7. **Story contract:** Every component has a Storybook story that demonstrates all variants
+
+## Workflow
+
+### Phase 0: LOAD — Initialize or Resume
 
 Read `.ui-craft/state.json`:
 
@@ -162,327 +186,86 @@ Read `.ui-craft/state.json`:
 
 Write state after LOAD.
 
----
-
-### [1] AUDIT — Project UI/UX Scan
+### Phase 1: AUDIT — Project UI/UX Scan
 
 **Goal:** Assess UI/UX health before adding new code.
 
 **Process:**
 
 1. Scan project for UI/UX health:
+   - **Stack Detection:** Read package.json, tsconfig.json, tailwind.config.*
+   - **Component Inventory:** Scan src/, app/, components/ for UI files
+   - **Style Analysis:** Detect color, typography, spacing, dark mode patterns
+   - **Accessibility Scan:** Check aria labels, focus states, semantic HTML, color contrast, touch targets
+   - **Responsive Check:** Detect breakpoints, mobile patterns, viewport meta tag
+   - **Version Audit:** Check for deprecated patterns, flag version mismatches
 
-   **Stack Detection:**
-   - Read package.json, tsconfig.json, tailwind.config.*
-   - Detect exact versions of React, Next.js, Vue, Tailwind
-   - Detect CSS approach (Tailwind, CSS Modules, styled-components)
-
-   **Component Inventory:**
-   - Scan src/, app/, components/ for UI files
-   - Identify component patterns (shadcn/ui, custom)
-   - Count components, pages, layouts
-
-   **Style Analysis:**
-   - Detect color usage patterns
-   - Detect typography patterns
-   - Detect spacing patterns
-   - Detect dark mode support
-
-   **Accessibility Scan:**
-   - Check for aria labels on interactive elements
-   - Check for focus states
-   - Check for semantic HTML
-   - Check for color contrast
-   - Check for touch target sizes
-
-   **Responsive Check:**
-   - Detect breakpoints in CSS/Tailwind config
-   - Check for mobile-specific patterns
-   - Check for viewport meta tag
-
-   **Version Audit:**
-   - Check for deprecated patterns
-   - Flag patterns that don't match detected version
-
-  **Audit Checklist Reference:**
-  - Load `references/redesign-audit.md` for 100+ prioritized audit checks (typography, color, layout, components, code quality)
-
-2. Surface report:
-   ```
-   UI/UX HEALTH REPORT:
-
-   STACK:
-   - React 19.0.0 (package.json)
-
- **Redesign Audit (if improving existing project):**
- Load `references/redesign-audit.md` for 100+ prioritized audit checks with fix priority order:
- 1. Typography upgrades (biggest impact, lowest risk)
- 2. Color palette cleanup
- 3. Hover/active states (makes interface feel alive)
- 4. Layout/spacing (grid, max-width, padding)
- 5. Replace generic components
- 6. Loading/empty/error states
- 7. Polish typography scale & spacing (premium final touch)
-   - Tailwind CSS v4 (CSS-first config)
-   - shadcn/ui v2.0+
-   - TypeScript 5.5 (tsconfig.json)
-
-   FINDINGS:
-   1. [ACCESSIBILITY] Missing focus states
-      → src/Navbar.tsx:15
-   2. [STYLE] Inconsistent color usage
-      → Define single --color-primary token
-   3. [DARK MODE] No dark mode support
-   4. [VERSION] React 18 patterns, React 19 detected
-   ```
-
+2. Surface report with findings and severity
 3. Ask human to prioritize fixes
 
 **Exit criterion:** Human approves remediation or defers.
 
 **State write:** Save findings to state.json.
 
----
-
-### [2] ALIGN — Grill + Detect + Glossary
+### Phase 2: ALIGN — Grill + Detect + Glossary
 
 **Goal:** Surface assumptions, detect stack versions, build shared language.
 
 **Process:**
 
 1. Ask one question at a time with best guess attached
-
-2. Surface assumptions:
-   ```
-   ASSUMPTIONS:
-   1. Web app (not native mobile)
-   2. Target: C-end consumers
-   3. Style: modern, minimal
-   4. Platform: responsive web
-   → Correct me now or I'll proceed.
-   ```
-
-
- 3. **Set Design Dials** (reference `references/design-dials.md`):
-   - DESIGN_VARIANCE: 1-10 (1=symmetry, 10=asymmetric chaos)
-   - MOTION_INTENSITY: 1-10 (1=static, 10=cinematic/physics)
-   - VISUAL_DENSITY: 1-10 (1=airy, 10=cockpit)
-   - Set from design read inference table, or user override
-
- 4. **Declare Design Read** (one line, before any code):
-   "Reading this as: <page kind> for <audience>, with a <vibe> language, leaning toward <design system or aesthetic family>."
-
- 5. If brief ambiguous → ask ONE clarifying question. Otherwise proceed.
-
-
-4. Detect stack + versions:
-   ```
-   STACK DETECTED:
-   - React 19.0.0 (package.json)
-   - Tailwind CSS v4 (CSS-first config)
-   - shadcn/ui v2.0+
-   - TypeScript 5.5
-   - Linter: ESLint 9.x
-   - Formatter: Prettier 3.x
-   ```
-
-5. Route to design style:
-   | Project Type | Suggested Style |
-   |--------------|-----------------|
-   | SaaS / Dashboard | Minimalism |
-   | E-commerce | Glassmorphism |
-   | Marketing / Landing | Bold Typography |
-   | Portfolio / Agency | Editorial |
-   | Enterprise / B2B | Neumorphism |
-   | Social / Community | Duotone |
-   | Mobile-first | Flat Design |
-   | Creative / Artistic | 3D / Isometric |
-
-6. Build glossary in context.md
-
-7. **Image analysis** (if screenshot provided):
-    ```bash
-    python ~/analyze.py --image <path> --format json --output .ui-craft/image-analysis.json
-    ```
-   Use extracted data to:
-   - Auto-generate design tokens from extracted colors
-   - Create `.ui-craft/MASTER.md` from analysis
-   - Skip manual token definition
-   - Generate Tailwind config from colors
-   Present to user for confirmation.
+2. Surface assumptions (platform, audience, style, responsiveness)
+3. Set Design Dials (variance, motion, density) — reference `references/design-dials.md`
+4. Declare Design Read (one line, before any code)
+5. Detect stack + versions (React, Tailwind, shadcn, TypeScript, linter, formatter)
+6. Route to design style (SaaS → Minimalism, E-commerce → Glassmorphism, etc.)
+7. Build glossary in context.md
+8. Image analysis (if screenshot provided) — reference `image-to-design-spec` skill
 
 **Exit criterion:** Human confirms scope with explicit yes.
 
 **State write:** Save stack to state.json. Save context.md. Save image analysis if present.
 
----
-
-### [3] DESIGN — Design System + Tokens + Preview
+### Phase 3: DESIGN — Design System + Tokens + Preview
 
 **Goal:** Generate design system with tokens, visual preview, ADRs.
 
 **Process:**
 
- **Image-First Workflow (Mandatory for Visual Tasks):**
- Load `references/image-first-workflow.md` for the complete image-first workflow:
- 1. Infer section count from brief
- 2. Generate section images FIRST (1 per section)
- 3. Generate extra detail images where needed
- 4. Regenerate unclear sections as fresh standalone (NEVER crop)
- 5. Deep analyze all images: extract text, typography, spacing, colors, layout, components
- 6. Build design spec from analysis
- 7. Only then implement frontend faithful to spec
- See `image-to-design-spec` skill for analysis scripts.
+1. Generate design system (requires a screenshot reference)
+2. Figma integration (if Figma MCP available)
+3. Generate design token files: `tailwind.config.ts`, `tokens.css`, `theme.ts`, `tokens.json`
+4. Generate HTML style guide preview (colors, typography, components, light/dark toggle, responsive)
+5. Validate design system
+6. Write ADRs for design decisions
+7. Persist design system to `.ui-craft/`
 
- 1. Generate design system (requires a screenshot reference):
-     ```bash
-     python ~/analyze.py \
-       --image <path> --design-system --output .ui-craft/
-     ```
-    This writes `design-system.json`, `tokens.css`, `tailwind.config.js`,
-    and `DESIGN-SPEC.md` into the output directory.
-    If you already have a JSON analysis from Step [2] (`--format json`), you can
-    instead run `generate_design_system.py --input .ui-craft/image-analysis.json \
-    --output .ui-craft/`.
-
-2. Figma integration (if Figma MCP available):
-   - Export design tokens from Figma
-   - Extract color palette, typography, spacing
-   - Generate components from Figma library
-   - If no Figma MCP: skip
-
-3. Generate design token files:
-   - `tailwind.config.ts` — colors, spacing, fonts
-   - `tokens.css` — CSS custom properties
-   - `theme.ts` — TypeScript theme object
-   - `tokens.json` — Design token JSON
-
-4. Generate HTML style guide preview:
-   - Self-contained HTML file
-   - Color palette with hex + CSS variables
-   - Typography scale (h1-h6, body, small)
-   - Component examples (buttons, cards, inputs)
-   - Light/dark mode toggle
-   - Responsive preview
-
-5. Validate design system:
-   ```bash
-   python3 scripts/validator.py validate-design-system
-   ```
-
-6. Write ADRs for design decisions:
-   ```markdown
-   # ADR-001: [Title]
-   Status: Accepted
-   Context: [Problem]
-   Decision: [What we chose]
-   Alternatives: [What else was considered]
-   Consequences: [Impact]
-   ```
-
-7. Persist design system to .ui-craft/
-
- **Exit criterion:** Human reviews and approves.
+**Exit criterion:** Human reviews and approves.
 
 **State write:** Save plan.md, ADRs, design system.
 
----
+### Phase 3.7: REQUIREMENTS-EXTRACTION — Spec → Task Traceability (COVERAGE GATE)
 
-### [3.7] REQUIREMENTS-EXTRACTION — Spec → Task Traceability (COVERAGE GATE)
+**Goal:** Guarantee every UI-relevant requirement from the source spec is traced to a concrete design/component task with an acceptance criterion, before any component is built.
 
-**Goal:** Guarantee every UI-relevant requirement from the source spec is traced to a
-concrete design/component task with an acceptance criterion, before any component is
-built. This is what stops UI features (a11y, responsive, permission-gating, i18n,
-mandated component libraries) from silently falling out of the plan.
-
-**Input:** The source spec (from product-thinking / project-discovery, or `docs/*.md`).
-If no source spec exists, skip this phase.
+**Input:** The source spec (from product-thinking / project-discovery, or `docs/*.md`). If no source spec exists, skip this phase.
 
 **Process:**
 
-1. **Extract every UI requirement** from the spec — literal and exhaustive:
-   - Component library mandates ("Tailwind + shadcn/ui only, no Ant Design")
-   - Accessibility targets ("contrast ≥ 4.5:1", "touch ≥ 44px")
-   - Responsive breakpoints ("375 / 768 / 1024 / 1440")
-   - Permission-gated UI (`<HasPermission permission="hrm.payroll.approve">`)
-   - i18n ("Interface language: Vietnamese")
-   - Design language ("minimalist global SaaS style")
-   - Every screen/page the spec implies but does not name explicitly
-   - Preserve the spec's priority markers (`🔴 [REQUIRED P1]`, `G1/G3`) verbatim.
-
-2. **Assign stable IDs:** `UI-REQ-001`, `UI-REQ-002`, ...
-
-3. **Trace each to a task** in the DESIGN/BUILD plan. Every UI requirement must map to
-   ≥1 task whose acceptance criteria verify it.
-
-4. **Build the matrix** → `.ui-craft/requirements.md`:
-   ```markdown
-   # UI Requirements Traceability Matrix — <project>
-
-   | UI-REQ-ID | Priority | Requirement (verbatim) | Traced Task(s) | Status |
-   |-----------|----------|------------------------|----------------|--------|
-   | UI-REQ-001 | P1 | shadcn/ui only, no Ant Design | DESIGN tokens | ✅ |
-   | UI-REQ-007 | P1 | i18n Vietnamese | A9 i18n setup | ✅ |
-   | UI-REQ-012 | G1 | permission-gated components | A10 HasPermission | ⚠️ GAP |
-   ```
-
-5. **Self-review** against the spec (do not delegate): re-read each section, confirm a
-   row exists and maps to a task. Search for skipped markers.
-
-6. **Present matrix + gaps.** Do not auto-skip.
+1. Extract every UI requirement from the spec — literal and exhaustive
+2. Assign stable IDs: `UI-REQ-001`, `UI-REQ-002`, ...
+3. Trace each to a task in the DESIGN/BUILD plan
+4. Build the matrix → `.ui-craft/requirements.md`
+5. Self-review against the spec (do not delegate)
+6. Present matrix + gaps
 
 <HARD-GATE>
-**Exit criterion:** Every P1/G1 UI requirement traced to a task + acceptance
-criterion. G2/G3 gaps deferrable **only with explicit human acknowledgement** (recorded
-in state.json `deferredRequirements`). Building UI with unresolved P1/G1 coverage gaps is
-the failure this phase prevents.
+**Exit criterion:** Every P1/G1 UI requirement traced to a task + acceptance criterion. G2/G3 gaps deferrable **only with explicit human acknowledgement** (recorded in state.json `deferredRequirements`).
 </HARD-GATE>
 
-**State write:** Save `.ui-craft/requirements.md`; record `requirementsExtracted`,
-`coverageGaps`, `deferredRequirements` in state.json.
+**State write:** Save `.ui-craft/requirements.md`; record `requirementsExtracted`, `coverageGaps`, `deferredRequirements` in state.json.
 
----
-
-### [3.8] HUMAN CHECKPOINT — Gate 1: REQUIREMENTS-EXTRACTION → SOURCE
-
-**Before proceeding to SOURCE, present this summary to the human:**
-
-```
-GATE 1 — UI REQUIREMENTS-EXTRACTION COMPLETE
-──────────────────────────────────────────────
-UI Requirements extracted: <N>
-P1/G1 traced: <N> / <N>
-Gaps: <N> (P1/G1: <N>, G2/G3: <N>)
-Deferred: <list or "none">
-Next phase: SOURCE (doc verification) → BUILD
-
-Proceed to SOURCE? [y/n/m/s]
-```
-
-- `y` = proceed to SOURCE
-- `n` = stop, await instruction
-- `m` = modify REQUIREMENTS-EXTRACTION (re-run with guidance)
-- `s` = split — create follow-up ticket for out-of-scope items, then proceed
-
-**If `n` or `m`:** STOP. Do not proceed to SOURCE. Await human direction.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md` with issue overview, then proceed.
-
-**Out-of-scope detection (runs at every gate):**
-If during this phase you discovered issues/bugs/improvements NOT in the current PLAN:
-1. Document in `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`:
-   - Discovered during: <phase>
-   - Issue: <description>
-   - Impact: <Low/Medium/High/Critical>
-   - Related to current PLAN: No
-   - Recommended action: Create follow-up ticket / Defer to retro
-2. Ask: "Create follow-up ticket? [y/n]"
-3. If yes → create ticket (GitHub Issue if `gh` available, else local markdown)
-
-**State write:** Record gate decision in `state.json.phaseDecisions["REQUIREMENTS-EXTRACTION"]`.
-
----
-
-### [4] SOURCE — Version-Aware Doc Verification
+### Phase 4: SOURCE — Version-Aware Doc Verification
 
 **Goal:** Verify framework decisions against official docs.
 
@@ -491,287 +274,77 @@ If during this phase you discovered issues/bugs/improvements NOT in the current 
 1. Read exact versions from state.json
 2. Fetch specific official docs for each feature
 3. Extract patterns, API signatures, deprecation warnings
-4. Cite sources inline during BUILD:
-   ```typescript
-   / Source: http/useActionState
-   const [state, formAction, isPending] = useActionState(fn, initialState)
-   ```
-5. Flag uncovered patterns:
-   ```
-   UNVERIFIED: No official docs for this pattern.
-   Based on training data — verify before shipping.
-   ```
+4. Cite sources inline during BUILD
+5. Flag uncovered patterns
 
-**Source hierarchy:**
-| Priority | Source |
-|---|---|
-| 1 | Official docs |
-| 2 | Official blog/changelog |
-| 3 | MDN Web Standards |
-| ❌ | Stack Overflow, blog posts |
+**Source hierarchy:** Official docs > Official blog/changelog > MDN Web Standards > ❌ Stack Overflow, blog posts
 
 **Exit criterion:** All dependencies verified.
 
 **State write:** Save source references to state.
 
----
-
-### [4.5] HUMAN CHECKPOINT — Gate 2: SOURCE → BUILD
-
-**Before proceeding to BUILD, present this summary to the human:**
-
-```
-GATE 2 — SOURCE VERIFIED / ESTIMATION ACKNOWLEDGED
-──────────────────────────────────────────────────
-Dependencies verified: <N> / <N>
-Estimation acknowledged: <Y/N>
-Slices defined: <N>
-Next phase: BUILD (TDD per slice)
-
-Proceed to BUILD? [y/n/m/s]
-```
-
-- `y` = proceed to BUILD
-- `n` = stop, await instruction
-- `m` = modify SOURCE (re-enter with guidance)
-- `s` = split — create follow-up ticket for out-of-scope items, then proceed
-
-**If `n` or `m`:** STOP. Do not proceed to BUILD. Await human direction.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md` with issue overview, then proceed.
-
-**Out-of-scope detection (runs at every gate):**
-If during this phase you discovered issues/bugs/improvements NOT in the current PLAN:
-1. Document in `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`:
-   - Discovered during: <phase>
-   - Issue: <description>
-   - Impact: <Low/Medium/High/Critical>
-   - Related to current PLAN: No
-   - Recommended action: Create follow-up ticket / Defer to retro
-2. Ask: "Create follow-up ticket? [y/n]"
-3. If yes → create ticket (GitHub Issue if `gh` available, else local markdown)
-
-**State write:** Record gate decision in `state.json.phaseDecisions["SOURCE"]`.
-
----
-
-### [5] BUILD — Generate UI Code + Secure-by-Construction
+### Phase 5: BUILD — Generate UI Code + Secure-by-Construction
 
 **Goal:** Generate tokens, component code, and preview per slice. Every UI slice is verified for security as it's written.
 
 <HARD-GATE>
-**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`develop`. For `multi` topology with `fullstack` scope, the FE branch is created in the FE repo **paired** with the BE branch in the BE repo (see dev-craft SCOPE §0.2 step 5): `fix/fe-payroll-142` alongside `fix/be-payroll-142`. Each repo's `state.json` records its own `activeBranch`; `linkedBranches` ties them. A FE-only unit branches only the FE repo.
+**Branch isolation (mandatory):** Every BUILD run starts on a dedicated feature branch — never commit directly to `main`/`develop`. For `multi` topology with `fullstack` scope, the FE branch is created in the FE repo paired with the BE branch in the BE repo. Each repo's `state.json` records its own `activeBranch`; `linkedBranches` ties them. A FE-only unit branches only the FE repo.
 
-**Base-branch guard (enforced before every commit):** Treat `main`, `master`, `develop` (and the repo's configured default branch) as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
+**Base-branch guard (enforced before every commit):** Treat `main`, `master`, `develop` as protected. If `git branch --show-current` reports a base branch at commit time, STOP and create/checkout the feature branch first. Never override this with `--no-verify` or force.
 </HARD-GATE>
 
-1. **Resolve the branch name** (deterministic, from SCOPE when fullstack, else derived here):
-    - `mono`: one `activeBranch` in this repo.
-    - `multi`: read `linkedBranches.fe` (this FE repo's branch) from state.
-2. **Branch naming convention:**
-    ```
-    <type>/<scope>-<short-description>[-<issue-id>]
-    type ∈ { feat, fix, refactor, chore, test, docs }
-    scope ∈ { fe, fs }
-    examples:
-      feat/fs-login-form        (mono: one branch;  multi: paired be+fe branches)
-      fix/fe-button-a11y-142
-    ```
-3. **Ensure the branch exists before any code** — run `scripts/branch-guard.sh`. Then record `activeBranch` in state.json only after confirmed.
-4. **Per-slice commits land on this branch.** Each slice is an atomic commit. The branch is only merged/PR'd during SHIP. Re-run the base-branch guard above before each commit.
-5. **Resume safety:** On resume, re-run step 3. If the recorded `activeBranch` no longer exists, fall back to deriving a new name (do NOT silently stay on a base branch).
+1. Resolve the branch name (deterministic, from SCOPE when fullstack, else derived here)
+2. Branch naming convention: `<type>/<scope>-<short-description>[-<issue-id>]`
+3. Ensure the branch exists before any code — run `scripts/branch-guard.sh`
+4. Per-slice commits land on this branch
+5. Resume safety: On resume, re-run step 3. If the recorded `activeBranch` no longer exists, fall back to deriving a new name
 
-**Scope-aware entry (fe-ticket on existing project):** If this is a frontend-only ticket on a repo that already has a design system (`.ui-craft/MASTER.md` or tokens present), skip ALIGN/DESIGN and jump straight to BUILD consuming the existing tokens. Do not regenerate the design system for a one-component fix.
+**Scope-aware entry:** If this is a frontend-only ticket on a repo that already has a design system, skip ALIGN/DESIGN and jump straight to BUILD consuming the existing tokens.
 
-**Consume the API contract (fullstack only):** Before building components that call the BE, read `api-contract.md` from the recorded `apiContract` path (dev-craft's `contractRepo`, or the mirror path for `multi`). If it is missing, STOP and ask dev-craft to produce it — do not invent endpoints.
+**Consume the API contract (fullstack only):** Before building components that call the BE, read `api-contract.md`. If it is missing, STOP and ask dev-craft to produce it — do not invent endpoints.
 
 **Process per component/page:**
 
-0a. BRANCH-GUARD — Confirm we are on the feature branch (create/switch if needed); abort if on a base branch
 1. Generate design token files
-2. Generate component code with version-correct patterns:
-    - React 19 → `useActionState`, Server Components
-    - React 18 → `useTransition`, `Suspense`, `useId`
-    - Tailwind v4 → CSS-first config
-    - Tailwind v3 → JS config
-    - shadcn/ui v2 → new-york style, `cn()` helper
-    - Forms: React Hook Form + Zod validation
-    - Tests: Vitest + React Testing Library + jest-axe
-    - Icons: lucide-react, heroicons, phosphor, tabler
-
-### [5.5] HUMAN CHECKPOINT — Per-Slice Gate (runs at START of each slice)
-
-**Before starting each slice, present this summary:**
-
-```
-SLICE GATE — <Slice Name/ID> (<N> of <Total>)
-──────────────────────────────────────────
-Slice: <one-line description>
-Requirements: <UI-REQ-IDs covered>
-Branch: <activeBranch>
-Prev slice: <prev slice name> — <commit hash or "none">
-Next slice: <next slice name or "none">
-Ready to start? [y/n/m/s]
-```
-
-- `y` = proceed with this slice (TDD loop)
-- `n` = stop, await instruction
-- `m` = modify slice scope (re-plan this slice)
-- `s` = split — create follow-up ticket, defer this slice
-
-**If `n` or `m`:** STOP. Do not start slice. Await human direction.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed to next slice or stop.
-
-**Out-of-scope detection:** Same as Gate 1.
-
-**State write:** Record slice gate decision in `state.json.phaseDecisions["BUILD_slice_<N>"]`.
-
----
-
-3. **SECURE** — Agent determines what the UI slice touches, then runs matching checks. Load `references/secure-checks.md` for the full check tree (user data, forms, storage, API calls, regex) and output format.
-
+2. Generate component code with version-correct patterns
+3. **SECURE** — Run matching security checks from `references/secure-checks.md`
 4. Generate HTML style guide preview
 5. Run lint/type checks → must pass
 
-**Rules:**
-
----
-
-### [6] REVIEW — Multi-Axis Audit
+### Phase 6: REVIEW — Multi-Axis Audit
 
 **Goal:** Quality gate before shipping.
 
 **Invoke:** `code-review-and-quality` for backend axes (Correctness, Readability, Architecture, Performance, Security, Testing, Modern Patterns).
 
-**UI-Specific Review (in addition to code-review-and-quality):**
+**UI-Specific Review:**
+- AI Tells Check: Load `references/ai-tells-banned.md` and grep for HARD bans
+- Review 8 UI-specific axes (UX, accessibility, visual consistency, version pattern, visual regression, testing, UI lint, security)
+- Each axis is a read-the-actual-diff pass; do not summarize from memory
 
- **AI Tells Check (Mechanical):**
- Load `references/ai-tells-banned.md` and grep for HARD bans. Any HARD ban = FAIL. SOFT bans = flag for human discussion.
- - Max eyebrows: ceil(sections/3)
- - Hero: ≤2 lines headline, ≤20 words subtext, CTA visible no-scroll
- - Nav: single line desktop, ≤80px height
- - Zigzag: max 2 consecutive
- - Bento: cell count = content count
- - CTA intent: 1 label per intent
- - Mobile collapse: explicit per section
-Load `references/review-protocol.md` for the 8 UI-specific axes (UX, accessibility, visual consistency, version pattern, visual regression, testing, UI lint, security), plus the two nested sub-checks (Axis 2b screen-reader testing, Axis 4b readability gate), the finding-categorization labels, and the reality-check discipline. Each axis is a
-read-the-actual-diff pass; do not summarize from memory.
-
-**Exit criterion:** All Critical/Required resolved **with evidence**, and every P1/G1
-requirement in the traceability matrix verified against the built UI.
+**Exit criterion:** All Critical/Required resolved **with evidence**, and every P1/G1 requirement in the traceability matrix verified against the built UI.
 
 **State write:** Save review findings.
 
----
-
-### [6.5] HUMAN CHECKPOINT — Gate 4: REVIEW → HARDEN
-
-**Before proceeding to HARDEN, present this summary to the human:**
-
-```
-GATE 4 — REVIEW COMPLETE
-────────────────────────
-Findings: Critical <N> | High <N> | Medium <N> | Low <N>
-Critical/High resolved: <Y/N>
-P1/G1 requirements verified: <N> / <N>
-Lint gate: <PASS/FAIL>
-Next phase: HARDEN (polish + dark mode + responsive + cross-cutting security)
-
-Proceed to HARDEN? [y/n/m/s]
-```
-
-- `y` = proceed to HARDEN
-- `n` = stop, await instruction
-- `m` = modify REVIEW (re-run with guidance)
-- `s` = split — create follow-up ticket, then proceed
-
-**If `n` or `m`:** STOP. Do not proceed to HARDEN.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
-
-**Out-of-scope detection:** Same as Gate 1.
-
-**State write:** Record gate decision in `state.json.phaseDecisions["REVIEW"]`.
-
----
-
-### [7] HARDEN — Polish + Dark Mode + Responsive + Cross-Cutting Security
+### Phase 7: HARDEN — Polish + Dark Mode + Responsive + Cross-Cutting Security
 
 **Goal:** Polish UI across all dimensions. Catch cross-cutting frontend security issues.
 
-**Dark Mode:**
-- All colors have dark mode equivalents
-- Contrast verified in both modes
-- No hardcoded colors (all use tokens)
+**Dark Mode:** All colors have dark mode equivalents, contrast verified in both modes, no hardcoded colors.
 
-**Responsive:**
-- Layout at 375px, 768px, 1024px, 1440px
-- No horizontal scroll on mobile
-- Safe areas respected
-- Touch targets ≥ 44px on mobile
+**Responsive:** Layout at 375px, 768px, 1024px, 1440px. No horizontal scroll on mobile. Safe areas respected. Touch targets ≥ 44px.
 
-**Animation:**
-- Micro-interactions: 150-300ms with proper easing
-- `prefers-reduced-motion` respected
-- No layout-shifting animations
+**Animation:** Micro-interactions 150-300ms with proper easing. `prefers-reduced-motion` respected. No layout-shifting animations.
 
-**Performance:**
-- No layout shifts (CLS)
-- Images have width/height
-- Fonts preloaded
-- No render-blocking resources
+**Performance:** No layout shifts (CLS). Images have width/height. Fonts preloaded. No render-blocking resources.
 
-**Polish (Redesign Audit):**
-Load `references/redesign-audit.md` Phases 1-7 for prioritized polish steps (typography → color → states → layout → components → states → final typography/spacing)
-
-**Clean:**
-- Remove debug instrumentation
-- Delete throwaway prototypes
-- Check unused CSS classes
-
-**Cross-Cutting Security Review — agent reads across all UI slices:**
-Load the deep reference `references/harden-checks.md` for the 5-point security
-audit (third-party scripts/deps, auth-token handling, error/info leakage, form
-security, client-side data exposure) and Axis 9 (BE↔FE contract conformance).
-Each point is a read-the-actual-code pass; do not summarize from memory.
+**Cross-Cutting Security Review:** Load `references/harden-checks.md` for the 5-point security audit (third-party scripts/deps, auth-token handling, error/info leakage, form security, client-side data exposure).
 
 **Exit criterion:** Zero findings. Human approves.
 
 **State write:** Update state.
 
----
-
-### [7.5] HUMAN CHECKPOINT — Gate 5: HARDEN → SHIP
-
-**Before proceeding to SHIP, present this summary to the human:**
-
-```
-GATE 5 — HARDEN COMPLETE
-────────────────────────
-Critical/High findings: <N> (resolved: <N>)
-Dark mode: <PASS/FAIL>
-Responsive: <PASS/FAIL>
-Performance: <PASS/FAIL>
-Cross-slice security: <PASS/FAIL>
-BE↔FE contract: <PASS/FAIL>
-Next phase: SHIP (commit + rollback plan)
-
-Proceed to SHIP? [y/n/m/s]
-```
-
-- `y` = proceed to SHIP
-- `n` = stop, await instruction
-- `m` = modify HARDEN (re-run with guidance)
-- `s` = split — create follow-up ticket, then proceed
-
-**If `n` or `m`:** STOP. Do not proceed to SHIP.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
-
-**Out-of-scope detection:** Same as Gate 1.
-
-**State write:** Record gate decision in `state.json.phaseDecisions["HARDEN"]`.
-
----
-
-### [8] SHIP — Docs + Commit + Finalize
+### Phase 8: SHIP — Docs + Commit + Finalize
 
 **Goal:** Deliver with full traceability.
 
@@ -780,220 +353,44 @@ Proceed to SHIP? [y/n/m/s]
 1. Update ADRs for BUILD/HARDEN decisions
 2. Update CONTEXT.md with new terms
 3. Generate final HTML style guide preview
-4. Final verification:
-   - Lint + type + build all pass
-   - Run secrets scanner
-   - Dead code removed
-5. Atomic commit:
-    ```
-    type(scope): short description
-
-    - What changed and why
-    - Key decisions (reference ADRs)
-    - What was intentionally NOT done
-    ```
-    Before committing, re-run the branch-guard: confirm `git branch --show-current`
-    is the feature branch, not a base branch. If on a base branch, stop and
-    checkout the feature branch first.
+4. Final verification: lint + type + build all pass, run secrets scanner, dead code removed
+5. Atomic commit with conventional message format
 6. Define rollback strategy
 7. Mark state complete
 
 **Exit criterion:** Clean commit with rollback plan.
 
----
+## Quality Gates
 
-### [8.5] HUMAN CHECKPOINT — Gate 6: SHIP → MR-PR-REVIEW
-
-**After SHIP completes, present this summary to the human:**
-
-```
-GATE 6 — SHIP COMPLETE / COMMIT PUSHED
-───────────────────────────────────────
-Commit: <commit hash>
-Branch: <feature branch>
-Lint/Type/Build: PASS
-Next: mr-pr-review (peer review on GitHub/GitLab)
-
-Proceed to mr-pr-review? [y/n/m/s]
-```
-
-- `y` = proceed to mr-pr-review (load `mr-pr-review` skill)
-- `n` = stop, await instruction
-- `m` = modify SHIP (re-run with guidance)
-- `s` = split — create follow-up ticket, then proceed
-
-**If `n` or `m`:** STOP. Do not proceed to mr-pr-review.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
-
-**Out-of-scope detection:** Same as Gate 1.
-
-**State write:** Record gate decision in `state.json.phaseDecisions["SHIP"]`.
-
-**Next skill:** `skill("mr-pr-review")` with context: `prUrl`, `branch`, `diffPath`, `requirementsPath`.
-
----
-
-### [8.7] HUMAN CHECKPOINT — Gate 7: MR-PR-REVIEW → DOCUMENTATION
-
-**After mr-pr-review completes, present this summary to the human:**
-
-```
-GATE 7 — PEER REVIEW COMPLETE
-─────────────────────────────
-PR: <PR URL>
-Review verdict: <APPROVE / REQUEST_CHANGES / COMMENT>
-Reviewers: <N> (approvals: <N>)
-Security review: <PASS/FAIL/NOT_REQUIRED>
-Performance review: <PASS/FAIL/NOT_REQUIRED>
-Docs required: <YES/NO>
-Next: documentation-engineering (local markdown generation)
-
-Proceed to documentation? [y/n/m/s]
-```
-
-- `y` = proceed to documentation-engineering
-- `n` = stop, await instruction
-- `m` = modify (request changes, re-run mr-pr-review)
-- `s` = split — create follow-up ticket, then proceed
-
-**If `n` or `m`:** STOP. Do not proceed to documentation.
-**If `s`:** Create `.ui-craft/out-of-scope/YYYY-MM-DD-<slug>.md`, then proceed.
-
-**Out-of-scope detection:** Same as Gate 1.
-
-**State write:** Record gate decision in `state.json.phaseDecisions["MR_PR_REVIEW"]`.
-
-**Next skill:** `skill("documentation-engineering")` with context: `prUrl`, `features`, `decisions`.
-
----
-
-**When:** Context > 80% full, or human says "continue later".
-
-**Process:**
-
-1. Save state to state.json:
-   - Current phase and slice position
-   - Incomplete tasks
-   - Pending decisions
-
-2. Write handoff to sessions/session-YYYYMMDD-N.md:
-   - What was accomplished
-   - What's in progress
-   - What's next
-   - Known issues
-
-3. Summarize: "Session saved. Run ui-craft to resume."
-
----
-
-## Workflow Orchestration
-
-For complex features spanning multiple domains.
-
-### Workflow Types
-
-| Workflow | Pipeline |
-|----------|----------|
-| SaaS MVP | ui-craft + dev-craft |
-| Admin Dashboard | ui-craft + dev-craft |
-| E-commerce | ui-craft + dev-craft |
-| Landing Page | ui-craft only |
-| Design System | ui-craft only |
-
-### Orchestration Pattern
-
-```
-1. PLAN — Decompose into frontend/backend slices
-2. DESIGN SYSTEM — Run ui-craft for tokens/components
-3. HANDOFF — Generate API spec
-4. BACKEND — Run dev-craft for API/auth
-5. FRONTEND — Run ui-craft using API spec
-6. INTEGRATION — Run both for testing
-7. SHIP — Coordinate commits
-```
-
-### Cross-Skill Communication
-
-Driven by SCOPE (dev-craft §0.2). The contract artifact is ALWAYS named **`api-contract.md`** (no `api-spec.md` variant), at repo root or `docs/`. Both skills read the same file.
-
-**ui-craft (`scope: fullstack`) needs backend:**
-1. If `api-contract.md` already exists (dev-craft produced it), consume it directly — do not regenerate endpoints.
-2. If not, generate `api-contract.md` from the UI's data needs; record `crossSkill.backendSliceNeeded: ["auth-api"]`; hand to dev-craft to implement.
-3. dev-craft MUST implement only what the contract declares; any new endpoint updates the contract first.
-
-**dev-craft needs UI:**
-1. Run CONTRACT (dev-craft §4.5) → write `api-contract.md`.
-2. Record `crossSkill.uiSliceNeeded: ["login-form"]`, `apiContract: "api-contract.md"`.
-3. ui-craft MUST consume `api-contract.md` and may not invent endpoints.
-
-**Contract conformance (fullstack):** In REVIEW, verify the built UI calls only contract-declared routes with contract-declared request/response shapes; surface any divergence as Required.
-
----
-
-## "What If" Mode
-
-After Phase 3 (DESIGN), user can explore alternatives.
-
-**Trigger:** User says "what if we used [different style/font]?"
-
-**Process:**
-
-1. Save current design system as snapshot
-2. Re-run Phase 3 with modified parameters
-3. Show diff between old and new
-4. Ask: "Keep or revert?"
-
-**Supported variations:**
-- "What if warmer palette?" → re-run with color keywords
-- "What if glassmorphism?" → re-run with style keywords
-- "What if denser?" → adjust density dial
-- "What if different font?" → re-run typography search
-
----
-
-## Common Rationalizations
-
-| Rationalization | Reality |
-|---|---|
-| "I know what they want" | #1 cause of AI failure is misalignment |
-| "Just start coding" | No design system = inconsistent UI, rework |
-| "Add a11y later" | You won't. Retrofitting is 10x harder |
-| "Too simple to verify" | Training data is stale |
-| "Clean tokens after slices" | Token debt compounds |
-| "UI looks fine, skip audit" | Visual correctness ≠ accessibility |
-| "Add dark mode later" | You won't. Retrofitting touches every color |
-| "Prototype, skip a11y" | Prototypes become production |
-| "Fix responsive at end" | Responsive debt compounds |
-| "Design system for reference" | Design system IS source of truth |
-
-## Red Flags
-
-- Skipping AUDIT on codebase with > 10 UI files
-- Starting without completed ALIGN phase
-- Human checkpoints skipped
-- Code before fetching current-version docs
-- Multiple slices in one commit
-- Lint/type checks failing but proceeding
-- No ADRs for design decisions
-- "Fix it later" for Critical findings
-- No .ui-craft/ directory
-- Accessibility review skipped
-- No visual preview before BUILD
-- **Starting BUILD without `.ui-craft/requirements.md` coverage gate passing (P1/G1 UI gaps unresolved)**
-- UI requirement traced to a task but no acceptance criterion verifying it
-- Commits made directly to main/develop (no feature branch)
-- `activeBranch` recorded in state.json but agent is actually on a base branch (branch was never created/checked out)
-
-## Verification
-
-- [ ] AUDIT was run (or deferred with approval)
-- [ ] `.ui-craft/requirements.md` exists and COVERAGE GATE passed
+- [ ] Design system generated with all token files
+- [ ] WCAG 2.1 AA checklist passed for every component
+- [ ] Component contracts validated (props interface, default props, children, event handlers, ref forwarding, test contract, story contract)
+- [ ] Design tokens consumed, no hardcoded values in component code
+- [ ] `requirements.md` exists and COVERAGE GATE passed
 - [ ] All slices committed on a feature branch (not base branch)
 - [ ] No secrets, debug tags, or temp files remain
+- [ ] Lint + type + build all pass
+- [ ] Accessibility scan passed (no Critical/High findings)
+- [ ] Visual regression check passed (if applicable)
 
-## See Also
+## Error Handling
 
-- `references/ui-patterns.md` — UI-specific pattern guidance
-- `image-to-design-spec` — Design token extraction from images
-- `bug-hunting` — Security methodology for frontend vulnerability discovery
-- `dev-craft` — Backend pipeline with complementary security checks
+| Failure Mode | Response |
+|--------------|----------|
+| Design tokens missing for a value | Define the token before using it; never hardcode |
+| Accessibility check fails | Fix before proceeding; do not defer Critical findings |
+| Component contract violation | Fix the component to match the contract standard |
+| Branch already exists | Use the existing branch; do not create a duplicate |
+| API contract missing (fullstack) | STOP and ask dev-craft to produce it |
+| Build fails after slice commit | Fix the slice, re-run lint/type, recommit |
+
+## References
+
+- `references/ui-craft-rules.md` — Design token usage, WCAG 2.1 AA checklists, component contract standards (extracted from this skill)
+- `references/design-dials.md` — Design variance, motion intensity, visual density dials
+- `references/secure-checks.md` — Security check tree for UI slices
+- `references/harden-checks.md` — Cross-cutting frontend security audit
+- `references/ai-tells-banned.md` — Banned AI-generated UI patterns
+- `references/review-protocol.md` — 8 UI-specific review axes and finding categorization
+- `references/redesign-audit.md` — 100+ prioritized audit checks for existing projects
+- `references/image-first-workflow.md` — Image-first design workflow for visual tasks
