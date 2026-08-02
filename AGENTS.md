@@ -1,139 +1,176 @@
-# AGENTS.md — agent-master-skills
+# AGENTS.md — Global Agent Instructions
 
-Persistent instructions for any AI agent working in this repository.
-This repo is a **skill library for OpenCode**, not an application. Every change
-here changes how agents behave in downstream projects.
+Cross-project rules for every OpenCode session. Project-level `AGENTS.md`
+extends/overrides these.
 
----
+**Skills:** library at `~/.config/opencode/skills/`. Load via explicit
+`skill()` — never improvise a workflow the library already covers.
 
-## 0. What This Repo Is
-
-- A collection of composable agent skills. Each skill lives in `skills/<name>/`
-  and is a `SKILL.md` (plus optional `references/`, `scripts/`, `plugins/`).
-- Skills are loaded on demand via the `skill()` tool. They are NOT auto-run.
-- Installed into OpenCode as symlinks (see README). Edits here are live
-  immediately — there is no build step.
-
-**Consequence:** precision and clarity in every SKILL.md matters. A vague or
-contradictory instruction here degrades agent behavior everywhere the skill is
-used. Treat this repo as a published library.
+**Ponytail plugin:** runs automatically in the background on every edit/write
+— it checks for reusable code before new code is written. It is a plugin
+hook, not a skill; don't invoke it, don't narrate its checks, just respect
+its output. Your responsibility is the *policy* (Iron Law #10, "reuse before
+create"), not re-implementing what the plugin already does.
 
 ---
 
-## 1. Skill Router (load the right skill first)
+## 1. Skill Router — decide before acting
 
-The canonical skill router lives in `skills/SHARED.md` under **Start Here — Skill
-Router**. Use that as the single source of truth; load the right skill from there
-before any task. Do not improvise a workflow when a skill exists for it.
+Route by task type, not by tech stack. Skills chain — follow the arrow.
 
-When unsure, **plan first** (`planning-and-task-breakdown`), then execute.
+| Task signal | Route |
+|---|---|
+| Vague idea, "how should we…" | product-thinking → planning-and-task-breakdown → dev-craft \| ui-craft |
+| Spec files (xlsx/csv/md/pdf) | project-discovery → planning-and-task-breakdown → dev-craft |
+| New feature / new project | planning-and-task-breakdown → dev-craft \| ui-craft |
+| Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
+| Frontend / UI work | ui-craft (+ frontend-design for visual polish) → verification-before-completion |
+| Screenshot / image reference | image-to-design-spec → ui-craft |
+| Infra / IaC / deploy change | dev-craft → Infra Safety (§ 7) → quality-gates |
+| Large multi-module project | dev-craft + agent-orchestration |
+| Multiple independent tasks | dispatching-parallel-agents |
+| Review code | code-review-and-quality |
+| Security audit / vuln discovery | bug-hunting → verification-before-completion |
+| About to claim "done" | verification-before-completion (mandatory — § 4) |
 
----
-
-## 2. Iron Laws (non-negotiable)
-
-These are the discipline gates the skills encode. Honor them even when a skill
-is not explicitly loaded.
-
-1. **NO implementation without a written plan.** (`planning-and-task-breakdown`)
-2. **NO completion claims without fresh verification evidence.** (`verification-before-completion`)
-3. **NO fixes without root-cause investigation first.** (`debugging-and-error-recovery`)
-4. **NO merge without quality gates.** (`quality-gates`)
-5. **NO code without review evidence.** (`code-review-and-quality`)
-6. **NO parallel work without verified independence + a shared contract.** (`agent-orchestration` + `dispatching-parallel-agents`)
-7. **NO attack surface assessed without intentional probing.** (`bug-hunting`)
-8. **NO weakening or deleting a test to make it pass.** Fix the root cause, or
-   flag to the user that the test may be wrong and wait for a decision.
-9. **NO unverified APIs.** Don't call a library method, CLI flag, or config key
-   without confirming it exists (docs, `--help`, installed version) if there's
-   any doubt — especially for less-common packages or fast-moving ecosystems.
+**Unsure which skill?** Start with `planning-and-task-breakdown` — it produces
+a plan every other skill can execute against.
 
 ---
 
-## 3. Daily Operating Rules (performance & correctness)
+## 2. Iron Laws — non-negotiable
 
-These keep agent output fast, cheap, and correct.
-
-- **Plan before code.** A 5-minute plan prevents an hour of rework. Never skip
-  `planning-and-task-breakdown` on multi-file or multi-module work.
-- **Evidence over assumption.** Prove it works (run lint/type/test, read the
-  output) before saying so. Never claim success from memory.
-- **Deterministic before judgment.** Run `lint`/`typecheck`/`test` first;
-  only escalate to LLM-judgment (code-review, quality-gates LLM axis) after
-  deterministic checks pass.
-- **Root cause over symptoms.** When something fails, find the cause; do not
-  patch the error message and hope.
-- **Keep context lean.** Prefer `Glob`/`Grep` over reading whole trees. Read
-  only the files you act on. Use the `Task` tool for broad exploration so the
-  main context stays small.
-- **Minimize token waste.** Concise responses. Batch independent tool calls in
-  one message. Do not re-read files you already have in context.
-- **One skill, one concern.** Skills and plugins must be single-responsibility
-  and idempotent (running twice yields the same result).
-- **Checkpoints, not autopilot.** Pipeline phases have human checkpoints. Stop
-  and surface decisions; do not silently barrel through.
-- **Resume, don't restart.** Pipeline state lives in `.dev-craft/runs/<slug>/`
-  (`state.json`, registered in `.dev-craft/index.json`). Detect and resume prior
-  progress instead of redoing work.
-
----
-
-## 4. Repo Etiquette (contributing to the skills)
-
-When editing skills in this repo:
-
-- **Edit SKILL.md, not copies.** Skills are symlinked into `~/.config/opencode/skills`.
-  Never edit the symlink target's resolved copy elsewhere — edit the source here.
-- **Front-matter is required.** Every skill `SKILL.md` starts with:
-  ```yaml
-  ---
-  name: <skill-name>
-  description: <one-line, when-to-use, loaded on demand>
-  metadata:
-    origin: agent-master-skills
-  ---
-  ```
-  The `description` is what makes the skill discoverable — make it specific
-  about *when* to use it.
-- **No build, no install script to run.** After editing, the change is live.
-  Verify by loading the skill via `skill()` in a test session.
-- **Keep README in sync.** If you add/remove/rename a skill, update the tables
-  in `README.md` and `skills/SHARED.md`.
-- **Respect the skill router.** Don't create overlapping skills. Extend via the
-  plugin system (`skills/PLUGIN-SYSTEM.md`) when adding optional capability.
-- **Don't commit secrets, state, or caches.** `.gitignore` already excludes
-  `.venv/`, `__pycache__/`, `.ruff_cache/`, etc. Never force-add them.
-- **Cross-skill consistency.** Shared terminology lives in `context.md`; the
-  handoff/state schema is in `skills/SHARED.md`. Keep them aligned.
+1. No implementation without a written, approved plan.
+2. No "done" claim without fresh verification evidence — show lint/type/test
+   output, never assume it from memory.
+3. No fix without root-cause investigation first. Patch causes, not symptoms.
+4. No merge without quality gates green (lint, typecheck, tests).
+5. No code shipped without self-review evidence.
+6. No parallel work without verified independence + a written contract.
+7. No security assessment without active probing — assumption isn't
+   verification.
+8. No weakening or deleting a test to force a pass. Flag a suspect test and
+   wait for a decision instead.
+9. No calling unfamiliar or uncommon APIs without confirming they exist
+   first (docs, CLI, or a live version check).
+10. **Reuse before creating.** Check for an existing type, helper, component,
+    or util before writing a new one. The ponytail plugin surfaces
+    candidates automatically — act on what it finds.
+11. Python only via `uv run` (`uv run pytest`, `uv run python script.py`).
+    Bare `python` / `python3` / `py` / `pip` / `virtualenv` are forbidden.
+12. Filesystem inspection stays inside the project (`.`), depth ≤ 3, via
+    `Glob` / `Grep` / CodeGraph — never unrestricted or system-wide scans.
+13. No hardcoded or outdated package versions. Always resolve to latest
+    stable; never a deprecated major version unless explicitly instructed.
+14. No destructive or state-changing action (`git commit`/`push`,
+    `terraform apply`, `kubectl apply`, `rm -rf`, DB migrations) without
+    showing the diff/plan and getting explicit approval first.
 
 ---
 
-## 5. Verification Before Claiming Done
+## 3. Operating Principles
 
-Before reporting any task complete in THIS repo (e.g. a skill edit or refactor):
-
-1. The edited `SKILL.md` still has valid front-matter and renders.
-2. `README.md` / `SHARED.md` tables reflect the change.
-3. The skill loads without error via `skill(<name>)` in a session.
-4. No broken symlinks remain in `~/.config/opencode/skills`.
+- **Plan before code; evidence before "done."** Lint → typecheck → test, in
+  that order, and read the actual output.
+- **Read before edit.** Match existing naming, structure, and conventions.
+- **Minimal footprint.** Diff-only edits — never reprint unchanged code. One
+  concern per change.
+- **Lean context.** `Glob`/`Grep`/CodeGraph over full-tree reads; delegate
+  broad discovery to the explore agent so the main context stays small.
+- **Ambiguity:** small gap → state the assumption inline and proceed. Large
+  gap → ask exactly one question (§ 5 decides which case you're in).
+- **Resume, don't restart.** Check `.dev-craft/`, `.ui-craft/`, `PLAN.md`,
+  and `git log` for prior state before starting fresh.
+- **Readable code, always.** Self-documenting names (no cryptic single
+  letters except `i/j/k` in short loops, `x/y` in short math), comments
+  explain *why* not *what*, no dense one-liners that hide logic.
 
 ---
 
-## 6. Quick Reference
+## 4. Definition of Done
 
-| Situation | Skill |
-|-----------|-------|
-| Vague idea | product-thinking |
-| Spec files (xlsx/csv/md/pdf) | project-discovery |
-| New feature / plan | planning-and-task-breakdown |
-| Backend / API build | dev-craft |
-| Frontend / UI build | ui-craft |
-| Infra / IaC / deploy | dev-craft + Infra Safety Checklist (see the user's global AGENTS.md §4.1) |
-| Tests fail / bug | debugging-and-error-recovery |
-| About to say "done" | verification-before-completion |
-| Code review | code-review-and-quality |
-| Security audit | bug-hunting |
-| Parallel independent tasks | dispatching-parallel-agents |
-| Multi-module orchestration | agent-orchestration |
-| Pre-merge validation | quality-gates |
-| Screenshot → design tokens | image-to-design-spec |
+A task is done only when every box below is true — and you say so explicitly
+rather than reporting success by default:
+
+- [ ] Lint, type-check, and tests all pass — output shown, not claimed.
+- [ ] No test was weakened, skipped, or deleted to force a pass.
+- [ ] The change addresses the actual request; no unrelated regressions.
+- [ ] Edge cases (null / empty / boundary) are handled.
+- [ ] Style is clean: no cryptic names, consistent imports, one concern per
+      change.
+- [ ] Self-review complete (`code-review-and-quality` or equivalent) — no
+      open issues.
+- [ ] No stray `TODO`/`FIXME` left uncaptured in an issue.
+
+---
+
+## 5. Escalation — Ask vs. Proceed
+
+**Ask before proceeding when:**
+- Direction is genuinely ambiguous and guessing would waste real time.
+- A trade-off exists that the user should own (perf vs. readability, speed
+  vs. correctness).
+- The action is large or irreversible (deletions, schema migrations, public
+  API changes, merges, deploys).
+- Root cause is still unclear after two investigation rounds — escalate with
+  what's been ruled out.
+
+**Proceed on your own judgment when:**
+- The ambiguity has an obvious, low-risk default — state it and move on.
+- The codebase already has an established pattern to follow.
+- Asking would cost more time than trying the direct path and verifying.
+
+**Rule of thumb:** if a wrong guess costs more than five minutes to unwind,
+ask first. Otherwise, proceed.
+
+---
+
+## 6. Multi-Agent Work & Error Recovery
+
+**Parallel tasks** (`dispatching-parallel-agents`): write a shared contract
+(data shapes, file ownership) before dispatch; no overlapping edits; join and
+verify consistency at the end.
+
+**Multi-module work** (`agent-orchestration`): order by dependency (DAG),
+execute in stages, each agent hands off a written summary — never a silent
+handoff.
+
+**When something breaks** (`debugging-and-error-recovery`): capture full
+error context (trace, input, state) → reproduce deterministically → narrow
+to root cause with evidence → fix the cause → add a regression test. Stuck
+after two rounds? Escalate with what's ruled out — don't keep guessing.
+
+---
+
+## 7. Infra & Git Safety
+
+- Never `commit`, `push`, `amend`, or open a PR without explicit
+  instruction.
+- Always inspect `git status` / `git diff` before staging. Never commit
+  secrets or `.env` files.
+- For infra changes: show `terraform plan` / `kubectl diff` / migration
+  preview first; confirm target environment and rollback path; never
+  auto-apply (Iron Law #14).
+- Destructive actions (`rm -rf`, DB drops/truncates, bulk resets, cloud
+  resource deletion) always require explicit approval.
+
+---
+
+## 8. Maintaining This File
+
+When a new gotcha, dead convention, or repeated mistake surfaces, add one
+short line here instead of letting it live only in chat history. This is a
+checklist, not documentation — keep entries terse and specific.
+
+<!-- CODEGRAPH_START -->
+## CodeGraph
+
+In repositories indexed by CodeGraph (`.codegraph/` exists at repo root),
+reach for it BEFORE grep/find or reading files when you need to understand
+or locate code:
+- **MCP tool:** `codegraph_explore`
+- **Shell:** `codegraph explore "<symbol names or question>"`
+
+If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing
+is the user's decision.
+<!-- CODEGRAPH_END -->
