@@ -18,15 +18,24 @@ triggers:
   - "route this"
   - "what agent do I need"
   - "begin"
+  - "plan this"
+  - "review this"
+  - "ship this"
+  - "debug this"
+  - "test this"
+  - "spec this"
+  - "save progress"
+  - "resume"
+  - "retro"
 metadata:
   origin: agent-master-skills
   preferred-model: gpt-5-nano
   version: 2.0.0
   domain: planning-execution
-  integrates-with: [product-thinking, planning-and-task-breakdown, dev-craft, ui-craft]
+  integrates-with: [product-thinking, planning-and-task-breakdown, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, ship, verification-before-completion, verification-before-completion, retro, learn, context-engineering, handoff, project-discovery, api-design, devops-automation, cost-optimizer, token-budget, qa-and-edge-case-tester, testing-strategies, bug-hunting, secops-and-vulnerability-scanner, grilling, architecture-decision-records, documentation-engineering]
   source-enhancements: v2.0.0 Master Template alignment
 ---
-TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
+TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 
 # Agent Router — Bootstrap Skill
 
@@ -44,15 +53,66 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 | "Here's my requirements.xlsx" | `planner` → `project-discovery` → `planning-and-task-breakdown` → `dev-craft` | project-discovery, planning-and-task-breakdown, dev-craft | `skill("project-discovery")` |
 | "Build the auth API per PLAN.md" | `implementer` → `dev-craft` | dev-craft, testing-strategies, code-review-and-quality | `skill("dev-craft")` |
 | "Fix this failing test" | `debugger` → `debugging-and-error-recovery` → `implementer` | debugging-and-error-recovery, dev-craft, verification-before-completion | `skill("debugging-and-error-recovery")` |
-| "Review this PR" | `code-reviewer` → `code-review-and-quality` → `quality-gates` | code-review-and-quality, quality-gates, verification-before-completion | `skill("code-review-and-quality")` |
-| "Security audit before launch" | `security-auditor` → `bug-hunting` → `quality-gates` | bug-hunting, code-review-and-quality, quality-gates | `skill("bug-hunting")` |
+| "Review this PR" | `code-reviewer` → `code-review-and-quality` → `verification-before-completion` | code-review-and-quality, verification-before-completion, verification-before-completion | `skill("code-review-and-quality")` |
+| "Security audit before launch" | `security-auditor` → `bug-hunting` → `verification-before-completion` | bug-hunting, code-review-and-quality, verification-before-completion | `skill("bug-hunting")` |
 | "Design the API for webhooks" | `api-designer` → `api-design` | api-design, dev-craft (CONTRACT phase) | `skill("api-design")` |
 | "Set up CI/CD for microservices" | `devops-engineer` → `devops-automation` | devops-automation, dev-craft | `skill("devops-automation")` |
 | "Weekly retrospective" | `retro-analyst` → `retro` → `learn` | retro, learn, context-engineering | `skill("retro")` |
-| "Ship this release" | `shipper` → `ship` → `verification-before-completion` | ship, verification-before-completion, quality-gates | `skill("ship")` |
+| "Ship this release" | `shipper` → `ship` → `verification-before-completion` | ship, verification-before-completion, verification-before-completion | `skill("ship")` |
 | "Optimize LLM costs" | `planner` → `cost-optimizer` | cost-optimizer, token-budget | `skill("cost-optimizer")` |
 | "My context is full / rotate session" | `context-guard` → `context-engineering` → `handoff` | context-engineering, handoff, learn | `skill("context-engineering")` |
 | "What did we learn last sprint?" | `retro-analyst` → `learn` | learn, retro | `skill("learn")` |
+
+---
+
+## Comprehensive Routing Rules (from gstack)
+
+### Product & Planning
+- **New idea, brainstorming, "is this worth building", pitch a concept** → `/plan` (invokes `product-thinking` → `planning-and-task-breakdown`)
+- **Spec something out, file an issue, write up a ticket, "turn this into a GitHub issue", "backlog item"** → `/spec` (invokes `project-discovery` → `product-thinking` → `planning-and-task-breakdown`)
+- **Strategy, scope, ambition, "think bigger", "what should we build"** → `/plan` (invokes `grilling` → `architecture-decision-records`)
+- **Architecture review, lock in the plan, "does this design make sense"** → `/review` (invokes `grilling` → `architecture-decision-records`)
+
+### Development & Implementation
+- **Build feature per PLAN.md** → `dev-craft` (or `ui-craft` for frontend)
+- **Frontend/UI work, design system, component library** → `ui-craft`
+- **API design, contract, OpenAPI, GraphQL schema** → `api-design` → `api-contract-designer`
+- **Backend service, database, infrastructure** → `dev-craft` → `backend-patterns`, `database-migrations`
+- **Mobile app, React Native, Expo** → `dev-craft` → `ui-craft` (mobile plugins)
+
+### Debugging & Investigation
+- **Bug, error, broken behavior, "why is this broken", "this doesn't work", "wtf", "something's wrong"** → `/investigate` (invokes `debugging-and-error-recovery` → `verification-before-completion`)
+- **Failing test, build break, unexpected behavior** → `/investigate` (invokes `debugging-and-error-recovery`)
+- **Performance issue, slow query, bottleneck** → `performance-profiler-and-tuner`
+
+### Testing & Quality Assurance
+- **Test the site, find bugs, QA, "does this work", "check the deploy"** → `/qa` (invokes `qa-and-edge-case-tester` → `testing-strategies` → `verification-before-completion`)
+- **Just report bugs without fixing** → `qa-and-edge-case-tester` (analysis only)
+- **Generate tests, edge cases, boundary testing** → `qa-and-edge-case-tester`
+- **Visual regression, screenshot comparison** → `visual-regression`
+
+### Code Review
+- **Review code, check the diff, pre-landing review, "look at my changes"** → `/review` (invokes `code-review-and-quality` → `verification-before-completion`)
+- **Security review, OWASP, vulnerabilities, "is this secure"** → `bug-hunting` → `secops-and-vulnerability-scanner`
+
+### Deployment & Shipping
+- **Ship, deploy, push, create a PR, "let's land this", "send it"** → `/ship` (invokes `ship` → `verification-before-completion` → `verification-before-completion`)
+- **Merge + deploy + verify as one flow** → `ship` (with full pipeline)
+- **Configure deployment for the project** → `devops-automation`
+- **Monitor prod after shipping, post-deploy checks** → `observability-engineering`
+- **Update docs after shipping** → `documentation-engineering`
+
+### Context & Session Management
+- **Save progress, checkpoint, "save my work"** → `/context-save` (invokes `context-compressor-and-pruner` → `learn` → `handoff`)
+- **Resume, restore, "where was I", "continue work"** → `/context-restore` (invokes `context-engineering` → `handoff` → `learn`)
+- **Weekly retro, what did we ship, "how'd we do", "sprint retro"** → `/retro` (invokes `retro` → `learn`)
+
+### Documentation
+- **Write docs from scratch, generate documentation, "document this feature/module"** → `documentation-engineering`
+- **Update docs after shipping** → `documentation-engineering`
+
+### Cost & Optimization
+- **Optimize LLM costs, model routing, API budget, prompt caching** → `cost-optimizer` → `token-budget`
 
 ---
 
@@ -100,7 +160,7 @@ Every agent declares its **Skill Chain** in its file. The router invokes the fir
 ```
 product-thinking → planning-and-task-breakdown → grilling → dev-craft
   → (per slice) code-review-and-quality → verification-before-completion
-  → quality-gates → ship → learn
+  → verification-before-completion → ship → learn
 ```
 
 **New Feature (with specs):**
@@ -116,17 +176,17 @@ debugging-and-error-recovery → implementer → verification-before-completion
 
 **Code Review:**
 ```
-code-review-and-quality → quality-gates → verification-before-completion
+code-review-and-quality → verification-before-completion → verification-before-completion
 ```
 
 **Security Audit:**
 ```
-bug-hunting → code-review-and-quality → quality-gates → verification-before-completion
+bug-hunting → code-review-and-quality → verification-before-completion → verification-before-completion
 ```
 
 **Deployment:**
 ```
-ship → verification-before-completion → quality-gates → learn
+ship → verification-before-completion → verification-before-completion → learn
 ```
 
 **Weekly Cadence:**
@@ -156,7 +216,7 @@ retro → learn → (feeds into next week's product-thinking)
    - Plugins: `design-intelligence`, `anti-slop`
 4. `skill("code-review-and-quality")` — per slice
 5. `skill("verification-before-completion")` — per slice
-6. `skill("quality-gates")` — pre-merge
+6. `skill("verification-before-completion")` — pre-merge
 7. `skill("ship")` — release
 8. `skill("learn")` — capture learnings
 

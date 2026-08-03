@@ -30,7 +30,7 @@ metadata:
   phase-count: 15
   topology-support: [mono, multi]
   domain: fullstack
-  integrates-with: [planning-and-task-breakdown, quality-gates, verification-before-completion, debugging-and-error-recovery]
+  integrates-with: [planning-and-task-breakdown, verification-before-completion, verification-before-completion, debugging-and-error-recovery]
 ---
 
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -40,7 +40,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 ## Relationship to existing skills
 
 - `planning-and-task-breakdown` — produces PLAN.md that feeds into this skill's REQUIRE phase
-- `quality-gates` — layered validation before merge; dev-craft's REVIEW phase invokes this
+- `verification-before-completion` — layered validation before merge; dev-craft's REVIEW phase invokes this
 - `verification-before-completion` — evidence gates before claiming done; invoked at every phase exit
 - `debugging-and-error-recovery` — invoked during TEST phase when suites fail
 - `code-review-and-quality` — 8-axis review protocol used in REVIEW phase

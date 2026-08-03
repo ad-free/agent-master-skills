@@ -23,7 +23,7 @@ User Request Received
 │   └── (all of the above feed agent-orchestration when parallel agents are needed)
 │
 ├── Pre-merge or release validation?
-│   └── Yes → quality-gates (after dev-craft completes)
+│   └── Yes → verification-before-completion (after dev-craft completes)
 │
 ├── Is this a new feature or project?
 │   ├── Yes → Do you have a clear spec?
@@ -112,7 +112,7 @@ does not copy those rules; they have one source of truth.
 | Structuring backend service internals | `backend-patterns` |
 | Cleaning up code or removing dead code | `refactor-and-cleanup` |
 | Tests failing | `debugging-and-error-recovery` |
-| Systematic root-cause investigation | `systematic-debugging` |
+| Systematic root-cause investigation | `debugging-and-error-recovery` |
 | Building UI components | `ui-component-builder` |
 | Auditing design consistency and accessibility | `design-system-auditor` |
 | Adding animations and micro-interactions | `animation-and-interactions` |
@@ -122,7 +122,7 @@ does not copy those rules; they have one source of truth.
 | Scanning for security vulnerabilities | `secops-and-vulnerability-scanner` |
 | Profiling and tuning performance | `performance-profiler-and-tuner` |
 | Compressing and pruning agent context | `context-compressor-and-pruner` |
-| Evaluating and benchmarking agent output | `agent-evaluator-and-benchmark` |
+| Evaluating and benchmarking agent output | `agent-eval` |
 | About to say "done" | `verification-before-completion` |
 | Reviewing code | `code-review-and-quality` |
 | Security audit / bug bounty | `bug-hunting` |
@@ -143,10 +143,10 @@ does not copy those rules; they have one source of truth.
 | If the user says… | Load THIS | NOT this (adjacent skill) |
 |-------------------|-----------|---------------------------|
 | "what kind of test should I write" | `testing-strategies` | `verification-before-completion` / `code-review-and-quality` |
-| "is this ready to merge" | `quality-gates` / `verification-before-completion` | `testing-strategies` |
+| "is this ready to merge" | `verification-before-completion` / `verification-before-completion` | `testing-strategies` |
 | "design the API for the new webhook endpoint" | `api-design` | `dev-craft` (BUILD) / `bug-hunting` |
 | "review this endpoint for security holes" | `bug-hunting` | `api-design` |
-| "how should we roll this out" | `devops-automation` | `quality-gates` |
+| "how should we roll this out" | `devops-automation` | `verification-before-completion` |
 | "did the deploy actually succeed" | `verification-before-completion` | `devops-automation` |
 | "what should we alert on for this service" | `observability-engineering` | `bug-hunting` / `dev-craft` HARDEN |
 | "is this service hardened against attack" | `dev-craft` HARDEN / `bug-hunting` | `observability-engineering` |
@@ -154,7 +154,7 @@ does not copy those rules; they have one source of truth.
 | "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `architecture-patterns` |
 | "migrate the database schema" | `database-migrations` | `backend-patterns` |
 | "clean up this module" | `refactor-and-cleanup` | `backend-patterns` |
-| "debug this failing test" | `systematic-debugging` | `debugging-and-error-recovery` |
+| "debug this failing test" | `debugging-and-error-recovery` | `verification-before-completion` |
 | "build a new UI component" | `ui-component-builder` | `ui-craft` (general UI work) |
 | "audit the design consistency" | `design-system-auditor` | `design-system-validate` (token validation) |
 | "add animation to this component" | `animation-and-interactions` | `ui-craft` (general UI work) |
@@ -164,8 +164,8 @@ does not copy those rules; they have one source of truth.
 | "scan for security vulnerabilities" | `secops-and-vulnerability-scanner` | `bug-hunting` (security discovery) |
 | "profile the performance" | `performance-profiler-and-tuner` | `dev-craft/plugins/performance-profiling` (profiling within dev-craft) |
 | "compress the context" | `context-compressor-and-pruner` | `context-engineering` (context setup) |
-| "evaluate the agent output" | `agent-evaluator-and-benchmark` | `quality-gates` (general quality validation) |
-| "how should we roll this out" | `devops-automation` | `quality-gates` |
+| "evaluate the agent output" | `agent-eval` | `verification-before-completion` (general quality validation) |
+| "how should we roll this out" | `devops-automation` | `verification-before-completion` |
 | "did the deploy actually succeed" | `verification-before-completion` | `devops-automation` |
 | "what should we alert on for this service" | `observability-engineering` | `bug-hunting` / `dev-craft` HARDEN |
 | "is this service hardened against attack" | `dev-craft` HARDEN / `bug-hunting` | `observability-engineering` |
@@ -184,7 +184,7 @@ does not copy those rules; they have one source of truth.
    ├── Both use: debugging-and-error-recovery (failures)
 5. code-review-and-quality → per-slice review
 6. verification-before-completion → per-slice evidence
-7. quality-gates → pre-merge layered validation
+7. verification-before-completion → pre-merge layered validation
 8. bug-hunting → security audit (pre-deploy)
 9. ship → automated release
 10. learn → capture learnings
@@ -232,8 +232,6 @@ does not copy those rules; they have one source of truth.
 | `debugging-and-error-recovery` | Root-cause investigation (4-phase + hypothesis testing + regression prevention + self-correction loops) | Tests fail, bugs reported, unexpected behavior | 2.0.0 | 4 |
 | `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete | 1.0.0 | 3 |
 | `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist | 1.1.0 | 3 |
-| `subagent-driven-development` | Parallel sub-agent feature development with worktree isolation and shared contracts | **NO SUBAGENT STARTS WITHOUT A SHARED CONTRACT** | Large features decomposed into independent work streams | 1.0.0 | 3 |
-| `systematic-debugging` | Structured root-cause investigation with hypothesis falsification | **NO FIX WITHOUT ROOT CAUSE IDENTIFIED** | Debugging failing tests, unexpected behavior, regressions | 1.0.0 | 4 |
 | `ui-component-builder` | Build accessible, modular React/Vue/Tailwind components with design tokens | **NO COMPONENT WITHOUT DESIGN TOKEN CONSISTENCY** | Creating UI components, component libraries, responsive UI | 1.0.0 | 3 |
 | `design-system-auditor` | Audit UI code for design consistency, responsiveness, performance, and WCAG | **NO UI WITHOUT DESIGN TOKEN COMPLIANCE** | Validating UI against design tokens and accessibility standards | 1.0.0 | 3 |
 | `animation-and-interactions` | CSS/Framer Motion animations, micro-interactions, and visual polish | **NO ANIMATION WITHOUT PERFORMANCE BUDGET** | Adding motion, transitions, and micro-interactions to UI | 1.0.0 | 3 |
@@ -243,7 +241,7 @@ does not copy those rules; they have one source of truth.
 | `secops-and-vulnerability-scanner` | Static analysis, OWASP Top 10, dependency audit, secrets detection | **NO VULNERABILITY WITHOUT A REMEDIATION PLAN** | Security audits, vulnerability scanning, pre-release security validation | 1.0.0 | 4 |
 | `performance-profiler-and-tuner` | Bottleneck analysis, memory leak detection, query optimization, profiling | **NO OPTIMIZATION WITHOUT MEASURED IMPACT** | Performance degradation, bottleneck analysis, runtime profiling | 1.0.0 | 3 |
 | `context-compressor-and-pruner` | Context window management, summarization, stale context pruning | **NO PRUNING WITHOUT PRESERVING OPERATIONAL MEMORY** | Long-running sessions, context overflow, agent handoff | 1.0.0 | 3 |
-| `agent-evaluator-and-benchmark` | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis | **NO EVALUATION WITHOUT SELF-CORRECTION** | Agent quality assessment, output benchmarking, failure diagnosis | 1.0.0 | 3 |
+| `agent-eval` | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis | **NO EVALUATION WITHOUT SELF-CORRECTION** | Agent quality assessment, output benchmarking, failure diagnosis | 1.0.0 | 3 |
 | `image-to-design-spec` | Analyzes screenshots → design tokens | User provides visual reference material | 2.0.0 | 3 |
 | `skill-creator` | Create/modify skills for agent-master-skills | Building new skills, improving existing | 2.0.0 | 2 |
 
@@ -285,23 +283,23 @@ agent-router (bootstrap) ──→ routes to pipeline
     │       │   └── Plugins: architecture-patterns, api-design, design-intelligence, backend-patterns
     │       │
     │       ├── Phase 3-5: SOURCE, BUILD, TEST
-    │       │   └── Uses: debugging-and-error-recovery, testing-strategies, database-migrations, systematic-debugging
+    │       │   └── Uses: debugging-and-error-recovery, testing-strategies, database-migrations
     │       │   └── Refactor: refactor-and-cleanup
     │       │   └── Parallel: dispatching-parallel-agents
-    │       │   └── Multi-agent: agent-orchestration (git worktrees), subagent-driven-development
+    │       │   └── Multi-agent: agent-orchestration (git worktrees)
     │       │   └── UI: ui-component-builder, animation-and-interactions, design-system-auditor
     │       │   └── Integration: api-contract-designer, qa-and-edge-case-tester
     │       │   └── Architecture: architecture-decision-records
     │       │   └── Security: secops-and-vulnerability-scanner
     │       │   └── Performance: performance-profiler-and-tuner
     │       │   └── Context: context-compressor-and-pruner
-    │       │   └── Evaluation: agent-evaluator-and-benchmark
+    │       │   └── Evaluation: agent-eval
     │       │
     │       ├── Phase 6: REVIEW
     │       │   └── Uses: code-review-and-quality (8-axis + gates)
     │       │
     │       ├── Phase 7: HARDEN
-    │       │   └── Uses: quality-gates (5 gates), bug-hunting (security)
+    │       │   └── Uses: verification-before-completion (5 gates), bug-hunting (security)
     │       │
     │       ├── Phase 8: SHIP
     │       │   └── Uses: ship (automated), verification-before-completion
@@ -316,7 +314,7 @@ agent-router (bootstrap) ──→ routes to pipeline
     └── Weekly: retro → learn
 
 Verification Gates (every slice):
-    verification-before-completion → quality-gates → ship
+    verification-before-completion → verification-before-completion → ship
 ```
 
 ---
@@ -510,17 +508,6 @@ All 40 agents with model assignments and allowed-tools restrictions:
 | `debugger` | nemotron-3-ultra-free | Read, Grep, Glob, Bash | 15 | Root-cause investigation |
 | `test-engineer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | Test strategy, flaky fixes |
 | `docs-engineer` | gpt-5-nano | Read, Write, Edit | 8 | ADRs, API docs, runbooks |
-| `evaluator-agent` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 10 | Agent output evaluation and benchmarking |
-| `adr-agent` | deepseek-v4-flash-free | Read, Write, Edit, Grep, Glob | 10 | Architecture decision records |
-| `cost-optimizer-agent` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 8 | LLM cost optimization and model routing |
-| `design-system-auditor-agent` | deepseek-v4-flash-free | Read, Grep, Glob | 10 | UI design consistency and accessibility audit |
-| `image-to-design-agent` | deepseek-v4-flash-free | Read, Write, Grep, Glob | 10 | Screenshot-to-design-spec conversion |
-| `observability-agent` | deepseek-v4-flash-free | Read, Write, Edit, Bash, Grep, Glob | 12 | Observability contract and instrumentation |
-| `performance-profiler-agent` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 12 | Performance bottleneck detection and optimization |
-| `secops-agent` | big-pickle | Read, Grep, Glob, Bash | 12 | Security audit, vulnerability scanning, secrets detection |
-| `skill-composer-agent` | deepseek-v4-flash-free | Read, Write, Edit, Grep, Glob, Bash | 10 | Skill composition and workflow assembly |
-| `skill-creator-agent` | deepseek-v4-flash-free | Read, Write, Edit, Grep, Glob, Bash | 10 | Skill creation and modification |
-| `token-budget-agent` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 8 | Token budget management and context optimization |
 
 ### Meta / Orchestration
 | Agent | Model | Allowed Tools | Max Steps | Purpose |
@@ -529,11 +516,11 @@ All 40 agents with model assignments and allowed-tools restrictions:
 | `context-guard` | gpt-5-nano | Read, Bash | 3 | Context rotation, handoffs |
 | `retro-analyst` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 10 | Weekly retrospectives |
 
-### Legacy Agents (Aliased to Specialists)
-| Legacy Agent | Now Use |
+### Removed Agents (Superseded by Specialists/Skills — deleted from registry)
+| Removed Agent | Now Use |
 |--------------|---------|
 | `senior-developer` | `planner` + `implementer` |
-| `backend-architect` | `api-designer` + `database-engineer` |
+| `backend-architect` | `planner` → `api-designer` + `database-engineer` |
 | `frontend-developer` | `frontend-engineer` |
 | `code-reviewer` | `verifier` (auto) + `security-auditor` (security) |
 | `application-security-engineer` | `security-auditor` |
@@ -543,6 +530,7 @@ All 40 agents with model assignments and allowed-tools restrictions:
 | `ai-engineer` | `implementer` (ML tasks) |
 | `api-tester` | `test-engineer` |
 | `quality-engineer` | `test-engineer` + `verifier` |
-| `mobile-developer` | `frontend-engineer` (mobile) |
+| `mobile-developer` | `implementer` (mobile) |
 | `product-manager` | `planner` + `product-thinking` skill |
 | `technical-writer` | `docs-engineer` |
+| `evaluator-agent` | `agent-eval` skill |

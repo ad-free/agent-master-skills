@@ -26,7 +26,7 @@ Route by task type, not by tech stack. Skills chain — follow the arrow.
 | Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
 | Frontend / UI work | ui-craft (+ frontend-design for visual polish) → verification-before-completion |
 | Screenshot / image reference | image-to-design-spec → ui-craft |
-| Infra / IaC / deploy change | dev-craft → Infra Safety (§ 7) → quality-gates |
+| Infra / IaC / deploy change | dev-craft → Infra Safety (§ 7) → verification-before-completion |
 | Large multi-module project | dev-craft + agent-orchestration |
 | Multiple independent tasks | dispatching-parallel-agents |
 | Review code | code-review-and-quality |

@@ -65,7 +65,7 @@ Execute complex multi-module work faster through parallel, coordinated agents â€
 |------------|-------|-------|
 | Backend API | `implementer` + `api-designer` | `big-pickle` / `nemotron-3-ultra-free` |
 | Frontend UI | `frontend-engineer` | `big-pickle` |
-| Mobile App | `mobile-developer` | `big-pickle` |
+| Mobile App | `implementer` | `big-pickle` |
 | Database | `database-engineer` | `deepseek-v4-flash-free` |
 | DevOps/Infra | `devops-engineer` | `deepseek-v4-flash-free` |
 

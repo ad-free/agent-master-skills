@@ -26,7 +26,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: debugging
-  integrates-with: [verification-before-completion, dev-craft, test-engineer, systematic-debugging]
+  integrates-with: [verification-before-completion, dev-craft, test-engineer, bug-hunting]
 ---
 
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -35,10 +35,10 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## Relationship to existing skills
 
-- `systematic-debugging` — hypothesis-testing framework this skill builds on; load `systematic-debugging` for the full scientific-method debugging loop
+- `bug-hunting` — security-focused debugging; this skill covers general debugging
 - `dev-craft` — invokes this skill during TEST phase when suites fail
 - `verification-before-completion` — runs after fixes to confirm evidence
-- `bug-hunting` — security-focused debugging; this skill covers general debugging
+- `code-review-and-quality` — validates that the fix does not introduce new issues
 
 ## When to Use
 
@@ -244,7 +244,7 @@ This loop prevents the most common debugging failure mode: declaring a fix done 
 
 ## Integration
 
-**Use with:** `dev-craft` (BUILD TDD loop), `verification-before-completion` (verify fixes), `bug-hunting` (security vuln debugging), `quality-gates` (deterministic checks), `systematic-debugging` (hypothesis-testing framework).
+**Use with:** `dev-craft` (BUILD TDD loop), `verification-before-completion` (verify fixes), `bug-hunting` (security vuln debugging).
 
 ## Quality Gates
 

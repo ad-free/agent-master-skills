@@ -8,3 +8,8 @@ __pycache__/
 .DS_Store
 .env/
 *.pyc
+eval-results.json
+eval-report.html
+.dev-craft/eval/**/results/
+skills/**/eval/results/
+skills/**/eval/logs/

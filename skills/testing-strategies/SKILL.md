@@ -34,7 +34,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## Relationship to existing skills
 
-dev-craft's TEST phase should invoke this skill BEFORE writing tests, to decide the test type and stated failure mode for each test. quality-gates runs the test plan this skill produces; code-review-and-quality judges tests against their stated failure modes; verification-before-completion runs the full suite. This skill owns the "what and why" of the test strategy, not the "how" of writing individual tests.
+dev-craft's TEST phase should invoke this skill BEFORE writing tests, to decide the test type and stated failure mode for each test. verification-before-completion runs the test plan this skill produces; code-review-and-quality judges tests against their stated failure modes; verification-before-completion runs the full suite. This skill owns the "what and why" of the test strategy, not the "how" of writing individual tests.
 
 ## Iron Law
 

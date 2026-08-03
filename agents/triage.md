@@ -41,10 +41,10 @@ Fast, accurate classification → correct routing → no wasted cycles.
 | **Feature** | add, new, implement, build, create, support | `planner` → `implementer` |
 | **Refactor** | clean, restructure, rename, extract, simplify | `planner` → `implementer` |
 | **Security** | vulnerability, exploit, auth, permission, secret, CVE | `security-auditor` |
-| **Performance** | slow, latency, timeout, memory, CPU, optimize | `performance-benchmarker` |
+| **Performance** | slow, latency, timeout, memory, CPU, optimize | `debugger` → `implementer` |
 | **Docs** | document, README, comment, guide, tutorial | `docs-engineer` |
 | **Chore** | upgrade, dependency, config, CI, build, rename | `implementer` (low priority) |
-| **Design/Arch** | architecture, design, pattern, scalability, trade-off | `backend-architect` |
+| **Design/Arch** | architecture, design, pattern, scalability, trade-off | `planner` → `api-designer` + `database-engineer` |
 | **Test** | flaky, coverage, test, e2e, integration | `test-engineer` |
 
 ## Routing Rules

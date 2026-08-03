@@ -54,13 +54,11 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 
 | Skill | Purpose | Iron Law |
 |-------|---------|----------|
-| `quality-gates` | Layered validation: structure → deterministic → security → convention → LLM-judge | NO MERGE WITHOUT QUALITY GATES |
+| `verification-before-completion` | Layered validation: structure → deterministic → security → convention → LLM-judge | NO MERGE WITHOUT QUALITY GATES |
 | `code-review-and-quality` | 8-axis code review protocol | NO CODE WITHOUT REVIEW EVIDENCE |
 | `verification-before-completion` | Evidence gates before claiming done | NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE |
 | `debugging-and-error-recovery` | Systematic root-cause investigation | NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST |
 | `bug-hunting` | Deep security vulnerability discovery | NO ATTACK SURFACE WITHOUT INTENTIONAL PROBING |
-| `subagent-driven-development` | Parallel sub-agent feature development with worktree isolation and shared contracts | NO SUBAGENT STARTS WITHOUT A SHARED CONTRACT | Coordinating sub-agents in isolated worktrees for large features | 2.0.0 |
-| `systematic-debugging` | Structured root-cause investigation with hypothesis falsification | NO FIX WITHOUT ROOT CAUSE IDENTIFIED | Debugging failing tests, unexpected behavior, and regressions | 2.0.0 |
 | `api-contract-designer` | OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data | NO INTEGRATION WITHOUT A SIGNED CONTRACT | Designing FE-BE integration contracts and generating types | 2.0.0 |
 | `qa-and-edge-case-tester` | Automated test generation, edge-case analysis, boundary testing | NO TEST WITHOUT A STATED FAILURE MODE | Generating tests, analyzing edge cases, suppressing false positives | 2.0.0 |
 | `bug-hunting` | Deep security vulnerability discovery | NO ATTACK SURFACE WITHOUT INTENTIONAL PROBING |
@@ -91,8 +89,6 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `database-migrations` | Coding & Engineering | Safe schema changes with rollback, backfill, and zero-downtime deployment |
 | `backend-patterns` | Coding & Engineering | Hexagonal, layered, CQRS, repository, saga, event sourcing implementation patterns |
 | `refactor-and-cleanup` | Coding & Engineering | Dead code removal, duplication elimination, naming, complexity reduction |
-| `subagent-driven-development` | Orchestration & Frameworks | Parallel sub-agent feature development with worktree isolation and shared contracts |
-| `systematic-debugging` | Orchestration & Frameworks | Structured root-cause investigation with hypothesis falsification |
 | `agent-router` | Single entry point: maps request → agent → skill chain | New (bootstrap) | First skill to load; routes all work |
 
 ### Batch 2 — New Skills (v2.1)
@@ -113,7 +109,8 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `secops-and-vulnerability-scanner` | Security & Specialized | Static analysis, OWASP Top 10, dependency audit, secrets detection |
 | `performance-profiler-and-tuner` | Performance & Specialized | Bottleneck analysis, memory leak detection, query optimization, profiling |
 | `context-compressor-and-pruner` | Orchestration & Specialized | Context window management, summarization, stale context pruning |
-| `agent-evaluator-and-benchmark` | Orchestration & Specialized | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis |
+| `agent-eval` | Orchestration & Specialized | Head-to-head agent comparison: pass rate, cost, time, consistency on custom tasks |
+| `agent-eval` | Orchestration & Specialized | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis |
 
 ### Plugins
 
@@ -174,7 +171,7 @@ product-thinking ─────────────────────
         └── Mobile agent    (mobile app)
 
     Pre-merge validation:
-      quality-gates ──→ Gate 0 (Schema) → Gate 1 (Structure) → Gate 2 (Deterministic)
+      verification-before-completion ──→ Gate 0 (Schema) → Gate 1 (Structure) → Gate 2 (Deterministic)
                       → Gate 3 (Security)  → Gate 4 (Convention) → Gate 5 (LLM-Judge)
 
     Throughout:
@@ -208,6 +205,9 @@ product-thinking ─────────────────────
 | `debugger` | nemotron-3-ultra-free | Root-cause investigation |
 | `test-engineer` | big-pickle | Test strategy, flaky fixes |
 | `docs-engineer` | gpt-5-nano | ADRs, API docs, runbooks |
+| `react-ts-reviewer` | big-pickle | React/TS deep review (hooks, re-renders, types) |
+| `python-reviewer` | big-pickle | Python deep review (async, typing, idioms) |
+| `go-reviewer` | big-pickle | Go deep review (concurrency, error handling) |
 
 ### Meta / Orchestration
 | Agent | Model | Purpose |
@@ -251,7 +251,7 @@ In `opencode.json`:
       "project-discovery": "allow",
       "dev-craft": "allow",
       "agent-orchestration": "allow",
-      "quality-gates": "allow",
+      "verification-before-completion": "allow",
       "context-engineering": "allow",
       "agent-router": "allow",
       "token-budget": "allow",
@@ -289,7 +289,7 @@ In `opencode.json`:
 > → `agent-router` → `planner` + `orchestrator`
 > → `product-thinking` → `planning-and-task-breakdown`
 > → `dev-craft` (master) + `agent-orchestration` (backend/frontend/mobile)
-> → `quality-gates` before merge
+> → `verification-before-completion` before merge
 
 ## Philosophy
 
@@ -327,7 +327,7 @@ Entry: agent-router (bootstrap)
     │       │   └── Uses: code-review-and-quality (8-axis + gates)
     │       │
     │       ├── Phase 7: HARDEN
-    │       │   └── Uses: quality-gates (6 gates), bug-hunting (security)
+    │       │   └── Uses: verification-before-completion (6 gates), bug-hunting (security)
     │       │
     │       ├── Phase 8: SHIP
     │       │   └── Uses: ship (automated), verification-before-completion
@@ -342,10 +342,48 @@ Entry: agent-router (bootstrap)
     └── Weekly: retro → learn
 
 Verification Gates (every slice):
-    verification-before-completion → quality-gates → ship
+    verification-before-completion → verification-before-completion → ship
 ```
 
 See `skills/SHARED.md` for the complete skill inventory and decision tree.
+
+## Commands & Contexts
+
+Quick-invokable workflows live in `commands/`, mode-specific configs in `contexts/`.
+
+### Commands (`commands/`)
+
+| Command | Workflow |
+|---------|----------|
+| `/plan` | Scope → plan → review → approve (`product-thinking` → `planning-and-task-breakdown` → `grilling`) |
+| `/spec` | Requirements → spec → plan (`project-discovery` → `product-thinking` → `planning-and-task-breakdown`) |
+| `/review` | Code review pipeline (`code-review-and-quality` → `verification-before-completion` → `secops`) |
+| `/investigate` | Debugging (`debugging-and-error-recovery` → `verification-before-completion`) |
+| `/qa` | Test generation + validation (`qa-and-edge-case-tester` → `testing-strategies` → `visual-regression`) |
+| `/ship` | Ship/deploy (`ship` → `verification-before-completion` → `verification-before-completion`) |
+| `/context-save` | Checkpoint (`context-compressor-and-pruner` → `learn` → `handoff`) |
+| `/context-restore` | Resume (`context-engineering` → `handoff` → `learn`) |
+| `/retro` | Weekly retrospective (`retro` → `learn`) |
+
+### Contexts (`contexts/`)
+
+| Context | Model | Preamble | Best For |
+|---------|-------|----------|----------|
+| `dev` | big-pickle | tier 3 | Implementation, coding |
+| `review` | nemotron-3-ultra-free | tier 4 | Analysis, review, audit |
+| `research` | nemotron-3-ultra-free | tier 2 | Exploration, discovery |
+| `debug` | nemotron-3-ultra-free | tier 2 | Root-cause investigation |
+
+## Evaluation Framework
+
+The repo ships two evaluation layers:
+
+| Layer | Purpose | Tooling |
+|-------|---------|---------|
+| `eval-harness` | Golden regression of skills (EDD: capability/regression evals, pass@k, code/model/human graders) | `tools/eval_harness.py`, `tools/validate_eval_cases.py` |
+| `agent-eval` | Head-to-head agent comparison (pass rate, cost, time, consistency) | Task YAMLs in `.eval-agents/tasks/` |
+
+Eval cases live under `skills/<skill>/eval/cases/*.yaml`. CI runs them via `.github/workflows/eval-harness.yml`.
 
 ## Examples
 
@@ -369,6 +407,18 @@ python tools/validate_skills.py
 
 ```bash
 python tools/validate_agents.py
+```
+
+  - Validate eval cases:
+
+```bash
+python tools/validate_eval_cases.py
+```
+
+  - Run eval harness (CI mode):
+
+```bash
+python tools/eval_harness.py ci
 ```
 
   - Run tests:
