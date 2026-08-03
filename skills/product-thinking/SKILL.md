@@ -3,7 +3,7 @@ name: product-thinking
 description: |
   Transform vague ideas into structured product specifications through 4-round refinement.
   Use when input is vague, incomplete, or "I have an idea..." — before planning.
-  Invoked by: triage, planner, product-manager.
+  Invoked by: triage, planner.
   
 model: nemotron-3-ultra-free
 version: 2.0.0

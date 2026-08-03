@@ -26,7 +26,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: specialized-engineering
-  integrates-with: [dev-craft, bug-hunting, quality-gates]
+  integrates-with: [dev-craft, bug-hunting, verification-before-completion]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.

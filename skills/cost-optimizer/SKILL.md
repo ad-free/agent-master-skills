@@ -258,7 +258,7 @@ async def call_llm_with_cache(
 | `debugger`, `performance-engineer` | `nemotron-3-ultra-free` | Deep analysis |
 | `api-designer`, `frontend-engineer`, `database-engineer`, `test-engineer` | `big-pickle` | Coding tasks |
 | `devops-engineer`, `docs-engineer`, `triage`, `gatekeeper` | `deepseek-v4-flash-free` | Fast utility |
-| `product-manager`, `retro-analyst` | `gpt-5-nano` | Quick classification |
+| `retro-analyst` | `gpt-5-nano` | Quick classification |
 
 ### Automatic Routing in Skills
 

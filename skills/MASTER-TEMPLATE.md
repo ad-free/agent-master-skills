@@ -73,6 +73,23 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 <What the skill must produce on completion>
 
+## Completion Status Protocol
+
+**Every skill must report completion status using one of:**
+
+- **DONE** — Completed with evidence (lint output, test results, typecheck, files created)
+- **DONE_WITH_CONCERNS** — Completed, but list concerns (known limitations, follow-ups needed, tech debt)
+- **BLOCKED** — Cannot proceed; state blocker and what was tried (missing info, env issue, root cause unclear after 2 rounds)
+- **NEEDS_CONTEXT** — Missing info; state exactly what is needed (requirements, access, clarification, data)
+
+**Escalation Format:** `STATUS`, `REASON`, `ATTEMPTED`, `RECOMMENDATION`
+
+**Mandatory Evidence for DONE:**
+- Lint/typecheck/test output (not claimed, shown)
+- No tests weakened/skipped/deleted to pass
+- Edge cases handled (null/empty/boundary)
+- Self-review complete (code-review-and-quality or equivalent)
+
 ## Quality Gates
 
 - <Check 1>

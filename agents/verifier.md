@@ -118,7 +118,7 @@ or
 
 ## Skill Chain
 1. `skill("verification-before-completion")` — core verification logic
-2. `skill("quality-gates")` — layered validation
+2. `skill("verification-before-completion")` — layered validation
 3. `skill("learn")` — record learnings
 
 ## Handoff

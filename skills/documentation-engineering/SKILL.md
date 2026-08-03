@@ -43,7 +43,7 @@ Treats documentation as code — versioned, reviewed, tested, deployed.
 
 - Creating any technical documentation (ADRs, API refs, runbooks, guides)
 - Setting up docs-as-code pipeline (lint, test, build, deploy)
-- Post-review documentation updates (after `mr-pr-review`)
+- Post-review documentation updates (after `code-review-and-quality`)
 - Onboarding new team members
 
 **When NOT to use:** Quick comments in code, trivial README tweaks.
@@ -432,7 +432,7 @@ jobs:
 ## Integration Points
 
 ### Post-Review (Gate 7)
-After `mr-pr-review` completes, human asked:
+After `code-review-and-quality` completes, human asked:
 > "Generate documentation? [y/n/m/s]"
 If yes → invoke this skill with type selection.
 

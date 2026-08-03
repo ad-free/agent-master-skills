@@ -172,6 +172,17 @@ Verdict: WARNING — 2 HIGH issues should be resolved before merge.
 
 Never withhold approval to appear rigorous. If the diff is clean, approve it.
 
+## Language-Specific Deep Review
+For large or language-heavy diffs, dispatch a specialized reviewer for a second pass:
+- React/TypeScript → `react-ts-reviewer` agent
+- Python/FastAPI/Django → `python-reviewer` agent
+- Go/gRPC/concurrency → `go-reviewer` agent
+
+Rules:
+- Generic review runs first; specialized reviewer only if language share > 50% of diff
+- Specialized reviewer focuses on language-specific axes, not the full 8-axis
+- Merge both reports; blocking issues from either must be resolved
+
 ## Skill Chain
 1. `skill("agent-router")` — routes to pipeline
 2. `skill("code-review-and-quality")` — loads review methodology

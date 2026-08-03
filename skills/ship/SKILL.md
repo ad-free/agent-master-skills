@@ -30,7 +30,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: planning-execution
-  integrates-with: [dev-craft, verification-before-completion, quality-gates]
+  integrates-with: [dev-craft, verification-before-completion, verification-before-completion]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
@@ -291,6 +291,6 @@ gh pr create \
 - Called by `shipper` agent
 - Uses `verification-before-completion` for gates
 - Uses `code-review-and-quality` for review
-- Uses `quality-gates` for layered validation
+- Uses `verification-before-completion` for layered validation
 - Feeds `learn` with release learnings
 - Feeds `retro` with deployment metrics

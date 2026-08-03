@@ -5,7 +5,7 @@ description: |
   configurations, automated rollback strategies, and deployment validation gates. Use when
   deciding deployment mechanics, rollback strategy, CI/CD pipeline shape, or
   infrastructure-as-code choices. Do NOT use for "is this ready to deploy" (see
-  quality-gates) or for writing the pipeline YAML itself (that's plain BUILD work
+  verification-before-completion) or for writing the pipeline YAML itself (that's plain BUILD work
   once the strategy is decided).
 model: deepseek-v4-flash-free
 version: 2.0.0
@@ -34,7 +34,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: devops
-  integrates-with: [quality-gates, dev-craft, verification-before-completion, security-audit]
+  integrates-with: [verification-before-completion, dev-craft, verification-before-completion, security-audit]
 ---
 
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -44,7 +44,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 ## Relationship to existing skills
 
 - `dev-craft` — dev-craft's SHIP phase invokes this skill for deployment mechanics and rollback path, rather than deciding the strategy ad hoc per deploy
-- `quality-gates` — runs before this skill; it validates the artifact; this skill defines how the validated artifact gets to production and back
+- `verification-before-completion` — runs before this skill; it validates the artifact; this skill defines how the validated artifact gets to production and back
 - `security-audit` — security-by-default configurations in this skill complement the security audit
 - `verification-before-completion` — runs after deployment to confirm the release succeeded
 
@@ -58,7 +58,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Setting up progressive delivery (canary, blue-green)
 - Infrastructure-as-code decisions (Terraform, Kubernetes)
 
-**When NOT to use:** "Is this ready to deploy?" (see `quality-gates`), writing pipeline YAML itself (that's BUILD work once the strategy is decided), or trivial config changes.
+**When NOT to use:** "Is this ready to deploy?" (see `verification-before-completion`), writing pipeline YAML itself (that's BUILD work once the strategy is decided), or trivial config changes.
 
 ## The Iron Law
 

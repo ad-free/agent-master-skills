@@ -21,7 +21,7 @@ metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
   axes: 8
-  integrates-with: [verification-before-completion, quality-gates, bug-hunting]
+  integrates-with: [verification-before-completion, verification-before-completion, bug-hunting]
   source-enhancements: ECC code-reviewer (Pre-Report Gate, False Positives, Confidence Filtering)
 ---
 

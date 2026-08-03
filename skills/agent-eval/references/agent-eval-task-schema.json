@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["name", "description", "repo", "prompt", "judge"],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "repo": { "type": "string" },
+    "files": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "prompt": { "type": "string" },
+    "commit": { "type": "string" },
+    "judge": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "type": "string", "enum": ["pytest", "command", "grep", "llm"] },
+          "command": { "type": "string" },
+          "pattern": { "type": "string" },
+          "files": { "type": "array", "items": { "type": "string" } },
+          "prompt": { "type": "string" }
+        }
+      },
+      "minItems": 1
+    },
+    "timeout": { "type": "integer", "default": 300 }
+  }
+}

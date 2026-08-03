@@ -100,7 +100,7 @@ Prevent broken code from being written, committed, or merged. Enforce discipline
 
 ## Skill Chain
 1. `skill("verification-before-completion")` — gate logic
-2. `skill("quality-gates")` — gate definitions
+2. `skill("verification-before-completion")` — gate definitions
 3. `skill("context-engineering")` — context monitoring
 
 ## Handoff

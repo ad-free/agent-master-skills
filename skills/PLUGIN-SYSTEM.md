@@ -89,6 +89,29 @@ Plugins are registered in `state.json`:
 3. **Configurable** — Accept config via `state.json`
 4. **Documented** — Clear SKILL.md with examples
 5. **Tested** — Include test cases in plugin
+6. **Completion Protocol** — Every plugin phase must report status: **DONE** / **DONE_WITH_CONCERNS** / **BLOCKED** / **NEEDS_CONTEXT** with evidence
+
+---
+
+## Completion Status Protocol (Standard for All Skills & Plugins)
+
+**Every skill and plugin phase must report completion status:**
+
+| Status | Meaning | Required Evidence |
+|--------|---------|-------------------|
+| **DONE** | Completed successfully | Lint/type/test output, files created, edge cases handled |
+| **DONE_WITH_CONCERNS** | Completed with caveats | Same as DONE + documented concerns/limitations |
+| **BLOCKED** | Cannot proceed | Blocker description, what was tried, recommendation |
+| **NEEDS_CONTEXT** | Missing information | Exactly what info is needed to proceed |
+
+**Escalation Format:** `STATUS`, `REASON`, `ATTEMPTED`, `RECOMMENDATION`
+
+**Mandatory for DONE:**
+- [ ] Lint, typecheck, tests all pass — output shown
+- [ ] No test weakened/skipped/deleted to force pass
+- [ ] Edge cases handled (null/empty/boundary)
+- [ ] Self-review complete (code-review-and-quality or equivalent)
+- [ ] No stray TODO/FIXME uncaptured in issue
 
 ---
 

@@ -1,0 +1,32 @@
+name: "dev-craft mono-repo state topology"
+skill: "dev-craft"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Build a payment integration"
+  context:
+    currentPhase: "SCOPE"
+
+execution:
+  phases: ["SCOPE", "BUILD"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/dev-craft/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "not_contains"
+      path: "$.state.topology"
+      expected: "multi"
+
+teardown:
+  removeTempDirs: true

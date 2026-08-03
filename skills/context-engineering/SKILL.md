@@ -226,9 +226,9 @@ Master agent loads this skill for context slicing. Each worker gets a Level 2 su
 
 Each parallel task gets an isolated context slice. Shared context limited to: API contract, conventions, glossary.
 
-### quality-gates
+### verification-before-completion
 
-Gate 5 (LLM-Judge) operates within defined budget. If diff > 4k tokens, split into chunks per quality-gates chunking rules.
+Gate 5 (LLM-Judge) operates within defined budget. If diff > 4k tokens, split into chunks per verification-before-completion chunking rules.
 
 ---
 
@@ -278,7 +278,7 @@ On cross-agent coordination: invokes `skill("agent-orchestration")` for context 
 - `dev-craft` — Full-stack pipeline with HANDOFF phase
 - `agent-orchestration` — Multi-agent builds with per-agent context slicing
 - `dispatching-parallel-agents` — Parallel execution with isolated context
-- `quality-gates` — LLM-Judge context budget for evaluation
+- `verification-before-completion` — LLM-Judge context budget for evaluation
 - `verification-before-completion` — Evidence gates for state.json accuracy
 - `skills/references/handoff-protocol.md` — Standardized handoff format
 - `skills/SHARED.md` — Cross-skill communication and handoff format

@@ -38,6 +38,9 @@ jobs:
       - name: Validate agent files
         run: python tools/validate_agents.py
 
+      - name: Validate eval cases
+        run: python tools/validate_eval_cases.py
+
       - name: Run tests
         run: pytest -q
       - name: Optional dev-craft state validation
