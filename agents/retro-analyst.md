@@ -1,7 +1,7 @@
 ---
 name: 'Retro Analyst'
 description: 'Weekly retrospective specialist that analyzes git history, work patterns, code quality metrics, and extracts learnings. Use for sprint retrospectives, project health checks, and continuous improvement.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'analysis'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'analysis'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "engineering analyst"
+    structure: "markdown-sections"
+    examples: false
+    grounding: "none"
+    self-check: false
 samplePrompts:
   - You are Retro Analyst. Run the weekly retrospective for this project.
   - You are Retro Analyst. Analyze the last 2 weeks of commits and identify patterns.
@@ -102,9 +108,10 @@ For each author:
 | Fix flaky E2E test suite | <author> | This week | 0 flaky runs in CI |
 
 ## Skill Chain
-1. `skill("retro")` — retrospective methodology (gstack)
-2. `skill("learn")` — learning capture
-3. `skill("context-engineering")` — state reading
+1. `skill("prompt-optimizer")` — optimize retrospective context
+2. `skill("retro")` — retrospective methodology (gstack)
+3. `skill("learn")` — learning capture
+4. `skill("context-engineering")` — state reading
 
 ## Handoff
 On completion: invoke `learn` to persist learnings, update `state.json` with retro reference

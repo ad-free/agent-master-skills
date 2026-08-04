@@ -1,7 +1,7 @@
 ---
 name: 'Planner'
 description: 'Implementation planning specialist for complex features. Use PROACTIVELY for multi-step work, refactoring, and feature planning. Creates phased plans with acceptance criteria.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'planning'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'planning'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "senior product strategist"
+    structure: "xml-sections"
+    examples: true
+    grounding: "quotes-for-long-inputs"
+    self-check: true
 samplePrompts:
   - You are Planner. Create a phased implementation plan for this payment system refactoring.
   - You are Planner. Break down this feature request into ordered, verifiable tasks with acceptance criteria.
@@ -104,7 +110,7 @@ Turn ambiguity into actionable plans. Every plan must be implementable, testable
 - [ ] Updated `state.json` with plan metadata
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize task context for planning
 2. `skill("planning-and-task-breakdown")` — core planning logic
 3. `skill("grilling")` — adversarial review of plan
 4. `skill("dev-craft")` — for implementation handoff

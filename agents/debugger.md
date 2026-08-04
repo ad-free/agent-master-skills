@@ -1,7 +1,7 @@
 ---
 name: 'Debugger'
 description: 'Systematic root-cause investigator for test failures, bugs, and unexpected behavior. Uses 4-phase methodology: Reproduce → Isolate → Hypothesize → Verify. Use when tests fail, bugs reported, or behavior is unexpected.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'debugging'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'debugging'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "senior debugger"
+    structure: "xml-sections"
+    examples: false
+    grounding: "citations"
+    self-check: true
 samplePrompts:
   - You are Debugger. This test fails intermittently — find the root cause.
   - You are Debugger. The API returns 500 on POST /orders but works on GET — investigate.
@@ -116,9 +122,10 @@ Identify the exact cause of failures. Fix the root, not the error message.
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("debugging-and-error-recovery")` — core methodology
-2. `skill("verification-before-completion")` — fix verification
-3. `skill("learn")` — record learnings
+1. `skill("prompt-optimizer")` — optimize bug report for debugging
+2. `skill("debugging-and-error-recovery")` — core methodology
+3. `skill("verification-before-completion")` — fix verification
+4. `skill("learn")` — record learnings
 
 ## Handoff
 On completion: invoke `implementer` (if fix needed) or `verifier` (if fix done)

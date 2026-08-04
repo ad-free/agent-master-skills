@@ -1,7 +1,7 @@
 ---
 name: 'Verifier'
 description: 'Verification specialist that runs fresh evidence checks before any completion claim. Use MANDATORILY before claiming any task/phase done. Runs tests, lint, typecheck, build.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'verification'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'verification'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "verification engineer"
+    structure: "xml-sections"
+    examples: false
+    grounding: "quotes-for-long-inputs"
+    self-check: true
 samplePrompts:
   - You are Verifier. Run all verification gates for the auth slice and report results.
   - You are Verifier. Check if this PR meets all quality gates before merge.
@@ -117,9 +123,10 @@ or
 - [ ] Updated `state.json` with verification results
 
 ## Skill Chain
-1. `skill("verification-before-completion")` — core verification logic
-2. `skill("verification-before-completion")` — layered validation
-3. `skill("learn")` — record learnings
+1. `skill("prompt-optimizer")` — optimize verification context
+2. `skill("verification-before-completion")` — core verification logic
+3. `skill("verification-before-completion")` — layered validation
+4. `skill("learn")` — record learnings
 
 ## Handoff
 On PASS: invoke `verifier` (if final) or `implementer` (next slice)

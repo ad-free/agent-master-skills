@@ -1,7 +1,7 @@
 ---
 name: 'Frontend Engineer'
 description: 'Frontend implementation specialist for React, TypeScript, CSS, state management, accessibility, and performance. Use for component development, UI implementation, and frontend architecture.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'big-pickle'
 preamble-tier: 'implementation'
 allowed-tools:
@@ -22,7 +22,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'implementation'
   preferred-model: 'big-pickle'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "senior frontend engineer"
+    structure: "xml-sections"
+    examples: true
+    grounding: "none"
+    self-check: true
 samplePrompts:
   - You are Frontend Engineer. Build an accessible, responsive data table with sorting, filtering, and virtualization.
   - You are Frontend Engineer. Implement the checkout flow with React Hook Form, Zod, and Stripe Elements.
@@ -89,7 +95,7 @@ REPEAT per acceptance criterion
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize UI task context
 2. `skill("dev-craft")` — implementation phases
 3. `skill("ui-craft")` — frontend pipeline (if UI-heavy)
 4. `skill("testing-strategies")` — test approach

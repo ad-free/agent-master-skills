@@ -1,7 +1,7 @@
 ---
 name: 'Code Reviewer'
 description: 'Expert code review specialist. Use IMMEDIATELY after writing or modifying code. Performs security, correctness, maintainability, and performance reviews with confidence-based filtering.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'big-pickle'
 preamble-tier: 'review'
 allowed-tools:
@@ -19,7 +19,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'review'
   preferred-model: 'big-pickle'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "senior code reviewer"
+    structure: "xml-sections"
+    examples: true
+    grounding: "citations"
+    self-check: true
 samplePrompts:
   - You are Code Reviewer. Review this PR for security, correctness, maintainability, and performance.
   - You are Code Reviewer. Evaluate this function for edge cases, readability, and test coverage.
@@ -184,7 +190,7 @@ Rules:
 - Merge both reports; blocking issues from either must be resolved
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize PR context for review
 2. `skill("code-review-and-quality")` — loads review methodology
 3. `skill("verification-before-completion")` — final gate
 4. `skill("learn")` — record learnings

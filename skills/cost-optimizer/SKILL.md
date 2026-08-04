@@ -24,10 +24,10 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
-  version: 2.0.0
+  version: 2.1.0
   domain: context-memory
-  integrates-with: [token-budget, dev-craft]
-  source-enhancements: v2.0.0 Master Template alignment
+  integrates-with: [prompt-optimizer, token-budget, dev-craft]
+  source-enhancements: v2.1.0 prompt-optimizer integration
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
@@ -271,6 +271,164 @@ metadata:
 ```
 
 The `agent-router` skill reads this and applies `select_model()` automatically.
+
+### Prompt-Optimizer Integration (v2.1.0)
+
+The `prompt-optimizer` skill reduces input tokens before they reach the model. Cost-optimizer tracks these savings:
+
+#### Token Savings Tracking
+
+Prompt-optimizer writes metrics to `.dev-craft/prompt-optimizer-metrics.jsonl`:
+
+```jsonl
+{"timestamp":"2026-08-04T10:30:00Z","agent":"triage","stage":"pre-routing","original_tokens":1200,"optimized_tokens":850,"savings_percent":29}
+{"timestamp":"2026-08-04T10:30:05Z","agent":"planner","stage":"per-agent","original_tokens":2400,"optimized_tokens":1800,"savings_percent":25}
+```
+
+#### Cost Calculation with Optimization
+
+```python
+@dataclass(frozen=True)
+class CostSnapshot:
+    model: str
+    input_tokens: int
+    output_tokens: int
+    cached_read_tokens: int = 0
+    cached_write_tokens: int = 0
+    timestamp: float = 0.0
+    request_id: str = ""
+    # Prompt-optimizer savings (NEW)
+    prompt_optimizer_savings: int = 0       # tokens saved
+    prompt_optimizer_stage: str = ""        # "pre-routing" | "per-agent"
+    
+    def effective_input_tokens(self) -> int:
+        """Input tokens after prompt-optimizer savings."""
+        return self.input_tokens - self.prompt_optimizer_savings
+    
+    def add(self, other: 'CostSnapshot') -> 'CostSnapshot':
+        return CostSnapshot(
+            model=self.model,
+            input_tokens=self.input_tokens + other.input_tokens,
+            output_tokens=self.output_tokens + other.output_tokens,
+            cached_read_tokens=self.cached_read_tokens + other.cached_read_tokens,
+            cached_write_tokens=self.cached_write_tokens + other.cached_write_tokens,
+            timestamp=max(self.timestamp, other.timestamp),
+            prompt_optimizer_savings=self.prompt_optimizer_savings + other.prompt_optimizer_savings,
+            prompt_optimizer_stage=f"{self.prompt_optimizer_stage},{other.prompt_optimizer_stage}".strip(","),
+        )
+
+def calculate_session_savings(metrics_file: str = ".dev-craft/prompt-optimizer-metrics.jsonl") -> dict:
+    """Aggregate prompt-optimizer savings for the session."""
+    import json
+    
+    total_original = 0
+    total_optimized = 0
+    by_agent = {}
+    by_stage = {}
+    
+    try:
+        with open(metrics_file) as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                m = json.loads(line)
+                total_original += m.get("original_tokens", 0)
+                total_optimized += m.get("optimized_tokens", 0)
+                
+                agent = m.get("agent", "unknown")
+                stage = m.get("stage", "unknown")
+                
+                if agent not in by_agent:
+                    by_agent[agent] = {"original": 0, "optimized": 0, "count": 0}
+                by_agent[agent]["original"] += m.get("original_tokens", 0)
+                by_agent[agent]["optimized"] += m.get("optimized_tokens", 0)
+                by_agent[agent]["count"] += 1
+                
+                if stage not in by_stage:
+                    by_stage[stage] = {"original": 0, "optimized": 0, "count": 0}
+                by_stage[stage]["original"] += m.get("original_tokens", 0)
+                by_stage[stage]["optimized"] += m.get("optimized_tokens", 0)
+                by_stage[stage]["count"] += 1
+    except FileNotFoundError:
+        return {"total_savings_percent": 0, "by_agent": {}, "by_stage": {}}
+    
+    savings_pct = 0
+    if total_original > 0:
+        savings_pct = (total_original - total_optimized) * 100 // total_original
+    
+    return {
+        "total_original_tokens": total_original,
+        "total_optimized_tokens": total_optimized,
+        "total_savings_percent": savings_pct,
+        "by_agent": {k: {**v, "savings_percent": (v["original"] - v["optimized"]) * 100 // v["original"] if v["original"] > 0 else 0} for k, v in by_agent.items()},
+        "by_stage": {k: {**v, "savings_percent": (v["original"] - v["optimized"]) * 100 // v["original"] if v["original"] > 0 else 0} for k, v in by_stage.items()},
+    }
+
+def report_savings_dashboard():
+    """Print a cost savings dashboard for the session."""
+    savings = calculate_session_savings()
+    
+    print(f"""
+=== PROMPT-OPTIMIZER COST SAVINGS ===
+Total Original Tokens:  {savings['total_original_tokens']:,}
+Total Optimized Tokens: {savings['total_optimized_tokens']:,}
+Total Savings:          {savings['total_savings_percent']}%
+
+By Agent:
+""")
+    for agent, data in savings["by_agent"].items():
+        print(f"  {agent:20s} | {data['original']:>6,} → {data['optimized']:>6,} | {data['savings_percent']}% saved ({data['count']} calls)")
+    
+    print("\nBy Stage:")
+    for stage, data in savings["by_stage"].items():
+        print(f"  {stage:20s} | {data['original']:>6,} → {data['optimized']:>6,} | {data['savings_percent']}% saved ({data['count']} calls)")
+```
+
+#### Model Routing with Optimized Complexity
+
+After prompt-optimizer runs, the effective prompt complexity is lower. Adjust routing:
+
+```python
+def select_model_optimized(
+    text_length: int = 0,
+    item_count: int = 0,
+    force_model: str | None = None,
+    prefer_coding: bool = False,
+    prompt_optimizer_savings_pct: int = 0,  # NEW: factor in optimization
+) -> str:
+    """Select model based on OPTIMIZED task complexity."""
+    if force_model is not None:
+        return force_model
+    
+    # Adjust thresholds based on prompt-optimizer savings
+    # If optimizer saves 30%, effective complexity is ~30% lower
+    complexity_factor = 1.0 - (prompt_optimizer_savings_pct / 100.0)
+    adjusted_text_threshold = int(text_length * complexity_factor)
+    adjusted_item_threshold = int(item_count * complexity_factor)
+    
+    # ... rest of select_model logic using adjusted thresholds
+    return select_model(adjusted_text_threshold, adjusted_item_threshold, force_model, prefer_coding)
+```
+
+#### Budget Enforcement with Savings
+
+```python
+@dataclass(frozen=True)
+class Budget:
+    session_limit: int = 1_000_000
+    daily_limit: int = 10_000_000
+    monthly_limit: int = 100_000_000
+    
+    def check_with_savings(self, snapshot: CostSnapshot) -> tuple[bool, str]:
+        effective_input = snapshot.effective_input_tokens()
+        total = effective_input + snapshot.output_tokens
+        
+        if total > self.session_limit * 0.8:
+            return False, f"Session at {total/self.session_limit*100:.1f}% of limit (after {snapshot.prompt_optimizer_savings} token savings)"
+        if total > self.daily_limit * 0.8:
+            return False, f"Daily at {total/self.daily_limit*100:.1f}% of limit"
+        return True, "OK"
+```
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: 'Implementer'
 description: 'Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'big-pickle'
 preamble-tier: 'implementation'
 allowed-tools:
@@ -21,7 +21,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'implementation'
   preferred-model: 'big-pickle'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "senior software engineer"
+    structure: "xml-sections"
+    examples: true
+    grounding: "quotes-for-long-inputs"
+    self-check: true
 samplePrompts:
   - You are Implementer. Implement the user authentication slice per PLAN.md task 2.1.
   - You are Implementer. Build the API endpoint for payment processing with tests.
@@ -82,7 +88,7 @@ REPEAT for each acceptance criterion
 - [ ] Updated `state.json` with completed slice
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize slice context for implementation
 2. `skill("dev-craft")` — implementation phases (BUILD, TEST)
 3. `skill("testing-strategies")` — test approach guidance
 4. `skill("code-review-and-quality")` — self-review before verifier

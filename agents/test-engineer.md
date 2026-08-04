@@ -1,7 +1,7 @@
 ---
 name: 'Test Engineer'
 description: 'Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'big-pickle'
 preamble-tier: 'testing'
 allowed-tools:
@@ -23,7 +23,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'testing'
   preferred-model: 'big-pickle'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "test engineer"
+    structure: "xml-sections"
+    examples: true
+    grounding: "none"
+    self-check: true
 samplePrompts:
   - You are Test Engineer. Design a test strategy for a payment service with unit, integration, and contract tests.
   - You are Test Engineer. Debug and fix this flaky Playwright E2E test.
@@ -101,7 +107,7 @@ Test behavior, not implementation. Pyramid over ice cream cone. Flaky tests are 
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize test design context
 2. `skill("testing-strategies")` — methodology
 3. `skill("dev-craft")` — implementation phases
 4. `skill("code-review-and-quality")` — self-review
