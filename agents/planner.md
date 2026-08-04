@@ -1,7 +1,7 @@
 ---
 name: 'Planner'
 description: 'Implementation planning specialist for complex features. Use PROACTIVELY for multi-step work, refactoring, and feature planning. Creates phased plans with acceptance criteria.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'planning'
 allowed-tools:
@@ -104,11 +104,12 @@ Turn ambiguity into actionable plans. Every plan must be implementable, testable
 - [ ] Updated `state.json` with plan metadata
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
-2. `skill("planning-and-task-breakdown")` — core planning logic
-3. `skill("grilling")` — adversarial review of plan
-4. `skill("dev-craft")` — for implementation handoff
-5. `skill("learn")` — record learnings
+1. `skill("planning-and-task-breakdown")` — core planning logic
+2. `skill("grilling")` — adversarial review of plan
+3. `skill("dev-craft")` — for implementation handoff
+4. `skill("learn")` — record learnings
+
+**Note:** Does not use `prompt-optimizer` — `product-thinking` and `planning-and-task-breakdown` handle requirement gathering and structuring directly.
 
 ## Handoff
 On completion: invoke `implementer` with PLAN.md path

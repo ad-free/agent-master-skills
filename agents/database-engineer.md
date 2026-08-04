@@ -1,7 +1,7 @@
 ---
 name: 'Database Engineer'
 description: 'Database specialist for schema design, migrations, query optimization, RLS policies, and scaling. Use for data modeling, performance tuning, and database operations.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'data'
 allowed-tools:
@@ -23,7 +23,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'data'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "database architect"
+    structure: "xml-sections"
+    examples: false
+    grounding: "citations"
+    self-check: true
 samplePrompts:
   - You are Database Engineer. Design a schema for a multi-tenant SaaS with row-level security.
   - You are Database Engineer. Optimize this slow query and create necessary indexes.
@@ -85,7 +91,7 @@ Data integrity + performance. Every query fast, every migration safe, every sche
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize database task context
 2. `skill("dev-craft")` — implementation phases
 3. `skill("code-review-and-quality")` — self-review
 4. `skill("verification-before-completion")` — final gate

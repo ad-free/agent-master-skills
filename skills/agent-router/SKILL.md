@@ -30,10 +30,10 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: gpt-5-nano
-  version: 2.0.0
+  version: 2.1.0
   domain: planning-execution
-  integrates-with: [product-thinking, planning-and-task-breakdown, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, ship, verification-before-completion, verification-before-completion, retro, learn, context-engineering, handoff, project-discovery, api-design, devops-automation, cost-optimizer, token-budget, qa-and-edge-case-tester, testing-strategies, bug-hunting, secops-and-vulnerability-scanner, grilling, architecture-decision-records, documentation-engineering]
-  source-enhancements: v2.0.0 Master Template alignment
+  integrates-with: [prompt-optimizer, product-thinking, planning-and-task-breakdown, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, ship, verification-before-completion, retro, learn, context-engineering, handoff, project-discovery, api-design, devops-automation, cost-optimizer, token-budget, qa-and-edge-case-tester, testing-strategies, bug-hunting, secops-and-vulnerability-scanner, grilling, architecture-decision-records, documentation-engineering]
+  source-enhancements: v2.1.0 prompt-optimizer integration
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 
@@ -52,16 +52,16 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 | "I have an idea for..." / vague feature | `planner` → `product-thinking` → `planning-and-task-breakdown` → `dev-craft` | product-thinking, planning-and-task-breakdown, dev-craft | `skill("product-thinking")` |
 | "Here's my requirements.xlsx" | `planner` → `project-discovery` → `planning-and-task-breakdown` → `dev-craft` | project-discovery, planning-and-task-breakdown, dev-craft | `skill("project-discovery")` |
 | "Build the auth API per PLAN.md" | `implementer` → `dev-craft` | dev-craft, testing-strategies, code-review-and-quality | `skill("dev-craft")` |
-| "Fix this failing test" | `debugger` → `debugging-and-error-recovery` → `implementer` | debugging-and-error-recovery, dev-craft, verification-before-completion | `skill("debugging-and-error-recovery")` |
-| "Review this PR" | `code-reviewer` → `code-review-and-quality` → `verification-before-completion` | code-review-and-quality, verification-before-completion, verification-before-completion | `skill("code-review-and-quality")` |
-| "Security audit before launch" | `security-auditor` → `bug-hunting` → `verification-before-completion` | bug-hunting, code-review-and-quality, verification-before-completion | `skill("bug-hunting")` |
-| "Design the API for webhooks" | `api-designer` → `api-design` | api-design, dev-craft (CONTRACT phase) | `skill("api-design")` |
-| "Set up CI/CD for microservices" | `devops-engineer` → `devops-automation` | devops-automation, dev-craft | `skill("devops-automation")` |
-| "Weekly retrospective" | `retro-analyst` → `retro` → `learn` | retro, learn, context-engineering | `skill("retro")` |
-| "Ship this release" | `shipper` → `ship` → `verification-before-completion` | ship, verification-before-completion, verification-before-completion | `skill("ship")` |
+| "Fix this failing test" | `debugger` → `prompt-optimizer` → `debugging-and-error-recovery` → `implementer` | prompt-optimizer, debugging-and-error-recovery, dev-craft, verification-before-completion | `skill("prompt-optimizer")` |
+| "Review this PR" | `code-reviewer` → `prompt-optimizer` → `code-review-and-quality` → `verification-before-completion` | prompt-optimizer, code-review-and-quality, verification-before-completion | `skill("prompt-optimizer")` |
+| "Security audit before launch" | `security-auditor` → `prompt-optimizer` → `bug-hunting` → `verification-before-completion` | prompt-optimizer, bug-hunting, code-review-and-quality, verification-before-completion | `skill("prompt-optimizer")` |
+| "Design the API for webhooks" | `api-designer` → `prompt-optimizer` → `api-design` | prompt-optimizer, api-design, dev-craft (CONTRACT phase) | `skill("prompt-optimizer")` |
+| "Set up CI/CD for microservices" | `devops-engineer` → `prompt-optimizer` → `devops-automation` | prompt-optimizer, devops-automation, dev-craft | `skill("prompt-optimizer")` |
+| "Weekly retrospective" | `retro-analyst` → `prompt-optimizer` → `retro` → `learn` | prompt-optimizer, retro, learn, context-engineering | `skill("prompt-optimizer")` |
+| "Ship this release" | `shipper` → `prompt-optimizer` → `ship` → `verification-before-completion` | prompt-optimizer, ship, verification-before-completion | `skill("prompt-optimizer")` |
 | "Optimize LLM costs" | `planner` → `cost-optimizer` | cost-optimizer, token-budget | `skill("cost-optimizer")` |
 | "My context is full / rotate session" | `context-guard` → `context-engineering` → `handoff` | context-engineering, handoff, learn | `skill("context-engineering")` |
-| "What did we learn last sprint?" | `retro-analyst` → `learn` | learn, retro | `skill("learn")` |
+| "What did we learn last sprint?" | `retro-analyst` → `prompt-optimizer` → `learn` | prompt-optimizer, learn, retro | `skill("prompt-optimizer")` |
 
 ---
 
@@ -120,20 +120,20 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 
 ```
 You: "Build a payment integration with Stripe"
-Agent: loads agent-router → routes to planner
+Agent: loads agent-router → runs prompt-optimizer (pre-routing) → routes to planner
 Planner: "I'll run product-thinking to refine, then planning-and-task-breakdown, then dev-craft"
 ```
 
 ```
 You: "Review PR #247"
-Agent: loads agent-router → routes to code-reviewer
-Code Reviewer: "Running code-review-and-quality with 8-axis review + pre-report gate"
+Agent: loads agent-router → runs prompt-optimizer (pre-routing) → routes to code-reviewer
+Code Reviewer: "Running prompt-optimizer (per-agent) on the PR context, then code-review-and-quality with 8-axis review + pre-report gate"
 ```
 
 ```
 You: "Debug the flaky login test"
-Agent: loads agent-router → routes to debugger
-Debugger: "Running debugging-and-error-recovery 4-phase investigation"
+Agent: loads agent-router → runs prompt-optimizer (pre-routing) → routes to debugger
+Debugger: "Running prompt-optimizer (per-agent) on the bug report, then debugging-and-error-recovery 4-phase investigation"
 ```
 
 ---
@@ -154,44 +154,51 @@ Categories: Bug | Feature | Refactor | Security | Performance | Docs | Chore | D
 
 Every agent declares its **Skill Chain** in its file. The router invokes the first skill; subsequent skills are loaded by the agent as needed.
 
+**Prompt-optimizer runs at pre-routing (triage) for ALL requests**, then per-agent for specialized agents (review, debug, verify, design, etc.). **Not used by planner/implementer** — their skills handle requirement gathering.
+
 ### Core Chains
 
 **New Feature (vague):**
 ```
-product-thinking → planning-and-task-breakdown → grilling → dev-craft
+prompt-optimizer (pre-routing) → product-thinking → planning-and-task-breakdown → grilling → dev-craft
   → (per slice) code-review-and-quality → verification-before-completion
   → verification-before-completion → ship → learn
 ```
 
 **New Feature (with specs):**
 ```
-project-discovery → planning-and-task-breakdown → grilling → dev-craft
+prompt-optimizer (pre-routing) → project-discovery → planning-and-task-breakdown → grilling → dev-craft
   → (per slice) ...
 ```
 
 **Bug Fix:**
 ```
-debugging-and-error-recovery → implementer → verification-before-completion
+prompt-optimizer (pre-routing) → debugging-and-error-recovery → implementer → verification-before-completion
+  → (per-agent) prompt-optimizer for debugger
 ```
 
 **Code Review:**
 ```
-code-review-and-quality → verification-before-completion → verification-before-completion
+prompt-optimizer (pre-routing) → code-review-and-quality → verification-before-completion → verification-before-completion
+  → (per-agent) prompt-optimizer for code-reviewer
 ```
 
 **Security Audit:**
 ```
-bug-hunting → code-review-and-quality → verification-before-completion → verification-before-completion
+prompt-optimizer (pre-routing) → bug-hunting → code-review-and-quality → verification-before-completion → verification-before-completion
+  → (per-agent) prompt-optimizer for security-auditor
 ```
 
 **Deployment:**
 ```
-ship → verification-before-completion → verification-before-completion → learn
+prompt-optimizer (pre-routing) → ship → verification-before-completion → verification-before-completion → learn
+  → (per-agent) prompt-optimizer for shipper
 ```
 
 **Weekly Cadence:**
 ```
-retro → learn → (feeds into next week's product-thinking)
+prompt-optimizer (pre-routing) → retro → learn → (feeds into next week's product-thinking)
+  → (per-agent) prompt-optimizer for retro-analyst
 ```
 
 ---
@@ -210,15 +217,16 @@ retro → learn → (feeds into next week's product-thinking)
 **Pipeline:** `ui-craft`
 
 **Skill Chain:**
-1. `skill("planning-and-task-breakdown")` — create PLAN.md
-2. `skill("grilling")` — adversarial review
-3. `skill("ui-craft")` — 10-phase frontend pipeline
+1. `skill("prompt-optimizer")` — **pre-routing**: optimize user request for clarity and structure
+2. `skill("planning-and-task-breakdown")` — create PLAN.md (planner, NO prompt-optimizer)
+3. `skill("grilling")` — adversarial review
+4. `skill("ui-craft")` — 10-phase frontend pipeline
    - Plugins: `design-intelligence`, `anti-slop`
-4. `skill("code-review-and-quality")` — per slice
-5. `skill("verification-before-completion")` — per slice
-6. `skill("verification-before-completion")` — pre-merge
-7. `skill("ship")` — release
-8. `skill("learn")` — capture learnings
+5. `skill("code-review-and-quality")` — per slice
+6. `skill("verification-before-completion")` — per slice
+7. `skill("verification-before-completion")` — pre-merge
+8. `skill("ship")` — release
+9. `skill("learn")` — capture learnings
 
 **Estimated:** 3-5 slices over 1-2 weeks
 
@@ -230,6 +238,10 @@ retro → learn → (feeds into next week's product-thinking)
 ## Integration
 
 - **Invoked by:** User (explicit) or `triage` agent
-- **Loads:** First skill in chain
+- **Pre-routing step:** `skill("prompt-optimizer")` — runs on ALL requests before routing (pipeline mode)
+- **Per-agent step:** `skill("prompt-optimizer")` — runs for specialized agents (review, debug, verify, design, etc.) in their skill chain
+- **Not used by:** `planner`, `implementer` — their skills handle requirement gathering
+- **Loads:** First skill in chain (after pre-routing)
 - **State:** Creates `.dev-craft/runs/<slug>/state.json` with routing metadata
 - **Context Guard:** Monitors token usage, triggers `handoff` if >60%
+- **Cost Tracking:** Reports prompt-optimizer token savings to `cost-optimizer`

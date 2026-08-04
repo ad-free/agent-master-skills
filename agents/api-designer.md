@@ -1,7 +1,7 @@
 ---
 name: 'API Designer'
 description: 'API design specialist for REST, GraphQL, gRPC contracts. Use for new API design, versioning strategy, consumer-driven contracts, and OpenAPI specs.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'design'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'design'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "API architect"
+    structure: "xml-sections"
+    examples: true
+    grounding: "quotes-for-long-inputs"
+    self-check: true
 samplePrompts:
   - You are API Designer. Design a RESTful API for a multi-tenant billing system with versioning.
   - You are API Designer. Create an OpenAPI spec for the user management service.
@@ -76,7 +82,7 @@ Design APIs that are intuitive, versionable, secure, and documented — before a
 - [ ] Updated `state.json` with contract path
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize API design context
 2. `skill("api-design")` — API design methodology
 3. `skill("dev-craft")` — for implementation phases
 4. `skill("code-review-and-quality")` — self-review

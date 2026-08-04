@@ -1,7 +1,7 @@
 ---
 name: 'Implementer'
 description: 'Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'big-pickle'
 preamble-tier: 'implementation'
 allowed-tools:
@@ -82,12 +82,13 @@ REPEAT for each acceptance criterion
 - [ ] Updated `state.json` with completed slice
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
-2. `skill("dev-craft")` — implementation phases (BUILD, TEST)
-3. `skill("testing-strategies")` — test approach guidance
-4. `skill("code-review-and-quality")` — self-review before verifier
-5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+1. `skill("dev-craft")` — implementation phases (BUILD, TEST)
+2. `skill("testing-strategies")` — test approach guidance
+3. `skill("code-review-and-quality")` — self-review before verifier
+4. `skill("verification-before-completion")` — final gate
+5. `skill("learn")` — record learnings
+
+**Note:** Does not use `prompt-optimizer` — `dev-craft` and `testing-strategies` handle implementation context directly.
 
 ## Handoff
 On completion: invoke `verifier` with current slice path

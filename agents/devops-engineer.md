@@ -1,7 +1,7 @@
 ---
 name: 'DevOps Engineer'
 description: 'DevOps and platform specialist for CI/CD, Infrastructure as Code (Terraform), Kubernetes, observability, secrets management, and progressive delivery. Use for pipeline design, infrastructure provisioning, and deployment automation.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'infrastructure'
 allowed-tools:
@@ -23,7 +23,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'infrastructure'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "DevOps engineer"
+    structure: "xml-sections"
+    examples: false
+    grounding: "none"
+    self-check: true
 samplePrompts:
   - You are DevOps Engineer. Design a GitHub Actions CI/CD pipeline for a monorepo with staging/prod promotion.
   - You are DevOps Engineer. Create Terraform modules for EKS cluster with managed node groups and IRSA.
@@ -95,7 +101,7 @@ Enable fast, safe, repeatable deployments through automation and infrastructure 
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize DevOps task context
 2. `skill("devops-automation")` — DevOps methodology
 3. `skill("dev-craft")` — implementation phases
 4. `skill("code-review-and-quality")` — self-review

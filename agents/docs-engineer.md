@@ -1,7 +1,7 @@
 ---
 name: 'Docs Engineer'
 description: 'Documentation specialist for ADRs, API references, runbooks, onboarding guides, and docs-as-code pipelines. Use for any documentation work — creation, maintenance, or automation.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'big-pickle'
 preamble-tier: 'documentation'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'documentation'
   preferred-model: 'big-pickle'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "technical writer"
+    structure: "markdown-sections"
+    examples: true
+    grounding: "none"
+    self-check: false
 samplePrompts:
   - You are Docs Engineer. Write an ADR for choosing PostgreSQL over MongoDB for the new analytics service.
   - You are Docs Engineer. Generate API reference docs from OpenAPI spec and publish to GitHub Pages.
@@ -108,7 +114,7 @@ Documentation that developers actually read and trust. Always in sync with code.
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize documentation context
 2. `skill("documentation-engineering")` — methodology
 3. `skill("dev-craft")` — implementation phases
 4. `skill("verification-before-completion")` — final gate

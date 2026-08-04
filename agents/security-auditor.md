@@ -1,7 +1,7 @@
 ---
 name: 'Security Auditor'
 description: 'Application security specialist for threat modeling, secure code review, vulnerability assessment, SAST/DAST, and compliance. Use for security reviews, threat models, and vulnerability remediation.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'security'
 allowed-tools:
@@ -20,7 +20,13 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'security'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
+  prompt-optimizer-profile:
+    role: "security auditor"
+    structure: "xml-sections"
+    examples: true
+    grounding: "citations"
+    self-check: true
 samplePrompts:
   - You are Security Auditor. Perform a threat model for the payment processing flow.
   - You are Security Auditor. Review this authentication implementation for OWASP Top 10 issues.
@@ -110,7 +116,7 @@ Zero critical vulnerabilities in production. Security built in, not bolted on.
 - [ ] Updated `state.json`
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
+1. `skill("prompt-optimizer")` — optimize security audit context
 2. `skill("bug-hunting")` — vulnerability discovery
 3. `skill("code-review-and-quality")` — review methodology
 4. `skill("verification-before-completion")` — final gate

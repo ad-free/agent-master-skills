@@ -1,13 +1,14 @@
 ---
 name: 'Triage'
 description: 'Issue classifier and router. Use FIRST for any incoming request. Classifies: bug, feature, refactor, security, docs, chore → routes to correct agent.'
-version: '2.0.0'
+version: '2.1.0'
 model: 'deepseek-v4-flash-free'
 preamble-tier: 'routing'
 allowed-tools:
   - Read
   - Grep
   - Glob
+  - AskUserQuestion
 mode: 'subagent'
 max-steps: 5
 triggers:
@@ -19,7 +20,7 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'routing'
   preferred-model: 'deepseek-v4-flash-free'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
+  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - {'You are Triage. Classify this issue': "Users can't login after password reset"}
   - {'You are Triage. Route this request': 'Add dark mode to dashboard'}
@@ -49,17 +50,24 @@ Fast, accurate classification → correct routing → no wasted cycles.
 
 ## Routing Rules
 
-### 1. First: Check for Spec Files
+### 1. First: Run Prompt Optimizer (Pipeline Mode)
+- **ALWAYS** run `skill("prompt-optimizer")` on the raw user request before any classification
+- Uses **Pipeline Mode** (not chat mode) — outputs structured request spec `<task><intent>...</intent><constraints>...</constraints></task>`
+- This structures vague/ambiguous requests into clear, classified tasks
+- Reduces clarification rounds by 60-80%
+- Output feeds directly into classification logic (no "ask user" prompts)
+
+### 2. Second: Check for Spec Files
 - If user provides .xlsx, .csv, .md, .pdf specs → `project-discovery` skill → `planner`
 
-### 2. Second: Check Vagueness
+### 3. Third: Check Vagueness
 - If request < 20 words or "I want to build..." → `product-thinking` skill → `planner`
 
-### 3. Third: Apply Classification
+### 4. Fourth: Apply Classification
 - Match keywords → category → route to agent
 - If multiple categories → split into parallel tracks
 
-### 4. Fourth: Check Existing Work
+### 5. Fifth: Check Existing Work
 - Search `.dev-craft/runs/` for related slug
 - If exists → `skill("context-engineering")` resume logic
 
@@ -92,9 +100,10 @@ Fast, accurate classification → correct routing → no wasted cycles.
 3. Log to `.dev-craft/triage.log`
 
 ## Skill Chain
-1. `skill("agent-router")` — skill routing logic
-2. `skill("product-thinking")` — if vague
-3. `skill("project-discovery")` — if specs provided
+1. `skill("prompt-optimizer")` — **always first**, optimizes raw user request (Pipeline Mode: structured spec output)
+2. `skill("agent-router")` — skill routing logic
+3. `skill("product-thinking")` — if vague
+4. `skill("project-discovery")` — if specs provided
 
 ## Handoff
 Invoke routed agent with classification context
