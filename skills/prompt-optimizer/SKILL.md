@@ -335,6 +335,135 @@ Notice the simple task doesn't get XML tags, a role, or a sectioning — and the
 
 **You're tempted to write a `<context>` or `<input>` block expecting the user to fill it.** Don't. That's Rule 1. Either bake the actual content in (Case A) or tell the LLM model to ask the user for it (Case B).
 
+---
+
+## Pipeline Mode (Agent-to-Agent Workflows)
+
+When invoked by agents in a pipeline (`agent-router`, `triage`, per-agent), use **Pipeline Mode** instead of Case B chat prompts.
+
+### Activation
+Pass `mode: "pipeline"` via the wrapper utility. Default for `optimize_pre_routing()` and `optimize_for_agent()`.
+
+### Output Format (Pipeline Mode)
+
+A single fenced code block with **structured task spec** (XML):
+
+````
+```
+<task>
+  <instructions>
+    [Clear, direct task instructions with role assignment]
+  </instructions>
+  <context>
+    [Relevant context, baked-in content, constraints]
+  </context>
+  <acceptance_criteria>
+    [Measurable criteria for completion]
+  </acceptance_criteria>
+  <output_format>
+    [Expected output structure: XML, JSON, markdown, code, etc.]
+  </output_format>
+</task>
+
+Execute this task directly. Think before answering (take time to reason through this carefully).
+```
+````
+
+### Pipeline Mode Rules (vs Chat Mode)
+
+| Aspect | Chat Mode (Case B) | Pipeline Mode |
+|--------|-------------------|---------------|
+| **Closing** | "Ask me for X next turn" | "Execute this task directly" |
+| **Structure** | Prose + "Ask me..." | XML `<task>` with sections |
+| **Placeholders** | Handled by LLM asking user | **None** — all content baked in or in `<context>` |
+| **Role** | Optional | Required (from agent profile) |
+| **Examples** | Optional | From agent profile (`examples: true`) |
+| **Grounding** | Optional | From agent profile (`grounding: quotes/citations`) |
+| **Self-check** | Optional | From agent profile (`self-check: true`) |
+
+### Agent Profile Integration
+
+Agent declares profile in frontmatter:
+```yaml
+metadata:
+  prompt-optimizer-profile:
+    role: "senior code reviewer"
+    structure: "xml-sections"
+    examples: true
+    grounding: "citations"
+    self-check: true
+```
+
+Pipeline mode applies profile automatically:
+- `role` → `<instructions>` preamble
+- `structure` → XML sections (always in pipeline mode)
+- `examples` → Include `<examples>` in `<context>`
+- `grounding` → Add `<quotes>` instruction in `<instructions>`
+- `self-check` → Add verification instruction before closing
+
+### Pipeline Mode Examples
+
+**Pre-routing (Triage):**
+````
+```
+<task>
+  <instructions>
+    You are a request classifier. Analyze the user request and identify: intent, category, priority, required context.
+  </instructions>
+  <context>
+    <request>Build a user dashboard with charts</request>
+    <constraints>
+      - Must clarify vague requirements
+      - Must identify primary agent and skill chain
+    </constraints>
+  </context>
+  <acceptance_criteria>
+    - Clear intent statement
+    - Category: Feature/Bug/Refactor/Security/Performance/Docs/Chore/Design/Test
+    - Priority: G1/G2/G3
+    - Suggested agent and skill chain
+  </acceptance_criteria>
+  <output_format>
+    Structured classification for agent-router
+  </output_format>
+</task>
+
+Execute this task directly. Think before answering (take time to reason through this carefully).
+```
+````
+
+**Per-Agent (Code Reviewer):**
+````
+```
+<task>
+  <instructions>
+    You are a senior code reviewer. Review the provided diff for security, correctness, maintainability, and performance. Report findings with confidence and severity.
+  </instructions>
+  <context>
+    <diff>@@ -10,7 +10,7 @@ function auth(user) {...</diff>
+    <examples>
+      <example>
+        <finding>[HIGH] SQL injection at auth.ts:42 — string concat</finding>
+        <fix>Use parameterized query</fix>
+      </example>
+    </examples>
+  </context>
+  <acceptance_criteria>
+    - All findings have: file:line, issue, failure mode, confidence, severity, fix
+    - No false positives from common patterns list
+    - Summary table with verdict
+  </acceptance_criteria>
+  <output_format>
+    Markdown findings + summary table
+  </output_format>
+</task>
+
+Execute this task directly. Think before answering (take time to reason through this carefully).
+```
+````
+
+---
+
 ## Integration with agent-master-skills
 
 ### Pre-routing (Triage Level)
@@ -344,10 +473,11 @@ When invoked by `triage` or `agent-router` before classification:
 - Reduces clarification rounds by 60-80%
 
 ### Per-Agent (Agent Level)
-When invoked by agents (`planner`, `implementer`, `debugger`, `code-reviewer`, `verifier`):
+When invoked by agents (`debugger`, `code-reviewer`, `verifier`, `api-designer`, `frontend-engineer`, `database-engineer`, `devops-engineer`, `security-auditor`, `test-engineer`, `docs-engineer`, `retro-analyst`):
 - Input: Agent-specific task context + user request
-- Output: Optimized prompt tailored to agent's specialization
+- Output: Optimized prompt tailored to agent's specialization (Pipeline Mode)
 - Each agent declares its optimization profile in frontmatter metadata
+- **Not used by:** `planner`, `implementer` — their skills (`product-thinking`, `planning-and-task-breakdown`, `dev-craft`) handle requirement gathering
 
 ### Cost Tracking
 Token savings from optimization are reported to `cost-optimizer` for budget analytics:

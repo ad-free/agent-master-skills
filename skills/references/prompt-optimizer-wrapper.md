@@ -8,13 +8,15 @@ Shared utility for invoking `prompt-optimizer` skill across all agents. Provides
 # From any agent or skill
 source skills/references/prompt-optimizer-wrapper.sh
 
-# Pre-routing optimization (triage level)
+# Pre-routing optimization (triage level) - uses pipeline mode by default
 optimize_pre_routing "user request here"
 
-# Per-agent optimization
-optimize_for_agent "planner" "Build a payment integration with Stripe"
+# Per-agent optimization - uses pipeline mode by default
 optimize_for_agent "debugger" "Fix the flaky login test in auth module"
 optimize_for_agent "code-reviewer" "Review PR #247 - auth refactor"
+
+# Chat mode (human-facing prompts) - explicit opt-in
+optimize_for_agent "planner" "Build a payment integration" "chat"
 ```
 
 ## Agent Optimization Profiles
@@ -42,12 +44,10 @@ metadata:
 | `self-check` | boolean | Add verification instruction | `true` for code/review tasks |
 | `output-format` | string | Expected output format hint | none |
 
-### Agent Profiles
+### Agent Profiles (Pipeline Mode)
 
 | Agent | Role | Structure | Examples | Grounding | Self-Check |
 |-------|------|-----------|----------|-----------|------------|
-| `planner` | senior product strategist | xml-sections | true | quotes-for-long-inputs | true |
-| `implementer` | senior software engineer | xml-sections | true | quotes-for-long-inputs | true |
 | `debugger` | senior debugger | xml-sections | false | citations | true |
 | `code-reviewer` | senior code reviewer | xml-sections | true | citations | true |
 | `verifier` | verification engineer | xml-sections | false | quotes-for-long-inputs | true |
@@ -60,20 +60,25 @@ metadata:
 | `docs-engineer` | technical writer | markdown-sections | true | none | false |
 | `retro-analyst` | engineering analyst | markdown-sections | false | none | false |
 
+**Note:** `planner` and `implementer` do NOT use prompt-optimizer — their skills (`product-thinking`, `planning-and-task-breakdown`, `dev-craft`) handle requirement gathering directly.
+
 ## Wrapper Functions
 
-### `optimize_pre_routing(request)`
+### `optimize_pre_routing(request, mode="pipeline")`
 
 Runs prompt-optimizer at triage level — before any classification.
 
-**Input:** Raw user request string
+**Input:** Raw user request string, optional mode ("pipeline" | "chat")
 **Output:** Optimized request + token savings metrics
 
 ```bash
 optimize_pre_routing() {
     local request="$1"
+    local mode="${2:-pipeline}"
     local optimized=$(skill "prompt-optimizer" <<EOF
 $request
+
+MODE: $mode
 EOF
 )
     
@@ -88,17 +93,18 @@ EOF
 }
 ```
 
-### `optimize_for_agent(agent_name, task_context)`
+### `optimize_for_agent(agent_name, task_context, mode="pipeline")`
 
 Runs prompt-optimizer with agent-specific profile.
 
-**Input:** Agent name + task context
+**Input:** Agent name + task context + optional mode ("pipeline" | "chat")
 **Output:** Optimized prompt for that agent + token savings metrics
 
 ```bash
 optimize_for_agent() {
     local agent="$1"
     local context="$2"
+    local mode="${3:-pipeline}"
     
     # Load agent profile
     local profile=$(get_agent_profile "$agent")
@@ -113,6 +119,7 @@ Agent Profile:
 - Examples: $(echo "$profile" | jq -r '.examples // false')
 - Grounding: $(echo "$profile" | jq -r '.grounding // "none"')
 - Self-check: $(echo "$profile" | jq -r '.self-check // true')
+- Mode: $mode
 
 Task Context:
 $context
@@ -190,21 +197,22 @@ EOF
 
 ### In Triage Agent
 ```bash
-# First thing triage does
+# First thing triage does - pipeline mode for structured classification
 optimized_request=$(optimize_pre_routing "$USER_REQUEST")
 # Then classify the optimized request
 ```
 
 ### In Agent Router
 ```bash
-# Router runs prompt-optimizer before routing
+# Router runs prompt-optimizer before routing - pipeline mode
 optimized_request=$(optimize_pre_routing "$USER_REQUEST")
 # Then route based on optimized request
 ```
 
 ### In Each Agent (via skill chain)
 ```bash
-# Agent's first step after receiving task
+# Agent's first step after receiving task - pipeline mode
+# Only for agents that use prompt-optimizer (not planner/implementer)
 optimized_task=$(optimize_for_agent "$AGENT_NAME" "$TASK_CONTEXT")
 # Then proceed with optimized task
 ```
@@ -215,8 +223,8 @@ All savings are logged to `.dev-craft/prompt-optimizer-metrics.jsonl` for analys
 
 ```jsonl
 {"timestamp":"2026-08-04T10:30:00Z","agent":"triage","stage":"pre-routing","original_tokens":1200,"optimized_tokens":850,"savings_percent":29}
-{"timestamp":"2026-08-04T10:30:05Z","agent":"planner","stage":"per-agent","original_tokens":2400,"optimized_tokens":1800,"savings_percent":25}
-{"timestamp":"2026-08-04T10:30:10Z","agent":"implementer","stage":"per-agent","original_tokens":3100,"optimized_tokens":2200,"savings_percent":29}
+{"timestamp":"2026-08-04T10:30:05Z","agent":"debugger","stage":"per-agent","original_tokens":2400,"optimized_tokens":1800,"savings_percent":25}
+{"timestamp":"2026-08-04T10:30:10Z","agent":"code-reviewer","stage":"per-agent","original_tokens":3100,"optimized_tokens":2200,"savings_percent":29}
 ```
 
 ### Cost-Optimizer Integration
@@ -235,15 +243,15 @@ Agent profiles can be overridden via `.dev-craft/prompt-optimizer-config.json`:
   "global": {
     "enabled": true,
     "default_structure": "xml-sections",
-    "default_self_check": true
+    "default_self_check": true,
+    "default_mode": "pipeline"
   },
   "agents": {
-    "planner": {
-      "role": "senior product strategist",
-      "examples": true
-    },
     "debugger": {
       "grounding": "citations"
+    },
+    "code-reviewer": {
+      "examples": true
     }
   }
 }
@@ -252,12 +260,18 @@ Agent profiles can be overridden via `.dev-craft/prompt-optimizer-config.json`:
 ## Testing
 
 ```bash
-# Test pre-routing optimization
+# Test pre-routing optimization (pipeline mode - default)
 optimize_pre_routing "I want to build a dashboard"
 
-# Test per-agent optimization
-optimize_for_agent "planner" "Build a user dashboard with charts"
+# Test pre-routing optimization (chat mode - explicit)
+optimize_pre_routing "I want to build a dashboard" "chat"
+
+# Test per-agent optimization (pipeline mode - default)
 optimize_for_agent "debugger" "Fix the flaky login test"
+optimize_for_agent "code-reviewer" "Review PR #247"
+
+# Test per-agent optimization (chat mode - explicit)
+optimize_for_agent "planner" "Build a payment integration" "chat"
 
 # View metrics
 cat .dev-craft/prompt-optimizer-metrics.jsonl

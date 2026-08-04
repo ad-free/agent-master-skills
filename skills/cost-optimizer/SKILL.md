@@ -282,8 +282,13 @@ Prompt-optimizer writes metrics to `.dev-craft/prompt-optimizer-metrics.jsonl`:
 
 ```jsonl
 {"timestamp":"2026-08-04T10:30:00Z","agent":"triage","stage":"pre-routing","original_tokens":1200,"optimized_tokens":850,"savings_percent":29}
-{"timestamp":"2026-08-04T10:30:05Z","agent":"planner","stage":"per-agent","original_tokens":2400,"optimized_tokens":1800,"savings_percent":25}
+{"timestamp":"2026-08-04T10:30:05Z","agent":"debugger","stage":"per-agent","original_tokens":2400,"optimized_tokens":1800,"savings_percent":25}
+{"timestamp":"2026-08-04T10:30:10Z","agent":"code-reviewer","stage":"per-agent","original_tokens":3100,"optimized_tokens":2200,"savings_percent":29}
 ```
+
+**Agents using prompt-optimizer:** triage (pre-routing), debugger, code-reviewer, verifier, api-designer, frontend-engineer, database-engineer, devops-engineer, security-auditor, test-engineer, docs-engineer, retro-analyst
+
+**Agents NOT using prompt-optimizer:** planner, implementer (their skills handle requirement gathering directly)
 
 #### Cost Calculation with Optimization
 

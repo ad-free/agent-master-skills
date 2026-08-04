@@ -1,127 +1,108 @@
-# AGENTS.md — OpenCode Agent Instructions
+# AGENTS.md — OpenCode Agent Instructions (Project: agent-master-skills)
 
-Cross-project rules for every OpenCode session. Project-level `AGENTS.md` extends/overrides these.
-
-**Skills:** library at `~/.config/opencode/skills/`. Load via explicit `skill()` — never improvise a workflow the library already covers.
-
-**Ponytail plugin:** runs automatically in the background on every edit/write — it checks for reusable code before new code is written. It is a plugin hook, not a skill; don't invoke it, don't narrate its checks, just respect its output. Your responsibility is the *policy* (Iron Law #10, "reuse before create"), not re-implementing what the plugin already does.
+Project-level OpenCode config. Extends global `~/.config/opencode/AGENTS.md`.
 
 ---
 
-## 1. Skill Router — decide before acting
+## Quick Reference
 
-Route by task type, not by tech stack. Skills chain — follow the arrow.
-
-| Task signal | Route |
-|---|---|
-| Vague idea, "how should we…" | product-thinking → planning-and-task-breakdown → dev-craft \| ui-craft |
-| Spec files (xlsx/csv/md/pdf) | project-discovery → planning-and-task-breakdown → dev-craft |
-| New feature / new project | planning-and-task-breakdown → dev-craft \| ui-craft |
-| Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
-| Frontend / UI work | ui-craft (+ frontend-design for visual polish) → verification-before-completion |
-| Screenshot / image reference | image-to-design-spec → ui-craft |
-| Infra / IaC / deploy change | dev-craft → Infra Safety (§ 7) → verification-before-completion |
-| Large multi-module project | dev-craft + agent-orchestration |
-| Multiple independent tasks | dispatching-parallel-agents |
-| Review code | code-review-and-quality |
-| Security audit / vuln discovery | bug-hunting → verification-before-completion |
-| About to claim "done" | verification-before-completion (mandatory — § 4) |
-
-**Unsure which skill?** Start with `planning-and-task-breakdown` — it produces a plan every other skill can execute against.
+| Task Type | Primary Agent | Skill Chain |
+|-----------|---------------|-------------|
+| Vague idea / brainstorming | `planner` | product-thinking → planning-and-task-breakdown → dev-craft |
+| Spec files (xlsx/csv/md/pdf) | `planner` | project-discovery → planning-and-task-breakdown → dev-craft |
+| New feature / project | `implementer` | planning-and-task-breakdown → dev-craft / ui-craft |
+| Bug / failing test | `debugger` | prompt-optimizer (pre-routing) → debugging-and-error-recovery → verification-before-completion → prompt-optimizer (per-agent) |
+| Frontend / UI work | `frontend-engineer` | prompt-optimizer (pre-routing) → ui-craft → verification-before-completion → prompt-optimizer (per-agent) |
+| Screenshot / image reference | `frontend-engineer` | prompt-optimizer (pre-routing) → image-to-design-spec → ui-craft |
+| Infra / IaC / deploy | `devops-engineer` | prompt-optimizer (pre-routing) → dev-craft → devops-automation → verification-before-completion → prompt-optimizer (per-agent) |
+| Large multi-module | `orchestrator` | dev-craft + agent-orchestration |
+| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents |
+| Code review | `code-reviewer` | prompt-optimizer (pre-routing) → code-review-and-quality → verification-before-completion → prompt-optimizer (per-agent) |
+| Security audit | `security-auditor` | prompt-optimizer (pre-routing) → bug-hunting → verification-before-completion → prompt-optimizer (per-agent) |
+| Claim "done" | `verifier` | prompt-optimizer (pre-routing) → verification-before-completion (mandatory) → prompt-optimizer (per-agent) |
 
 ---
 
-## 2. Iron Laws — non-negotiable
+## Agent Registry
 
-1. No implementation without a written, approved plan.
-2. No "done" claim without fresh verification evidence — show lint/type/test output, never assume it from memory.
-3. No fix without root-cause investigation first. Patch causes, not symptoms.
-4. No merge without quality gates green (lint, typecheck, tests).
-5. No code shipped without self-review evidence.
-6. No parallel work without verified independence + a written contract.
-7. No security assessment without active probing — assumption isn't verification.
-8. No weakening or deleting a test to force a pass. Flag a suspect test and wait for a decision instead.
-9. No calling unfamiliar or uncommon APIs without confirming they exist first (docs, CLI, or a live version check).
-10. **Reuse before creating.** Check for an existing type, helper, component, or util before writing a new one. The ponytail plugin surfaces candidates automatically — act on what it finds.
-11. Python only via `uv run` (`uv run pytest`, `uv run python script.py`). Bare `python` / `python3` / `py` / `pip` / `virtualenv` are forbidden.
-12. Filesystem inspection stays inside the project (`.`), depth ≤ 3, via `Glob` / `Grep` / CodeGraph — never unrestricted or system-wide scans.
-13. No hardcoded or outdated package versions. Always resolve to latest stable; never a deprecated major version unless explicitly instructed.
-14. No destructive or state-changing action (`git commit`/`push`, `terraform apply`, `kubectl apply`, `rm -rf`, DB migrations) without showing the diff/plan and getting explicit approval first.
-
----
-
-## 3. Operating Principles
-
-- **Plan before code; evidence before "done."** Lint → typecheck → test, in that order, and read the actual output.
-- **Read before edit.** Match existing naming, structure, and conventions.
-- **Minimal footprint.** Diff-only edits — never reprint unchanged code. One concern per change.
-- **Lean context.** `Glob`/`Grep`/CodeGraph over full-tree reads; delegate broad discovery to the explore agent so the main context stays small.
-- **Ambiguity:** small gap → state the assumption inline and proceed. Large gap → ask exactly one question (§ 5 decides which case you're in).
-- **Resume, don't restart.** Check `.dev-craft/`, `.ui-craft/`, `PLAN.md`, and `git log` for prior state before starting fresh.
-- **Readable code, always.** Self-documenting names (no cryptic single letters except `i/j/k` in short loops, `x/y` in short math), comments explain *why* not *what*, no dense one-liners that hide logic.
+| Agent | Model | Domain | Key Skills |
+|-------|-------|--------|------------|
+| `triage` | deepseek-v4-flash-free | routing | prompt-optimizer (pre-routing), agent-router |
+| `planner` | deepseek-v4-flash-free | planning | product-thinking, planning-and-task-breakdown, grilling |
+| `implementer` | big-pickle | implementation | dev-craft, testing-strategies |
+| `debugger` | deepseek-v4-flash-free | debugging | prompt-optimizer (per-agent), debugging-and-error-recovery |
+| `code-reviewer` | big-pickle | review | prompt-optimizer (per-agent), code-review-and-quality |
+| `verifier` | deepseek-v4-flash-free | verification | prompt-optimizer (per-agent), verification-before-completion |
+| `frontend-engineer` | big-pickle | frontend | prompt-optimizer (per-agent), ui-craft, dev-craft |
+| `api-designer` | deepseek-v4-flash-free | api-design | prompt-optimizer (per-agent), api-design |
+| `database-engineer` | deepseek-v4-flash-free | data | prompt-optimizer (per-agent), dev-craft, database-migrations |
+| `devops-engineer` | deepseek-v4-flash-free | infrastructure | prompt-optimizer (per-agent), devops-automation |
+| `security-auditor` | deepseek-v4-flash-free | security | prompt-optimizer (per-agent), bug-hunting |
+| `test-engineer` | big-pickle | testing | prompt-optimizer (per-agent), testing-strategies |
+| `docs-engineer` | big-pickle | documentation | prompt-optimizer (per-agent), documentation-engineering |
+| `retro-analyst` | deepseek-v4-flash-free | analysis | prompt-optimizer (per-agent), retro, learn |
 
 ---
 
-## 4. Definition of Done
+## Skill Chains
 
-A task is done only when every box below is true — and you say so explicitly rather than reporting success by default:
+**Pre-routing (runs on ALL requests):**
+```
+prompt-optimizer (pipeline mode) → triage/agent-router → routes to agent
+```
 
-- [ ] Lint, type-check, and tests all pass — output shown, not claimed.
-- [ ] No test was weakened, skipped, or deleted to force a pass.
-- [ ] The change addresses the actual request; no unrelated regressions.
-- [ ] Edge cases (null / empty / boundary) are handled.
-- [ ] Style is clean: no cryptic names, consistent imports, one concern per change.
-- [ ] Self-review complete (`code-review-and-quality` or equivalent) — no open issues.
-- [ ] No stray `TODO`/`FIXME` left uncaptured in an issue.
+**Per-agent (runs in agent's skill chain for specialized agents):**
 
----
+```
+Feature (vague):    product-thinking → planning-and-task-breakdown → grilling → dev-craft
+                    → (per slice) code-review-and-quality → verification-before-completion
+                    → verification-before-completion → ship → learn
+                    → (per-agent: code-reviewer, verifier use prompt-optimizer)
 
-## 5. Escalation — Ask vs. Proceed
+Feature (specs):    project-discovery → planning-and-task-breakdown → grilling → dev-craft
+                    → (per slice) ...
+                    → (per-agent: code-reviewer, verifier use prompt-optimizer)
 
-**Ask before proceeding when:**
-- Direction is genuinely ambiguous and guessing would waste real time.
-- A trade-off exists that the user should own (perf vs. readability, speed vs. correctness).
-- The action is large or irreversible (deletions, schema migrations, public API changes, merges, deploys).
-- Root cause is still unclear after two investigation rounds — escalate with what's been ruled out.
+Bug fix:            debugging-and-error-recovery → implementer → verification-before-completion
+                    → (per-agent: debugger uses prompt-optimizer)
 
-**Proceed on your own judgment when:**
-- The ambiguity has an obvious, low-risk default — state it and move on.
-- The codebase already has an established pattern to follow.
-- Asking would cost more time than trying the direct path and verifying.
+Code review:        code-review-and-quality → verification-before-completion → verification-before-completion
+                    → (per-agent: code-reviewer uses prompt-optimizer)
 
-**Rule of thumb:** if a wrong guess costs more than five minutes to unwind, ask first. Otherwise, proceed.
+Security audit:     bug-hunting → code-review-and-quality → verification-before-completion → verification-before-completion
+                    → (per-agent: security-auditor uses prompt-optimizer)
 
----
+Deployment:         ship → verification-before-completion → verification-before-completion → learn
+                    → (per-agent: shipper uses prompt-optimizer)
 
-## 6. Multi-Agent Work & Error Recovery
+Retrospective:      retro → learn
+                    → (per-agent: retro-analyst uses prompt-optimizer)
+```
 
-**Parallel tasks** (`dispatching-parallel-agents`): write a shared contract (data shapes, file ownership) before dispatch; no overlapping edits; join and verify consistency at the end.
-
-**Multi-module work** (`agent-orchestration`): order by dependency (DAG), execute in stages, each agent hands off a written summary — never a silent handoff.
-
-**When something breaks** (`debugging-and-error-recovery`): capture full error context (trace, input, state) → reproduce deterministically → narrow to root cause with evidence → fix the cause → add a regression test. Stuck after two rounds? Escalate with what's ruled out — don't keep guessing.
+**Agents NOT using prompt-optimizer:** `planner`, `implementer` — their skills (`product-thinking`, `planning-and-task-breakdown`, `dev-craft`) handle requirement gathering directly.
 
 ---
 
-## 7. Infra & Git Safety
+## Cost Optimization
 
-- Never `commit`, `push`, `amend`, or open a PR without explicit instruction.
-- Always inspect `git status` / `git diff` before staging. Never commit secrets or `.env` files.
-- For infra changes: show `terraform plan` / `kubectl diff` / migration preview first; confirm target environment and rollback path; never auto-apply (Iron Law #14).
-- Destructive actions (`rm -rf`, DB drops/truncates, bulk resets, cloud resource deletion) always require explicit approval.
+- **prompt-optimizer** runs at triage (pre-routing, 20-40% savings) and per-agent for specialized agents (15-30% savings)
+- **cost-optimizer** tracks savings via `.dev-craft/prompt-optimizer-metrics.jsonl`
+- Model routing adjusts complexity thresholds based on optimization savings
+- **Agents using prompt-optimizer:** triage, debugger, code-reviewer, verifier, api-designer, frontend-engineer, database-engineer, devops-engineer, security-auditor, test-engineer, docs-engineer, retro-analyst
+- **Agents NOT using prompt-optimizer:** planner, implementer
 
 ---
 
-## 8. Maintaining This File
+## Context Management
 
-When a new gotcha, dead convention, or repeated mistake surfaces, add one short line here instead of letting it live only in chat history. This is a checklist, not documentation — keep entries terse and specific.
+- Memory hierarchy: Working (4k) → Project (.dev-craft/) → Skill (on-demand) → Reference (external) → Handoff (archival)
+- Rotation at 70%: generate handoff, save state.json, resume from latest
+- Cross-agent: sliced context per role, shared = API contract + compressed domain
 
-<!-- CODEGRAPH_START -->
-## CodeGraph
+---
 
-In repositories indexed by CodeGraph (`.codegraph/` exists at repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
-- **MCP tool:** `codegraph_explore`
-- **Shell:** `codegraph explore "<symbol names or question>"`
+## Project-Specific Notes
 
-If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
-<!-- CODEGRAPH_END -->
+- **prompt-optimizer** uses **Pipeline Mode** (not chat mode) — outputs structured XML task specs, no "ask user" prompts
+- **Pipeline Mode** is default for pre-routing and per-agent; chat mode is opt-in for human-facing prompts
+- **Agent profiles** declared in frontmatter `prompt-optimizer-profile` (role, structure, examples, grounding, self-check)

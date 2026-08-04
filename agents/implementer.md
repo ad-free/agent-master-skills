@@ -21,13 +21,7 @@ metadata:
   origin: 'agent-master-skills'
   domain: 'implementation'
   preferred-model: 'big-pickle'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "senior software engineer"
-    structure: "xml-sections"
-    examples: true
-    grounding: "quotes-for-long-inputs"
-    self-check: true
+  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Implementer. Implement the user authentication slice per PLAN.md task 2.1.
   - You are Implementer. Build the API endpoint for payment processing with tests.
@@ -88,12 +82,13 @@ REPEAT for each acceptance criterion
 - [ ] Updated `state.json` with completed slice
 
 ## Skill Chain
-1. `skill("prompt-optimizer")` — optimize slice context for implementation
-2. `skill("dev-craft")` — implementation phases (BUILD, TEST)
-3. `skill("testing-strategies")` — test approach guidance
-4. `skill("code-review-and-quality")` — self-review before verifier
-5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+1. `skill("dev-craft")` — implementation phases (BUILD, TEST)
+2. `skill("testing-strategies")` — test approach guidance
+3. `skill("code-review-and-quality")` — self-review before verifier
+4. `skill("verification-before-completion")` — final gate
+5. `skill("learn")` — record learnings
+
+**Note:** Does not use `prompt-optimizer` — `dev-craft` and `testing-strategies` handle implementation context directly.
 
 ## Handoff
 On completion: invoke `verifier` with current slice path

@@ -50,10 +50,12 @@ Fast, accurate classification → correct routing → no wasted cycles.
 
 ## Routing Rules
 
-### 1. First: Run Prompt Optimizer
+### 1. First: Run Prompt Optimizer (Pipeline Mode)
 - **ALWAYS** run `skill("prompt-optimizer")` on the raw user request before any classification
+- Uses **Pipeline Mode** (not chat mode) — outputs structured request spec `<task><intent>...</intent><constraints>...</constraints></task>`
 - This structures vague/ambiguous requests into clear, classified tasks
 - Reduces clarification rounds by 60-80%
+- Output feeds directly into classification logic (no "ask user" prompts)
 
 ### 2. Second: Check for Spec Files
 - If user provides .xlsx, .csv, .md, .pdf specs → `project-discovery` skill → `planner`
@@ -98,7 +100,7 @@ Fast, accurate classification → correct routing → no wasted cycles.
 3. Log to `.dev-craft/triage.log`
 
 ## Skill Chain
-1. `skill("prompt-optimizer")` — **always first**, optimizes raw user request
+1. `skill("prompt-optimizer")` — **always first**, optimizes raw user request (Pipeline Mode: structured spec output)
 2. `skill("agent-router")` — skill routing logic
 3. `skill("product-thinking")` — if vague
 4. `skill("project-discovery")` — if specs provided

@@ -42,11 +42,12 @@ report_savings_dashboard()
 
 ## Integration Points
 
-1. **Pre-routing** (triage/agent-router): Runs on every user request before classification
-2. **Per-agent** (planner, implementer, debugger, etc.): Runs on each agent's task context
-3. **Cost tracking**: Metrics appended to JSONL file after each optimization
-4. **Budget calculation**: Effective tokens = original - savings
-5. **Model routing**: Adjusted complexity thresholds based on savings percentage
+1. **Pre-routing** (triage/agent-router): Runs on every user request before classification (Pipeline Mode)
+2. **Per-agent** (debugger, code-reviewer, verifier, api-designer, frontend-engineer, database-engineer, devops-engineer, security-auditor, test-engineer, docs-engineer, retro-analyst): Runs on each agent's task context (Pipeline Mode)
+3. **NOT used by:** planner, implementer (their skills handle requirement gathering directly)
+4. **Cost tracking**: Metrics appended to JSONL file after each optimization
+5. **Budget calculation**: Effective tokens = original - savings
+6. **Model routing**: Adjusted complexity thresholds based on savings percentage
 
 ## Expected Savings
 
@@ -55,15 +56,24 @@ Based on awesome-copilot prompt-optimizer patterns:
 | Stage | Typical Savings | Reason |
 |-------|-----------------|--------|
 | Pre-routing | 20-40% | Structures vague requests, removes ambiguity |
-| Per-agent (planner) | 20-30% | Adds structure, examples, grounding |
-| Per-agent (implementer) | 25-35% | XML sections, examples, self-check |
 | Per-agent (debugger) | 15-25% | Citations, structured hypothesis format |
 | Per-agent (code-reviewer) | 20-30% | Examples, citations, structured findings |
+| Per-agent (verifier) | 15-25% | Quotes grounding, structured verification |
+| Per-agent (api-designer) | 20-30% | Examples, quotes, structured API design |
+| Per-agent (frontend-engineer) | 20-30% | Examples, role-specific structure |
+| Per-agent (database-engineer) | 15-25% | Citations, structured schema context |
+| Per-agent (devops-engineer) | 15-25% | Structured pipeline context |
+| Per-agent (security-auditor) | 20-30% | Examples, citations, threat model structure |
+| Per-agent (test-engineer) | 15-25% | Examples, structured test strategy |
+| Per-agent (docs-engineer) | 15-25% | Markdown sections, examples |
+| Per-agent (retro-analyst) | 10-20% | Markdown sections, analysis structure |
+
+**Not applicable:** planner, implementer (skills handle requirement gathering)
 
 ## Cost Impact
 
-For a typical session with 10 agent invocations:
+For a typical session with 10 agent invocations (8 using prompt-optimizer):
 - Without prompt-optimizer: ~50,000 input tokens
-- With prompt-optimizer: ~35,000 input tokens
-- **Savings: ~15,000 tokens (30%)**
+- With prompt-optimizer: ~37,000 input tokens (pre-routing + 7 per-agent)
+- **Savings: ~13,000 tokens (26%)**
 - Model routing may drop 1-2 tiers cheaper due to lower complexity
