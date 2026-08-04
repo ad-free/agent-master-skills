@@ -1,10 +1,6 @@
-# AGENTS.md — Global Agent Instructions
+# AGENTS.md — OpenCode Agent Instructions
 
 Cross-project rules for every OpenCode session. Project-level `AGENTS.md` extends/overrides these.
-
-**Tool-specific configs:**
-- **OpenCode:** `.opencode/AGENTS.md` (OpenCode format)
-- **Claude Code:** `.claude/CLAUDE.md` (Claude Code format)
 
 **Skills:** library at `~/.config/opencode/skills/`. Load via explicit `skill()` — never improvise a workflow the library already covers.
 
