@@ -1,6 +1,6 @@
-# AGENTS.md — OpenCode Agent Instructions (Project: agent-master-skills)
+# AGENTS.md — Codex Agent Instructions
 
-Project-level OpenCode config. Extends global `~/.config/opencode/AGENTS.md`.
+Project-level OpenCode config. Extends global `~/.codex/AGENTS.md`.
 
 ---
 
