@@ -1,0 +1,32 @@
+name: "verification-before-completion gate 3 security checks"
+skill: "verification-before-completion"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Run security gate on codebase with no secrets"
+  context:
+    currentPhase: "VERIFY"
+
+execution:
+  phases: ["VERIFY"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/verification-before-completion/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "not_contains"
+      path: "$.state.gateResults.3.secrets"
+      expected: "FAIL"
+
+teardown:
+  removeTempDirs: true

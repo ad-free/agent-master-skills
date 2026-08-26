@@ -1,0 +1,34 @@
+name: "verification-before-completion gate 0 schema validation"
+skill: "verification-before-completion"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Verify a simple TypeScript project passes schema validation"
+  context:
+    currentPhase: "VERIFY"
+
+execution:
+  phases: ["VERIFY"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/verification-before-completion/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "VERIFY"
+    - type: "not_empty"
+      path: "$.state.gates"
+
+teardown:
+  removeTempDirs: true

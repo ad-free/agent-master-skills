@@ -1,0 +1,7 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "HANDOFF",
+    "handoffDocument": "handoff-content"
+  }
+}

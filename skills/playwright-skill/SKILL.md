@@ -1,6 +1,25 @@
 ---
 name: playwright-skill
 description: Complete browser automation with Playwright. Auto-detects dev servers, writes clean test scripts to /tmp. Test pages, fill forms, take screenshots, check responsive design, validate UX, test login flows, check links, automate any browser task. Use when user wants to test websites, automate browser interactions, validate web functionality, or perform any browser-based testing.
+model: gpt-5-nano
+version: 1.0.1
+preamble-tier: 4
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+  - Grep
+  - Glob
+triggers:
+  - "test website"
+  - "browser automation"
+  - "playwright"
+  - "browser test"
+  - "automate browser"
+  - "take screenshot"
+  - "check responsive"
+metadata:
+  origin: external (playwright-skill)
 ---
 
 **IMPORTANT - Path Resolution:**

@@ -1,0 +1,34 @@
+name: "handoff creates agent-to-agent transfer document"
+skill: "handoff"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Create handoff from planner to implementer"
+  context:
+    currentPhase: "HANDOFF"
+
+execution:
+  phases: ["HANDOFF"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/handoff/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "HANDOFF"
+    - type: "not_empty"
+      path: "$.state.handoffDocument"
+
+teardown:
+  removeTempDirs: true

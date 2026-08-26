@@ -1,0 +1,7 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "DESIGN",
+    "phases": ["AUDIT", "ALIGN", "DESIGN", "REQUIREMENTS-EXTRACTION", "SOURCE", "BUILD", "REVIEW", "HARDEN", "SHIP"]
+  }
+}

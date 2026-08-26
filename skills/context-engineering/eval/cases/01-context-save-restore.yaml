@@ -1,0 +1,34 @@
+name: "context-engineering saves and restores context"
+skill: "context-engineering"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Save current session context and restore it"
+  context:
+    currentPhase: "CONTEXT"
+
+execution:
+  phases: ["CONTEXT"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/context-engineering/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "CONTEXT"
+    - type: "not_empty"
+      path: "$.state.contextSnapshot"
+
+teardown:
+  removeTempDirs: true

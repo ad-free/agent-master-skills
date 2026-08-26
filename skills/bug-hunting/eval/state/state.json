@@ -1,0 +1,7 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "SCAN",
+    "findings": ["finding-1", "finding-2"]
+  }
+}

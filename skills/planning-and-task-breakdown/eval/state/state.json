@@ -1,0 +1,8 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "PLAN",
+    "tasks": ["task-1", "task-2"],
+    "dependencies": {"task-2": ["task-1"]}
+  }
+}

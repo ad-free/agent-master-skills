@@ -437,6 +437,7 @@ Per-project evals (when evaluating against a real codebase):
 8. **Pin golden outputs** — Update only on intentional changes
 9. **Run at least 3 trials** for pass@k — agents are non-deterministic
 10. **Include one deterministic judge per task** — LLM judges add noise
+11. **Cost awareness** — Only run pass@k trials for cases with `pass_at_k: true`; use `gpt-5-nano` for simple evals; cache results to avoid re-runs on unchanged code
 
 ---
 

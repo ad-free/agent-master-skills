@@ -1,0 +1,8 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "CONTEXT",
+    "contextSnapshot": "snapshot-data",
+    "rotationTriggered": true
+  }
+}

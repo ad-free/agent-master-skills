@@ -1,0 +1,35 @@
+name: "ui-craft design phase generates component spec"
+skill: "ui-craft"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+    structure:
+      - src/components/
+      - src/styles/
+
+input:
+  prompt: "Create a card component with variant support"
+  context:
+    currentPhase: "DESIGN"
+
+execution:
+  phases: ["DESIGN", "REQUIREMENTS-EXTRACTION"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/ui-craft/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "DESIGN"
+
+teardown:
+  removeTempDirs: true

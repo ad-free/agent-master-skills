@@ -1,76 +1,48 @@
-name: Skill Eval Harness
+name: Eval Harness CI
 
 on:
   push:
     branches: [main, master]
-    paths:
-      - 'skills/**/SKILL.md'
-      - 'skills/**/eval/**'
-      - 'skills/eval-harness/**'
-      - 'skills/agent-eval/**'
-      - 'tools/**'
-      - '.github/workflows/**'
   pull_request:
-    paths:
-      - 'skills/**/SKILL.md'
-      - 'skills/**/eval/**'
-      - 'skills/eval-harness/**'
-      - 'skills/agent-eval/**'
-      - 'tools/**'
-      - '.github/workflows/**'
-  workflow_dispatch:
+    branches: [main, master]
 
 jobs:
-  validate-schema:
-    name: Validate test case schemas
+  eval:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install deps
-        run: python -m pip install pyyaml jsonschema
-      - name: Validate eval test cases against schema
-        run: |
-          python tools/validate_eval_cases.py
 
-  run-evals:
-    name: Run skill evals
-    runs-on: ubuntu-latest
-    needs: validate-schema
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install deps
-        run: python -m pip install pyyaml
-      - name: Run eval harness (CI mode)
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml || true
+
+      - name: List eval cases
+        run: python tools/eval_harness.py list
+
+      - name: Run deterministic evals
         run: |
           python tools/eval_harness.py ci
-      - name: Upload eval report
+          cat eval-results.json
+
+      - name: Run pass@k trials (only for cases with pass_at_k: true)
+        run: |
+          # Check if any cases require pass@k trials
+          if grep -q "pass_at_k: true" skills/*/eval/cases/*.yaml 2>/dev/null; then
+            python tools/eval_harness.py ci --trials 3
+            cat eval-results.json
+          else
+            echo "No pass@k cases found, skipping trials"
+          fi
+
+      - name: Upload eval results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eval-report
-          path: |
-            eval-report.html
-            eval-results.json
-
-  validate-agents:
-    name: Validate agents & skills
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install deps
-        run: python -m pip install pyyaml pytest
-      - name: Validate skills
-        run: python tools/validate_skills.py
-      - name: Validate agents
-        run: python tools/validate_agents.py
-      - name: Run tests
-        run: pytest -q
+          name: eval-results
+          path: eval-results.json

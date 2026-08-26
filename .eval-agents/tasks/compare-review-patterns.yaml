@@ -1,0 +1,21 @@
+name: compare-review-patterns
+description: Compare code-review-and-quality vs review-orchestrator (parallel subagents)
+repo: .
+files:
+  - src/**/*.ts
+prompt: |
+  Review the provided code for all quality issues using whichever pattern you prefer.
+  Record your findings.
+judge:
+  - type: grep
+    pattern: "finding|severity|fix"
+    files: "**/review-findings.json"
+  - type: command
+    command: "test -f .dev-craft/review-findings/aggregated.json && echo PASS || echo FAIL"
+  - type: llm
+    prompt: |
+      Compare the two review approaches:
+      Approach A: Single code-review-and-quality pass (8 axes)
+      Approach B: Parallel review-subagents (security, style, debug, perf)
+
+      Which approach found more issues? Which was faster? Which had better signal-to-noise?

@@ -1,0 +1,37 @@
+name: "debugging-and-error-recovery finds root cause"
+skill: "debugging-and-error-recovery"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+    structure:
+      - src/
+      - tests/
+
+input:
+  prompt: "Investigate why login test fails with null pointer"
+  context:
+    currentPhase: "DEBUG"
+
+execution:
+  phases: ["DEBUG"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/debugging-and-error-recovery/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "DEBUG"
+    - type: "not_empty"
+      path: "$.state.hypotheses"
+
+teardown:
+  removeTempDirs: true

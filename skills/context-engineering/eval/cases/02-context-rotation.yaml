@@ -1,0 +1,36 @@
+name: "context-engineering rotates context at 70%"
+skill: "context-engineering"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Trigger context rotation when approaching limit"
+  context:
+    currentPhase: "CONTEXT"
+    contextUsage: 0.75
+
+execution:
+  phases: ["CONTEXT"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/context-engineering/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "CONTEXT"
+    - type: "equals"
+      path: "$.state.rotationTriggered"
+      expected: true
+
+teardown:
+  removeTempDirs: true

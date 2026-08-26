@@ -56,7 +56,8 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 |-------|---------|----------|
 | `verification-before-completion` | Layered validation: structure → deterministic → security → convention → LLM-judge | NO MERGE WITHOUT QUALITY GATES |
 | `code-review-and-quality` | 8-axis code review protocol | NO CODE WITHOUT REVIEW EVIDENCE |
-| `verification-before-completion` | Evidence gates before claiming done | NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE |
+| `review-orchestrator` | Parallel specialized review subagents (security, style, debug, performance) | NO REVIEW WITHOUT PARALLEL PERSPECTIVES |
+| `review-subagents` | Individual specialized subagents invoked by review-orchestrator | NO SUBAGENT WITHOUT COMPRESSED FINDINGS |
 | `debugging-and-error-recovery` | Systematic root-cause investigation | NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST |
 | `bug-hunting` | Deep security vulnerability discovery | NO ATTACK SURFACE WITHOUT INTENTIONAL PROBING |
 | `api-contract-designer` | OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data | NO INTEGRATION WITHOUT A SIGNED CONTRACT | Designing FE-BE integration contracts and generating types | 2.0.0 |
@@ -111,6 +112,8 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `context-compressor-and-pruner` | Orchestration & Specialized | Context window management, summarization, stale context pruning |
 | `agent-eval` | Orchestration & Specialized | Head-to-head agent comparison: pass rate, cost, time, consistency on custom tasks |
 | `agent-eval` | Orchestration & Specialized | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis |
+| `review-subagents` | Quality & Safety | Parallel specialized review subagents (security, style, debug, performance) |
+| `review-orchestrator` | Quality & Safety | Orchestrates review-subagents, aggregates findings, feeds into gates |
 
 ### Plugins
 
@@ -158,7 +161,7 @@ product-thinking ─────────────────────
       ├── [5]   BUILD      — TDD + SECURE + MATCH + git worktree
       │         └── Plugins: language-rules (language conventions), tdd-enforcer
       ├── [6]   TEST       — full suite + debugging
-      ├── [7]   REVIEW     — code-review-and-quality (8 axes)
+      ├── [7]   REVIEW     — review-orchestrator (parallel subagents) → code-review-and-quality (8 axes)
       │         └── Plugins: language-rules (style checks), security-audit
       ├── [8]   HARDEN     — cross-cutting security (7 checks)
       ├── [9]   SHIP       — automated via `ship` skill
@@ -260,7 +263,11 @@ In `opencode.json`:
       "ship": "allow",
       "cost-optimizer": "allow",
       "grilling": "allow",
-      "handoff": "allow"
+      "handoff": "allow",
+      "review-orchestrator": "allow",
+      "review-subagents": "allow",
+      "eval-harness": "allow",
+      "agent-eval": "allow"
     }
   }
 }
@@ -357,10 +364,10 @@ Quick-invokable workflows live in `commands/`, mode-specific configs in `context
 |---------|----------|
 | `/plan` | Scope → plan → review → approve (`product-thinking` → `planning-and-task-breakdown` → `grilling`) |
 | `/spec` | Requirements → spec → plan (`project-discovery` → `product-thinking` → `planning-and-task-breakdown`) |
-| `/review` | Code review pipeline (`code-review-and-quality` → `verification-before-completion` → `secops`) |
+| `/review` | Parallel subagent review (`review-orchestrator` → `review-subagents`) → `code-review-and-quality` → `verification-before-completion` → `bug-hunting` |
 | `/investigate` | Debugging (`debugging-and-error-recovery` → `verification-before-completion`) |
 | `/qa` | Test generation + validation (`qa-and-edge-case-tester` → `testing-strategies` → `visual-regression`) |
-| `/ship` | Ship/deploy (`ship` → `verification-before-completion` → `verification-before-completion`) |
+| `/ship` | Ship/deploy (`ship` → `verification-before-completion`) |
 | `/context-save` | Checkpoint (`context-compressor-and-pruner` → `learn` → `handoff`) |
 | `/context-restore` | Resume (`context-engineering` → `handoff` → `learn`) |
 | `/retro` | Weekly retrospective (`retro` → `learn`) |

@@ -34,7 +34,7 @@ User Request Received
 │   └── No → Is this a bug fix or improvement?
 │       ├── Yes → debugging-and-error-recovery
 │       └── No → What needs to happen?
-│           ├── Code review → code-review-and-quality
+│           ├── Code review → review-orchestrator (parallel subagents) → code-review-and-quality
 │           ├── Security audit → bug-hunting
 │           ├── Parallel work → dispatching-parallel-agents
 │           └── Other → plan first, then execute
@@ -123,9 +123,10 @@ does not copy those rules; they have one source of truth.
 | Profiling and tuning performance | `performance-profiler-and-tuner` |
 | Compressing and pruning agent context | `context-compressor-and-pruner` |
 | Evaluating and benchmarking agent output | `agent-eval` |
-| About to say "done" | `verification-before-completion` |
-| Reviewing code | `code-review-and-quality` |
+| Reviewing code (parallel subagents) | `review-orchestrator` |
+| Reviewing code (8-axis) | `code-review-and-quality` |
 | Security audit / bug bounty | `bug-hunting` |
+| About to say "done" | `verification-before-completion` |
 | Multiple independent tasks | `dispatching-parallel-agents` |
 | Creating or modifying skills | `skill-creator` |
 | Vague idea / missing requirements | `product-thinking` |
@@ -242,6 +243,8 @@ does not copy those rules; they have one source of truth.
 | `performance-profiler-and-tuner` | Bottleneck analysis, memory leak detection, query optimization, profiling | **NO OPTIMIZATION WITHOUT MEASURED IMPACT** | Performance degradation, bottleneck analysis, runtime profiling | 1.0.0 | 3 |
 | `context-compressor-and-pruner` | Context window management, summarization, stale context pruning | **NO PRUNING WITHOUT PRESERVING OPERATIONAL MEMORY** | Long-running sessions, context overflow, agent handoff | 1.0.0 | 3 |
 | `agent-eval` | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis | **NO EVALUATION WITHOUT SELF-CORRECTION** | Agent quality assessment, output benchmarking, failure diagnosis | 1.0.0 | 3 |
+| `review-orchestrator` | Parallel specialized review subagents (security, style, debug, performance) with aggregated findings | **NO REVIEW WITHOUT PARALLEL PERSPECTIVES** | Code review, pre-merge quality gate, security audit | 1.0.0 | 3 |
+| `review-subagents` | Individual specialized review subagents invoked by review-orchestrator | **NO SUBAGENT WITHOUT COMPRESSED FINDINGS** | Subagent delegation, focused code review | 1.0.0 | 3 |
 | `image-to-design-spec` | Analyzes screenshots → design tokens | User provides visual reference material | 2.0.0 | 3 |
 | `skill-creator` | Create/modify skills for agent-master-skills | Building new skills, improving existing | 2.0.0 | 2 |
 
@@ -296,7 +299,7 @@ agent-router (bootstrap) ──→ routes to pipeline
     │       │   └── Evaluation: agent-eval
     │       │
     │       ├── Phase 6: REVIEW
-    │       │   └── Uses: code-review-and-quality (8-axis + gates)
+    │       │   └── Uses: review-orchestrator (parallel subagents) → code-review-and-quality (8-axis + gates)
     │       │
     │       ├── Phase 7: HARDEN
     │       │   └── Uses: verification-before-completion (5 gates), bug-hunting (security)

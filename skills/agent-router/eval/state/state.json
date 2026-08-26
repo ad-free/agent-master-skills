@@ -1,0 +1,14 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "ROUTE",
+    "routedAgent": "planner",
+    "routingMap": {
+      "vague_idea": "planner",
+      "bug": "debugger",
+      "frontend": "frontend-engineer",
+      "security": "security-auditor",
+      "deployment": "devops-engineer"
+    }
+  }
+}

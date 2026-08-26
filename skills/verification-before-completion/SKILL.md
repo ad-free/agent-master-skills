@@ -278,6 +278,8 @@ This prevents expensive LLM evaluations on code that fails basic checks.
 
 **Goal:** Identify security vulnerabilities that deterministic tools miss. Scans for secrets, auth gaps, and injection vectors.
 
+**Review Subagent Integration:** Consumes findings from `review-orchestrator`'s `security-reviewer` subagent (at `.dev-craft/review-findings/security-reviewer.json`). Also leverages `bug-hunting` for deep security audit.
+
 ```
 1. SECRETS SCAN
    - No API keys, tokens, passwords in source files
@@ -317,6 +319,8 @@ Delegated to `code-review-and-quality` Axis 8:
 
 Gate 4 passes when `code-review-and-quality` Axis 8 passes with no Required or Critical findings.
 
+**Review Subagent Integration:** Consumes findings from `review-orchestrator`'s `style-reviewer` subagent (at `.dev-craft/review-findings/style-reviewer.json`). Style findings feed into convention checking. Also delegates to `language-rules` plugin for language-specific conventions.
+
 ### Gate 5: LLM-Judge
 
 **Goal:** Apply LLM judgment to code quality aspects that cannot be deterministically verified. This is the most expensive gate and should only run after Gates 1-4 pass.
@@ -328,6 +332,8 @@ Gate 4 passes when `code-review-and-quality` Axis 8 passes with no Required or C
 4. **Confidence calibration:** Judge reports confidence level for each score
 
 Load `references/llm-judge-protocol.md` for full protocol: direct scoring, pairwise scoring, bias mitigation table, position swap protocol, and evidence-first rules.
+
+**Review Subagent Integration:** Consumes all aggregated review findings from `review-orchestrator` at `.dev-craft/review-findings/aggregated.json`. The LLM judge evaluates whether all findings have been adequately addressed or documented as accepted risks.
 
 ## Gate Configuration
 
@@ -388,6 +394,7 @@ If verification fails:
 - `dev-craft` Phase 5 BUILD (TDD loop) — Tests provide verification evidence; REVIEW phase invokes these gates
 - `debugging-and-error-recovery` — Fix failures before verifying
 - `code-review-and-quality` — Review includes verification evidence; feeds findings into Gate 4
+- `review-orchestrator` + `review-subagents` — Parallel subagents provide findings for Gate 3 (security) and Gate 4 (convention); Gate 5 (LLM-Judge) consumes all aggregated findings
 - `bug-hunting` — Security verification gates before completion claim; deep security inspection feeds Gate 3
 - `ship` — pre-merge CI gate
 

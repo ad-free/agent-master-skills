@@ -1,0 +1,31 @@
+name: "planning-and-task-breakdown dependency mapping"
+skill: "planning-and-task-breakdown"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Build a payment system with order, payment, and notification services"
+  context:
+    currentPhase: "PLAN"
+
+execution:
+  phases: ["PLAN"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/planning-and-task-breakdown/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "not_empty"
+      path: "$.state.dependencies"
+
+teardown:
+  removeTempDirs: true

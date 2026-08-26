@@ -392,14 +392,23 @@ Every slice must pass these gates before it is committed:
 
 ### Phase 7: REVIEW — Quality Audit
 
-**Invoke:** `code-review-and-quality` for seven-axis review. If security-critical code, also invoke `bug-hunting`.
+**Invoke:** `review-orchestrator` to spawn parallel specialized subagents (security, style, issues/debug, performance). If security-critical code, also invoke `bug-hunting`.
 
 **Process:**
-1. Load `code-review-and-quality` skill (and `bug-hunting` for security-sensitive code)
-2. Review entire diff across all axes: Correctness, Readability, Architecture, Performance, Security, Testing, Modern Patterns
-3. Categorize findings (Critical/Optional)
-4. Run the lint gate — load `references/lint-rules.md` and execute its ruff config + cryptic-name grep. UP007/UP045 violations and any cryptic-name hit are automatic fails
-5. Fix all Critical/Required findings
+1. Load `review-orchestrator` skill — spawns `review-subagents` in parallel:
+   - `security-reviewer` (or `bug-hunting` patterns for deep security audit)
+   - `style-reviewer` (uses `language-rules` plugin)
+   - `issues-debug-reviewer` (logic bugs, edge cases, error paths)
+   - `performance-reviewer` (algorithms, queries, resource usage)
+2. Each subagent returns findings to `.dev-craft/review-findings/<name>.json`
+3. `review-orchestrator` aggregates, deduplicates, and scores findings
+4. Load `code-review-and-quality` skill — consumes subagent findings for 8-axis scoring
+5. Review entire diff across all axes: Correctness, Readability, Architecture, Performance, Security, Testing, Modern Patterns
+6. Categorize findings (Critical/Optional)
+7. Run the lint gate — load `references/lint-rules.md` and execute its ruff config + cryptic-name grep. UP007/UP045 violations and any cryptic-name hit are automatic fails
+8. Fix all Critical/Required findings
+
+**Subagent Integration:** Each review subagent focuses on one domain with a specialized prompt, running in parallel. Findings are structured as JSON with file, line, severity, category, message, and fix. This parallel pattern reduces review time from ~21s (sequential) to ~8s (parallel).
 
 **Reality-Check Discipline:**
 - Default stance is "needs work" — first-pass implementations typically need 1-3 revision cycles

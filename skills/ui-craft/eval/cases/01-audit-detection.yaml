@@ -1,0 +1,38 @@
+name: "ui-craft audit phase detects design tokens"
+skill: "ui-craft"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+    structure:
+      - src/components/
+      - src/styles/
+
+input:
+  prompt: "Build a button component with design tokens"
+  context:
+    currentPhase: "AUDIT"
+
+execution:
+  phases: ["AUDIT", "ALIGN"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/ui-craft/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.phases"
+      expected: "AUDIT"
+    - type: "not_contains"
+      path: "$.state.topology"
+      expected: "multi"
+
+teardown:
+  removeTempDirs: true

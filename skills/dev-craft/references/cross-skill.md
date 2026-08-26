@@ -27,7 +27,7 @@ Driven by dev-craft SCOPE gate (§0.2). The contract artifact is ALWAYS named
 8. SOURCE — Official docs verification
 9. BUILD — Large: agent-orchestration with git worktree; Small: single-agent vertical slices
 10. TEST — Full suite
-11. REVIEW — code-review-and-quality
+11. REVIEW — review-orchestrator (spawns review-subagents) → code-review-and-quality (8-axis scoring)
 12. HARDEN — Cross-cutting security
 13. SHIP — Commit + docs
 

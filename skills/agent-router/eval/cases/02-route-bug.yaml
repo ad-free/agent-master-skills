@@ -1,0 +1,35 @@
+name: "agent-router routes bug to debugger"
+skill: "agent-router"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "The login function throws null pointer exception"
+  context:
+    currentPhase: "ROUTE"
+
+execution:
+  phases: ["ROUTE"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/agent-router/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "ROUTE"
+    - type: "contains"
+      path: "$.state.routingMap.bug"
+      expected: "debugger"
+
+teardown:
+  removeTempDirs: true

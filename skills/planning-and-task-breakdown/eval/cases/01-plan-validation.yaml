@@ -1,0 +1,34 @@
+name: "planning-and-task-breakdown validates plan structure"
+skill: "planning-and-task-breakdown"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "Build a user authentication API with login, register, and password reset"
+  context:
+    currentPhase: "PLAN"
+
+execution:
+  phases: ["PLAN"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/planning-and-task-breakdown/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "PLAN"
+    - type: "not_empty"
+      path: "$.state.tasks"
+
+teardown:
+  removeTempDirs: true

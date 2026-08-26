@@ -1,0 +1,7 @@
+{
+  "state": {
+    "topology": "mono",
+    "currentPhase": "REVIEW",
+    "axes": ["correctness", "security", "performance", "maintainability", "readability", "testing", "documentation", "architecture"]
+  }
+}

@@ -1,0 +1,35 @@
+name: "agent-router routes vague idea to planner"
+skill: "agent-router"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+
+input:
+  prompt: "I want to build a task management app"
+  context:
+    currentPhase: "ROUTE"
+
+execution:
+  phases: ["ROUTE"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/agent-router/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "ROUTE"
+    - type: "equals"
+      path: "$.state.routedAgent"
+      expected: "planner"
+
+teardown:
+  removeTempDirs: true

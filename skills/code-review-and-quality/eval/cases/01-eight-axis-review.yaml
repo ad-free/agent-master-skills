@@ -1,0 +1,36 @@
+name: "code-review-and-quality runs 8-axis review"
+skill: "code-review-and-quality"
+version: "1.0"
+
+setup:
+  repo:
+    topology: mono
+    structure:
+      - src/
+
+input:
+  prompt: "Review a simple TypeScript function for all 8 axes"
+  context:
+    currentPhase: "REVIEW"
+
+execution:
+  phases: ["REVIEW"]
+
+verification:
+  state:
+    topology: "mono"
+  files:
+    - path: "skills/code-review-and-quality/eval/state/state.json"
+      mustExist: true
+  assertions:
+    - type: "equals"
+      path: "$.state.topology"
+      expected: "mono"
+    - type: "contains"
+      path: "$.state.currentPhase"
+      expected: "REVIEW"
+    - type: "not_empty"
+      path: "$.state.axes"
+
+teardown:
+  removeTempDirs: true

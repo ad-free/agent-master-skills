@@ -1,0 +1,21 @@
+name: review-code-parity
+description: Compare code review effectiveness of different agent approaches
+repo: .
+files:
+  - src/**/*.ts
+  - src/**/*.py
+prompt: |
+  Review the provided code changes for security vulnerabilities, style issues,
+  logic bugs, and performance problems. Produce a structured findings report.
+judge:
+  - type: grep
+    pattern: "findings|CRITICAL|HIGH|MEDIUM"
+    files: .dev-craft/review-findings/aggregated.json
+  - type: llm
+    prompt: |
+      Evaluate the review findings. Score 1-5 on:
+      1. Security issues detected
+      2. Style issues detected
+      3. Logic bugs identified
+      4. Performance issues caught
+      5. Overall review quality
