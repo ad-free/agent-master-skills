@@ -251,6 +251,39 @@ review-orchestrator clean
 | **JSON output** | Compressed findings only — no full code context in output |
 | **See also** | `cost-optimizer` skill for model selection thresholds and budget tracking |
 
+## Two-Axis Review Integration
+
+The review-orchestrator can also run the two-axis review pattern (Standards + Spec) from `skills/two-axis-review/`:
+
+### Standards Axis
+Runs as a parallel sub-agent checking:
+- Documented coding standards (CODING_STANDARDS.md, CONTRIBUTING.md)
+- Fowler code smells baseline (Mysterious Name, Duplicated Code, Feature Envy, etc.)
+- Repo-specific conventions
+
+### Spec Axis
+Runs as a parallel sub-agent checking:
+- Requirements from originating issue/spec
+- Scope creep (behaviour not asked for)
+- Implementation correctness
+
+### Aggregated Report
+```markdown
+# Two-Axis Review Report
+
+## Standards
+- 3 findings (worst: Shotgun Surgery in auth.ts)
+
+## Spec
+- 2 findings (worst: Missing requirement §2.3)
+
+## Combined
+- CRITICAL: 0
+- HIGH: 2
+- MEDIUM: 3
+- LOW: 1
+```
+
 ## References
 
 - `skills/review-subagents/` — Individual subagent definitions
@@ -259,3 +292,4 @@ review-orchestrator clean
 - `skills/dispatching-parallel-agents/` — Parallel execution pattern
 - `skills/bug-hunting/` — Security reviewer methodology
 - `skills/debugging-and-error-recovery/` — Debug reviewer methodology
+- `skills/two-axis-review/` — Standards + Spec review (mattpocock port)

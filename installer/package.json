@@ -1,0 +1,27 @@
+{
+  "name": "agent-skills",
+  "version": "1.0.0",
+  "description": "Agent Skills installer - install and manage agent skills across harnesses",
+  "main": "bin/agent-skills.js",
+  "bin": {
+    "agent-skills": "bin/agent-skills.js"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "skills",
+    "agents",
+    "opencode",
+    "claude-code",
+    "cursor",
+    "codex"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^15.0.0",
+    "glob": "^13.0.6",
+    "yaml": "^2.5.0"
+  }
+}

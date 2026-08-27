@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Instinct",
+  "type": "object",
+  "required": ["id", "pattern", "context", "confidence", "source", "created_at", "applications", "last_used", "status"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^inst-[a-z0-9]{12}$",
+      "description": "Unique instinct identifier"
+    },
+    "pattern": {
+      "type": "string",
+      "description": "The learned pattern (code snippet, workflow, decision, convention)"
+    },
+    "context": {
+      "type": "object",
+      "description": "When/where this instinct applies",
+      "properties": {
+        "project_patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Glob patterns for project paths"
+        },
+        "tech_stack": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Technologies (e.g., TypeScript, React, Python, FastAPI)"
+        },
+        "task_types": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["feature", "bugfix", "refactor", "review", "debug", "test", "deploy"] }
+        },
+        "file_patterns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "File patterns (e.g., *.ts, *.py, test_*.py)"
+        },
+        "skills": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Related skills (dev-craft, ui-craft, etc.)"
+        }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Confidence score (0.0-1.0)"
+    },
+    "source": {
+      "type": "object",
+      "description": "Origin of this instinct",
+      "properties": {
+        "session_id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "trigger": { "type": "string", "enum": ["session-end", "retro", "explicit", "bug-fix", "code-review", "handoff"] },
+        "extracted_by": { "type": "string" }
+      },
+      "required": ["session_id", "timestamp", "trigger"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "applications": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of successful applications"
+    },
+    "last_used": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last successful application timestamp"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["quarantined", "active", "reliable", "promoted", "archived"],
+      "description": "Instinct lifecycle status"
+    },
+    "project_hash": {
+      "type": "string",
+      "description": "Project identifier for project-scoped instincts"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Searchable tags"
+    }
+  }
+}

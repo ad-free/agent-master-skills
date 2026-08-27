@@ -111,9 +111,26 @@ Designed for [OpenCode](https://opencode.ai). Each skill is a `SKILL.md` that ag
 | `performance-profiler-and-tuner` | Performance & Specialized | Bottleneck analysis, memory leak detection, query optimization, profiling |
 | `context-compressor-and-pruner` | Orchestration & Specialized | Context window management, summarization, stale context pruning |
 | `agent-eval` | Orchestration & Specialized | Head-to-head agent comparison: pass rate, cost, time, consistency on custom tasks |
-| `agent-eval` | Orchestration & Specialized | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis |
 | `review-subagents` | Quality & Safety | Parallel specialized review subagents (security, style, debug, performance) |
 | `review-orchestrator` | Quality & Safety | Orchestrates review-subagents, aggregates findings, feeds into gates |
+
+### Batch 4 — New Skills (v2.2)
+
+| Skill | Domain | Purpose | Source |
+|-------|--------|---------|--------|
+| `two-axis-review` | Quality & Safety | Two-axis code review: Standards (lint, types, style) + Spec (contract, intent, scope) | mattpocock |
+| `tdd-seam` | Quality & Safety | Seam-based TDD: isolate boundaries, test across seams, pin behavior at integration points | mattpocock |
+| `verify-gate` | Quality & Safety | Mandatory verification before "done" claims — blocks premature completion | Custom |
+| `image-to-code` | Frontend & UI | Image-first website design: screenshot → component hierarchy → code generation | Custom |
+| `imagegen` | Frontend & UI | Premium frontend image generation: hero images, illustrations, product shots | Custom |
+| `redesign` | Frontend & UI | Existing project design audit and upgrade: pain points → before/after → polish | Custom |
+| `conductor` | Orchestration | Git worktree orchestration for parallel sprint execution across agents | Custom |
+| `pair-agent` | Orchestration | Cross-agent browser sharing: review another agent's live work in real-time | Custom |
+| `agent-shield` | Security & Safety | AgentShield security scanner integration: threat detection, prompt injection defense | ECC |
+| `release-pipeline` | DevOps & Ship | Full release pipeline: ship → land-and-deploy → canary → benchmark | Custom |
+| `diataxis-docs` | Documentation | Diataxis documentation framework: tutorial/howto/reference/explanation sync | Custom |
+| `continuous-learning-v2` | Context & Memory | Continuous learning system: session observations → decision logs → practice extraction | Custom |
+| `evidence-ledger` | Context & Memory | Evidence-based decision tracking: structured ledger of choices, outcomes, rationale | Custom |
 
 ### Plugins
 
@@ -124,6 +141,27 @@ Beyond the core skills, two pipelines have plugin systems for extending function
 | `dev-craft` | `language-rules` | BUILD / REVIEW | Language-specific conventions for TS, Python, Go, Rust |
 | `ui-craft` | `design-intelligence` | DESIGN | Structured design system generation (palettes, typography, styles) |
 | `ui-craft` | `anti-slop` | BUILD | Anti-generic UI rules — no emoji icons, proper spacing, intentional gradients |
+| `ui-craft` | `visual-regression` | REVIEW | Playwright screenshot comparison with baseline management and diff visualization |
+| `ui-craft` | `animation-craft` | BUILD | Advanced CSS/Framer Motion animation patterns |
+| `ui-craft` | `design-system-validate` | REVIEW | Validate code against design tokens and component specs |
+| `ui-craft` | `figma-sync` | DESIGN | Sync design tokens and components from Figma via MCP/API |
+| `dev-craft` | `tdd-enforcer` | BUILD | Strict RED-GREEN-REFACTOR enforcement |
+| `dev-craft` | `security-audit` | REVIEW | Security vulnerability scanning during code review |
+| `dev-craft` | `database-migrations` | BUILD | Safe schema migration patterns |
+| `dev-craft` | `dependency-audit` | HARDEN | Dependency vulnerability scanning |
+| `dev-craft` | `performance-profiling` | REVIEW | Performance bottleneck detection |
+
+### Plugin Hooks (`.opencode-plugin/hooks/`)
+
+Hooks run automatically as part of the plugin system — never invoke manually:
+
+| Hook | Trigger | Action |
+|---|---|---|
+| `session-start` | Session begins | Load context from `.dev-craft/`, `.ui-craft/`, `PLAN.md` |
+| `session-end` | Session ends | Save learnings, generate handoff if context >60% |
+| `pre-tool-use` | Before file edit | Ponytail: check for reusable code before writing new |
+| `post-tool-use` | After file write | Update graphify index, capture evidence |
+| `verify-gate` | Agent claims "done" | Block premature completion; require fresh verification evidence |
 
 ## Pipeline Flow
 
@@ -223,18 +261,34 @@ All agents use **free OpenCode Zen models** (Nemotron 3 Ultra, Big Pickle, DeepS
 
 ## Getting Started
 
-### 1. Install Skills in OpenCode
+### 1. Install Skills
 
-Skills must be placed in a directory OpenCode scans:
+**Option A: Installer CLI (recommended)**
+
+```bash
+# From the agent-master-skills repo
+node installer/cli.js add dev-craft          # single skill
+node installer/cli.js add dev-craft ui-craft  # multiple skills
+node installer/cli.js list                    # show installed skills
+node installer/cli.js doctor                  # check health
+node installer/cli.js init                    # scaffold .opencode/ for a new project
+```
+
+The installer supports OpenCode, Claude Code, Cursor, and Codex harnesses. It copies skills to the correct location per harness:
+- **OpenCode:** `~/.config/opencode/skills/`
+- **Claude Code:** `~/.claude/skills/`
+- **Cursor:** `.cursor/skills/`
+- **Codex:** `.codex/skills/`
+
+**Option B: Manual symlink**
 
 ```bash
 # Global install (available in every project)
 ln -sfn "$(pwd)/skills/" ~/.config/opencode/skills
 
-# Or per-project install
+# Per-project install
 mkdir -p .opencode/skills/
 ln -sfn "$(pwd)/skills/dev-craft" .opencode/skills/dev-craft
-ln -sfn "$(pwd)/skills/product-thinking" .opencode/skills/product-thinking
 # ... link only the skills you need
 ```
 
@@ -267,7 +321,18 @@ In `opencode.json`:
       "review-orchestrator": "allow",
       "review-subagents": "allow",
       "eval-harness": "allow",
-      "agent-eval": "allow"
+      "agent-eval": "allow",
+      "two-axis-review": "allow",
+      "tdd-seam": "allow",
+      "verify-gate": "allow",
+      "image-to-code": "allow",
+      "imagegen": "allow",
+      "redesign": "allow",
+      "conductor": "allow",
+      "pair-agent": "allow",
+      "agent-shield": "allow",
+      "release-pipeline": "allow",
+      "diataxis-docs": "allow"
     }
   }
 }
@@ -298,6 +363,18 @@ In `opencode.json`:
 > → `dev-craft` (master) + `agent-orchestration` (backend/frontend/mobile)
 > → `verification-before-completion` before merge
 
+**For UI redesign / audit:**
+> "This page looks outdated, redesign it"
+> → `agent-router` → `frontend-engineer`
+> → `redesign` → pain points, before/after → `ui-craft` → build
+> → `anti-slop` + `playwright-skill` → QA + visual polish
+> → `verification-before-completion` before merge
+
+**For image generation:**
+> "Generate a hero image for the landing page"
+> → `agent-router` → `frontend-engineer`
+> → `imagegen` → generates premium image → `ui-craft` → integrates into layout
+
 ## Philosophy
 
 1. **Plan before code** — write the plan, then implement
@@ -327,29 +404,44 @@ Entry: agent-router (bootstrap)
     │       │
     │       ├── Phase 3-5: SOURCE, BUILD, TEST
     │       │   └── Uses: debugging-and-error-recovery, testing-strategies
+    │       │   └── TDD: tdd-seam (seam-based isolation)
     │       │   └── Parallel: dispatching-parallel-agents
     │       │   └── Multi-agent: agent-orchestration (git worktrees)
     │       │
     │       ├── Phase 6: REVIEW
-    │       │   └── Uses: code-review-and-quality (8-axis + gates)
+    │       │   └── Uses: two-axis-review → code-review-and-quality (8-axis + gates)
     │       │
     │       ├── Phase 7: HARDEN
-    │       │   └── Uses: verification-before-completion (6 gates), bug-hunting (security)
+    │       │   └── Uses: verify-gate → verification-before-completion (6 gates), bug-hunting (security)
     │       │
     │       ├── Phase 8: SHIP
-    │       │   └── Uses: ship (automated), verification-before-completion
+    │       │   └── Uses: ship → release-pipeline (automated), verification-before-completion
     │       │
     │       └── Phase H: HANDOFF
     │           └── Uses: handoff protocol, learn (capture)
+    │
+    ├── UI pipeline (ui-craft)
+    │       │
+    │       ├── image-to-code (screenshot → code)
+    │       ├── imagegen (hero images, illustrations)
+    │       ├── redesign (existing project audit)
+    │       ├── anti-slop (AI-tell prevention)
+    │       └── playwright-skill (browser QA)
     │
     ├── cost-optimizer (background, routes models)
     ├── token-budget (user-facing depth control)
     ├── context-engineering (manages context window)
     │
-    └── Weekly: retro → learn
+    ├── Plugin hooks (.opencode-plugin/hooks/)
+    │   ├── session-start / session-end (context persistence)
+    │   ├── pre-tool-use (ponytail: reuse before create)
+    │   ├── post-tool-use (graphify index update)
+    │   └── verify-gate (block premature "done")
+    │
+    └── Weekly: retro → learn → continuous-learning-v2
 
 Verification Gates (every slice):
-    verification-before-completion → verification-before-completion → ship
+    verify-gate → verification-before-completion → ship
 ```
 
 See `skills/SHARED.md` for the complete skill inventory and decision tree.
@@ -364,13 +456,16 @@ Quick-invokable workflows live in `commands/`, mode-specific configs in `context
 |---------|----------|
 | `/plan` | Scope → plan → review → approve (`product-thinking` → `planning-and-task-breakdown` → `grilling`) |
 | `/spec` | Requirements → spec → plan (`project-discovery` → `product-thinking` → `planning-and-task-breakdown`) |
-| `/review` | Parallel subagent review (`review-orchestrator` → `review-subagents`) → `code-review-and-quality` → `verification-before-completion` → `bug-hunting` |
+| `/review` | Two-axis review (`two-axis-review` → `code-review-and-quality` → `verification-before-completion`) |
 | `/investigate` | Debugging (`debugging-and-error-recovery` → `verification-before-completion`) |
-| `/qa` | Test generation + validation (`qa-and-edge-case-tester` → `testing-strategies` → `visual-regression`) |
-| `/ship` | Ship/deploy (`ship` → `verification-before-completion`) |
+| `/qa` | Test generation + validation (`qa-and-edge-case-tester` → `testing-strategies` → `playwright-skill` → `visual-regression`) |
+| `/ship` | Ship/deploy (`ship` → `release-pipeline` → `verification-before-completion`) |
+| `/redesign` | UI audit + upgrade (`redesign` → `ui-craft` → `anti-slop` → `playwright-skill`) |
+| `/image` | Generate image (`imagegen` → `ui-craft`) |
 | `/context-save` | Checkpoint (`context-compressor-and-pruner` → `learn` → `handoff`) |
 | `/context-restore` | Resume (`context-engineering` → `handoff` → `learn`) |
 | `/retro` | Weekly retrospective (`retro` → `learn`) |
+| `/security` | Security scan (`agent-shield` → `bug-hunting` → `verification-before-completion`) |
 
 ### Contexts (`contexts/`)
 

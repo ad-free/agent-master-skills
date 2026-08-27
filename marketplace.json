@@ -1,0 +1,405 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "agent-master-skills",
+  "description": "Skills for AI coding agents — composable, disciplined, evidence-based. 77 skills across engineering, frontend, security, orchestration, and more.",
+  "owner": {
+    "name": "adfree",
+    "url": "https://github.com/adfree/agent-master-skills"
+  },
+  "version": "2.2.0",
+  "license": "MIT",
+  "categories": [
+    "engineering",
+    "frontend",
+    "security",
+    "orchestration",
+    "quality",
+    "documentation",
+    "devops",
+    "context",
+    "testing",
+    "review"
+  ],
+  "plugins": [
+    {
+      "name": "agent-master-skills",
+      "description": "Full skill library for AI coding agents — dev-craft, ui-craft, verification gates, parallel orchestration, and more.",
+      "source": "./",
+      "category": "engineering"
+    }
+  ],
+  "skills": [
+    {
+      "name": "agent-router",
+      "description": "Primary entry point for all agent work. Maps user requests to the correct agent and skill chain.",
+      "source": "./skills/agent-router",
+      "category": "orchestration"
+    },
+    {
+      "name": "dev-craft",
+      "description": "Full-stack engineering pipeline with 15 phases from LOAD to SHIP.",
+      "source": "./skills/dev-craft",
+      "category": "engineering"
+    },
+    {
+      "name": "ui-craft",
+      "description": "Frontend development pipeline with 10 phases from LOAD to SHIP.",
+      "source": "./skills/ui-craft",
+      "category": "frontend"
+    },
+    {
+      "name": "product-thinking",
+      "description": "Transform vague ideas into structured product specifications through 4-round refinement.",
+      "source": "./skills/product-thinking",
+      "category": "engineering"
+    },
+    {
+      "name": "project-discovery",
+      "description": "Ingest existing specifications (xlsx/csv/md/pdf) into a domain model.",
+      "source": "./skills/project-discovery",
+      "category": "engineering"
+    },
+    {
+      "name": "planning-and-task-breakdown",
+      "description": "Break work into ordered, verifiable tasks with DAG-based dependency mapping.",
+      "source": "./skills/planning-and-task-breakdown",
+      "category": "engineering"
+    },
+    {
+      "name": "grilling",
+      "description": "Adversarial stress-test of plans and designs. Outputs risk register with mitigations.",
+      "source": "./skills/grilling",
+      "category": "quality"
+    },
+    {
+      "name": "api-design",
+      "description": "Design robust APIs (REST, GraphQL, gRPC) with versioning, docs, security.",
+      "source": "./skills/api-design",
+      "category": "engineering"
+    },
+    {
+      "name": "testing-strategies",
+      "description": "Comprehensive testing: unit, integration, e2e, contract, property-based.",
+      "source": "./skills/testing-strategies",
+      "category": "testing"
+    },
+    {
+      "name": "documentation-engineering",
+      "description": "ADRs, API docs, docs-as-code pipelines, technical writing.",
+      "source": "./skills/documentation-engineering",
+      "category": "documentation"
+    },
+    {
+      "name": "devops-automation",
+      "description": "CI/CD, IaC (Terraform), Kubernetes, progressive delivery, secrets.",
+      "source": "./skills/devops-automation",
+      "category": "devops"
+    },
+    {
+      "name": "observability-engineering",
+      "description": "Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting.",
+      "source": "./skills/observability-engineering",
+      "category": "devops"
+    },
+    {
+      "name": "architecture-patterns",
+      "description": "Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices patterns.",
+      "source": "./skills/architecture-patterns",
+      "category": "engineering"
+    },
+    {
+      "name": "database-migrations",
+      "description": "Safe schema changes with rollback, backfill, and zero-downtime deployment.",
+      "source": "./skills/database-migrations",
+      "category": "engineering"
+    },
+    {
+      "name": "backend-patterns",
+      "description": "Hexagonal, layered, CQRS, repository, saga, event sourcing patterns.",
+      "source": "./skills/backend-patterns",
+      "category": "engineering"
+    },
+    {
+      "name": "refactor-and-cleanup",
+      "description": "Dead code removal, duplication elimination, naming, complexity reduction.",
+      "source": "./skills/refactor-and-cleanup",
+      "category": "engineering"
+    },
+    {
+      "name": "verification-before-completion",
+      "description": "Layered validation: structure, deterministic, security, convention, LLM-judge.",
+      "source": "./skills/verification-before-completion",
+      "category": "quality"
+    },
+    {
+      "name": "verify-gate",
+      "description": "Mandatory verification before done claims — blocks premature completion.",
+      "source": "./skills/verify-gate",
+      "category": "quality"
+    },
+    {
+      "name": "code-review-and-quality",
+      "description": "8-axis code review protocol with confidence-based filtering.",
+      "source": "./skills/code-review-and-quality",
+      "category": "review"
+    },
+    {
+      "name": "two-axis-review",
+      "description": "Two-axis code review: Standards (lint, types, style) + Spec (contract, intent, scope).",
+      "source": "./skills/two-axis-review",
+      "category": "review"
+    },
+    {
+      "name": "review-orchestrator",
+      "description": "Parallel specialized review subagents (security, style, debug, performance).",
+      "source": "./skills/review-orchestrator",
+      "category": "review"
+    },
+    {
+      "name": "review-subagents",
+      "description": "Individual specialized subagents invoked by review-orchestrator.",
+      "source": "./skills/review-subagents",
+      "category": "review"
+    },
+    {
+      "name": "debugging-and-error-recovery",
+      "description": "Systematic root-cause investigation with hypothesis testing and regression prevention.",
+      "source": "./skills/debugging-and-error-recovery",
+      "category": "quality"
+    },
+    {
+      "name": "bug-hunting",
+      "description": "Deep security vulnerability discovery: Recon, Scan, Test, Exploit, Disclose.",
+      "source": "./skills/bug-hunting",
+      "category": "security"
+    },
+    {
+      "name": "agent-shield",
+      "description": "AgentShield security scanner integration: threat detection, prompt injection defense.",
+      "source": "./skills/agent-shield",
+      "category": "security"
+    },
+    {
+      "name": "secops-and-vulnerability-scanner",
+      "description": "Static analysis, OWASP Top 10, dependency audit, secrets detection.",
+      "source": "./skills/secops-and-vulnerability-scanner",
+      "category": "security"
+    },
+    {
+      "name": "ui-component-builder",
+      "description": "Build accessible, modular React/Vue/Tailwind components with design tokens.",
+      "source": "./skills/ui-component-builder",
+      "category": "frontend"
+    },
+    {
+      "name": "design-system-auditor",
+      "description": "Audit UI code for design consistency, responsiveness, performance, and WCAG.",
+      "source": "./skills/design-system-auditor",
+      "category": "frontend"
+    },
+    {
+      "name": "animation-and-interactions",
+      "description": "CSS/Framer Motion animations, micro-interactions, and visual polish.",
+      "source": "./skills/animation-and-interactions",
+      "category": "frontend"
+    },
+    {
+      "name": "image-to-code",
+      "description": "Image-first website design: screenshot to component hierarchy to code generation.",
+      "source": "./skills/image-to-code",
+      "category": "frontend"
+    },
+    {
+      "name": "imagegen",
+      "description": "Premium frontend image generation: hero images, illustrations, product shots.",
+      "source": "./skills/imagegen",
+      "category": "frontend"
+    },
+    {
+      "name": "redesign",
+      "description": "Existing project design audit and upgrade: pain points, before/after, polish.",
+      "source": "./skills/redesign",
+      "category": "frontend"
+    },
+    {
+      "name": "image-to-design-spec",
+      "description": "Screenshot to design tokens, layout detection, design system generation.",
+      "source": "./skills/image-to-design-spec",
+      "category": "frontend"
+    },
+    {
+      "name": "playwright-skill",
+      "description": "Browser testing, screenshots, forms, responsive design, UX validation.",
+      "source": "./skills/playwright-skill",
+      "category": "testing"
+    },
+    {
+      "name": "qa-and-edge-case-tester",
+      "description": "Automated test generation, edge-case analysis, boundary testing.",
+      "source": "./skills/qa-and-edge-case-tester",
+      "category": "testing"
+    },
+    {
+      "name": "tdd-seam",
+      "description": "Seam-based TDD: isolate boundaries, test across seams, pin behavior at integration points.",
+      "source": "./skills/tdd-seam",
+      "category": "testing"
+    },
+    {
+      "name": "api-contract-designer",
+      "description": "OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data.",
+      "source": "./skills/api-contract-designer",
+      "category": "engineering"
+    },
+    {
+      "name": "architecture-decision-records",
+      "description": "Draft, evaluate, and maintain ADRs and trade-off matrices.",
+      "source": "./skills/architecture-decision-records",
+      "category": "documentation"
+    },
+    {
+      "name": "performance-profiler-and-tuner",
+      "description": "Bottleneck analysis, memory leak detection, query optimization, profiling.",
+      "source": "./skills/performance-profiler-and-tuner",
+      "category": "engineering"
+    },
+    {
+      "name": "context-engineering",
+      "description": "Agent context setup, memory hierarchy, session continuity, context rotation.",
+      "source": "./skills/context-engineering",
+      "category": "context"
+    },
+    {
+      "name": "context-compressor-and-pruner",
+      "description": "Context window management, summarization, stale context pruning.",
+      "source": "./skills/context-compressor-and-pruner",
+      "category": "context"
+    },
+    {
+      "name": "token-budget",
+      "description": "Token estimation, user-chosen response depth, context compression.",
+      "source": "./skills/token-budget",
+      "category": "context"
+    },
+    {
+      "name": "cost-optimizer",
+      "description": "Model routing (Haiku/Sonnet), budget tracking, prompt caching.",
+      "source": "./skills/cost-optimizer",
+      "category": "context"
+    },
+    {
+      "name": "prompt-optimizer",
+      "description": "Turn rough prompts into finished, ready-to-send prompts optimized for LLMs.",
+      "source": "./skills/prompt-optimizer",
+      "category": "context"
+    },
+    {
+      "name": "learn",
+      "description": "Persistent project learnings DB: search, prune, export, stats.",
+      "source": "./skills/learn",
+      "category": "context"
+    },
+    {
+      "name": "retro",
+      "description": "Weekly engineering retrospective with git analysis and trend tracking.",
+      "source": "./skills/retro",
+      "category": "context"
+    },
+    {
+      "name": "handoff",
+      "description": "Agent-to-agent and session-to-session context transfer protocol.",
+      "source": "./skills/handoff",
+      "category": "context"
+    },
+    {
+      "name": "continuous-learning-v2",
+      "description": "Continuous learning system: session observations, decision logs, practice extraction.",
+      "source": "./skills/continuous-learning-v2",
+      "category": "context"
+    },
+    {
+      "name": "evidence-ledger",
+      "description": "Evidence-based decision tracking: structured ledger of choices, outcomes, rationale.",
+      "source": "./skills/evidence-ledger",
+      "category": "context"
+    },
+    {
+      "name": "graphify",
+      "description": "Turn any input into a persistent knowledge graph with query, path, and explain tools.",
+      "source": "./skills/graphify",
+      "category": "context"
+    },
+    {
+      "name": "agent-orchestration",
+      "description": "Multi-agent parallel builds with git worktree isolation and shared contracts.",
+      "source": "./skills/agent-orchestration",
+      "category": "orchestration"
+    },
+    {
+      "name": "dispatching-parallel-agents",
+      "description": "Run independent tasks simultaneously using subagents.",
+      "source": "./skills/dispatching-parallel-agents",
+      "category": "orchestration"
+    },
+    {
+      "name": "conductor",
+      "description": "Git worktree orchestration for parallel sprint execution across agents.",
+      "source": "./skills/conductor",
+      "category": "orchestration"
+    },
+    {
+      "name": "pair-agent",
+      "description": "Cross-agent browser sharing: review another agent's live work in real-time.",
+      "source": "./skills/pair-agent",
+      "category": "orchestration"
+    },
+    {
+      "name": "agent-eval",
+      "description": "Head-to-head agent comparison: pass rate, cost, time, consistency on custom tasks.",
+      "source": "./skills/agent-eval",
+      "category": "orchestration"
+    },
+    {
+      "name": "eval-harness",
+      "description": "Golden regression of skills with pass@k metrics and code/model/human graders.",
+      "source": "./skills/eval-harness",
+      "category": "testing"
+    },
+    {
+      "name": "ship",
+      "description": "One-command automated release: test, review, version, changelog, PR.",
+      "source": "./skills/ship",
+      "category": "devops"
+    },
+    {
+      "name": "release-pipeline",
+      "description": "Full release pipeline: ship, land-and-deploy, canary, benchmark.",
+      "source": "./skills/release-pipeline",
+      "category": "devops"
+    },
+    {
+      "name": "diataxis-docs",
+      "description": "Diataxis documentation framework: tutorial, howto, reference, explanation sync.",
+      "source": "./skills/diataxis-docs",
+      "category": "documentation"
+    },
+    {
+      "name": "skill-composer",
+      "description": "Dynamic skill chaining from a task graph with dependency-aware execution order.",
+      "source": "./skills/skill-composer",
+      "category": "orchestration"
+    },
+    {
+      "name": "skill-creator",
+      "description": "Create new skills, modify and improve existing skills for the library.",
+      "source": "./skills/skill-creator",
+      "category": "orchestration"
+    },
+    {
+      "name": "gbrain-sync",
+      "description": "Sync knowledge graph state across sessions and agents.",
+      "source": "./skills/gbrain-sync",
+      "category": "context"
+    }
+  ]
+}

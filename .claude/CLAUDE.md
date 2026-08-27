@@ -29,13 +29,15 @@ Cross-project rules for every Claude Code session. Extends global `~/.claude/CLA
 | Migration (schema, API, deps) | `database-engineer` / `devops-engineer` | migration → graphify → codegraph → dev-craft → verification-before-completion |
 | Dependency upgrade (minor/patch, no schema/API change) | `implementer` / `devops-engineer` | dev-craft → verification-before-completion |
 | Revert / rollback a change | `implementer` | investigate-first → surgical-patch → verification-before-completion |
-| Frontend / UI work | `frontend-engineer` | prompt-optimizer (pre-routing) → ui-craft → playwright-skill → verification-before-completion |
+| Frontend / UI work | `frontend-engineer` | prompt-optimizer (pre-routing) → ui-craft → image-to-code → playwright-skill → verification-before-completion |
 | Screenshot / image reference | `frontend-engineer` | prompt-optimizer (pre-routing) → image-to-design-spec → ui-craft |
+| UI redesign / audit | `frontend-engineer` | redesign → ui-craft → anti-slop → playwright-skill → verification-before-completion |
+| Image generation | `frontend-engineer` | imagegen → ui-craft → playwright-skill → verification-before-completion |
 | Create a diagram | `frontend-engineer` / `planner` | diagram-design |
-| Code review | `code-reviewer` | caveman-explore → graphify → codegraph → code-review-and-quality → caveman-review → verification-before-completion |
+| Code review | `code-reviewer` | caveman-explore → graphify → codegraph → two-axis-review → code-review-and-quality → caveman-review → verification-before-completion |
 | Security audit | `security-auditor` | prompt-optimizer (pre-routing) → investigate-first → graphify → codegraph → bug-hunting → verification-before-completion |
 | API design / contract change | `api-designer` | prompt-optimizer (pre-routing) → api-design → graphify → codegraph |
-| Writing / adding tests | `test-engineer` | prompt-optimizer (pre-routing) → testing-strategies → surgical-patch |
+| Writing / adding tests | `test-engineer` | prompt-optimizer (pre-routing) → testing-strategies → tdd-seam → surgical-patch |
 | Documentation | `docs-engineer` | prompt-optimizer (pre-routing) → documentation-engineering |
 | Retrospective / postmortem | `retro-analyst` | prompt-optimizer (pre-routing) → retro → learn |
 | Validation / "done" check (incl. claims of "done") | `verifier` | prompt-optimizer (pre-routing) → verify-and-stop → verification-before-completion |
@@ -87,6 +89,7 @@ Cross-project rules for every Claude Code session. Extends global `~/.claude/CLA
 | `safe-refactor` | Structural refactor | Preserve public interfaces/behavior; verify before structural edits. |
 | `migration` | DB/API/dependency migration | expand → migrate → verify → contract; preserve data; include rollback. |
 | `verify-and-stop` | "is this done?" | Minimal sufficient proof set; zero product-code edits unless a fix is requested. |
+| `verify-gate` | Agent claims "done" or says "completed" | Block premature completion; require fresh verification evidence (lint, type, test output). |
 | `cavecrew` | "delegate to subagent" | Sub-tasks: `investigator` (search), `builder` (≤2 file edit), `reviewer` (diff check). |
 
 ---

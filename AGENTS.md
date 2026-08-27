@@ -22,12 +22,14 @@ Route by task type, not by tech stack. Skills chain — follow the arrow.
 | Spec files (xlsx/csv/md/pdf) | project-discovery → planning-and-task-breakdown → dev-craft |
 | New feature / new project | planning-and-task-breakdown → dev-craft \| ui-craft |
 | Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
-| Frontend / UI work | ui-craft (+ frontend-design for visual polish) → verification-before-completion |
+| Frontend / UI work | ui-craft + image-to-code (+ frontend-design for visual polish) → playwright-skill → verification-before-completion |
 | Screenshot / image reference | image-to-design-spec → ui-craft |
+| UI redesign / audit | redesign → ui-craft → anti-slop → verification-before-completion |
+| Image generation | imagegen → ui-craft → verification-before-completion |
 | Infra / IaC / deploy change | dev-craft → Infra Safety (§ 7) → verification-before-completion |
 | Large multi-module project | dev-craft + agent-orchestration |
 | Multiple independent tasks | dispatching-parallel-agents |
-| Review code | code-review-and-quality |
+| Review code | two-axis-review → code-review-and-quality |
 | Security audit / vuln discovery | bug-hunting → verification-before-completion |
 | About to claim "done" | verification-before-completion (mandatory — § 4) |
 
@@ -97,7 +99,30 @@ A task is done only when every box below is true — and you say so explicitly r
 
 ---
 
-## 6. Multi-Agent Work & Error Recovery
+## 6. Hooks & Auto-Triggered Skills
+
+**Plugin hooks** (`.opencode-plugin/hooks/`) run automatically — never invoke manually:
+
+| Hook | Trigger | Action |
+|---|---|---|
+| `session-start` | Session begins | Load context from `.dev-craft/`, `.ui-craft/`, `PLAN.md` |
+| `session-end` | Session ends | Save learnings, generate handoff if context >60% |
+| `pre-tool-use` | Before file edit | Ponytail: check for reusable code before writing new |
+| `post-tool-use` | After file write | Update graphify index, capture evidence |
+| `verify-gate` | Agent claims "done" | Block premature completion; require fresh verification evidence |
+
+**Auto-triggered skills** — load without explicit prompt:
+
+| Skill | Trigger |
+|---|---|
+| `branch-before-code` | First file edit of a coding task |
+| `playwright-skill` | UI change in `src/`, `components/`, `pages/`, `app/` |
+| `graphify` | Pre-refactor, bug investigation, cross-domain spec matching |
+| `verify-gate` | Agent claims "done" or says "completed" |
+
+---
+
+## 7. Multi-Agent Work & Error Recovery
 
 **Parallel tasks** (`dispatching-parallel-agents`): write a shared contract (data shapes, file ownership) before dispatch; no overlapping edits; join and verify consistency at the end.
 
@@ -107,7 +132,7 @@ A task is done only when every box below is true — and you say so explicitly r
 
 ---
 
-## 7. Infra & Git Safety
+## 8. Infra & Git Safety
 
 - Never `commit`, `push`, `amend`, or open a PR without explicit instruction.
 - Always inspect `git status` / `git diff` before staging. Never commit secrets or `.env` files.
@@ -116,7 +141,7 @@ A task is done only when every box below is true — and you say so explicitly r
 
 ---
 
-## 8. Maintaining This File
+## 9. Maintaining This File
 
 When a new gotcha, dead convention, or repeated mistake surfaces, add one short line here instead of letting it live only in chat history. This is a checklist, not documentation — keep entries terse and specific.
 
