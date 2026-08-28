@@ -1,156 +1,587 @@
-# AGENTS.md — Global Agent Instructions
+# AGENTS.md — Canonical Agent Policy
 
-Cross-project rules for every OpenCode session. Project-level `AGENTS.md` extends/overrides these.
+This file is the single source of truth for coding agents working in this repository.
 
-**Tool-specific configs:**
-- **OpenCode:** `.opencode/AGENTS.md` (OpenCode format)
-- **Claude Code:** `.claude/CLAUDE.md` (Claude Code format)
+Supported targets:
+- Codex
+- OpenCode
+- Oh-my-pi (OMP)
+- Claude Code via a thin `CLAUDE.md` wrapper containing `@AGENTS.md`
 
-**Skills:** library at `~/.config/opencode/skills/`. Load via explicit `skill()` — never improvise a workflow the library already covers.
-
-**Ponytail plugin:** runs automatically in the background on every edit/write — it checks for reusable code before new code is written. It is a plugin hook, not a skill; don't invoke it, don't narrate its checks, just respect its output. Your responsibility is the *policy* (Iron Law #10, "reuse before create"), not re-implementing what the plugin already does.
-
----
-
-## 1. Skill Router — decide before acting
-
-Route by task type, not by tech stack. Skills chain — follow the arrow.
-
-| Task signal | Route |
-|---|---|
-| Vague idea, "how should we…" | product-thinking → planning-and-task-breakdown → dev-craft \| ui-craft |
-| Spec files (xlsx/csv/md/pdf) | project-discovery → planning-and-task-breakdown → dev-craft |
-| New feature / new project | planning-and-task-breakdown → dev-craft \| ui-craft |
-| Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
-| Frontend / UI work | ui-craft + image-to-code (+ frontend-design for visual polish) → playwright-skill → verification-before-completion |
-| Screenshot / image reference | image-to-design-spec → ui-craft |
-| UI redesign / audit | redesign → ui-craft → anti-slop → verification-before-completion |
-| Image generation | imagegen → ui-craft → verification-before-completion |
-| Infra / IaC / deploy change | dev-craft → Infra Safety (§ 7) → verification-before-completion |
-| Large multi-module project | dev-craft + agent-orchestration |
-| Multiple independent tasks | dispatching-parallel-agents |
-| Review code | two-axis-review → code-review-and-quality |
-| Security audit / vuln discovery | bug-hunting → verification-before-completion |
-| About to claim "done" | verification-before-completion (mandatory — § 4) |
-
-**Unsure which skill?** Start with `planning-and-task-breakdown` — it produces a plan every other skill can execute against.
+Platform/system instructions always have higher priority. The user's current request and explicit acceptance criteria have higher priority than repository defaults.
 
 ---
 
-## 2. Iron Laws — non-negotiable
+## 1. Core Operating Contract
 
-1. No implementation without a written, approved plan.
-2. No "done" claim without fresh verification evidence — show lint/type/test output, never assume it from memory.
-3. No fix without root-cause investigation first. Patch causes, not symptoms.
-4. No merge without quality gates green (lint, typecheck, tests).
-5. No code shipped without self-review evidence.
-6. No parallel work without verified independence + a written contract.
-7. No security assessment without active probing — assumption isn't verification.
-8. No weakening or deleting a test to force a pass. Flag a suspect test and wait for a decision instead.
-9. No calling unfamiliar or uncommon APIs without confirming they exist first (docs, CLI, or a live version check).
-10. **Reuse before creating.** Check for an existing type, helper, component, or util before writing a new one. The ponytail plugin surfaces candidates automatically — act on what it finds.
-11. Python only via `uv run` (`uv run pytest`, `uv run python script.py`). Bare `python` / `python3` / `py` / `pip` / `virtualenv` are forbidden.
-12. Filesystem inspection stays inside the project (`.`), depth ≤ 3, via `Glob` / `Grep` / CodeGraph — never unrestricted or system-wide scans.
-13. No hardcoded or outdated package versions. Always resolve to latest stable; never a deprecated major version unless explicitly instructed.
-14. No destructive or state-changing action (`git commit`/`push`, `terraform apply`, `kubectl apply`, `rm -rf`, DB migrations) without showing the diff/plan and getting explicit approval first.
+1. **Make the smallest correct change.**
+   - Satisfy the requested behavior.
+   - Do not add speculative features, unrelated refactors, abstractions, dependencies, or cleanup.
 
----
+2. **Current truth beats historical context.**
+   Resolve conflicts in this order:
+   1. current user request and acceptance criteria;
+   2. current code, tests, schemas, config, runtime evidence;
+   3. current git state and authoritative project docs;
+   4. historical notes, handoffs, and claude-mem observations.
 
-## 3. Operating Principles
+3. **Read before edit.**
+   - Reuse existing types, helpers, components, conventions, and patterns before creating new ones.
+   - Prefer modifying the established path over introducing a parallel implementation.
 
-- **Plan before code; evidence before "done."** Lint → typecheck → test, in that order, and read the actual output.
-- **Read before edit.** Match existing naming, structure, and conventions.
-- **Minimal footprint.** Diff-only edits — never reprint unchanged code. One concern per change.
-- **Lean context.** `Glob`/`Grep`/CodeGraph over full-tree reads; delegate broad discovery to the explore agent so the main context stays small.
-- **Ambiguity:** small gap → state the assumption inline and proceed. Large gap → ask exactly one question (§ 5 decides which case you're in).
-- **Resume, don't restart.** Check `.dev-craft/`, `.ui-craft/`, `PLAN.md`, and `git log` for prior state before starting fresh.
-- **Readable code, always.** Self-documenting names (no cryptic single letters except `i/j/k` in short loops, `x/y` in short math), comments explain *why* not *what*, no dense one-liners that hide logic.
+4. **Plan proportionally.**
+   - Small, local, reversible task: state the intended change briefly and proceed.
+   - Cross-module, risky, ambiguous, migration, security-sensitive, or contract-changing work: create a written plan before implementation.
 
----
+5. **Ask only when the user owns the decision.**
+   Ask when a choice:
+   - is destructive or irreversible;
+   - changes a public/API/data contract;
+   - risks data loss;
+   - requires a product/business trade-off;
+   - would take substantial work to unwind.
 
-## 4. Definition of Done
+   Otherwise choose the safest established default and verify it.
 
-A task is done only when every box below is true — and you say so explicitly rather than reporting success by default:
+6. **Root cause over symptom.**
+   - For bugs, establish reproduction or other concrete evidence before editing when practical.
+   - Fix the narrowest verified cause.
+   - Do not hide failures with retries, broad exception handling, disabled validation, or weakened tests unless explicitly required by the design.
 
-- [ ] Lint, type-check, and tests all pass — output shown, not claimed.
-- [ ] No test was weakened, skipped, or deleted to force a pass.
-- [ ] The change addresses the actual request; no unrelated regressions.
-- [ ] Edge cases (null / empty / boundary) are handled.
-- [ ] Style is clean: no cryptic names, consistent imports, one concern per change.
-- [ ] Self-review complete (`code-review-and-quality` or equivalent) — no open issues.
-- [ ] No stray `TODO`/`FIXME` left uncaptured in an issue.
+7. **Evidence before completion.**
+   - Never claim a task is done from memory or inference.
+   - Report fresh verification actually performed.
 
----
-
-## 5. Escalation — Ask vs. Proceed
-
-**Ask before proceeding when:**
-- Direction is genuinely ambiguous and guessing would waste real time.
-- A trade-off exists that the user should own (perf vs. readability, speed vs. correctness).
-- The action is large or irreversible (deletions, schema migrations, public API changes, merges, deploys).
-- Root cause is still unclear after two investigation rounds — escalate with what's been ruled out.
-
-**Proceed on your own judgment when:**
-- The ambiguity has an obvious, low-risk default — state it and move on.
-- The codebase already has an established pattern to follow.
-- Asking would cost more time than trying the direct path and verifying.
-
-**Rule of thumb:** if a wrong guess costs more than five minutes to unwind, ask first. Otherwise, proceed.
+8. **No hidden destructive actions.**
+   Do not commit, push, amend, merge, open a PR, deploy, reset/drop data, or apply destructive infrastructure changes without explicit user instruction.
 
 ---
 
-## 6. Hooks & Auto-Triggered Skills
+## 2. Context Retrieval Strategy
 
-**Plugin hooks** (`.opencode-plugin/hooks/`) run automatically — never invoke manually:
+Do not preload the repository, all skills, all graph systems, or all historical memory.
 
-| Hook | Trigger | Action |
+Retrieve only the context needed to answer a concrete question.
+
+### Choose the source by question
+
+| Need | First choice | Escalate only when needed |
 |---|---|---|
-| `session-start` | Session begins | Load context from `.dev-craft/`, `.ui-craft/`, `PLAN.md` |
-| `session-end` | Session ends | Save learnings, generate handoff if context >60% |
-| `pre-tool-use` | Before file edit | Ponytail: check for reusable code before writing new |
-| `post-tool-use` | After file write | Update graphify index, capture evidence |
-| `verify-gate` | Agent claims "done" | Block premature completion; require fresh verification evidence |
+| Previous decisions, prior fixes, rationale, session continuity | claude-mem | git history, current source verification |
+| Exact symbol, definition, caller/callee, code path | CodeGraph | targeted source read, `rg` |
+| Architecture, cross-module relationships, spec-to-code mapping, non-code artifacts | Graphify | CodeGraph for exact symbols |
+| Exact string, error text, config key, filename | `rg` / targeted read | graph tools |
+| Current behavior | source + tests + runtime evidence | history only for rationale |
 
-**Auto-triggered skills** — load without explicit prompt:
+### Default retrieval flow
 
-| Skill | Trigger |
-|---|---|
-| `branch-before-code` | First file edit of a coding task |
-| `playwright-skill` | UI change in `src/`, `components/`, `pages/`, `app/` |
-| `graphify` | Pre-refactor, bug investigation, cross-domain spec matching |
-| `verify-gate` | Agent claims "done" or says "completed" |
+1. Understand the task and acceptance criteria.
+2. Determine whether historical context materially matters.
+3. If yes, perform one compact claude-mem lookup.
+4. Choose **one** graph/search system first.
+5. Read only the files or slices surfaced by that result.
+6. Expand only when there is a specific unresolved dependency or question.
+7. Stop exploring when there is enough evidence to implement safely.
 
----
+### Context budget
 
-## 7. Multi-Agent Work & Error Recovery
+Use these as defaults, not hard limits:
 
-**Parallel tasks** (`dispatching-parallel-agents`): write a shared contract (data shapes, file ownership) before dispatch; no overlapping edits; join and verify consistency at the end.
+- Initial source reads: normally no more than ~5 relevant files.
+- Memory search results: normally 5–8 compact entries.
+- Full memory observations: normally 2–4.
+- One focused graph query before broad traversal.
+- Avoid rereading unchanged files unless new evidence invalidates earlier assumptions.
 
-**Multi-module work** (`agent-orchestration`): order by dependency (DAG), execute in stages, each agent hands off a written summary — never a silent handoff.
-
-**When something breaks** (`debugging-and-error-recovery`): capture full error context (trace, input, state) → reproduce deterministically → narrow to root cause with evidence → fix the cause → add a regression test. Stuck after two rounds? Escalate with what's ruled out — don't keep guessing.
-
----
-
-## 8. Infra & Git Safety
-
-- Never `commit`, `push`, `amend`, or open a PR without explicit instruction.
-- Always inspect `git status` / `git diff` before staging. Never commit secrets or `.env` files.
-- For infra changes: show `terraform plan` / `kubectl diff` / migration preview first; confirm target environment and rollback path; never auto-apply (Iron Law #14).
-- Destructive actions (`rm -rf`, DB drops/truncates, bulk resets, cloud resource deletion) always require explicit approval.
+Do not mechanically run both Graphify and CodeGraph on every task.
 
 ---
 
-## 9. Maintaining This File
+## 3. claude-mem Protocol
 
-When a new gotcha, dead convention, or repeated mistake surfaces, add one short line here instead of letting it live only in chat history. This is a checklist, not documentation — keep entries terse and specific.
+When claude-mem is installed and available:
 
-<!-- CODEGRAPH_START -->
-## CodeGraph
+### Automatic behavior
 
-In repositories indexed by CodeGraph (`.codegraph/` exists at repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
-- **MCP tool:** `codegraph_explore`
-- **Shell:** `codegraph explore "<symbol names or question>"`
+Let claude-mem lifecycle hooks capture and inject recent context automatically.
 
-If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
-<!-- CODEGRAPH_END -->
+Do **not** manually query memory merely because the plugin exists.
+
+### Explicitly query memory when
+
+- the user says "continue", "last time", "previous session", "we already decided", or similar;
+- resuming a milestone or task after context rotation or a long gap;
+- the reason behind an existing design is not discoverable from current code/docs;
+- investigating a recurring regression or previously encountered gotcha;
+- preparing a handoff that depends on prior decisions;
+- comparing current implementation against an earlier architectural decision.
+
+### Progressive disclosure
+
+When explicit recall is needed:
+
+1. `search`
+   - Use a focused query.
+   - Prefer 5–8 compact results.
+
+2. `timeline`
+   - Use only when chronology or surrounding events matter.
+
+3. `get_observations`
+   - Fetch only filtered relevant IDs.
+   - Batch IDs when possible.
+   - Normally retrieve no more than 2–4 full observations.
+
+### Memory safety rules
+
+- Memory is historical evidence, not source of truth.
+- Validate implementation claims against current code/tests/config before editing.
+- Search project history across agents by default.
+- Filter by platform only when platform-specific history itself matters.
+- Never paste large memory dumps into prompts, plans, handoffs, `AGENTS.md`, or `CLAUDE.md`.
+- Do not intentionally persist secrets, access tokens, passwords, credentials, private keys, customer-sensitive data, or large raw logs.
+- Use claude-mem privacy controls for sensitive transient context.
+- If claude-mem is unavailable or returns nothing useful, continue from repository evidence.
+- Memory is an optimization, never a blocker.
+- Keep claude-mem auto-generated folder-level instruction files disabled unless the user explicitly chooses otherwise.
+
+---
+
+## 4. CodeGraph / Graphify / Raw Search
+
+### CodeGraph first when
+
+Use CodeGraph when `.codegraph/` exists and the question concerns:
+
+- symbol definitions;
+- caller/callee chains;
+- exact implementation paths;
+- code-level dependency or impact tracing;
+- locating a known concept in source.
+
+Prefer one focused `codegraph_explore` / `codegraph explore "<question>"` query before broad grep or file traversal.
+
+If no CodeGraph index exists, skip it unless the user explicitly asks to create/update one.
+
+### Graphify first when
+
+Use Graphify for:
+
+- architecture maps;
+- cross-module or cross-domain relationships;
+- specification/document/media-to-code alignment;
+- broad dependency analysis;
+- structural change impact.
+
+Prefer scoped `query`, `path`, or `explain` operations.
+
+Read a full generated graph report only for a genuine architecture review or when scoped queries are insufficient.
+
+If Graphify was used and relevant code changed, update its index once near completion when needed. Do not refresh it after every edit.
+
+### Raw search first when
+
+Use `rg`, targeted file reads, or equivalent lightweight search for:
+
+- exact strings;
+- error messages;
+- config keys;
+- filenames;
+- local/small questions.
+
+Do not invoke a graph system merely because one is available.
+
+### Escalation rule
+
+CodeGraph → Graphify or Graphify → CodeGraph is an escalation path, not a mandatory chain.
+
+Use the second graph only when you can state the unanswered question it is expected to resolve.
+
+---
+
+## 5. Agent Routing
+
+Route once per task unless scope materially changes.
+
+Skills are capabilities to load on demand, not mandatory chains to execute end-to-end.
+
+| Task | Primary agent | Start with | Add only when needed |
+|---|---|---|---|
+| Vague feature / product idea | `planner` | product-thinking, planning-and-task-breakdown | grilling, Graphify, CodeGraph |
+| Spec-driven work | `planner` → `implementer` | project-discovery, planning-and-task-breakdown | Graphify, CodeGraph, dev-craft |
+| Small/new feature | `implementer` | lean-build, dev-craft | planning-and-task-breakdown, CodeGraph |
+| Bug / failing test | `debugger` | investigate-first, CodeGraph | Graphify, debugging-and-error-recovery, surgical-patch |
+| Behavior-preserving refactor | `debugger` / `implementer` | investigate-first, safe-refactor | CodeGraph or Graphify |
+| DB/schema migration | `database-engineer` | migration | CodeGraph, Graphify, dev-craft |
+| API/contract change | `api-designer` | api-design | Graphify, CodeGraph |
+| Frontend/UI | `frontend-engineer` | ui-craft | image-to-code, Playwright, CodeGraph |
+| Infra/deploy | `devops-engineer` | devops-automation | dev-craft |
+| Tests | `test-engineer` | testing-strategies | tdd-seam, surgical-patch |
+| Code review | `code-reviewer` | two-axis-review, code-review-and-quality | CodeGraph or Graphify, caveman-review |
+| Security audit | `security-auditor` | investigate-first, bug-hunting | CodeGraph or Graphify |
+| Documentation | `docs-engineer` | documentation-engineering | project-discovery |
+| Completion/validation check | `verifier` | verify-and-stop | verification-before-completion |
+| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration |
+| Large dependent multi-module task | `orchestrator` | agent-orchestration | Graphify, CodeGraph |
+
+### Skill selection rules
+
+- `lean-build` / Ponytail:
+  - default implementation posture;
+  - reuse before create;
+  - minimal footprint;
+  - no unnecessary abstraction.
+
+- `investigate-first` + `surgical-patch`:
+  - targeted bugs and regressions.
+
+- `safe-refactor`:
+  - behavior-preserving structural changes.
+
+- `migration`:
+  - schema/API/dependency migrations;
+  - preserve data and rollback path.
+
+- `verification-before-completion` / `verify-and-stop`:
+  - use once the implementation slice is coherent;
+  - do not rerun after every edit.
+
+- `playwright-skill`:
+  - frontend behavior that requires live interaction validation.
+
+- Caveman modes:
+  - compact exploration;
+  - compact reviews;
+  - concise commit text;
+  - concise handoffs;
+  - never sacrifice correctness or important warnings.
+
+- `prompt-optimizer`:
+  - use only for large, noisy, ambiguous prompts where compression preserves requirements;
+  - skip already precise or simple tasks.
+
+Do not preload every skill file at session start.
+
+---
+
+## 6. Standard Execution Workflow
+
+### Step 1 — Scope
+
+- Identify the concrete goal.
+- Identify acceptance criteria.
+- Identify explicit non-goals.
+- Separate required work from optional improvements.
+
+### Step 2 — Recover context
+
+- Use claude-mem only if history matters.
+- Use the most appropriate retrieval mechanism from Sections 2–4.
+- Avoid broad repository reconnaissance unless the task genuinely requires it.
+
+### Step 3 — Git safety
+
+Before the first code edit:
+
+- inspect `git status`;
+- preserve unrelated dirty work;
+- reuse an existing dedicated non-protected task branch when appropriate;
+- otherwise the primary writer creates one task branch;
+- prefer `git switch -c <type>/<short-slug>`.
+
+Do not switch branches independently from multiple agents sharing the same worktree.
+
+### Step 4 — Implement
+
+- Make the narrowest coherent change.
+- Preserve public interfaces and behavior unless the task explicitly changes them.
+- Reuse established project patterns.
+- Avoid unrelated cleanup.
+
+### Step 5 — Verify
+
+Run the smallest fresh proof set that covers the changed behavior.
+
+### Step 6 — Self-review
+
+Inspect the final diff for:
+
+- accidental changes;
+- missing edge cases;
+- security or authorization boundaries;
+- data/migration risks;
+- stale generated artifacts;
+- weakened tests;
+- unrelated formatting or cleanup.
+
+### Step 7 — Handoff
+
+Report:
+
+- what changed;
+- what was verified;
+- remaining risk;
+- important checks intentionally skipped.
+
+---
+
+## 7. Verification Policy
+
+Verification is task-scoped.
+
+Do not run every possible gate for every task.
+
+### Bug fix
+
+When practical:
+
+1. reproduce the failure or establish a failing proof;
+2. implement the fix;
+3. run the regression test;
+4. run directly affected tests.
+
+### Backend/code change
+
+Run targeted checks for the touched behavior, such as:
+
+- relevant lint;
+- relevant type-check;
+- focused unit/integration tests;
+- directly affected module tests.
+
+### Frontend behavior/UI change
+
+Run:
+
+- targeted tests;
+- one live browser/Playwright validation when the application can be run;
+- verify relevant interaction state and console errors.
+
+### Migration
+
+Verify as applicable:
+
+- upgrade path;
+- downgrade/rollback path;
+- constraints;
+- data preservation/backfill;
+- compatibility during transition.
+
+### Docs/config-only
+
+Validate only what is relevant:
+
+- syntax;
+- config parsing;
+- links;
+- generated output when applicable.
+
+Do not run unrelated product suites.
+
+### Review/analysis-only
+
+- Do not edit product code unless the user requests a fix.
+- Run tests only when necessary to validate a finding.
+
+### Full suite policy
+
+Run the full suite only when:
+
+- the user explicitly requests it;
+- it is a release/merge/completion gate;
+- the change surface is broad enough that targeted verification cannot provide adequate confidence.
+
+If the full suite is known or estimated to take more than 10 minutes and is not explicitly required:
+
+- do not start it automatically;
+- run targeted verification;
+- state that the full suite was not run;
+- provide the exact command for the operator.
+
+Never weaken, delete, skip, or rewrite a relevant failing test merely to obtain green output.
+
+---
+
+## 8. Branch, Commit, and Infrastructure Safety
+
+- Never commit, push, amend, merge, open a PR, deploy, or apply infrastructure changes without explicit instruction.
+- Inspect `git status` and `git diff` before staging or handoff.
+- Never commit secrets, `.env` values, credentials, private keys, or tokens.
+- Assume pre-existing dirty changes belong to the user.
+- Never discard unrelated work.
+- For migrations, IaC, and destructive operations:
+  - inspect/show the plan or diff;
+  - identify the target environment;
+  - preserve a rollback path;
+  - require explicit approval before destructive execution.
+
+---
+
+## 9. Multi-Agent Contract
+
+Parallelize only work that is genuinely independent.
+
+### Before dispatch
+
+Define for each subagent:
+
+- one concrete goal;
+- minimal relevant context;
+- expected deliverable;
+- file/interface ownership;
+- acceptance criteria;
+- whether it is read-only or may edit.
+
+Avoid overlapping edits.
+
+Use isolated worktrees for parallel writers when appropriate.
+
+### Shared context
+
+Pass only what the subagent needs:
+
+- relevant contract/data shape;
+- relevant symbols/files;
+- relevant acceptance criteria;
+- unresolved questions.
+
+Do not pass:
+
+- the entire conversation;
+- full memory history;
+- full graph reports;
+- unrelated project documentation.
+
+### Subagent return format
+
+Keep responses compact:
+
+- **Findings/Changes**
+- **Evidence** (`path:line` when applicable)
+- **Risks/Unknowns**
+- **Verification**
+
+The primary agent owns:
+
+- integration;
+- conflict resolution;
+- final diff review;
+- final verification;
+- final user handoff.
+
+---
+
+## 10. Cost and Token Controls
+
+### General
+
+- Prefer targeted retrieval over broad exploration.
+- Do not repeatedly reread unchanged files.
+- Do not copy full tool outputs into another agent's prompt.
+- Pass conclusions, identifiers, contracts, and `path:line` evidence instead.
+- Stop investigation when evidence is sufficient.
+- Avoid speculative tests, broad refactors, and generated documentation outside acceptance criteria.
+
+### Ponytail posture
+
+Default to:
+
+- reuse before create;
+- no new abstraction without repeated need;
+- no new dependency when an existing capability is adequate;
+- minimal surface area.
+
+### Caveman posture
+
+Prefer concise:
+
+- exploration results;
+- code-review comments;
+- commit messages;
+- handoffs;
+- subagent summaries.
+
+Do not compress away:
+
+- security implications;
+- migration risks;
+- failed verification;
+- important acceptance criteria.
+
+### Context rotation
+
+When the active context becomes too large:
+
+1. create a compact handoff;
+2. include current goal, decisions, changed files, verification, and unresolved issues;
+3. store only durable historical conclusions in memory;
+4. resume from the compact handoff plus current repository truth.
+
+Do not carry raw logs, full tool transcripts, or complete graph reports across rotations.
+
+---
+
+## 11. Project Instruction Hierarchy
+
+Keep repository policy modular.
+
+Recommended structure:
+
+```text
+repo/
+├── AGENTS.md             # canonical cross-agent policy
+├── CLAUDE.md             # thin wrapper: @AGENTS.md
+├── backend/
+│   └── AGENTS.md         # only backend-specific rules
+├── frontend/
+│   └── AGENTS.md         # only frontend-specific rules
+└── infra/
+    └── AGENTS.md         # only infra-specific rules
+```
+
+Nested `AGENTS.md` files should contain only rules specific to that subtree.
+
+Do not duplicate root rules into nested files.
+
+Avoid creating platform-specific policy copies unless a platform truly requires behavior that cannot be expressed in the canonical policy.
+
+---
+
+## 12. Environment Defaults
+
+- Detect the current environment rather than assuming one.
+- Prefer portable relative paths.
+- Use `/` path separators in repository instructions.
+- Prefer project-managed tooling over globally installed ad-hoc dependencies.
+- Follow the repository's existing package/runtime manager.
+- Do not install dependencies, modify global configuration, or mutate developer tooling unless required by the task or explicitly requested.
+
+If a command is platform-specific, use the environment actually running the agent rather than instructions copied from another OS.
+
+---
+
+## 13. Completion Handoff
+
+Default final handoff format:
+
+**Changed**
+- concise summary of files/behavior modified.
+
+**Verified**
+- exact checks run and their results.
+
+**Risk**
+- only remaining uncertainty that materially matters.
+
+**Skipped**
+- material checks intentionally not run and why.
+
+Do not repeat:
+
+- the full plan;
+- tool transcripts;
+- memory history;
+- unchanged source;
+- entire test logs.
+
+A task is complete when the requested behavior is implemented, task-relevant verification is fresh, the diff has been reviewed, and any remaining risk is clearly disclosed.
