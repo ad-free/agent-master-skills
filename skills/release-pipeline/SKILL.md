@@ -1,7 +1,16 @@
 ---
 name: release-pipeline
-description: Full release pipeline: ship → land-and-deploy → canary → benchmark. Automates the entire release process with safety gates, canary deployments, and performance benchmarking.
+description: "Use when you need a full release pipeline: ship → land-and-deploy → canary → benchmark. Automates the entire release process with safety gates, canary deployments, and performance benchmarking."
+model: big-pickle
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 triggers:
   - "release"
   - "ship"
@@ -11,6 +20,7 @@ triggers:
   - "pipeline"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 ---
 
 # Release Pipeline

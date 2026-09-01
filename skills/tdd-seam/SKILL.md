@@ -1,7 +1,15 @@
 ---
 name: tdd-seam
-description: TDD seam-based testing enforcement. Ensures tests are written at pre-agreed public seams, not against internals. Enforces red-green-refactor loop with vertical slices. Ported from mattpocock/engineering/tdd.
+description: Use when you need TDD seam-based testing enforcement. Ensures tests are written at pre-agreed public seams, not against internals. Enforces red-green-refactor loop with vertical slices. Ported from mattpocock/engineering/tdd.
+model: nemotron-3-ultra-free
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
 triggers:
   - "tdd"
   - "test driven"
@@ -10,7 +18,7 @@ triggers:
   - "test first"
 metadata:
   origin: agent-master-skills
-  ports: mattpocock/engineering/tdd
+  preferred-model: nemotron-3-ultra-free
 ---
 
 # TDD Seam-Based Testing

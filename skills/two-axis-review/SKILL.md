@@ -1,7 +1,13 @@
 ---
 name: two-axis-review
-description: Two-axis code review: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel and reports them side by side. Ported from mattpocock/engineering/code-review.
+description: "Use when you need a two-axis code review: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel and reports them side by side. Ported from mattpocock/engineering/code-review."
+model: nemotron-3-ultra-free
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
 triggers:
   - "code review"
   - "review code"
@@ -13,7 +19,7 @@ triggers:
   - "spec review"
 metadata:
   origin: agent-master-skills
-  ports: mattpocock/engineering/code-review
+  preferred-model: nemotron-3-ultra-free
 ---
 
 # Two-Axis Code Review

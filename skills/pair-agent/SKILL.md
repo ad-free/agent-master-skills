@@ -1,7 +1,15 @@
 ---
 name: pair-agent
-description: Cross-agent browser sharing for collaborative debugging and review. Allows multiple agents to share a browser session for real-time collaboration on UI work, debugging, and code review.
+description: Use when you need cross-agent browser sharing for collaborative debugging and review. Allows multiple agents to share a browser session for real-time collaboration on UI work, debugging, and code review.
+model: nemotron-3-ultra-free
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
 triggers:
   - "pair agent"
   - "share browser"
@@ -10,6 +18,7 @@ triggers:
   - "review together"
 metadata:
   origin: agent-master-skills
+  preferred-model: nemotron-3-ultra-free
 ---
 
 # Pair Agent — Cross-Agent Browser Sharing

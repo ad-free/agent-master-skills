@@ -1,7 +1,15 @@
 ---
 name: diataxis-docs
-description: Diataxis documentation framework integration. Syncs documentation on ship using the four Diataxis quadrants: tutorials, how-to guides, explanation, and reference. Ensures documentation stays in sync with code changes.
+description: "Use when you need Diataxis documentation framework integration. Syncs documentation on ship using the four Diataxis quadrants: tutorials, how-to guides, explanation, and reference. Ensures documentation stays in sync with code changes."
+model: big-pickle
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
 triggers:
   - "docs sync"
   - "diataxis"
@@ -10,6 +18,7 @@ triggers:
   - "doc sync"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 ---
 
 # Diataxis Documentation Sync

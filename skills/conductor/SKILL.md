@@ -1,7 +1,16 @@
 ---
 name: conductor
-description: Orchestrates parallel workstreams using git worktrees for isolated execution. Manages shared contracts, dependency ordering, and cross-workstream verification. Use for large features requiring backend+frontend+mobile parallel execution.
+description: Use when you need to orchestrate parallel workstreams using git worktrees for isolated execution, managing shared contracts, dependency ordering, and cross-workstream verification. For large features requiring backend+frontend+mobile parallel execution.
+model: nemotron-3-ultra-free
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Grep
+  - Glob
 triggers:
   - "parallel sprints"
   - "conductor"
@@ -10,7 +19,7 @@ triggers:
   - "multi-agent"
 metadata:
   origin: agent-master-skills
-  ports: gstack/conductor, agent-orchestration
+  preferred-model: nemotron-3-ultra-free
 ---
 
 # Conductor — Parallel Sprint Orchestration

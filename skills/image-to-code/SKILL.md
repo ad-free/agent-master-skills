@@ -1,13 +1,24 @@
 ---
 name: image-to-code
-description: Elite website image-to-code skill. For visually important web tasks, generate design image(s) first, deeply analyze them, then implement the website to match them as closely as possible. Enforces one image per section, fresh generation over cropping, and faithful implementation.
+description: Use when you need the elite website image-to-code skill. For visually important web tasks, generate design image(s) first, deeply analyze them, then implement the website to match them as closely as possible. Enforces one image per section, fresh generation over cropping, and faithful implementation.
+model: nemotron-3-ultra-free
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
 triggers:
   - "image to code"
   - "image first"
   - "design to code"
   - "screenshot to code"
   - "visual website"
+metadata:
+  origin: agent-master-skills
+  preferred-model: nemotron-3-ultra-free
 ---
 
 # Image-to-Code Skill

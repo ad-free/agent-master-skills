@@ -1,13 +1,24 @@
 ---
 name: imagegen
-description: Elite frontend image-direction skill for generating premium, conversion-aware website design references. Generates one separate horizontal image per section, enforces composition variety, background-image freedom, varied CTAs, varied hero scales, narrative concept spine, and a single consistent palette across all images.
+description: Use when you need to generate premium frontend images for website design references, hero sections, illustrations, or product shots. Creates one separate horizontal image per section with consistent palette, typography scale, and CTA family.
+model: nemotron-3-ultra-free
 version: 1.0.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
 triggers:
   - "image gen"
   - "generate image"
   - "design reference"
   - "section image"
   - "website comp"
+metadata:
+  origin: agent-master-skills
+  preferred-model: nemotron-3-ultra-free
 ---
 
 # Image Generation Skill

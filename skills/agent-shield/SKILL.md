@@ -1,7 +1,14 @@
 ---
 name: agent-shield
-description: AgentShield security scanner integration. Scans agent configurations, hooks, MCP servers, permissions, and secrets for security vulnerabilities. Provides deterministic scanning with remediation plans. Ported from ECC/agentshield.
+description: Use when you need AgentShield security scanner integration. Scans agent configurations, hooks, MCP servers, permissions, and secrets for security vulnerabilities. Provides deterministic scanning with remediation plans. Ported from ECC/agentshield.
+model: big-pickle
 version: 1.0.0
+preamble-tier: 4
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
 triggers:
   - "security scan"
   - "agent shield"
@@ -11,7 +18,7 @@ triggers:
   - "scan secrets"
 metadata:
   origin: agent-master-skills
-  ports: ECC/agentshield
+  preferred-model: big-pickle
 ---
 
 # AgentShield Security Scanner Integration

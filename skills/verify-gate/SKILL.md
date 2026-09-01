@@ -1,7 +1,14 @@
 ---
 name: verify-gate
-description: Mandatory verification gate that runs before any "done" claim. Captures fresh evidence of completion: lint output, test results, build status, typecheck results. Prevents premature "done" claims by requiring proof, not assumptions.
-version: 1.0.0
+description: "Use when you need a mandatory verification gate that runs before any \"done\" claim. Captures fresh evidence of completion: lint output, test results, build status, typecheck results. Prevents premature \"done\" claims by requiring proof, not assumptions."
+model: big-pickle
+version: 2.1.0
+preamble-tier: 3
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
 triggers:
   - "verify"
   - "done"
@@ -10,6 +17,7 @@ triggers:
   - "gate"
 metadata:
   origin: agent-master-skills
+  preferred-model: big-pickle
 ---
 
 # Verify Gate
