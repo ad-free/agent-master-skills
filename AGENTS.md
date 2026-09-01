@@ -214,7 +214,8 @@ Skills are capabilities to load on demand, not mandatory chains to execute end-t
 | Behavior-preserving refactor | `debugger` / `implementer` | investigate-first, safe-refactor | CodeGraph or Graphify |
 | DB/schema migration | `database-engineer` | migration | CodeGraph, Graphify, dev-craft |
 | API/contract change | `api-designer` | api-design | Graphify, CodeGraph |
-| Frontend/UI | `frontend-engineer` | ui-craft | image-to-code, Playwright, CodeGraph |
+| Frontend/UI | `frontend-engineer` | ui-craft | ui-pattern-extractor, image-to-code, Playwright, CodeGraph |
+| Tech stack research / alternatives | `frontend-engineer` / `implementer` | tech-advisor | ui-craft, dev-craft |
 | Infra/deploy | `devops-engineer` | devops-automation | dev-craft |
 | Tests | `test-engineer` | testing-strategies | tdd-seam, surgical-patch |
 | Code review | `code-reviewer` | two-axis-review, code-review-and-quality | CodeGraph or Graphify, caveman-review |
@@ -248,6 +249,16 @@ Skills are capabilities to load on demand, not mandatory chains to execute end-t
 
 - `playwright-skill`:
   - frontend behavior that requires live interaction validation.
+
+- `tech-advisor`:
+  - research and recommend technology alternatives before implementation;
+  - compare current vs latest versions, present options with reasoning;
+  - mandatory before any UI/frontend work on existing codebases.
+
+- `ui-pattern-extractor`:
+  - extract existing UI patterns, design tokens, component conventions;
+  - mandatory before writing any UI code on existing codebases;
+  - prevents wrong buttons, inconsistent styles, broken responsive.
 
 - Caveman modes:
   - compact exploration;
