@@ -79,6 +79,11 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 - **API design, contract, OpenAPI, GraphQL schema** → `api-design` → `api-contract-designer`
 - **Backend service, database, infrastructure** → `dev-craft` → `backend-patterns`, `database-migrations`
 - **Mobile app, React Native, Expo** → `dev-craft` → `ui-craft` (mobile plugins)
+- **What framework/library should I use?** → `tech-advisor` (research + recommend)
+- **Is there a better alternative to [X]?** → `tech-advisor` (compare alternatives)
+- **Should I upgrade [dependency]?** → `tech-advisor` (check versions + recommend)
+- **What patterns does this codebase use?** → `ui-pattern-extractor` (extract existing patterns)
+- **Build a component** → `ui-pattern-extractor` (first) → then `ui-component-builder`
 
 ### Debugging & Investigation
 - **Bug, error, broken behavior, "why is this broken", "this doesn't work", "wtf", "something's wrong"** → `/investigate` (invokes `debugging-and-error-recovery` → `verification-before-completion`)
@@ -199,6 +204,14 @@ prompt-optimizer (pre-routing) → ship → verification-before-completion → v
 ```
 prompt-optimizer (pre-routing) → retro → learn → (feeds into next week's product-thinking)
   → (per-agent) prompt-optimizer for retro-analyst
+```
+
+**Frontend/UI (with tech-advisor + pattern-extractor):**
+```
+prompt-optimizer (pre-routing) → tech-advisor (research + recommend)
+  → user approves stack → ui-pattern-extractor (extract existing patterns)
+  → ui-craft → (per slice) code-review-and-quality
+  → verification-before-completion → ship → learn
 ```
 
 ---

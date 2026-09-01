@@ -102,7 +102,10 @@ does not copy those rules; they have one source of truth.
 | Starting new feature | `planning-and-task-breakdown` |
 | Building backend/API | `dev-craft` |
 | Building UI/frontend | `ui-craft` |
+| Extracting UI patterns from codebase | `ui-pattern-extractor` |
+| Building UI components | `ui-component-builder` |
 | Designing APIs (REST/GraphQL/gRPC) | `api-design` |
+| Researching technology alternatives | `tech-advisor` |
 | Establishing testing strategy | `testing-strategies` |
 | Setting up documentation/ADRs | `documentation-engineering` |
 | Setting up CI/CD/IaC/deployment | `devops-automation` |
@@ -172,6 +175,9 @@ does not copy those rules; they have one source of truth.
 | "is this service hardened against attack" | `dev-craft` HARDEN / `bug-hunting` | `observability-engineering` |
 | "should this be one service or three" | `architecture-patterns` | `dev-craft` ARCH-SCAN |
 | "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `architecture-patterns` |
+| "what framework should I use" | `tech-advisor` | `architecture-patterns` (structural decisions) |
+| "is there a better alternative to [X]" | `tech-advisor` | `refactor-and-cleanup` (code cleanup) |
+| "should I upgrade this dependency" | `tech-advisor` | `dev-craft` (general dev work) |
 
 ### Skill Chaining Pattern
 

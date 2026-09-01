@@ -109,7 +109,7 @@ Run during Phase 2 (ALIGN). Every generated code must match exact framework vers
 ## Pipeline Phases
 
 ```
-[0] LOAD → [1] AUDIT → [2] ALIGN → [3] DESIGN → [3.7] REQUIREMENTS-EXTRACTION
+[0] LOAD → [1] AUDIT → [1.5] TECH-ADVISOR → [1.75] PATTERN-EXTRACT → [2] ALIGN → [3] DESIGN → [3.7] REQUIREMENTS-EXTRACTION
     → [4] SOURCE → [5] BUILD → [6] REVIEW → [7] HARDEN → [8] SHIP
 ```
 
@@ -118,7 +118,9 @@ Each phase:
 Phase → Output
 LOAD → state.json initialized
 AUDIT → Health report (remediate first?)
-ALIGN → CONTEXT.md (shared language)
+TECH-ADVISOR → Research + recommend stack improvements (MANDATORY before ALIGN)
+PATTERN-EXTRACT → Extract existing UI patterns, tokens, components → ui-patterns.md (MANDATORY before BUILD)
+ALIGN → CONTEXT.md (shared language) — uses APPROVED stack from TECH-ADVISOR + patterns from PATTERN-EXTRACT
 DESIGN → Design system + tokens + preview
 REQUIREMENTS-EXTRACTION → requirements.md (spec→task traceability matrix)  ← COVERAGE GATE
 SOURCE → Fetched docs
@@ -206,6 +208,83 @@ Write state after LOAD.
 **Exit criterion:** Human approves remediation or defers.
 
 **State write:** Save findings to state.json.
+
+### Phase 1.5: TECH-ADVISOR — Research + Recommend Stack (MANDATORY)
+
+**Goal:** Research current tech landscape, compare alternatives, recommend improvements BEFORE writing any code.
+
+**Process:**
+
+1. **Current Stack Analysis** (READ ONLY — do not edit):
+   - Run `npm outdated` or equivalent to find outdated dependencies
+   - Check current framework versions (React, Tailwind, etc.)
+   - Identify component library, icon library, animation library
+
+2. **Research Latest** (WebSearch):
+   - Query: `"[current-tool] latest version 2026"` for each major dependency
+   - Query: `"[category] best [framework] comparison"` for alternatives
+   - Query: `"[old] vs [new] benchmark performance"` for comparison data
+
+3. **Comparison Matrix:**
+   ```
+   | Criteria | Current: [X] | Alternative A | Alternative B |
+   |----------|--------------|---------------|---------------|
+   | Latest Version | 3.x | 4.x | 2.x |
+   | Bundle Size | 45KB | 28KB | 32KB |
+   | Performance | Good | Excellent | Good |
+   | TypeScript | Partial | Full | Full |
+   | Maintenance | Active | Very Active | Active |
+   ```
+
+4. **Recommendation** (present to user):
+   - TOP 1-2 highest-impact changes with reasoning
+   - Migration cost estimate (Low/Medium/High)
+   - Risk assessment (Low/Medium/High)
+
+5. **User decides:**
+   - A) Apply recommended changes → update dependencies
+   - B) Keep current stack → proceed with existing
+   - C) Show more details → expand comparison
+
+**Exit criterion:** User approves stack choice (current or recommended).
+
+**State write:** Save approved stack to state.json (approved-stack key).
+
+### Phase 1.75: PATTERN-EXTRACT — Extract Existing UI Patterns (MANDATORY)
+
+**Goal:** Understand EXACTLY how the codebase works before writing any UI code. Prevents wrong buttons, inconsistent styles, broken responsive.
+
+**Process:**
+
+1. **Component Inventory:**
+   - Scan `src/components/`, `src/components/ui/`, `src/components/common/`
+   - List all existing components (Button, Input, Card, Dialog, etc.)
+   - Read 2-3 key components to understand patterns
+
+2. **Design Token Extraction:**
+   - Read `tailwind.config.ts` or `src/app/globals.css`
+   - Extract colors, spacing, typography, radii, shadows
+   - Note exact values (not guesses)
+
+3. **Responsive Breakpoint Extraction:**
+   - Check tailwind config screens
+   - Check CSS @media queries
+   - Note exact breakpoint values
+
+4. **Pattern Documentation:**
+   - How are props typed?
+   - How are variants handled (cva, if/else, switch)?
+   - How is className composed (cn(), clsx(), template literals)?
+   - How are icons integrated?
+
+5. **Save to ui-patterns.md:**
+   - Create `.ui-craft/ui-patterns.md`
+   - Document all extracted patterns
+   - Reference this file in all UI work
+
+**Exit criterion:** ui-patterns.md exists with extracted patterns.
+
+**State write:** Save reference to ui-patterns.md in state.json.
 
 ### Phase 2: ALIGN — Grill + Detect + Glossary
 

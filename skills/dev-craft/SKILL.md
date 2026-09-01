@@ -155,7 +155,7 @@ Read dependency files (package.json, requirements.txt, go.mod, Cargo.toml, etc.)
 ## Pipeline Phases
 
 ```
-[0] LOAD → [0.2] SCOPE (be/fullstack × build/ticket) → [0.5] REQUIRE → [1] ARCH-SCAN
+[0] LOAD → [0.2] SCOPE (be/fullstack × build/ticket) → [0.5] REQUIRE → [1] ARCH-SCAN → [1.5] TECH-ADVISOR
     → [2] ALIGN → [3] DESIGN → [3.5] BUILD-ORDER → [3.7] REQUIREMENTS-EXTRACTION
     → [4] SOURCE → [4.5] CONTRACT (fullstack only) → [5] BUILD → [6] TEST
     → [7] REVIEW → [8] HARDEN → [9] SHIP
@@ -170,7 +170,8 @@ Phase → Output
 LOAD → state.json initialized
 REQUIRE → domain.md (domain model, features, priorities)
 ARCH-SCAN → Smell report
-ALIGN → CONTEXT.md (shared language)
+TECH-ADVISOR → Research + recommend stack improvements (MANDATORY before ALIGN)
+ALIGN → CONTEXT.md (shared language) — uses APPROVED stack from TECH-ADVISOR
 DESIGN → PLAN.md + ADRs
 BUILD-ORDER → build-order.md (module dependency sequencing)
 REQUIREMENTS-EXTRACTION → requirements.md (spec→task traceability matrix)  ← COVERAGE GATE
@@ -275,6 +276,47 @@ Every slice must pass these gates before it is committed:
 **Exit criterion:** Codebase map confirmed by human.
 
 **State write:** `state.json.codebaseMap = ".dev-craft/codebase-map.md"`.
+
+### Phase 1.5: TECH-ADVISOR — Research + Recommend Stack (MANDATORY)
+
+**Goal:** Research current tech landscape, compare alternatives, recommend improvements BEFORE writing any code.
+
+**Process:**
+
+1. **Current Stack Analysis** (READ ONLY — do not edit):
+   - Read package.json, requirements.txt, go.mod, Cargo.toml for dependency versions
+   - Run `npm outdated` or equivalent to find outdated packages
+   - Check for deprecated packages, known vulnerabilities
+
+2. **Research Latest** (WebSearch):
+   - Query: `"[current-tool] latest version 2026"` for each major dependency
+   - Query: `"[category] best [framework] comparison"` for alternatives
+   - Query: `"[old] vs [new] benchmark performance"` for comparison data
+
+3. **Comparison Matrix:**
+   ```
+   | Criteria | Current: [X] | Alternative A | Alternative B |
+   |----------|--------------|---------------|---------------|
+   | Latest Version | 3.x | 4.x | 2.x |
+   | Bundle Size | 45KB | 28KB | 32KB |
+   | Performance | Good | Excellent | Good |
+   | TypeScript | Partial | Full | Full |
+   | Maintenance | Active | Very Active | Active |
+   ```
+
+4. **Recommendation** (present to user):
+   - TOP 1-2 highest-impact changes with reasoning
+   - Migration cost estimate (Low/Medium/High)
+   - Risk assessment (Low/Medium/High)
+
+5. **User decides:**
+   - A) Apply recommended changes → update dependencies
+   - B) Keep current stack → proceed with existing
+   - C) Show more details → expand comparison
+
+**Exit criterion:** User approves stack choice (current or recommended).
+
+**State write:** Save approved stack to state.json (approved-stack key).
 
 ### Phase 2: ALIGN — Grill + Detect + Glossary
 
