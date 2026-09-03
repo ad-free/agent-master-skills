@@ -493,37 +493,36 @@ Both pipelines share `context.md` for consistent terminology:
 
 ---
 
-## Agent Registry (v2.0)
+## Agent Registry (v3.0)
 
-All 40 agents with model assignments and allowed-tools restrictions:
+All 16 agents with model assignments and allowed-tools restrictions:
 
 ### Core Pipeline Agents
 | Agent | Model | Allowed Tools | Max Steps | Purpose |
 |-------|-------|---------------|-----------|---------|
-| `planner` | nemotron-3-ultra-free | Read, Grep, Glob, Bash | 15 | Creates PLAN.md from spec |
-| `implementer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | TDD implementation |
-| `verifier` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 8 | Fresh evidence gates |
-| `gatekeeper` | gpt-5-nano | Read, Bash, Grep, Glob | 5 | Always-active guardrails |
-| `triage` | gpt-5-nano | Read, Grep, Glob | 5 | Classify + route requests |
+| `planner` | gpt-5.6-terra | Read, Grep, Glob, Bash | 15 | Creates PLAN.md from spec |
+| `implementer` | gpt-5.6-terra | Read, Write, Edit, Bash, Grep, Glob | 12 | TDD implementation |
+| `verifier` | gpt-5.6-luna | Read, Bash, Grep, Glob | 8 | Fresh evidence gates |
 
 ### Domain Specialists
 | Agent | Model | Allowed Tools | Max Steps | Purpose |
 |-------|-------|---------------|-----------|---------|
-| `api-designer` | big-pickle | Read, Write, Edit | 10 | API contracts, OpenAPI |
-| `database-engineer` | deepseek-v4-flash-free | Read, Write, Edit, Bash, Grep, Glob | 10 | Schema, migrations, queries |
-| `frontend-engineer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | React, TS, CSS, a11y |
-| `devops-engineer` | deepseek-v4-flash-free | Read, Write, Edit, Bash, Grep, Glob | 12 | CI/CD, Terraform, K8s |
-| `security-auditor` | big-pickle | Read, Grep, Glob, Bash | 12 | Threat model, code review |
-| `debugger` | nemotron-3-ultra-free | Read, Grep, Glob, Bash | 15 | Root-cause investigation |
-| `test-engineer` | big-pickle | Read, Write, Edit, Bash, Grep, Glob | 12 | Test strategy, flaky fixes |
-| `docs-engineer` | gpt-5-nano | Read, Write, Edit | 8 | ADRs, API docs, runbooks |
+| `api-designer` | gpt-5.6-luna | Read, Write, Edit | 10 | API contracts, OpenAPI |
+| `database-engineer` | gpt-5.6-luna | Read, Write, Edit, Bash, Grep, Glob | 10 | Schema, migrations, queries |
+| `frontend-engineer` | gpt-5.6-terra | Read, Write, Edit, Bash, Grep, Glob | 12 | React, TS, CSS, a11y |
+| `devops-engineer` | gpt-5.6-luna | Read, Write, Edit, Bash, Grep, Glob | 12 | CI/CD, Terraform, K8s |
+| `security-auditor` | gpt-5.6-terra | Read, Grep, Glob, Bash | 12 | Threat model, code review |
+| `debugger` | gpt-5.6-terra | Read, Grep, Glob, Bash | 15 | Root-cause investigation |
+| `test-engineer` | gpt-5.6-terra | Read, Write, Edit, Bash, Grep, Glob | 12 | Test strategy, flaky fixes |
+| `docs-engineer` | gpt-5.6-luna | Read, Write, Edit | 8 | ADRs, API docs, runbooks |
+| `fullstack-developer` | gpt-5.6-terra | Read, Write, Edit, Bash, Grep, Glob | 15 | End-to-end DB+API+UI features |
+| `backend-architect` | gpt-5.6-terra | Read, Grep, Glob, Bash | 15 | Service architecture, API design |
+| `error-detective` | gpt-5.6-terra | Read, Grep, Glob, Bash | 15 | Cross-service error correlation |
 
 ### Meta / Orchestration
 | Agent | Model | Allowed Tools | Max Steps | Purpose |
 |-------|-------|---------------|-----------|---------|
-| `orchestrator` | nemotron-3-ultra-free | Agent, Read, Bash, Grep, Glob | 20 | Multi-agent coordination |
-| `context-guard` | gpt-5-nano | Read, Bash | 3 | Context rotation, handoffs |
-| `retro-analyst` | deepseek-v4-flash-free | Read, Bash, Grep, Glob | 10 | Weekly retrospectives |
+| `orchestrator` | gpt-5.6-terra | Agent, Read, Bash, Grep, Glob | 20 | Multi-agent coordination |
 
 ### Removed Agents (Superseded by Specialists/Skills — deleted from registry)
 | Removed Agent | Now Use |

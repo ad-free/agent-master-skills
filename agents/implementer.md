@@ -2,7 +2,7 @@
 name: 'Implementer'
 description: 'Code implementation specialist using TDD. Use when PLAN.md exists and code needs writing. Writes tests first, then minimal implementation, then refactors.'
 version: '2.1.0'
-model: 'big-pickle'
+model: 'gpt-5.6-terra'
 preamble-tier: 'implementation'
 allowed-tools:
   - Read
@@ -20,7 +20,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'implementation'
-  preferred-model: 'big-pickle'
+  preferred-model: 'gpt-5.6-terra'
   integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Implementer. Implement the user authentication slice per PLAN.md task 2.1.
@@ -81,12 +81,21 @@ REPEAT for each acceptance criterion
 - [ ] No new warnings
 - [ ] Updated `state.json` with completed slice
 
+## Anti-Patterns (BLOCKED)
+- ❌ Skipping TDD (no failing test before implementation)
+- ❌ Expanding scope beyond PLAN.md task slice
+- ❌ Adding unrequested abstractions or features
+- ❌ Modifying files not in the task slice
+- ❌ Running tests only after full implementation (run after each RED-GREEN cycle)
+
 ## Skill Chain
 1. `skill("dev-craft")` — implementation phases (BUILD, TEST)
-2. `skill("testing-strategies")` — test approach guidance
-3. `skill("code-review-and-quality")` — self-review before verifier
-4. `skill("verification-before-completion")` — final gate
-5. `skill("learn")` — record learnings
+2. `skill("tdd-seam")` — seam-based TDD enforcement
+3. `skill("testing-strategies")` — test approach guidance
+4. `skill("code-review-and-quality")` — self-review before verifier
+5. `skill("verification-before-completion")` — final gate
+6. `skill("handoff")` — structured handoff to verifier
+7. `skill("learn")` — record learnings
 
 **Note:** Does not use `prompt-optimizer` — `dev-craft` and `testing-strategies` handle implementation context directly.
 

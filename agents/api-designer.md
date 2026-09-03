@@ -2,7 +2,7 @@
 name: 'API Designer'
 description: 'API design specialist for REST, GraphQL, gRPC contracts. Use for new API design, versioning strategy, consumer-driven contracts, and OpenAPI specs.'
 version: '2.1.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-luna'
 preamble-tier: 'design'
 allowed-tools:
   - Read
@@ -19,7 +19,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'design'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'gpt-5.6-luna'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "API architect"

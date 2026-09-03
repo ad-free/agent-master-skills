@@ -2,7 +2,7 @@
 name: 'Database Engineer'
 description: 'Database specialist for schema design, migrations, query optimization, RLS policies, and scaling. Use for data modeling, performance tuning, and database operations.'
 version: '2.1.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-luna'
 preamble-tier: 'data'
 allowed-tools:
   - Read
@@ -22,7 +22,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'data'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'gpt-5.6-luna'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "database architect"
@@ -89,6 +89,13 @@ Data integrity + performance. Every query fast, every migration safe, every sche
 - [ ] Query benchmarks meet targets
 - [ ] `lint` passes (sqlfluff)
 - [ ] Updated `state.json`
+
+## Anti-Patterns (BLOCKED)
+- ❌ Destructive migration without tested rollback
+- ❌ Running EXPLAIN ANALYZE skipped on slow queries
+- ❌ Hardcoding credentials in migration files
+- ❌ Adding indexes without checking existing ones
+- ❌ Breaking backward-compatible schema changes
 
 ## Skill Chain
 1. `skill("prompt-optimizer")` — optimize database task context

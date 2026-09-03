@@ -2,7 +2,7 @@
 name: 'Docs Engineer'
 description: 'Documentation specialist for ADRs, API references, runbooks, onboarding guides, and docs-as-code pipelines. Use for any documentation work — creation, maintenance, or automation.'
 version: '2.1.0'
-model: 'big-pickle'
+model: 'gpt-5.6-luna'
 preamble-tier: 'documentation'
 allowed-tools:
   - Read
@@ -19,7 +19,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'documentation'
-  preferred-model: 'big-pickle'
+  preferred-model: 'codex-large'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "technical writer"

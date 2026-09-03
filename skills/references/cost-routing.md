@@ -1,38 +1,38 @@
 # Cost Routing Reference
 
-Model routing logic for cost-aware LLM pipeline using OpenCode Zen free models.
+Model routing logic for cost-aware LLM pipeline using ChatGPT (OpenAI) models.
 
-## Free Model Catalog (OpenCode Zen)
+## Model Catalog (OpenAI)
 
 | Model ID | Context | Best For | Cost Tier |
 |----------|---------|----------|-----------|
-| `nemotron-3-ultra-free` | 1M | Complex reasoning, architecture, planning | High capability |
-| `nemotron-3-super-free` | 1M | Complex reasoning, large context | High capability |
-| `deepseek-v4-flash-free` | 200K | Fast coding, general utility, debugging | Fast/Utility |
-| `mimo-v2.5-free` | 200K | Fast coding, reasoning | Fast/Utility |
-| `big-pickle` | 200K | **Coding agent optimized** | Coding specialist |
-| `gpt-5-nano` | 128K | Quick tasks, simple routing, classification | Ultra-fast |
-| `minimax-m2.5-free` | 200K | Coding, agentic tool use | Balanced |
-| `ling-3.0-flash-free` | 200K | Fast responses | Fast |
-| `north-mini-code-free` | 200K | Code-focused | Code specialist |
-| `laguna-s-2.1-free` | 200K | General | General |
-| `glm-5-free` | 204K | General | General |
+| `gpt-5.6-sol` | 256K | Complex reasoning, architecture, planning, code review | Flagship |
+| `gpt-5.6-terra` | 256K | Balanced intelligence and cost, most agent work | Balanced |
+| `gpt-5.6-luna` | 128K | Cost-sensitive, high-volume tasks, documentation | Cost-efficient |
+| `gpt-5.4-mini` | 128K | Lighter tasks, subagents, interactive edits | Fast/Utility |
+| `gpt-5.4-nano` | 128K | Quick tasks, simple routing, classification | Ultra-fast |
+| `gpt-4.1` | 1M | Large context, complex analysis | Large context |
+| `gpt-4.1-mini` | 1M | Large context, cost-effective | Large context value |
+| `gpt-4.1-nano` | 1M | Large context, fastest | Large context fast |
+| `o4-mini` | 200K | Reasoning tasks, math, code | Reasoning |
+| `o3` | 200K | Complex reasoning, analysis | Premium reasoning |
+| `o3-mini` | 200K | Fast reasoning | Reasoning fast |
 
 ## Routing Rules
 
 ### By Agent Role
 | Role | Primary Model | Fallback |
 |------|---------------|----------|
-| Planner/Architect | `nemotron-3-ultra-free` | `nemotron-3-super-free` |
-| Code Reviewer | `big-pickle` | `nemotron-3-ultra-free` |
-| Backend/Frontend/Mobile Dev | `big-pickle` | `deepseek-v4-flash-free` |
-| TDD/Test Engineer | `big-pickle` | `mimo-v2.5-free` |
-| Build Error Resolver | `deepseek-v4-flash-free` | `mimo-v2.5-free` |
-| DevOps/Database | `deepseek-v4-flash-free` | `mimo-v2.5-free` |
-| Security Auditor | `big-pickle` | `nemotron-3-ultra-free` |
-| Performance Engineer | `nemotron-3-ultra-free` | `big-pickle` |
-| Router/Classifier | `gpt-5-nano` | `ling-3.0-flash-free` |
-| Docs/Tech Writer | `gpt-5-nano` | `ling-3.0-flash-free` |
+| Planner/Architect | `gpt-5.6-terra` | `gpt-5.6-sol` |
+| Code Reviewer | `gpt-5.6-terra` | `gpt-5.6-luna` |
+| Backend/Frontend Dev | `gpt-5.6-terra` | `gpt-5.6-luna` |
+| TDD/Test Engineer | `gpt-5.6-terra` | `gpt-5.6-luna` |
+| Debugger | `gpt-5.6-terra` | `gpt-5.6-luna` |
+| DevOps/Database | `gpt-5.6-luna` | `gpt-5.4-nano` |
+| Security Auditor | `gpt-5.6-terra` | `gpt-5.6-luna` |
+| Docs/Tech Writer | `gpt-5.6-luna` | `gpt-5.4-nano` |
+| Verifier | `gpt-5.6-luna` | `gpt-5.4-nano` |
+| Orchestrator | `gpt-5.6-terra` | `gpt-5.6-luna` |
 
 ### By Task Complexity
 ```python
@@ -45,9 +45,9 @@ def select_model(text_length: int, item_count: int, force_model: str = None) -> 
     COMPLEX_ITEM_THRESHOLD = 30       # items (files, functions, etc.)
     
     if text_length >= COMPLEX_TEXT_THRESHOLD or item_count >= COMPLEX_ITEM_THRESHOLD:
-        return "nemotron-3-ultra-free"  # Complex: 1M context, best reasoning
+        return "gpt-5.6-terra"  # Complex: balanced intelligence/cost
     
-    return "deepseek-v4-flash-free"      # Simple: fast, 200K context
+    return "gpt-5.6-luna"       # Simple: cost-efficient
 ```
 
 ## Cost Tracking (Immutable)

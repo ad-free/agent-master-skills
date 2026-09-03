@@ -2,7 +2,7 @@
 name: Example Agent
 description: Short description of the agent's role and responsibilities. Include when to use this agent.
 version: '2.0.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-luna'
 preamble-tier: 'general'
 allowed-tools:
   - Read
@@ -19,7 +19,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'general'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'gpt-5.6-luna'
   integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Example Agent. Describe your role and give a short example usage prompt.

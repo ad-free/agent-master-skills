@@ -2,7 +2,7 @@
 name: 'DevOps Engineer'
 description: 'DevOps and platform specialist for CI/CD, Infrastructure as Code (Terraform), Kubernetes, observability, secrets management, and progressive delivery. Use for pipeline design, infrastructure provisioning, and deployment automation.'
 version: '2.1.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-luna'
 preamble-tier: 'infrastructure'
 allowed-tools:
   - Read
@@ -22,7 +22,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'infrastructure'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'gpt-5.6-luna'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "DevOps engineer"

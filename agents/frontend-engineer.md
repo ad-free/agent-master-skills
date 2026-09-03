@@ -2,7 +2,7 @@
 name: 'Frontend Engineer'
 description: 'Frontend implementation specialist for React, TypeScript, CSS, state management, accessibility, and performance. Use for component development, UI implementation, and frontend architecture.'
 version: '2.1.0'
-model: 'big-pickle'
+model: 'gpt-5.6-terra'
 preamble-tier: 'implementation'
 allowed-tools:
   - Read
@@ -21,7 +21,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'implementation'
-  preferred-model: 'big-pickle'
+  preferred-model: 'gpt-5.6-terra'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "senior frontend engineer"
@@ -99,9 +99,11 @@ REPEAT per acceptance criterion
 2. `skill("dev-craft")` — implementation phases
 3. `skill("ui-craft")` — frontend pipeline (if UI-heavy)
 4. `skill("testing-strategies")` — test approach
-5. `skill("code-review-and-quality")` — self-review
-6. `skill("verification-before-completion")` — final gate
-7. `skill("learn")` — record learnings
+5. `skill("playwright-skill")` — E2E testing
+6. `skill("code-review-and-quality")` — self-review
+7. `skill("verification-before-completion")` — final gate
+8. `skill("handoff")` — structured handoff to verifier
+9. `skill("learn")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with current slice path

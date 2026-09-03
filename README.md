@@ -229,35 +229,31 @@ product-thinking ─────────────────────
 ### Core Pipeline Agents
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| `planner` | nemotron-3-ultra-free | Creates PLAN.md from spec |
-| `implementer` | big-pickle | TDD implementation |
-| `verifier` | deepseek-v4-flash-free | Fresh evidence gates |
-| `gatekeeper` | gpt-5-nano | Always-active guardrails |
-| `triage` | gpt-5-nano | Classify + route requests |
+| `planner` | gpt-5.6-terra | Creates PLAN.md from spec |
+| `implementer` | gpt-5.6-terra | TDD implementation |
+| `verifier` | gpt-5.6-luna | Fresh evidence gates |
 
 ### Domain Specialists
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| `api-designer` | big-pickle | API contracts, OpenAPI |
-| `database-engineer` | deepseek-v4-flash-free | Schema, migrations, queries |
-| `frontend-engineer` | big-pickle | React, TS, CSS, a11y |
-| `devops-engineer` | deepseek-v4-flash-free | CI/CD, Terraform, K8s |
-| `security-auditor` | big-pickle | Threat model, code review |
-| `debugger` | nemotron-3-ultra-free | Root-cause investigation |
-| `test-engineer` | big-pickle | Test strategy, flaky fixes |
-| `docs-engineer` | gpt-5-nano | ADRs, API docs, runbooks |
-| `react-ts-reviewer` | big-pickle | React/TS deep review (hooks, re-renders, types) |
-| `python-reviewer` | big-pickle | Python deep review (async, typing, idioms) |
-| `go-reviewer` | big-pickle | Go deep review (concurrency, error handling) |
+| `api-designer` | gpt-5.6-luna | API contracts, OpenAPI |
+| `database-engineer` | gpt-5.6-luna | Schema, migrations, queries |
+| `frontend-engineer` | gpt-5.6-terra | React, TS, CSS, a11y |
+| `devops-engineer` | gpt-5.6-luna | CI/CD, Terraform, K8s |
+| `security-auditor` | gpt-5.6-terra | Threat model, code review |
+| `debugger` | gpt-5.6-terra | Root-cause investigation |
+| `test-engineer` | gpt-5.6-terra | Test strategy, flaky fixes |
+| `docs-engineer` | gpt-5.6-luna | ADRs, API docs, runbooks |
+| `fullstack-developer` | gpt-5.6-terra | End-to-end DB+API+UI features |
+| `backend-architect` | gpt-5.6-terra | Service architecture, API design |
+| `error-detective` | gpt-5.6-terra | Cross-service error correlation |
 
 ### Meta / Orchestration
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| `orchestrator` | nemotron-3-ultra-free | Multi-agent coordination |
-| `context-guard` | gpt-5-nano | Context rotation, handoffs |
-| `retro-analyst` | deepseek-v4-flash-free | Weekly retrospectives |
+| `orchestrator` | gpt-5.6-terra | Multi-agent coordination |
 
-All agents use **free OpenCode Zen models** (Nemotron 3 Ultra, Big Pickle, DeepSeek V4 Flash, GPT-5 Nano, etc.)
+All agents use **ChatGPT models** (gpt-5.6-terra for complex reasoning, gpt-5.6-luna for cost-efficient tasks).
 
 ## Getting Started
 

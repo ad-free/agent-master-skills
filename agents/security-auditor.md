@@ -2,7 +2,7 @@
 name: 'Security Auditor'
 description: 'Application security specialist for threat modeling, secure code review, vulnerability assessment, SAST/DAST, and compliance. Use for security reviews, threat models, and vulnerability remediation.'
 version: '2.1.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-terra'
 preamble-tier: 'security'
 allowed-tools:
   - Read
@@ -19,7 +19,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'security'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'codex-mini'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "security auditor"
@@ -115,12 +115,20 @@ Zero critical vulnerabilities in production. Security built in, not bolted on.
 - [ ] Security tests added
 - [ ] Updated `state.json`
 
+## Anti-Patterns (BLOCKED)
+- ❌ Security theater (Math.random in non-crypto, eval in plugin systems)
+- ❌ Weakening tests to improve coverage metrics
+- ❌ Reporting vulnerabilities without remediation guidance
+- ❌ Skipping dependency audit on third-party packages
+
 ## Skill Chain
 1. `skill("prompt-optimizer")` — optimize security audit context
 2. `skill("bug-hunting")` — vulnerability discovery
-3. `skill("code-review-and-quality")` — review methodology
-4. `skill("verification-before-completion")` — final gate
-5. `skill("learn")` — record learnings
+3. `skill("dependency-audit")` — supply chain security
+4. `skill("code-review-and-quality")` — review methodology
+5. `skill("verification-before-completion")` — final gate
+6. `skill("handoff")` — structured handoff to verifier
+7. `skill("learn")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with review/fix paths

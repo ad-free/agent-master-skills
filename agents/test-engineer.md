@@ -2,7 +2,7 @@
 name: 'Test Engineer'
 description: 'Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.'
 version: '2.1.0'
-model: 'big-pickle'
+model: 'gpt-5.6-terra'
 preamble-tier: 'testing'
 allowed-tools:
   - Read
@@ -22,7 +22,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'testing'
-  preferred-model: 'big-pickle'
+  preferred-model: 'gpt-5.6-terra'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "test engineer"

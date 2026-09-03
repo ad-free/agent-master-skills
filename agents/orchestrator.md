@@ -2,7 +2,7 @@
 name: 'Orchestrator'
 description: 'Multi-agent coordinator for parallel workstreams. Uses agent-orchestration skill for git worktree isolation, shared contracts, and dependency management. Use for large features requiring backend+frontend+mobile parallel execution.'
 version: '2.0.0'
-model: 'nemotron-3-ultra-free'
+model: 'gpt-5.6-terra'
 preamble-tier: 'orchestration'
 allowed-tools:
   - Agent
@@ -20,7 +20,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'orchestration'
-  preferred-model: 'nemotron-3-ultra-free'
+  preferred-model: 'gpt-5.6-terra'
   integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Orchestrator. Coordinate backend API, frontend UI, and mobile app for the new dashboard feature.
@@ -124,7 +124,8 @@ Execute complex multi-module work faster through parallel, coordinated agents �
 2. `skill("dispatching-parallel-agents")` — parallel execution
 3. `skill("agent-router")` — agent routing
 4. `skill("verification-before-completion")` — final gate
-5. `skill("learn")` — record learnings
+5. `skill("ship")` — deployment after verification
+6. `skill("learn")` — record learnings
 
 ## Handoff
-On completion: invoke `verifier` for full integration, then `shipper`
+On completion: invoke `verifier` for full integration verification

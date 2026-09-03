@@ -210,19 +210,22 @@ Skills are capabilities to load on demand, not mandatory chains to execute end-t
 | Vague feature / product idea | `planner` | product-thinking, planning-and-task-breakdown | grilling, Graphify, CodeGraph |
 | Spec-driven work | `planner` → `implementer` | project-discovery, planning-and-task-breakdown | Graphify, CodeGraph, dev-craft |
 | Small/new feature | `implementer` | lean-build, dev-craft | planning-and-task-breakdown, CodeGraph |
+| Full-stack feature (DB+API+UI) | `fullstack-developer` | dev-craft, testing-strategies | api-design, ui-craft, CodeGraph |
 | Bug / failing test | `debugger` | investigate-first, CodeGraph | Graphify, debugging-and-error-recovery, surgical-patch |
+| Error cascade / multi-service failure | `error-detective` | debugging-and-error-recovery | observability-engineering, CodeGraph |
 | Behavior-preserving refactor | `debugger` / `implementer` | investigate-first, safe-refactor | CodeGraph or Graphify |
 | DB/schema migration | `database-engineer` | migration | CodeGraph, Graphify, dev-craft |
 | API/contract change | `api-designer` | api-design | Graphify, CodeGraph |
+| Backend architecture design | `backend-architect` | architecture-patterns, grilling | api-design, CodeGraph |
 | Frontend/UI | `frontend-engineer` | ui-craft | ui-pattern-extractor, image-to-code, Playwright, CodeGraph |
 | Tech stack research / alternatives | `frontend-engineer` / `implementer` | tech-advisor | ui-craft, dev-craft |
 | Infra/deploy | `devops-engineer` | devops-automation | dev-craft |
 | Tests | `test-engineer` | testing-strategies | tdd-seam, surgical-patch |
 | Code review | `code-reviewer` | two-axis-review, code-review-and-quality | CodeGraph or Graphify, caveman-review |
-| Security audit | `security-auditor` | investigate-first, bug-hunting | CodeGraph or Graphify |
+| Security audit | `security-auditor` | investigate-first, bug-hunting, dependency-audit | CodeGraph or Graphify |
 | Documentation | `docs-engineer` | documentation-engineering | project-discovery |
 | Completion/validation check | `verifier` | verify-and-stop | verification-before-completion |
-| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration |
+| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration, ship |
 | Large dependent multi-module task | `orchestrator` | agent-orchestration | Graphify, CodeGraph |
 
 ### Skill selection rules

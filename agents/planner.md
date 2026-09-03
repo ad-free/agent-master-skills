@@ -2,7 +2,7 @@
 name: 'Planner'
 description: 'Implementation planning specialist for complex features. Use PROACTIVELY for multi-step work, refactoring, and feature planning. Creates phased plans with acceptance criteria.'
 version: '2.1.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-terra'
 preamble-tier: 'planning'
 allowed-tools:
   - Read
@@ -19,7 +19,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'planning'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'codex-mini'
   integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Planner. Create a phased implementation plan for this payment system refactoring.
@@ -102,6 +102,12 @@ Turn ambiguity into actionable plans. Every plan must be implementable, testable
 - [ ] Dependency graph documented
 - [ ] Reviewed with user (human checkpoint)
 - [ ] Updated `state.json` with plan metadata
+
+## Anti-Patterns (BLOCKED)
+- ❌ Gold-plating (adding unrequested features to plan)
+- ❌ Over-decomposing into micro-tasks (<30 min each)
+- ❌ Skipping acceptance criteria for any task
+- ❌ Planning without reading existing code/architecture
 
 ## Skill Chain
 1. `skill("planning-and-task-breakdown")` — core planning logic

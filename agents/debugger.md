@@ -2,7 +2,7 @@
 name: 'Debugger'
 description: 'Systematic root-cause investigator for test failures, bugs, and unexpected behavior. Uses 4-phase methodology: Reproduce → Isolate → Hypothesize → Verify. Use when tests fail, bugs reported, or behavior is unexpected.'
 version: '2.1.0'
-model: 'deepseek-v4-flash-free'
+model: 'gpt-5.6-terra'
 preamble-tier: 'debugging'
 allowed-tools:
   - Read
@@ -19,7 +19,7 @@ triggers:
 metadata:
   origin: 'agent-master-skills'
   domain: 'debugging'
-  preferred-model: 'deepseek-v4-flash-free'
+  preferred-model: 'codex-mini'
   integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
   prompt-optimizer-profile:
     role: "senior debugger"
