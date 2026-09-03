@@ -207,46 +207,46 @@ Skills are capabilities to load on demand, not mandatory chains to execute end-t
 
 | Task | Primary agent | Start with | Add only when needed |
 |---|---|---|---|
-| Vague feature / product idea | `planner` | product-thinking, planning-and-task-breakdown | grilling, Graphify, CodeGraph |
-| Spec-driven work | `planner` → `implementer` | project-discovery, planning-and-task-breakdown | Graphify, CodeGraph, dev-craft |
-| Small/new feature | `implementer` | lean-build, dev-craft | planning-and-task-breakdown, CodeGraph |
-| Full-stack feature (DB+API+UI) | `fullstack-developer` | dev-craft, testing-strategies | api-design, ui-craft, CodeGraph |
-| Bug / failing test | `debugger` | investigate-first, CodeGraph | Graphify, debugging-and-error-recovery, surgical-patch |
-| Error cascade / multi-service failure | `error-detective` | debugging-and-error-recovery | observability-engineering, CodeGraph |
-| Behavior-preserving refactor | `debugger` / `implementer` | investigate-first, safe-refactor | CodeGraph or Graphify |
-| DB/schema migration | `database-engineer` | migration | CodeGraph, Graphify, dev-craft |
-| API/contract change | `api-designer` | api-design | Graphify, CodeGraph |
-| Backend architecture design | `backend-architect` | architecture-patterns, grilling | api-design, CodeGraph |
-| Frontend/UI | `frontend-engineer` | ui-craft | ui-pattern-extractor, image-to-code, Playwright, CodeGraph |
+| Vague feature / product idea | `planner` | product-thinking, planning-and-task-breakdown | grilling |
+| Spec-driven work | `planner` → `implementer` | project-discovery, planning-and-task-breakdown | dev-craft |
+| Small/new feature | `implementer` | dev-craft | planning-and-task-breakdown |
+| Bug / failing test | `debugger` | debugging-and-error-recovery | debugging-and-error-recovery, surgical-patch |
+| Behavior-preserving refactor | `debugger` / `implementer` | debugging-and-error-recovery, refactor-and-cleanup | |
+| DB/schema migration | `database-engineer` | database-migrations | dev-craft |
+| API/contract change | `api-designer` | api-design | |
+| Frontend/UI | `frontend-engineer` | ui-craft | ui-pattern-extractor, image-to-code, playwright-skill |
 | Tech stack research / alternatives | `frontend-engineer` / `implementer` | tech-advisor | ui-craft, dev-craft |
 | Infra/deploy | `devops-engineer` | devops-automation | dev-craft |
 | Tests | `test-engineer` | testing-strategies | tdd-seam, surgical-patch |
-| Code review | `code-reviewer` | two-axis-review, code-review-and-quality | CodeGraph or Graphify, caveman-review |
-| Security audit | `security-auditor` | investigate-first, bug-hunting, dependency-audit | CodeGraph or Graphify |
+| Code review | `code-reviewer` | two-axis-review, code-review-and-quality | caveman-review |
+| Security audit | `security-auditor` | debugging-and-error-recovery, bug-hunting | |
 | Documentation | `docs-engineer` | documentation-engineering | project-discovery |
-| Completion/validation check | `verifier` | verify-and-stop | verification-before-completion |
-| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration, ship |
-| Large dependent multi-module task | `orchestrator` | agent-orchestration | Graphify, CodeGraph |
+| Completion/validation check | `verifier` | verify-gate | verification-before-completion |
+| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration |
+| Large dependent multi-module task | `orchestrator` | agent-orchestration | |
+| Backend architecture design | `backend-architect` | architecture-patterns, grilling | api-design |
+| Error cascade / multi-service failure | `error-detective` | debugging-and-error-recovery | observability-engineering |
+| Full-stack feature (DB+API+UI) | `fullstack-developer` | dev-craft, testing-strategies | api-design, ui-craft |
 
 ### Skill selection rules
 
-- `lean-build` / Ponytail:
+- `dev-craft` (lean-build / Ponytail posture):
   - default implementation posture;
   - reuse before create;
   - minimal footprint;
   - no unnecessary abstraction.
 
-- `investigate-first` + `surgical-patch`:
+- `debugging-and-error-recovery` (investigate-first) + `surgical-patch`:
   - targeted bugs and regressions.
 
-- `safe-refactor`:
+- `refactor-and-cleanup` (safe-refactor):
   - behavior-preserving structural changes.
 
-- `migration`:
+- `database-migrations` (migration):
   - schema/API/dependency migrations;
   - preserve data and rollback path.
 
-- `verification-before-completion` / `verify-and-stop`:
+- `verification-before-completion` / `verify-gate` (verify-and-stop):
   - use once the implementation slice is coherent;
   - do not rerun after every edit.
 
@@ -263,7 +263,7 @@ Skills are capabilities to load on demand, not mandatory chains to execute end-t
   - mandatory before writing any UI code on existing codebases;
   - prevents wrong buttons, inconsistent styles, broken responsive.
 
-- Caveman modes:
+- Caveman modes (`caveman`, `caveman-evidence-review`):
   - compact exploration;
   - compact reviews;
   - concise commit text;
