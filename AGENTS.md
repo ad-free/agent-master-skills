@@ -136,6 +136,8 @@ This table applies **only where the current platform actually supports named sub
 | Tests | `test-engineer` | testing-strategies | tdd-seam, surgical-patch |
 | Code review | `code-reviewer` | two-axis-review, code-review-and-quality | caveman-review |
 | Security audit | `security-auditor` | debugging-and-error-recovery, bug-hunting | |
+| Agent system audit | `security-auditor` | agent-architecture-audit, verification-before-completion | debugging-and-error-recovery |
+| Accessibility audit | `frontend-engineer` | accessibility, design-system-auditor | ui-component-builder |
 | Documentation | `docs-engineer` | documentation-engineering | project-discovery |
 | Completion/validation check | `verifier` | verify-gate | verification-before-completion |
 | Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration |
@@ -157,6 +159,8 @@ Route once per task unless scope materially changes. Skills are capabilities loa
 - `ui-pattern-extractor` — extract existing UI patterns/tokens/conventions; mandatory before writing UI code on existing codebases.
 - `caveman` / `caveman-evidence-review` — compact exploration, reviews, commits, handoffs (see Caveman posture, §2) — never at the cost of correctness or warnings.
 - `prompt-optimizer` — only for large/noisy/ambiguous prompts where compression preserves requirements; skip for already-precise tasks.
+- `agent-architecture-audit` — audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures. Use when agent behavior degrades or before shipping agent features.
+- `accessibility` — WCAG 2.2 AA compliance for AI agent interfaces. Covers semantic markup, ARIA, focus management, target sizes.
 
 ---
 
@@ -258,3 +262,4 @@ repo/
 Do not repeat the full plan, tool transcripts, memory history, unchanged source, or entire test logs.
 
 A task is complete when the requested behavior is implemented, task-relevant verification is fresh, the diff has been reviewed, and any remaining risk is clearly disclosed.
+
