@@ -55,6 +55,7 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 | "Fix this failing test" | `debugger` → `prompt-optimizer` → `debugging-and-error-recovery` → `implementer` | prompt-optimizer, debugging-and-error-recovery, dev-craft, verification-before-completion | `skill("prompt-optimizer")` |
 | "Review this PR" | `code-reviewer` → `prompt-optimizer` → `code-review-and-quality` → `verification-before-completion` | prompt-optimizer, code-review-and-quality, verification-before-completion | `skill("prompt-optimizer")` |
 | "Security audit before launch" | `security-auditor` → `prompt-optimizer` → `bug-hunting` → `verification-before-completion` | prompt-optimizer, bug-hunting, code-review-and-quality, verification-before-completion | `skill("prompt-optimizer")` |
+| "Audit agent architecture / diagnose wrapper layers" | `agent-architecture-audit` → `prompt-optimizer` → `verification-before-completion` | prompt-optimizer, verification-before-completion, debugging-and-error-recovery | `skill("prompt-optimizer")` |
 | "Design the API for webhooks" | `api-designer` → `prompt-optimizer` → `api-design` | prompt-optimizer, api-design, dev-craft (CONTRACT phase) | `skill("prompt-optimizer")` |
 | "Set up CI/CD for microservices" | `devops-engineer` → `prompt-optimizer` → `devops-automation` | prompt-optimizer, devops-automation, dev-craft | `skill("prompt-optimizer")` |
 | "Weekly retrospective" | `retro-analyst` → `prompt-optimizer` → `retro` → `learn` | prompt-optimizer, retro, learn, context-engineering | `skill("prompt-optimizer")` |

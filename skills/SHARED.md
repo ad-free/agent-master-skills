@@ -524,6 +524,14 @@ All 16 agents with model assignments and allowed-tools restrictions:
 |-------|-------|---------------|-----------|---------|
 | `orchestrator` | gpt-5.6-terra | Agent, Read, Bash, Grep, Glob | 20 | Multi-agent coordination |
 
+### Deprecated Skills (exist but redirected)
+
+| Skill | Replacement | Reason |
+|-------|-------------|--------|
+| `agent-payment-x402` | `secops-and-vulnerability-scanner` (for general security) | Blockchain/crypto-specific; not generalizable |
+| `agent-sort` | `dispatching-parallel-agents` | Trivial skill; organizes parallel agents |
+| `agent-self-evaluation` | `agent-eval` + `debugging-and-error-recovery` | Internal introspection; overlaps with eval and root-cause investigation |
+
 ### Removed Agents (Superseded by Specialists/Skills — deleted from registry)
 | Removed Agent | Now Use |
 |--------------|---------|
