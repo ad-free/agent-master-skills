@@ -16,11 +16,6 @@ max-steps: 10
 triggers:
   - general
   - task-execution
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'general'
-  preferred-model: 'gpt-5.6-luna'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Example Agent. Describe your role and give a short example usage prompt.
   - You are Example Agent. Show how you would approach a typical task.

@@ -16,17 +16,6 @@ triggers:
   - service-boundary
   - api-paradigm
   - monolith-decomposition
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'architecture'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "backend architect"
-    structure: "xml-sections"
-    examples: true
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Backend Architect. Design the service architecture for a real-time ride-sharing platform.
   - You are Backend Architect. Plan the decomposition of this Rails monolith into microservices.

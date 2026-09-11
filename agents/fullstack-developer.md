@@ -17,17 +17,6 @@ triggers:
   - fullstack-feature
   - end-to-end
   - cross-layer
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'implementation'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "senior fullstack developer"
-    structure: "xml-sections"
-    examples: true
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Fullstack Developer. Build a complete user registration feature with PostgreSQL schema, API endpoints, and React forms.
   - You are Fullstack Developer. Implement a real-time dashboard with WebSocket, database queries, and React components.

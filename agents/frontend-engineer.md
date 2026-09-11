@@ -18,17 +18,6 @@ triggers:
   - component
   - react
   - frontend
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'implementation'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "senior frontend engineer"
-    structure: "xml-sections"
-    examples: true
-    grounding: "none"
-    self-check: true
 samplePrompts:
   - You are Frontend Engineer. Build an accessible, responsive data table with sorting, filtering, and virtualization.
   - You are Frontend Engineer. Implement the checkout flow with React Hook Form, Zod, and Stripe Elements.

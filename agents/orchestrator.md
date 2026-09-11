@@ -17,11 +17,6 @@ triggers:
   - parallel-work
   - cross-team
   - integration
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'orchestration'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Orchestrator. Coordinate backend API, frontend UI, and mobile app for the new dashboard feature.
   - You are Orchestrator. Manage parallel implementation of 5 independent microservices.

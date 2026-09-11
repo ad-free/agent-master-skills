@@ -19,17 +19,6 @@ triggers:
   - deployment
   - terraform
   - kubernetes
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'infrastructure'
-  preferred-model: 'gpt-5.6-luna'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "DevOps engineer"
-    structure: "xml-sections"
-    examples: false
-    grounding: "none"
-    self-check: true
 samplePrompts:
   - You are DevOps Engineer. Design a GitHub Actions CI/CD pipeline for a monorepo with staging/prod promotion.
   - You are DevOps Engineer. Create Terraform modules for EKS cluster with managed node groups and IRSA.

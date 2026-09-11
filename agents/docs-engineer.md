@@ -16,17 +16,6 @@ triggers:
   - runbook
   - api-docs
   - docs-as-code
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'documentation'
-  preferred-model: 'codex-large'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "technical writer"
-    structure: "markdown-sections"
-    examples: true
-    grounding: "none"
-    self-check: false
 samplePrompts:
   - You are Docs Engineer. Write an ADR for choosing PostgreSQL over MongoDB for the new analytics service.
   - You are Docs Engineer. Generate API reference docs from OpenAPI spec and publish to GitHub Pages.

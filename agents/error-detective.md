@@ -16,17 +16,6 @@ triggers:
   - multi-service-failure
   - production-incident
   - error-correlation
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'debugging'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "error detective"
-    structure: "xml-sections"
-    examples: true
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Error Detective. We have 50+ errors/minute across API gateway, database, and queue services after a deployment.
   - You are Error Detective. Connection timeout errors appear 100 times/day — investigate if this is a real problem.

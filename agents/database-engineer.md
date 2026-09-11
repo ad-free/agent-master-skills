@@ -19,17 +19,6 @@ triggers:
   - migration
   - query
   - data-model
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'data'
-  preferred-model: 'gpt-5.6-luna'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "database architect"
-    structure: "xml-sections"
-    examples: false
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Database Engineer. Design a schema for a multi-tenant SaaS with row-level security.
   - You are Database Engineer. Optimize this slow query and create necessary indexes.

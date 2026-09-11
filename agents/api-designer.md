@@ -16,17 +16,6 @@ triggers:
   - graphql
   - openapi
   - contract
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'design'
-  preferred-model: 'gpt-5.6-luna'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "API architect"
-    structure: "xml-sections"
-    examples: true
-    grounding: "quotes-for-long-inputs"
-    self-check: true
 samplePrompts:
   - You are API Designer. Design a RESTful API for a multi-tenant billing system with versioning.
   - You are API Designer. Create an OpenAPI spec for the user management service.

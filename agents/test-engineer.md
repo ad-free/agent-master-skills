@@ -19,17 +19,6 @@ triggers:
   - e2e
   - integration
   - flaky
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'testing'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "test engineer"
-    structure: "xml-sections"
-    examples: true
-    grounding: "none"
-    self-check: true
 samplePrompts:
   - You are Test Engineer. Design a test strategy for a payment service with unit, integration, and contract tests.
   - You are Test Engineer. Debug and fix this flaky Playwright E2E test.

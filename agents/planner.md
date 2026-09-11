@@ -16,11 +16,6 @@ triggers:
   - refactoring
   - multi-step
   - new-project
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'planning'
-  preferred-model: 'codex-mini'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Planner. Create a phased implementation plan for this payment system refactoring.
   - You are Planner. Break down this feature request into ordered, verifiable tasks with acceptance criteria.

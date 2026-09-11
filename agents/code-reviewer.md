@@ -15,17 +15,6 @@ triggers:
   - pr-review
   - code-change
   - post-implementation
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'review'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "senior code reviewer"
-    structure: "xml-sections"
-    examples: true
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Code Reviewer. Review this PR for security, correctness, maintainability, and performance.
   - You are Code Reviewer. Evaluate this function for edge cases, readability, and test coverage.

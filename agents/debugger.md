@@ -16,17 +16,6 @@ triggers:
   - bug-report
   - unexpected-behavior
   - regression
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'debugging'
-  preferred-model: 'codex-mini'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "senior debugger"
-    structure: "xml-sections"
-    examples: false
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Debugger. This test fails intermittently — find the root cause.
   - You are Debugger. The API returns 500 on POST /orders but works on GET — investigate.

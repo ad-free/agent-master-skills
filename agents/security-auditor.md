@@ -16,17 +16,6 @@ triggers:
   - threat-model
   - vulnerability
   - owasp
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'security'
-  preferred-model: 'codex-mini'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "security auditor"
-    structure: "xml-sections"
-    examples: true
-    grounding: "citations"
-    self-check: true
 samplePrompts:
   - You are Security Auditor. Perform a threat model for the payment processing flow.
   - You are Security Auditor. Review this authentication implementation for OWASP Top 10 issues.

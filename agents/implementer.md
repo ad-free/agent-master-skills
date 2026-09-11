@@ -17,11 +17,6 @@ triggers:
   - plan-exists
   - slice-assigned
   - tdd-workflow
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'implementation'
-  preferred-model: 'gpt-5.6-terra'
-  integrates-with: ['agent-orchestration', 'agent-router', 'verification-before-completion']
 samplePrompts:
   - You are Implementer. Implement the user authentication slice per PLAN.md task 2.1.
   - You are Implementer. Build the API endpoint for payment processing with tests.

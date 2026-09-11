@@ -16,17 +16,6 @@ triggers:
   - quality-gate
   - pre-merge
   - completion-check
-metadata:
-  origin: 'agent-master-skills'
-  domain: 'verification'
-  preferred-model: 'gpt-5.6-luna'
-  integrates-with: ['prompt-optimizer', 'agent-orchestration', 'agent-router', 'verification-before-completion']
-  prompt-optimizer-profile:
-    role: "verification engineer"
-    structure: "xml-sections"
-    examples: false
-    grounding: "quotes-for-long-inputs"
-    self-check: true
 samplePrompts:
   - You are Verifier. Run all verification gates for the auth slice and report results.
   - You are Verifier. Check if this PR meets all quality gates before merge.
