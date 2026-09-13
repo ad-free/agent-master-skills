@@ -14,6 +14,8 @@ Priority order when instructions conflict:
 3. A nested `AGENTS.md` closer to the files being touched (see §10) overrides this root file for that subtree.
 4. This root file.
 
+The user defines *what* to do; this file governs *how*/safety (branch gate, skill routing, verification). The small-task fast-path (§1.4) never skips the §6 branch check or the §5 route.
+
 ---
 
 ## 1. Core Operating Contract
@@ -126,15 +128,15 @@ This table applies **only where the current platform actually supports named sub
 | Vague feature / product idea | `planner` | product-thinking, planning-and-task-breakdown | grilling |
 | Spec-driven work | `planner` → `implementer` | project-discovery, planning-and-task-breakdown | dev-craft |
 | Small/new feature | `implementer` | dev-craft | planning-and-task-breakdown |
-| Bug / failing test | `debugger` | debugging-and-error-recovery | surgical-patch |
+| Bug / failing test | `debugger` | debugging-and-error-recovery | verification-before-completion |
 | Behavior-preserving refactor | `debugger` / `implementer` | debugging-and-error-recovery, refactor-and-cleanup | |
 | DB/schema migration | `database-engineer` | database-migrations | dev-craft |
 | API/contract change | `api-designer` | api-design | |
 | Frontend/UI | `frontend-engineer` | ui-craft | ui-pattern-extractor, image-to-code, playwright-skill |
 | Tech stack research | `frontend-engineer` / `implementer` | tech-advisor | ui-craft, dev-craft |
 | Infra/deploy | `devops-engineer` | devops-automation | dev-craft |
-| Tests | `test-engineer` | testing-strategies | tdd-seam, surgical-patch |
-| Code review | `code-reviewer` | two-axis-review, code-review-and-quality | caveman-review |
+| Tests | `test-engineer` | testing-strategies | tdd-seam, verification-before-completion |
+| Code review | `code-reviewer` | two-axis-review, code-review-and-quality | caveman-evidence-review |
 | Security audit | `security-auditor` | debugging-and-error-recovery, bug-hunting | |
 | Agent system audit | `security-auditor` | agent-architecture-audit, verification-before-completion | debugging-and-error-recovery |
 | Accessibility audit | `frontend-engineer` | accessibility, design-system-auditor | ui-component-builder |
@@ -146,11 +148,20 @@ This table applies **only where the current platform actually supports named sub
 | Error cascade / multi-service failure | `error-detective` | debugging-and-error-recovery | observability-engineering |
 | Full-stack feature (DB+API+UI) | `fullstack-developer` | dev-craft, testing-strategies | api-design, ui-craft |
 
-Route once per task unless scope materially changes. Skills are capabilities loaded on demand — never preload every skill file at session start.
+Route once per task unless scope materially changes. Skills are capabilities loaded on demand — never preload every skill file at session start. Load the first skill only; subsequent skills per the agent's chain as needed.
+
+Deterministic route (no router load — agent lazy-loads its chain):
+- Bug/failing test → `debugger` → skill(debugging-and-error-recovery)
+- UI/component/page → `frontend-engineer` → skill(ui-pattern-extractor) → skill(ui-craft); stack question → + skill(tech-advisor) first
+- Feature per spec → `implementer` → skill(dev-craft)
+- Review/PR → `code-reviewer` → skill(code-review-and-quality); audit → `security-auditor` → skill(bug-hunting)
+- Tests/docs/ship → `test-engineer`/`docs-engineer` → skill(testing-strategies|documentation-engineering|ship) → skill(verification-before-completion)
+- Vague/spec/multi-step only → skill(agent-router)
+Never invoke `surgical-patch`/`caveman-review` (no such skill; use debugging-and-error-recovery / caveman-evidence-review).
 
 **Skill notes (only where the skill exists in this environment — see §1.9):**
 - `dev-craft` — default implementation posture (Ponytail: reuse first, minimal footprint).
-- `debugging-and-error-recovery` + `surgical-patch` — targeted bugs/regressions, investigate first.
+- `debugging-and-error-recovery` — targeted bugs/regressions, investigate first.
 - `refactor-and-cleanup` — behavior-preserving structural changes only.
 - `database-migrations` — schema/API/dependency migrations; preserve data and rollback path.
 - `verification-before-completion` / `verify-gate` — run once the implementation slice is coherent, not after every edit.
@@ -168,7 +179,7 @@ Route once per task unless scope materially changes. Skills are capabilities loa
 
 1. **Scope** — concrete goal, acceptance criteria, explicit non-goals; separate required work from optional improvements.
 2. **Recover context** — per §2's retrieval flow; use claude-mem only if history matters (§3); avoid broad reconnaissance unless genuinely required.
-3. **Git safety** — inspect `git status`; preserve unrelated dirty work; reuse an existing dedicated task branch or have the primary writer create one (`git switch -c <type>/<short-slug>`); agents sharing a worktree don't switch branches independently.
+3. **Git safety** — run `git branch --show-current` + `git status` before the first edit. If already on a feature branch, stay and continue (never re-branch mid-work). Only if on `main`/`master`: create `git switch -c <type>/<short-slug>` off `HEAD`, preserve unrelated dirty work, then continue there. Agents sharing a worktree don't switch branches independently.
 4. **Implement** — per §1 (smallest correct change, reuse existing patterns, root-cause fix, preserve public interfaces unless explicitly changing them).
 5. **Verify** — smallest fresh proof set that covers the changed behavior (§7).
 6. **Self-review** — check the diff for accidental changes, missed edge cases, security/authorization boundaries, data/migration risk, stale generated artifacts, weakened tests, unrelated formatting.
@@ -198,6 +209,7 @@ Never weaken, delete, skip, or rewrite a relevant failing test merely to obtain 
 The canonical destructive-action list (referenced from §1.8):
 
 - Never commit, push, amend, merge, open a PR, deploy, reset/drop data, or apply destructive infrastructure changes without explicit user instruction.
+- `git switch -c` per the §6 branch check (only when on `main`/`master`) is pre-authorized; commit/push/PR still require explicit instruction.
 - Inspect `git status` and `git diff` before staging or handoff.
 - Never commit secrets, `.env` values, credentials, private keys, or tokens.
 - Assume pre-existing dirty changes belong to the user; never discard unrelated work.
@@ -245,6 +257,10 @@ repo/
 
 ## 11. Environment Defaults
 
+- **RTK token saver (where the RTK plugin/hook is installed — do not install it, just use it):**
+  - `bash`-tool commands are auto-rewritten to `rtk` equivalents — issue normal commands, never prefix `rtk` manually there.
+  - Native `Read`/`Grep`/`Glob` bypass the hook: for noisy output (logs, test runs, big diffs/listings) prefer shell equivalents (`cat`/`rg`/`find`) or explicit `rtk read` / `rtk grep` / `rtk find` so filtering applies.
+  - If output contains `[full output: rtk recall <id>]`, run `rtk recall <id>` instead of re-executing the verbose command.
 - Detect the current environment rather than assuming one; use the commands/paths for the OS actually running the agent, not ones copied from another platform.
 - Prefer portable relative paths and `/` separators in repository instructions.
 - Prefer project-managed tooling over globally installed ad-hoc dependencies; follow the repo's existing package/runtime manager.
@@ -255,6 +271,8 @@ repo/
 ## 12. Completion Handoff
 
 **Changed** — concise summary of files/behavior modified.
+**Branch** — branch worked on (and created, if on `main`/`master` at start).
+**Agent/Skills** — agent + skills loaded (`[...]`), or skipped-why.
 **Verified** — exact checks run and their results.
 **Risk** — only remaining uncertainty that materially matters.
 **Skipped** — material checks intentionally not run, and why.
