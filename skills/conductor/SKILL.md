@@ -21,7 +21,6 @@ metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
   integrates-with: [dev-craft, ui-craft, dispatching-parallel-agents]
-  supersedes: agent-orchestration
 ---
 TOKEN CEILING: ~5K tokens. Bulk detail lives in references/.
 

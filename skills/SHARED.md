@@ -522,15 +522,23 @@ All 16 agents with model assignments and allowed-tools restrictions:
 |-------|-------|---------------|-----------|---------|
 | `orchestrator` | gpt-5.6-terra | Agent, Read, Bash, Grep, Glob | 20 | Multi-agent coordination |
 
-### Deprecated Skills (exist but redirected)
+### Removed Skills (deleted from registry; use replacement)
 
-| Skill | Replacement | Reason |
-|-------|-------------|--------|
-| `agent-payment-x402` | `bug-hunting` (for general security) | Blockchain/crypto-specific; not generalizable |
-| `agent-sort` | `dispatching-parallel-agents` | Trivial skill; organizes parallel agents |
-| `agent-self-evaluation` | `agent-eval` + `debugging-and-error-recovery` | Internal introspection; overlaps with eval and root-cause investigation |
-| `secops-and-vulnerability-scanner` | `bug-hunting` | Merged (#9); automated scanning folded into bug-hunting |
-| `diataxis-docs` | `documentation-engineering` | Merged (#8); quadrants + ship-sync folded into documentation-engineering |
+| Removed Skill | Now Use |
+|---------------|---------|
+| `agent-payment-x402` | `bug-hunting` (for general security; crypto-specific, not generalizable) |
+| `agent-sort` | `dispatching-parallel-agents` |
+| `agent-self-evaluation` | `agent-eval` + `debugging-and-error-recovery` |
+| `agent-orchestration` | `conductor` |
+| `two-axis-review` | `code-review-and-quality` (Two-Axis Mode) |
+| `learn` | `continuous-learning-v2` |
+| `token-budget` | `cost-optimizer` |
+| `design-system-auditor` | `design-system-validate` |
+| `diataxis-docs` | `documentation-engineering` |
+| `secops-and-vulnerability-scanner` | `bug-hunting` |
+| `verify-gate` | `verification-before-completion` (+ `references/runbook.md`) |
+| `animation-craft` (was plugin) | `animation-and-interactions` |
+| `performance-profiling` (was plugin) | `performance-profiler-and-tuner` |
 
 ### Removed Agents (Superseded by Specialists/Skills — deleted from registry)
 | Removed Agent | Now Use |
