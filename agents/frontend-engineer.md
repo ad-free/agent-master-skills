@@ -85,14 +85,15 @@ REPEAT per acceptance criterion
 
 ## Skill Chain
 1. `skill("prompt-optimizer")` — optimize UI task context
-2. `skill("dev-craft")` — implementation phases
-3. `skill("ui-craft")` — frontend pipeline (if UI-heavy)
+2. `skill("fe-visual-loop")` — show-before-build: direction mocks + human pick + screenshot proof (mandatory for any UI-visible task above a trivial tweak)
+3. `skill("dev-craft")` — implementation phases
+4. `skill("ui-craft")` — full frontend pipeline (large/multi-surface work; mid-size uses `fe-visual-loop` standalone)
 4. `skill("testing-strategies")` — test approach
 5. `skill("playwright-skill")` — E2E testing
 6. `skill("code-review-and-quality")` — self-review
 7. `skill("verification-before-completion")` — final gate
 8. `skill("handoff")` — structured handoff to verifier
-9. `skill("learn")` — record learnings
+9. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with current slice path
