@@ -232,7 +232,7 @@ Verify skill interfaces:
 Verify cross-skill workflows:
 - dev-craft → ui-craft handoff
 - planning → dev-craft execution
-- agent-orchestration → dispatching-parallel-agents
+- conductor → dispatching-parallel-agents
 
 ### 4. Edge Case Tests
 - Invalid inputs handled gracefully

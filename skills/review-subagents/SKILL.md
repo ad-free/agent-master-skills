@@ -234,9 +234,8 @@ When reviewing a codebase, the review-orchestrator skill:
 - **review-orchestrator**: Spawns and aggregates subagent outputs
 - **code-review-and-quality**: Uses findings as input for 8-axis scoring
 - **verification-before-completion**: Gate 3 (Security) consumes security findings; Gate 5 (LLM-Judge) consumes all findings for final assessment
-- **bug-hunting**: Security reviewer uses bug-hunting methodology
+- **bug-hunting**: Security reviewer uses bug-hunting methodology (including automated-scanning patterns)
 - **debugging-and-error-recovery**: Debug reviewer uses investigation methodology
-- **secops-and-vulnerability-scanner**: Security reviewer leverages scanning patterns
 
 ## Best Practices
 

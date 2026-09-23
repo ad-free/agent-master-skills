@@ -253,7 +253,7 @@ review-orchestrator clean
 
 ## Two-Axis Review Integration
 
-The review-orchestrator can also run the two-axis review pattern (Standards + Spec) from `skills/two-axis-review/`:
+The review-orchestrator can also run the two-axis review pattern (Standards + Spec) from `code-review-and-quality` (two-axis mode in `skills/code-review-and-quality/references/two-axis-mode.md`):
 
 ### Standards Axis
 Runs as a parallel sub-agent checking:
@@ -292,4 +292,4 @@ Runs as a parallel sub-agent checking:
 - `skills/dispatching-parallel-agents/` — Parallel execution pattern
 - `skills/bug-hunting/` — Security reviewer methodology
 - `skills/debugging-and-error-recovery/` — Debug reviewer methodology
-- `skills/two-axis-review/` — Standards + Spec review (mattpocock port)
+- `skills/code-review-and-quality/references/two-axis-mode.md` — Standards + Spec review (mattpocock port)

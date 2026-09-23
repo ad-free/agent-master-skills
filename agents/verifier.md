@@ -115,7 +115,7 @@ or
 1. `skill("prompt-optimizer")` — optimize verification context
 2. `skill("verification-before-completion")` — core verification logic
 3. `skill("evidence-ledger")` — tamper-evident verification records
-4. `skill("learn")` — record learnings
+4. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On PASS: invoke `verifier` (if final) or `implementer` (next slice)

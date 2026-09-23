@@ -55,7 +55,7 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 
 - General database schema design without a migration context (see dev-craft)
 - Writing application-level queries or ORM models (see dev-craft)
-- Performance tuning database queries (see dev-craft/plugins/performance-profiling)
+- Performance tuning database queries (see performance-profiler-and-tuner)
 - Reviewing an existing migration for security vulnerabilities after the fact (see dev-craft/plugins/security-audit)
 
 ## Workflow

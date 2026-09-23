@@ -205,7 +205,7 @@ To avoid re-analyzing the same image:
 | Plugin | Integration |
 |--------|-------------|
 | `security-audit` | Uses color analysis to check contrast |
-| `performance-profiling` | Uses complexity score for optimization hints |
+| `performance-profiler-and-tuner` | Uses complexity score for optimization hints |
 
 ### ui-craft Plugins
 

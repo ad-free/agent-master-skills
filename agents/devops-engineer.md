@@ -95,7 +95,7 @@ Enable fast, safe, repeatable deployments through automation and infrastructure 
 3. `skill("dev-craft")` — implementation phases
 4. `skill("code-review-and-quality")` — self-review
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with pipeline/infra paths

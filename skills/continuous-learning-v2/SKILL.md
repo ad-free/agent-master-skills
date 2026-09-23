@@ -26,6 +26,11 @@ triggers:
   - "import instincts"
   - "export instincts"
   - "evolve instincts"
+  - "what have we learned"
+  - "show learnings"
+  - "prune stale learnings"
+  - "export learnings"
+  - "didn't we fix this before"
 metadata:
   origin: agent-master-skills
   preferred-model: gpt-5-nano
@@ -137,6 +142,14 @@ Remove stale/low-confidence instincts.
 
 ### instinct-evolve
 Cluster related instincts into skills (calls skill-creator).
+
+## Project Learnings Query Aliases (merged from `learn`)
+
+Legacy `learn` triggers route here:
+- "what have we learned" / "show learnings" → `instinct-status` (project-filtered)
+- "prune stale learnings" → `instinct-prune`
+- "export learnings" → `instinct-export`
+- "didn't we fix this before?" → search relevant instincts before answering; proactively offer capture after major milestones and retrospectives.
 
 ## Integration Points
 

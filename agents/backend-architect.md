@@ -95,7 +95,7 @@ Every service architecture must include:
 3. `skill("grilling")` — adversarial stress-test
 4. `skill("code-review-and-quality")` — design review
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `planner` for implementation planning, or `implementer` for direct coding

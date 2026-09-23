@@ -60,9 +60,9 @@ wc -l .dev-craft/learnings/learnings.jsonl
 - **Duplicates**: Same content, different wording → merge
 - **Contradictions**: Conflicting learnings → flag for review
 
-## Integration with `learn` Skill
+## Integration with `continuous-learning-v2` Skill
 
-The `learn` skill provides CLI:
+The `continuous-learning-v2` skill (supersedes `learn`) provides CLI:
 ```bash
 /learn                    # Show recent
 /learn search stripe      # Search

@@ -117,7 +117,7 @@ Zero critical vulnerabilities in production. Security built in, not bolted on.
 4. `skill("code-review-and-quality")` — review methodology
 5. `skill("verification-before-completion")` — final gate
 6. `skill("handoff")` — structured handoff to verifier
-7. `skill("learn")` — record learnings
+7. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with review/fix paths

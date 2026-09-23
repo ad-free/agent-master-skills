@@ -26,7 +26,7 @@ metadata:
   preferred-model: gpt-5-nano
   version: 2.0.0
   domain: context-memory
-  integrates-with: [context-engineering, agent-orchestration]
+  integrates-with: [context-engineering, conductor]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
@@ -124,7 +124,7 @@ Implement slice 2: User Registration API
 ### Constraints
 - **Must follow**: Existing auth patterns in `src/auth/login.ts`
 - **Must not**: Direct database access — use `UserRepository` interface
-- **Token budget**: standard (see `token-budget` skill)
+- **Token budget**: standard (see `cost-optimizer` skill)
 
 ### Expected Output
 - **Files**: `src/auth/register.ts`, `src/auth/register.test.ts`
@@ -176,7 +176,7 @@ Before considering handoff complete:
 - [ ] Fresh evidence included (tests, lint, typecheck from THIS session)
 - [ ] State reference points to correct `state.json`
 - [ ] Resume instructions are executable (copy-paste runnable)
-- [ ] Learnings captured via `learn` skill
+- [ ] Learnings captured via `continuous-learning-v2` skill
 
 ---
 
@@ -192,4 +192,4 @@ Before considering handoff complete:
 | Missing evidence | Next agent can't verify state | Always run gates before handoff |
 | No blockers listed | Hidden dependencies cause delays | Explicit blocker tracking |
 | Vague next action | "Continue work" → confusion | Specific: "Implement register.ts line 42" |
-| No learnings captured | Institutional memory lost | Auto-capture via `learn` skill |
+| No learnings captured | Institutional memory lost | Auto-capture via `continuous-learning-v2` skill |

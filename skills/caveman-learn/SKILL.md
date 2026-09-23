@@ -17,7 +17,7 @@ triggers:
 metadata:
   origin: agent-master-skills
   domain: context
-  integrates-with: [caveman, learn, context-engineering, handoff]
+  integrates-with: [caveman, continuous-learning-v2, context-engineering, handoff]
 ---
 
 # Caveman Learn
@@ -43,5 +43,5 @@ Bullet points. Decisions, outcomes, file references.
 ## When NOT to Use
 
 - Full retrospective → use `retro`
-- Structured knowledge base → use `learn`
+- Structured knowledge base → use `continuous-learning-v2`
 - Session handoff → use `handoff`

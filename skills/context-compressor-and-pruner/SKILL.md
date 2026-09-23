@@ -35,7 +35,7 @@ metadata:
   preferred-model: big-pickle
   version: 2.0.0
   domain: context-memory
-  integrates-with: [context-engineering, agent-orchestration]
+  integrates-with: [context-engineering, conductor]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -45,7 +45,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 ## Relationship to existing skills
 
 - context-engineering: Provides the context management framework (setup, memory hierarchy, session continuity); context-compressor-and-pruner handles the compression and pruning operations within that framework.
-- agent-orchestration: Manages multi-agent context; context-compressor-and-pruner ensures each agent's context stays within token limits.
+- conductor: Manages multi-agent context; context-compressor-and-pruner ensures each agent's context stays within token limits.
 - dev-craft: Provides the engineering pipeline; context-compressor-and-pruner is invoked when context grows too large during a dev-craft session.
 - dispatching-parallel-agents: Dispatches parallel tasks; context-compressor-and-pruner ensures each dispatched agent has a clean, compressed context.
 

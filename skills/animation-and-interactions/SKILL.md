@@ -32,7 +32,7 @@ metadata:
   preferred-model: big-pickle
   version: 2.0.0
   domain: frontend-ui
-  integrates-with: [ui-craft, design-system-auditor]
+  integrates-with: [ui-craft, design-system-validate]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -41,10 +41,10 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## Relationship to existing skills
 
-- animation-craft: Provides advanced animation patterns for micro-interactions, page transitions, and motion design; animation-and-interactions applies these patterns with performance constraints.
+- animation-craft: Merged into this skill (staggered lists, Vue Transition, spring easing, no-flash guard folded in below).
 - ui-component-builder: Produces components that may need animations; animation-and-interactions adds motion to components built by ui-component-builder.
 - accessibility-deep: Ensures animations respect `prefers-reduced-motion` and do not cause accessibility issues; animation-and-interactions must follow accessibility rules.
-- design-system-auditor: Validates animation consistency with design tokens; animation-and-interactions must use design tokens for animation timing and easing.
+- design-system-validate: Validates animation consistency with design tokens; animation-and-interactions must use design tokens for animation timing and easing.
 - ui-craft: The frontend pipeline; animation-and-interactions is invoked during ui-craft's BUILD phase for animated components.
 
 ## When to Use
@@ -63,7 +63,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Building new UI components from scratch — see ui-component-builder
 - Accessibility auditing — see accessibility-deep
 - Design token generation — see design-system-validate
-- Performance profiling of non-animation code — see dev-craft/plugins/performance-profiling
+- Performance profiling of non-animation code — see performance-profiler-and-tuner
 
 ## Workflow
 
@@ -81,7 +81,8 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 1. **Choose the animation approach**:
    - CSS transitions → simple state changes (hover, focus, active)
    - CSS keyframe animations → complex multi-step animations
-   - Framer Motion → React-based animations with gestures and layout animations
+   - Framer Motion → React-based animations with gestures and layout animations (spring easing for natural feel)
+   - Vue Transition → Vue route/component transitions
    - View Transitions API → page-level transitions (modern browsers)
 2. **Implement using design tokens**: use design token values for duration, easing, and spacing
 3. **Use hardware-accelerated properties**: `transform`, `opacity`, `filter` — avoid animating `width`, `height`, `top`, `left`, `margin`, `padding`
@@ -98,6 +99,8 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 5. **Loading states**: implement skeleton screens, shimmer effects, or progress indicators
 6. **Error states**: implement shake, fade, or slide animations for error feedback
 7. **Success states**: implement checkmark draw, confetti, or pulse animations for success feedback
+8. **Staggered lists**: stagger container children (50-75ms delay) for list/route entrances
+9. **No flashing**: never flash more than 3 times per second (epilepsy risk)
 
 ### Phase 4: Performance Optimization
 

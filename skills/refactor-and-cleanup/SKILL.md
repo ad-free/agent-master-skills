@@ -45,7 +45,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - dev-craft: Provides the overall engineering pipeline; refactor-and-cleanup is invoked during the REFACTOR phase or as a standalone cleanup task.
 - code-review-and-quality: Validates refactoring quality; refactor-and-cleanup produces the changes that code-review-and-quality then reviews.
 - bug-hunting: Identifies code smells and anti-patterns that should be cleaned up; refactor-and-cleanup executes the fixes.
-- dev-craft/plugins/performance-profiling: Performance-related refactoring (e.g., N+1 query elimination) falls under this skill.
+- performance-profiler-and-tuner: Performance-related refactoring (e.g., N+1 query elimination) falls under this skill.
 
 ## When to Use
 
@@ -61,7 +61,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 - Adding new features or functionality — see dev-craft
 - Fixing security vulnerabilities — see bug-hunting
-- Optimizing performance-critical paths — see dev-craft/plugins/performance-profiling
+- Optimizing performance-critical paths — see performance-profiler-and-tuner
 - Restructuring module boundaries — see backend-patterns
 - Fixing bugs in existing behavior — see debugging-and-error-recovery
 

@@ -7,7 +7,7 @@ description: |
 metadata:
   origin: agent-master-skills
   domain: agent-quality
-  integrates-with: [design-system-auditor, ui-component-builder, verification-before-completion]
+  integrates-with: [design-system-validate, ui-component-builder, verification-before-completion]
 version: 1.0.0
 model: gpt-5.6-luna
 preamble-tier: 3
@@ -157,7 +157,7 @@ import { Button } from '@ui-components/library';
 
 ## Related Skills
 
-- `design-system-auditor` — Audit UI code for design consistency and accessibility
+- `design-system-validate` — Audit UI code for design consistency and accessibility
 - `ui-component-builder` — Build accessible, modular React/Vue/Tailwind components
 - `animation-and-interactions` — Ensure animations respect reduced-motion preferences
 - `verification-before-completion` — Verify accessibility gates before completion

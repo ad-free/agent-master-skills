@@ -28,7 +28,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: prompt-engineering
-  integrates-with: [agent-router, triage, context-engineering, cost-optimizer, token-budget, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, verification-before-completion]
+  integrates-with: [agent-router, triage, context-engineering, cost-optimizer, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, verification-before-completion]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.

@@ -300,8 +300,9 @@ Write state after LOAD.
 6. Route to design style (SaaS → Minimalism, E-commerce → Glassmorphism, etc.)
 7. Build glossary in context.md
 8. Image analysis (if screenshot provided) — reference `image-to-design-spec` skill
+9. Visual direction gate — run `fe-visual-loop` Steps 1–3: produce 2–3 screenshotted direction mocks, get an explicit human pick. Implementation work is blocked until the pick is recorded.
 
-**Exit criterion:** Human confirms scope with explicit yes.
+**Exit criterion:** Human confirms scope with explicit yes AND picks a visual direction from screenshotted mocks.
 
 **State write:** Save stack to state.json. Save context.md. Save image analysis if present.
 
@@ -319,7 +320,7 @@ Write state after LOAD.
 6. Write ADRs for design decisions
 7. Persist design system to `.ui-craft/`
 
-**Exit criterion:** Human reviews and approves.
+**Exit criterion:** Human reviews screenshots of the preview and approves. Phase 5 BUILD is blocked until this approval is recorded — no code before a picked direction.
 
 **State write:** Save plan.md, ADRs, design system.
 
@@ -450,7 +451,7 @@ Write state after LOAD.
 - [ ] No secrets, debug tags, or temp files remain
 - [ ] Lint + type + build all pass
 - [ ] Accessibility scan passed (no Critical/High findings)
-- [ ] Visual regression check passed (if applicable)
+- [ ] Visual proof passed: built UI screenshotted at desktop + mobile widths and matched against the picked direction (`fe-visual-loop` Step 5), or an explicit waiver with reason recorded in state.json
 
 ## Error Handling
 

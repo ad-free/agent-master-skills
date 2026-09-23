@@ -91,7 +91,7 @@ Patterns to extract from sessions and convert into instincts.
 ### Performance
 - **Pattern**: No layout shifts, preload fonts, optimize images, code splitting
 - **Context**: frontend, performance
-- **Trigger**: ui-craft HARDEN, performance-profiling
+- **Trigger**: ui-craft HARDEN, performance-profiler-and-tuner
 - **Example**: "Add width/height to all images, preload critical fonts"
 
 ## Extraction Heuristics

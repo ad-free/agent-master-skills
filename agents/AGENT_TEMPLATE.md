@@ -55,7 +55,7 @@ One paragraph describing what this agent does and its core responsibility.
 3. `skill("dev-craft")` — for implementation (loads plugins as needed)
 4. `skill("code-review-and-quality")` — self-review before verifier
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with current slice path

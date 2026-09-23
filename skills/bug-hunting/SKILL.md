@@ -228,6 +228,10 @@ npm audit --audit-level=high
 pip-audit
 ```
 
+### Automated scanning accelerators (optional)
+
+Agent reasoning first; tools only accelerate. Full cheat-sheet: `references/automated-scanning.md` — SAST per language (bandit, eslint-security, semgrep), dependency audit (`npm/pip-audit/cargo audit`, CVE IDs, license + staleness checks), secrets detection (trufflehog, gitleaks, git history). Never auto-rewrite git history for leaked secrets — report, recommend `git filter-repo`/BFG, rotate. Map findings to OWASP Top 10 / CWE (SOC 2, PCI-DSS, GDPR summary where relevant).
+
 ---
 
 ## Phase 3: Deep Manual Testing — OWASP Top 10
@@ -391,7 +395,7 @@ On completion, invokes: `skill("code-review-and-quality")` with context:
   - `regressionTests`: [paths]
 
 Then: `skill("verification-before-completion")` to verify fixes
-Then: `skill("learn")` to capture security learnings
+Then: `skill("continuous-learning-v2")` to capture security learnings
 
 ## Integration
 

@@ -11,9 +11,9 @@ Driven by dev-craft SCOPE gate (§0.2). The contract artifact is ALWAYS named
 | Admin Dashboard | dev-craft + ui-craft | Internal tool |
 | E-commerce | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | Online store |
 | API Service | dev-craft only | Backend API |
-| Mobile App | dev-craft (backend) + agent-orchestration (mobile) | Mobile with backend |
+| Mobile App | dev-craft (backend) + conductor (mobile) | Mobile with backend |
 | Landing Page | ui-craft only | Marketing site |
-| Multi-module | product-thinking → planning-and-task-breakdown → dev-craft + agent-orchestration | Large project |
+| Multi-module | product-thinking → planning-and-task-breakdown → dev-craft + conductor | Large project |
 
 ## Orchestration Pattern
 
@@ -25,7 +25,7 @@ Driven by dev-craft SCOPE gate (§0.2). The contract artifact is ALWAYS named
 6. DESIGN — Spec + ADRs + task list
 7. BUILD-ORDER — Dependency-based sequencing
 8. SOURCE — Official docs verification
-9. BUILD — Large: agent-orchestration with git worktree; Small: single-agent vertical slices
+9. BUILD — Large: conductor with git worktree; Small: single-agent vertical slices
 10. TEST — Full suite
 11. REVIEW — review-orchestrator (spawns review-subagents) → code-review-and-quality (8-axis scoring)
 12. HARDEN — Cross-cutting security
@@ -44,7 +44,7 @@ Driven by dev-craft SCOPE gate (§0.2). The contract artifact is ALWAYS named
 2. If not, generate `api-contract.md` from UI's data needs, hand to dev-craft
 3. dev-craft MUST implement only what the contract declares
 
-**dev-craft needs mobile (agent-orchestration):**
-1. Produce `api-contract.md`; record `crossSkill.mobileSliceNeeded`; hand to agent-orchestration
+**dev-craft needs mobile (conductor):**
+1. Produce `api-contract.md`; record `crossSkill.mobileSliceNeeded`; hand to conductor
 
 **Verification before switching skills:** confirm `api-contract.md` exists at its recorded path and is readable from the consuming repo (for `multi`, the mirror is in sync). Never switch with an implied/unwritten contract.

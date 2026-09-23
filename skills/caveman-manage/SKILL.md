@@ -17,7 +17,7 @@ triggers:
 metadata:
   origin: agent-master-skills
   domain: context
-  integrates-with: [caveman, context-engineering, handoff, learn]
+  integrates-with: [caveman, context-engineering, handoff, continuous-learning-v2]
 ---
 
 # Caveman Manage

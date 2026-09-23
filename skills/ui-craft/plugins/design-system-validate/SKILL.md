@@ -1,6 +1,6 @@
 ---
 name: design-system-validate
-description: Use when you need to validate UI code against design system tokens and component library specifications.
+description: Use when you need to validate UI code against design system tokens and component library specifications, or audit UI for design consistency, responsiveness, performance, and WCAG accessibility standards.
 model: gpt-5-nano
 version: 1.0.0
 preamble-tier: 1
@@ -11,6 +11,9 @@ triggers:
   - "design audit"
   - "component validation"
   - "design system check"
+  - "audit UI"
+  - "design consistency"
+  - "WCAG audit"
 disable-model-invocation: true
 metadata:
   origin: agent-master-skills
@@ -21,9 +24,13 @@ metadata:
 
 # Design System Validate Plugin
 
+## Iron Law
+
+**NO UI WITHOUT DESIGN TOKEN COMPLIANCE**
+
 ## Overview
 
-Enforces design system compliance across all UI code. Checks that colors, typography, spacing, and components match the defined design tokens.
+Enforces design system compliance across all UI code. Checks that colors, typography, spacing, and components match the defined design tokens. Also audits for design consistency, responsiveness, performance, and WCAG accessibility standards (merged from design-system-auditor).
 
 ## When to Use
 
@@ -39,6 +46,9 @@ Enforces design system compliance across all UI code. Checks that colors, typogr
 - Spacing follows 4/8dp rhythm
 - Components use library components where available
 - No CSS custom properties not defined in tokens
+- Responsive: layout holds at mobile/desktop breakpoints, no horizontal scroll on mobile
+- Performance: no layout shifts, images sized, fonts preloaded
+- Accessibility: WCAG contrast, focus states, semantic HTML, ARIA labels
 
 ## Integration
 

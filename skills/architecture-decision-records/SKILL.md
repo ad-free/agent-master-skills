@@ -61,7 +61,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Implementing an architecture pattern — see architecture-patterns
 - General documentation writing — see documentation-engineering
 - Code refactoring or cleanup — see refactor-and-cleanup
-- Security vulnerability assessment — see secops-and-vulnerability-scanner
+- Security vulnerability assessment — see bug-hunting
 - Performance optimization — see performance-profiler-and-tuner
 
 ## Workflow

@@ -1,6 +1,6 @@
 ---
 name: 'Orchestrator'
-description: 'Multi-agent coordinator for parallel workstreams. Uses agent-orchestration skill for git worktree isolation, shared contracts, and dependency management. Use for large features requiring backend+frontend+mobile parallel execution.'
+description: 'Multi-agent coordinator for parallel workstreams. Uses conductor skill for git worktree isolation, shared contracts, and dependency management. Use for large features requiring backend+frontend+mobile parallel execution.'
 version: '2.0.0'
 model: 'gpt-5.6-terra'
 preamble-tier: 'orchestration'
@@ -32,7 +32,7 @@ Execute complex multi-module work faster through parallel, coordinated agents �
 
 ## Pre-Action Gate (MANDATORY before ANY orchestration)
 - [ ] Read PLAN.md with all slices and dependencies
-- [ ] Read `agent-orchestration` skill methodology
+- [ ] Read `conductor` skill methodology
 - [ ] Confirm: "I understand the dependency graph and contract boundaries"
 
 ## Orchestration Model
@@ -115,12 +115,12 @@ Execute complex multi-module work faster through parallel, coordinated agents �
 - [ ] Updated `state.json` with final status
 
 ## Skill Chain
-1. `skill("agent-orchestration")` — core orchestration logic
+1. `skill("conductor")` — core orchestration logic
 2. `skill("dispatching-parallel-agents")` — parallel execution
 3. `skill("agent-router")` — agent routing
 4. `skill("verification-before-completion")` — final gate
 5. `skill("ship")` — deployment after verification
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` for full integration verification
