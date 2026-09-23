@@ -132,18 +132,18 @@ This table applies **only where the current platform actually supports named sub
 | Behavior-preserving refactor | `debugger` / `implementer` | debugging-and-error-recovery, refactor-and-cleanup | |
 | DB/schema migration | `database-engineer` | database-migrations | dev-craft |
 | API/contract change | `api-designer` | api-design | |
-| Frontend/UI | `frontend-engineer` | ui-craft | ui-pattern-extractor, image-to-code, playwright-skill |
+| Frontend/UI | `frontend-engineer` | fe-visual-loop (show-before-build, mandatory above trivial tweaks), ui-pattern-extractor, image-to-code, playwright-skill | ui-craft (large work), design-system-validate, accessibility |
 | Tech stack research | `frontend-engineer` / `implementer` | tech-advisor | ui-craft, dev-craft |
 | Infra/deploy | `devops-engineer` | devops-automation | dev-craft |
 | Tests | `test-engineer` | testing-strategies | tdd-seam, verification-before-completion |
-| Code review | `code-reviewer` | two-axis-review, code-review-and-quality | caveman-evidence-review |
+| Code review | `code-reviewer` | ocr delegate pre-pass (if CLI present), code-review-and-quality | caveman-evidence-review |
 | Security audit | `security-auditor` | debugging-and-error-recovery, bug-hunting | |
 | Agent system audit | `security-auditor` | agent-architecture-audit, verification-before-completion | debugging-and-error-recovery |
-| Accessibility audit | `frontend-engineer` | accessibility, design-system-auditor | ui-component-builder |
+| Accessibility audit | `frontend-engineer` | accessibility, design-system-validate | ui-component-builder |
 | Documentation | `docs-engineer` | documentation-engineering | project-discovery |
-| Completion/validation check | `verifier` | verify-gate | verification-before-completion |
-| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | agent-orchestration |
-| Large dependent multi-module task | `orchestrator` | agent-orchestration | |
+| Completion/validation check | `verifier` | verification-before-completion | |
+| Multiple independent tasks | `orchestrator` | dispatching-parallel-agents | conductor |
+| Large dependent multi-module task | `orchestrator` | conductor | |
 | Backend architecture design | `backend-architect` | architecture-patterns, grilling | api-design |
 | Error cascade / multi-service failure | `error-detective` | debugging-and-error-recovery | observability-engineering |
 | Full-stack feature (DB+API+UI) | `fullstack-developer` | dev-craft, testing-strategies | api-design, ui-craft |
@@ -152,9 +152,9 @@ Route once per task unless scope materially changes. Skills are capabilities loa
 
 Deterministic route (no router load — agent lazy-loads its chain):
 - Bug/failing test → `debugger` → skill(debugging-and-error-recovery)
-- UI/component/page → `frontend-engineer` → skill(ui-pattern-extractor) → skill(ui-craft); stack question → + skill(tech-advisor) first
+- UI/component/page → `frontend-engineer` → skill(ui-pattern-extractor) → skill(fe-visual-loop); full pipeline → + skill(ui-craft); stack question → + skill(tech-advisor) first
 - Feature per spec → `implementer` → skill(dev-craft)
-- Review/PR → `code-reviewer` → skill(code-review-and-quality); audit → `security-auditor` → skill(bug-hunting)
+- Review/PR → `which ocr` → if present: `ocr delegate preview/rule` for file list + rules, then `code-reviewer` → skill(code-review-and-quality); if absent: prompt-only flow (unchanged); audit → `security-auditor` → skill(bug-hunting)
 - Tests/docs/ship → `test-engineer`/`docs-engineer` → skill(testing-strategies|documentation-engineering|ship) → skill(verification-before-completion)
 - Vague/spec/multi-step only → skill(agent-router)
 Never invoke `surgical-patch`/`caveman-review` (no such skill; use debugging-and-error-recovery / caveman-evidence-review).
@@ -164,11 +164,12 @@ Never invoke `surgical-patch`/`caveman-review` (no such skill; use debugging-and
 - `debugging-and-error-recovery` — targeted bugs/regressions, investigate first.
 - `refactor-and-cleanup` — behavior-preserving structural changes only.
 - `database-migrations` — schema/API/dependency migrations; preserve data and rollback path.
-- `verification-before-completion` / `verify-gate` — run once the implementation slice is coherent, not after every edit.
+- `verification-before-completion` — run once the implementation slice is coherent, not after every edit. Runbook: `references/runbook.md`. (`verify-gate` is a deprecated shim forwarding here.)
 - `playwright-skill` — frontend behavior needing live interaction validation.
 - `tech-advisor` — research alternatives before implementation; mandatory before UI/frontend work on existing codebases.
 - `ui-pattern-extractor` — extract existing UI patterns/tokens/conventions; mandatory before writing UI code on existing codebases.
 - `caveman` / `caveman-evidence-review` — compact exploration, reviews, commits, handoffs (see Caveman posture, §2) — never at the cost of correctness or warnings.
+- `ocr` (open-code-review CLI + `ocr_review`/`ocr_health` plugin tools, `/ocr-review`) — deterministic review pre-pass: file selection, rule resolution. Delegation mode (`ocr delegate preview|rule`) needs no LLM key. Verify with `which ocr`; fall back to prompt-only review when absent.
 - `prompt-optimizer` — only for large/noisy/ambiguous prompts where compression preserves requirements; skip for already-precise tasks.
 - `agent-architecture-audit` — audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures. Use when agent behavior degrades or before shipping agent features.
 - `accessibility` — WCAG 2.2 AA compliance for AI agent interfaces. Covers semantic markup, ARIA, focus management, target sizes.
