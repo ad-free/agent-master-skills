@@ -92,7 +92,7 @@ Deliver end-to-end features that work seamlessly from database to UI. No layer l
 3. `skill("testing-strategies")` — test approach
 4. `skill("code-review-and-quality")` — self-review
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with all changed file paths

@@ -14,13 +14,13 @@ User Request Received
 │   └── Yes → project-discovery → dev-craft (REQUIRE) → planning-and-task-breakdown
 │
 ├── Is this a large multi-module project?
-│   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft + agent-orchestration
+  │   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft + conductor
 │
 ├── SCOPE gate (run first in dev-craft / ui-craft): what is the topology & domain?
 │   ├── 2 separate repos (BE + FE)? → topology = multi → paired branches, shared api-contract.md in contractRepo
 │   ├── 1 repo with BE + FE?        → topology = mono, scope = fullstack → dev-craft CONTRACT phase
 │   ├── BE only / FE only ticket?   → scope = be|fe, mode = ticket → scoped branch, skip heavy phases
-│   └── (all of the above feed agent-orchestration when parallel agents are needed)
+  │   └── (all of the above feed conductor when parallel agents are needed)
 │
 ├── Pre-merge or release validation?
 │   └── Yes → verification-before-completion (after dev-craft completes)
@@ -54,10 +54,10 @@ User Request Received
 │   └── No → continue above
 │
 ├── Token budget / context management?
-│   └── Yes → token-budget, context-engineering, learn
+│   └── Yes → cost-optimizer, context-engineering, continuous-learning-v2
 │
 ├── Weekly retrospective / learning capture?
-│   └── Yes → retro, learn
+│   └── Yes → retro, continuous-learning-v2
 │
 ├── Automated ship/release?
 │   └── Yes → ship
@@ -69,7 +69,7 @@ User Request Received
     └── Yes → verification-before-completion
 ```
 
-> **SCOPE note:** dev-craft's `[0.2] SCOPE` gate classifies every run by `topology` (mono/multi), `scope` (be/fe/fullstack), and `mode` (build/ticket). The router above points you to the right skill; SCOPE decides the branch/contract/phase shape *within* it. For multi-repo fullstack, the canonical contract is `api-contract.md` in the BE repo (`contractRepo`); agent-orchestration has a multi-repo variant that uses paired branches instead of git worktree.
+> **SCOPE note:** dev-craft's `[0.2] SCOPE` gate classifies every run by `topology` (mono/multi), `scope` (be/fe/fullstack), and `mode` (build/ticket). The router above points you to the right skill; SCOPE decides the branch/contract/phase shape *within* it. For multi-repo fullstack, the canonical contract is `api-contract.md` in the BE repo (`contractRepo`); conductor has a multi-repo variant that uses paired branches instead of git worktree.
 
 ### Minimum Bar (applies to every code edit)
 
@@ -117,12 +117,12 @@ does not copy those rules; they have one source of truth.
 | Tests failing | `debugging-and-error-recovery` |
 | Systematic root-cause investigation | `debugging-and-error-recovery` |
 | Building UI components | `ui-component-builder` |
-| Auditing design consistency and accessibility | `design-system-auditor` |
+| Auditing design consistency and accessibility | `design-system-validate` |
 | Adding animations and micro-interactions | `animation-and-interactions` |
 | Designing API contracts and type definitions | `api-contract-designer` |
 | Generating tests and analyzing edge cases | `qa-and-edge-case-tester` |
 | Documenting architecture decisions | `architecture-decision-records` |
-| Scanning for security vulnerabilities | `secops-and-vulnerability-scanner` |
+| Scanning for security vulnerabilities | `bug-hunting` |
 | Profiling and tuning performance | `performance-profiler-and-tuner` |
 | Compressing and pruning agent context | `context-compressor-and-pruner` |
 | Evaluating and benchmarking agent output | `agent-eval` |
@@ -134,8 +134,8 @@ does not copy those rules; they have one source of truth.
 | Creating or modifying skills | `skill-creator` |
 | Vague idea / missing requirements | `product-thinking` |
 | Screenshot/image as reference | `image-to-design-spec` |
-| Token budget / context management | `token-budget` |
-| Persistent learning / memory | `learn` |
+| Token budget / context management | `cost-optimizer` |
+| Persistent learning / memory | `continuous-learning-v2` |
 | Weekly retrospective | `retro` |
 | Automated release / ship | `ship` |
 | Cost optimization / model routing | `cost-optimizer` |
@@ -160,13 +160,13 @@ does not copy those rules; they have one source of truth.
 | "clean up this module" | `refactor-and-cleanup` | `backend-patterns` |
 | "debug this failing test" | `debugging-and-error-recovery` | `verification-before-completion` |
 | "build a new UI component" | `ui-component-builder` | `ui-craft` (general UI work) |
-| "audit the design consistency" | `design-system-auditor` | `design-system-validate` (token validation) |
+| "audit the design consistency" | `design-system-validate` | `ui-craft` (general UI work) |
 | "add animation to this component" | `animation-and-interactions` | `ui-craft` (general UI work) |
 | "design the API contract for this feature" | `api-contract-designer` | `api-design` (high-level API decisions) |
 | "generate tests for this module" | `qa-and-edge-case-tester` | `testing-strategies` (test type decisions) |
 | "document this architecture decision" | `architecture-decision-records` | `documentation-engineering` (general docs) |
-| "scan for security vulnerabilities" | `secops-and-vulnerability-scanner` | `bug-hunting` (security discovery) |
-| "profile the performance" | `performance-profiler-and-tuner` | `dev-craft/plugins/performance-profiling` (profiling within dev-craft) |
+| "scan for security vulnerabilities" | `bug-hunting` | `code-review-and-quality` (reviews findings after the fact) |
+| "profile the performance" | `performance-profiler-and-tuner` | `refactor-and-cleanup` (performance-related refactoring) |
 | "compress the context" | `context-compressor-and-pruner` | `context-engineering` (context setup) |
 | "evaluate the agent output" | `agent-eval` | `verification-before-completion` (general quality validation) |
 | "how should we roll this out" | `devops-automation` | `verification-before-completion` |
@@ -235,17 +235,16 @@ does not copy those rules; they have one source of truth.
 | Skill | Purpose | When to Use | Version | Tier |
 |-------|---------|-------------|---------|------|
 | `planning-and-task-breakdown` | Breaks work into ordered, verifiable tasks with DAG dependency mapping and Gherkin acceptance criteria | Have a spec, need implementable units | 2.0.0 | 2 |
-| `agent-orchestration` | Parallel multi-agent builds with isolated workspaces + shared API contract | Large project, 3+ modules, or parallel BE/FE/mobile agents | 1.1.0 | 3 |
+| `conductor` | Parallel multi-agent builds with isolated workspaces + shared API contract | Large project, 3+ modules, or parallel BE/FE/mobile agents | 1.1.0 | 3 |
 | `debugging-and-error-recovery` | Root-cause investigation (4-phase + hypothesis testing + regression prevention + self-correction loops) | Tests fail, bugs reported, unexpected behavior | 2.0.0 | 4 |
 | `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete | 1.0.0 | 3 |
 | `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist | 1.1.0 | 3 |
 | `ui-component-builder` | Build accessible, modular React/Vue/Tailwind components with design tokens | **NO COMPONENT WITHOUT DESIGN TOKEN CONSISTENCY** | Creating UI components, component libraries, responsive UI | 1.0.0 | 3 |
-| `design-system-auditor` | Audit UI code for design consistency, responsiveness, performance, and WCAG | **NO UI WITHOUT DESIGN TOKEN COMPLIANCE** | Validating UI against design tokens and accessibility standards | 1.0.0 | 3 |
+| `design-system-validate` | Audit UI code for design consistency, responsiveness, performance, and WCAG | **NO UI WITHOUT DESIGN TOKEN COMPLIANCE** | Validating UI against design tokens and accessibility standards | 1.0.0 | 1 |
 | `animation-and-interactions` | CSS/Framer Motion animations, micro-interactions, and visual polish | **NO ANIMATION WITHOUT PERFORMANCE BUDGET** | Adding motion, transitions, and micro-interactions to UI | 1.0.0 | 3 |
 | `api-contract-designer` | OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data | **NO INTEGRATION WITHOUT A SIGNED CONTRACT** | Designing FE-BE integration contracts and generating types | 1.0.0 | 3 |
 | `qa-and-edge-case-tester` | Automated test generation, edge-case analysis, boundary testing | **NO TEST WITHOUT A STATED FAILURE MODE** | Generating tests, analyzing edge cases, suppressing false positives | 1.0.0 | 3 |
 | `architecture-decision-records` | Draft, evaluate, and maintain ADRs and trade-off matrices | **NO DECISION WITHOUT A DOCUMENTED TRADE-OFF** | Architecture decisions, ADR management, trade-off analysis | 1.0.0 | 2 |
-| `secops-and-vulnerability-scanner` | Static analysis, OWASP Top 10, dependency audit, secrets detection | **NO VULNERABILITY WITHOUT A REMEDIATION PLAN** | Security audits, vulnerability scanning, pre-release security validation | 1.0.0 | 4 |
 | `performance-profiler-and-tuner` | Bottleneck analysis, memory leak detection, query optimization, profiling | **NO OPTIMIZATION WITHOUT MEASURED IMPACT** | Performance degradation, bottleneck analysis, runtime profiling | 1.0.0 | 3 |
 | `context-compressor-and-pruner` | Context window management, summarization, stale context pruning | **NO PRUNING WITHOUT PRESERVING OPERATIONAL MEMORY** | Long-running sessions, context overflow, agent handoff | 1.0.0 | 3 |
 | `agent-eval` | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis | **NO EVALUATION WITHOUT SELF-CORRECTION** | Agent quality assessment, output benchmarking, failure diagnosis | 1.0.0 | 3 |
@@ -258,8 +257,8 @@ does not copy those rules; they have one source of truth.
 
 | Skill | Purpose | Source | When to Use | Version | Tier |
 |-------|---------|--------|-------------|---------|------|
-| `token-budget` | Token estimation, user-chosen response depth, context compression | ECC | Response length control, context window management | 2.0.0 | 4 |
-| `learn` | Persistent project learnings DB (search, prune, export, stats) | gstack | Cross-session knowledge capture | 2.0.0 | 1 |
+| `cost-optimizer` | Token estimation, user-chosen response depth, context compression | ECC | Response length control, context window management | 2.0.0 | 4 |
+| `continuous-learning-v2` | Persistent project learnings DB (search, prune, export, stats) | gstack | Cross-session knowledge capture | 2.0.0 | 1 |
 | `retro` | Weekly engineering retrospective with git analysis | gstack | Sprint/weekly reflection, trend tracking | 2.0.0 | 1 |
 | `ship` | One-command automated release (test → review → version → changelog → PR) | gstack | Ready to deploy, want full automation | 2.0.0 | 3 |
 | `cost-optimizer` | Model routing (Haiku/Sonnet), budget tracking, prompt caching | ECC | LLM API cost control | 2.0.0 | 4 |
@@ -295,11 +294,11 @@ agent-router (bootstrap) ──→ routes to pipeline
     │       │   └── Uses: debugging-and-error-recovery, testing-strategies, database-migrations
     │       │   └── Refactor: refactor-and-cleanup
     │       │   └── Parallel: dispatching-parallel-agents
-    │       │   └── Multi-agent: agent-orchestration (git worktrees)
-    │       │   └── UI: ui-component-builder, animation-and-interactions, design-system-auditor
+    │       │   └── Multi-agent: conductor (git worktrees)
+    │       │   └── UI: ui-component-builder, animation-and-interactions, design-system-validate
     │       │   └── Integration: api-contract-designer, qa-and-edge-case-tester
     │       │   └── Architecture: architecture-decision-records
-    │       │   └── Security: secops-and-vulnerability-scanner
+    │       │   └── Security: bug-hunting
     │       │   └── Performance: performance-profiler-and-tuner
     │       │   └── Context: context-compressor-and-pruner
     │       │   └── Evaluation: agent-eval
@@ -314,13 +313,12 @@ agent-router (bootstrap) ──→ routes to pipeline
     │       │   └── Uses: ship (automated), verification-before-completion
     │       │
     │       └── Phase H: HANDOFF
-    │           └── Uses: handoff protocol, learn (capture)
+    │           └── Uses: handoff protocol, continuous-learning-v2 (capture)
     │
-    ├── cost-optimizer (runs in background, routes models)
-    ├── token-budget (user-facing depth control)
+    ├── cost-optimizer (runs in background, routes models; user-facing depth control)
     ├── context-engineering (manages context window)
     │
-    └── Weekly: retro → learn
+    └── Weekly: retro → continuous-learning-v2
 
 Verification Gates (every slice):
     verification-before-completion → verification-before-completion → ship
@@ -528,9 +526,11 @@ All 16 agents with model assignments and allowed-tools restrictions:
 
 | Skill | Replacement | Reason |
 |-------|-------------|--------|
-| `agent-payment-x402` | `secops-and-vulnerability-scanner` (for general security) | Blockchain/crypto-specific; not generalizable |
+| `agent-payment-x402` | `bug-hunting` (for general security) | Blockchain/crypto-specific; not generalizable |
 | `agent-sort` | `dispatching-parallel-agents` | Trivial skill; organizes parallel agents |
 | `agent-self-evaluation` | `agent-eval` + `debugging-and-error-recovery` | Internal introspection; overlaps with eval and root-cause investigation |
+| `secops-and-vulnerability-scanner` | `bug-hunting` | Merged (#9); automated scanning folded into bug-hunting |
+| `diataxis-docs` | `documentation-engineering` | Merged (#8); quadrants + ship-sync folded into documentation-engineering |
 
 ### Removed Agents (Superseded by Specialists/Skills — deleted from registry)
 | Removed Agent | Now Use |

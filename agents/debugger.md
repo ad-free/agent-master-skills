@@ -114,7 +114,7 @@ Identify the exact cause of failures. Fix the root, not the error message.
 1. `skill("prompt-optimizer")` — optimize bug report for debugging
 2. `skill("debugging-and-error-recovery")` — core methodology
 3. `skill("verification-before-completion")` — fix verification
-4. `skill("learn")` — record learnings
+4. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `implementer` (if fix needed) or `verifier` (if fix done)

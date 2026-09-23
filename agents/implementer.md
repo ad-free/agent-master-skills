@@ -90,7 +90,7 @@ REPEAT for each acceptance criterion
 4. `skill("code-review-and-quality")` — self-review before verifier
 5. `skill("verification-before-completion")` — final gate
 6. `skill("handoff")` — structured handoff to verifier
-7. `skill("learn")` — record learnings
+7. `skill("continuous-learning-v2")` — record learnings
 
 **Note:** Does not use `prompt-optimizer` — `dev-craft` and `testing-strategies` handle implementation context directly.
 

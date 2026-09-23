@@ -97,4 +97,4 @@ Pattern: `[code] → skipped: [X], add when [Y].`
 3. `skill("dev-craft")` — for implementation (loads plugins as needed, enforces ponytail posture)
 4. `skill("code-review-and-quality")` — self-review before verifier
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings

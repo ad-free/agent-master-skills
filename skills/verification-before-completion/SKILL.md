@@ -33,7 +33,7 @@ Enforce fresh verification evidence before any completion claim. 5 gates: struct
 
 **Gate 1 — Structure:** Ensure the change has a plan, the code follows project patterns, and no unrelated files are modified.
 
-**Gate 2 — Deterministic:** Run the relevant test suite, build, or type check. All must pass cleanly.
+**Gate 2 — Deterministic:** Run the relevant test suite, build, or type check. All must pass cleanly. Runbook with per-language commands, evidence format, and verdict template: `references/runbook.md`.
 
 **Gate 3 — Security:** Run security-relevant checks. For agent systems, this includes:
 - Tool discipline: Are all required tools code-gated (not just prompt-text)?

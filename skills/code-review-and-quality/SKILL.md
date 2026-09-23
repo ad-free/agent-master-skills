@@ -210,6 +210,22 @@ New code matches project conventions for file organization, naming, imports/expo
 
 ---
 
+## Two-Axis Review Mode
+
+Lightweight alternative to the 8-axis pass: run **Standards** (repo conventions
++ Fowler smell baseline) and **Spec** (originating issue/spec) as two parallel,
+non-interfering reviews; report side by side, never merged or reranked.
+
+**When to use two-axis vs 8-axis:** two-axis when the question is "does this
+diff do what was asked, and does it follow our rules" (PR review against an
+issue/spec; fast Standards-only pass). 8-axis when you need full quality gates
+(security, performance, testing, modern patterns) before merge. Both modes obey
+confidence filtering (Step 4) and the pre-report gate (Step 5). Full protocol
+(fixed-point pinning, spec/standards sourcing, output formats):
+`references/two-axis-mode.md`.
+
+---
+
 ## Language-Specific Checklists
 
 ### React/Next.js Patterns (HIGH)
@@ -368,3 +384,4 @@ Wait 10+ minutes, then review as if you're seeing the code for the first time. C
 - `references/false-positives.md` — Complete false positive catalog
 - `references/prompt-defense.md` — Security baseline for reviewers
 - `references/review-output-format.md` — Output template
+- `references/two-axis-mode.md` — Two-axis (Standards + Spec) review mode

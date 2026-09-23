@@ -20,11 +20,23 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
+  integrates-with: [dev-craft, ui-craft, dispatching-parallel-agents]
+  supersedes: agent-orchestration
 ---
+TOKEN CEILING: ~5K tokens. Bulk detail lives in references/.
 
 # Conductor — Parallel Sprint Orchestration
 
 Orchestrates parallel workstreams using git worktrees for isolated execution.
+
+**Iron law:** NO PARALLEL AGENTS WITHOUT A SHARED CONTRACT — without a stable
+contract, parallel agents build incompatible interfaces (lifecycle: §2 +
+`references/contract-gates.md`).
+
+**When to use:** feature splits cleanly across backend/frontend/mobile with a
+shared contract; multiple independent features; long branches risk conflict.
+**When NOT to use:** fits in one PR; agents must edit the same files
+(worktrees won't help); no contract exists yet — define it first (§2).
 
 ---
 
@@ -61,6 +73,10 @@ git branch -d feat/backend-api
 ## 2. SHARED CONTRACTS
 
 Before parallel work begins, define shared contracts that all workstreams must follow.
+Canonical file: `api-contract.md` (OpenAPI YAML content allowed). The contract is
+**read-only for workers** — changes need master approval, are atomic (single
+commit), and workers pull updates explicitly. Full lifecycle + change protocol:
+`references/contract-gates.md`.
 
 ### Contract Types
 
@@ -395,3 +411,30 @@ git merge feat/backend
 git merge feat/frontend
 git merge feat/mobile
 ```
+
+---
+
+## 12. MULTI-REPO VARIANT
+
+Single-repo above assumes BE+FE in one repo (`mono`). For separate BE/FE repos
+(`multi`), worktrees can't span repos — use separate clones + paired branches,
+contract (`api-contract.md`) in the BE repo (`contractRepo`). Align `topology`,
+`scope`, `mode`, `repos`, `contractRepo`, `linkedBranches` with the active
+dev-craft SCOPE record. Detail: `references/multi-repo.md`.
+
+## 13. SYNC GATES & ROLES
+
+Master owns contract, domain model, integration tests; workers implement one
+slice each (backend → `dev-craft`; frontend → `ui-craft`; mobile →
+`dev-craft`/native). Gates: **(1) Contract defined** → dispatch; **(2) Backend
+stable** → frontend swaps mocks for live calls; **(3) All complete** →
+integration merge + full suite. Per-worker context, shared-memory convention
+(`.agent-orchestration/state.json`), exit checklist:
+`references/contract-gates.md`.
+
+## 14. GOTCHAS
+
+Contract drift (keep contract read-only, CI-validated); stale worktrees
+(`remove` before deleting branches, periodic `prune`); no nested worktrees
+(siblings only); disk (remove after merge); moved repo
+(`git worktree repair`). Table: `references/contract-gates.md`.

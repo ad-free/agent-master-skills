@@ -49,7 +49,7 @@ A diagnostic workflow for agent systems that hide failures behind wrapper layers
 **Do not use for:**
 - General code debugging — use `debugging-and-error-recovery`
 - Code review — use `code-review-and-quality`
-- Security scanning — use `secops-and-vulnerability-scanner`
+- Security scanning — use `bug-hunting`
 - Agent performance benchmarking — use `agent-eval`
 - Writing new features — use the appropriate workflow skill
 
@@ -272,6 +272,6 @@ Audits should produce structured reports following this shape:
 
 - `agent-introspection-debugging` — Debug agent runtime failures (loops, timeouts, state errors)
 - `agent-eval` — Benchmark agent performance head-to-head
-- `secops-and-vulnerability-scanner` — Security audit for code and configuration
+- `bug-hunting` — Security audit for code and configuration
 - `autonomous-agent-harness` — Set up autonomous agent operations
 - `dispatching-parallel-agents` — Parallel investigation of independent failures

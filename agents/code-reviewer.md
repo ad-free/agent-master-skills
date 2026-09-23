@@ -209,7 +209,7 @@ Never withhold approval to appear rigorous. If the diff is clean, approve it.
 2. `skill("code-review-and-quality")` — loads review methodology
 3. `skill("verification-before-completion")` — final gate
 4. `skill("handoff")` — structured handoff to verifier
-5. `skill("learn")` — record learnings
+5. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with reviewed PR/slice path

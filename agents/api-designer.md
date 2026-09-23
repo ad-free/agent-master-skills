@@ -76,7 +76,7 @@ Design APIs that are intuitive, versionable, secure, and documented — before a
 3. `skill("dev-craft")` — for implementation phases
 4. `skill("code-review-and-quality")` — self-review
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with contract path

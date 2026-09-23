@@ -1,10 +1,11 @@
 ---
 name: performance-profiling
-description: Use when you need performance bottleneck detection and optimization for backend services.
+description: DEPRECATED — merged into `performance-profiler-and-tuner`. Use that skill for bottleneck detection, profiling, and optimization.
 model: big-pickle
 version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
+preamble-tier: 3
+allowed-tools:
+  - Read
 triggers:
   - "performance profiling"
   - "bottleneck detection"
@@ -14,45 +15,12 @@ triggers:
 metadata:
   origin: agent-master-skills
   preferred-model: big-pickle
+  deprecated: true
+  superseded-by: performance-profiler-and-tuner
 ---
 
-<!-- TOKEN CEILING: ~2K -->
+# performance-profiling (DEPRECATED)
 
-# Performance Profiling Plugin
+This skill has been merged into `skill("performance-profiler-and-tuner")`. Load that skill instead.
 
-## Overview
-
-Systematic performance analysis for backend services. Identifies bottlenecks through profiling, load testing, and query analysis.
-
-## When to Use
-
-- Slow API response times
-- High database query latency
-- Memory leaks or excessive CPU usage
-- Before scaling infrastructure
-- After significant code changes
-
-## Profiling Tools by Stack
-
-| Stack | Profiler | Command |
-|-------|----------|---------|
-| Node.js | `clinic` | `clinic doctor -- node server.js` |
-| Python | `cProfile` / `py-spy` | `python -m cProfile -o output.prof script.py` |
-| Go | `pprof` | `go tool pprof htt/heap` |
-| Rust | `perf` / `flamegraph` | `cargo flamegraph` |
-
-## Query Analysis
-
-- Enable slow query logging
-- Run `EXPLAIN ANALYZE` on all queries in hot paths
-- Check for missing indexes (sequential scans)
-- Check for N+1 query patterns
-
-## Integration
-
-Registered in `state.json`:
-```json
-{
-  "plugins": ["performance-profiling"]
-}
-```
+Removal notice: this shim will be removed in a future release; update all references to `performance-profiler-and-tuner`.

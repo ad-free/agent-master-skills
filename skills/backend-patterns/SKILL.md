@@ -62,7 +62,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Designing API endpoints or contracts — see api-design
 - Database schema design or migration — see database-migrations
 - Frontend or UI architecture — see ui-craft
-- Performance optimization of existing queries — see dev-craft/plugins/performance-profiling
+- Performance optimization of existing queries — see performance-profiler-and-tuner
 
 ## Workflow
 

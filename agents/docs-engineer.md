@@ -107,7 +107,7 @@ Documentation that developers actually read and trust. Always in sync with code.
 2. `skill("documentation-engineering")` — methodology
 3. `skill("dev-craft")` — implementation phases
 4. `skill("verification-before-completion")` — final gate
-5. `skill("learn")` — record learnings
+5. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with doc paths

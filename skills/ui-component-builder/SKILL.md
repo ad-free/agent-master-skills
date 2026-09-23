@@ -32,7 +32,7 @@ metadata:
   preferred-model: big-pickle
   version: 2.0.0
   domain: frontend-ui
-  integrates-with: [ui-craft, design-system-auditor]
+  integrates-with: [ui-craft, design-system-validate]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.

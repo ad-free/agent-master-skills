@@ -103,7 +103,7 @@ Find the true root cause in error cascades. Distinguish signal from noise.
 2. `skill("debugging-and-error-recovery")` — core methodology
 3. `skill("observability-engineering")` — monitoring improvements
 4. `skill("verification-before-completion")` — final gate
-5. `skill("learn")` — record learnings
+5. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `debugger` for single-service fix, or `verifier` if fix is applied

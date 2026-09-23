@@ -66,7 +66,7 @@ Plugins are registered in `state.json`:
 | `security-audit` | Agent-driven STRIDE + OWASP audit | Production deployments |
 | `database-migrations` | Safe migration patterns | Schema changes |
 | `api-versioning` | API version management | Public APIs |
-| `performance-profiling` | Performance bottleneck detection | Optimization |
+| `performance-profiling` | Performance bottleneck detection — DEPRECATED, merged into `performance-profiler-and-tuner` | Optimization |
 | `dependency-audit` | Dependency vulnerability scanning | Security |
 | `language-rules` | Language-specific conventions (TS/Python/Go/Rust) | BUILD & REVIEW |
 
@@ -78,7 +78,7 @@ Plugins are registered in `state.json`:
 | `visual-regression` | Playwright screenshot comparison | Visual testing |
 | `design-system-validate` | Validate against design system | Consistency |
 | `accessibility-deep` | WCAG 2.2 AAA compliance | Accessibility |
-| `animation-craft` | Advanced animation patterns | Micro-interactions |
+| `animation-craft` | Advanced animation patterns — DEPRECATED, merged into `animation-and-interactions` | Micro-interactions |
 | `design-intelligence` | Design system generation (palettes, typography, styles) | New UI projects |
 | `anti-slop` | Anti-generic UI rules (no emoji icons, proper spacing) | BUILD quality |
 

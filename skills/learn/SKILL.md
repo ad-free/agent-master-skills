@@ -1,18 +1,12 @@
 ---
 name: learn
 description: |
-  Use when you need to capture, search, prune, or export persistent project learnings
-  across sessions. Runs proactively after major milestones and retrospectives.
+  DEPRECATED — merged into `continuous-learning-v2`. Do not load this skill; load skill("continuous-learning-v2") instead.
 model: gpt-5-nano
-version: 2.1.0
+version: 1.0.0
 preamble-tier: 2
 allowed-tools:
   - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
 triggers:
   - "what have we learned"
   - "show learnings"
@@ -21,15 +15,12 @@ triggers:
   - "didn't we fix this before"
 metadata:
   origin: agent-master-skills
-  preferred-model: gpt-5-nano
-  version: 2.1.0
-  domain: context-memory
-  integrates-with: [retro, handoff, context-engineering]
+  deprecated: true
+  superseded-by: continuous-learning-v2
 ---
-TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 
-# Learn
+# Learn (Deprecated)
 
-Persistent project learnings manager. Search, prune, export learnings across sessions.
-Use when asked "what have we learned", "show learnings", "prune stale learnings", "export learnings".
-Proactively suggest when user asks "didn't we fix this before?".
+This skill has been merged into `continuous-learning-v2` — load skill("continuous-learning-v2") instead and use its Project Learnings Query Aliases (`instinct-status`, `instinct-prune`, `instinct-export`) for all learnings query, capture, prune, and export flows.
+
+This shim will be removed in a future release.

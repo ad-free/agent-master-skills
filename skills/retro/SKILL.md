@@ -22,7 +22,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.1.0
   domain: orchestration
-  integrates-with: [learn, prompt-optimizer]
+  integrates-with: [continuous-learning-v2, prompt-optimizer]
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 

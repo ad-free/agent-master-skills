@@ -292,5 +292,5 @@ gh pr create \
 - Uses `verification-before-completion` for gates
 - Uses `code-review-and-quality` for review
 - Uses `verification-before-completion` for layered validation
-- Feeds `learn` with release learnings
+- Feeds `continuous-learning-v2` with release learnings
 - Feeds `retro` with deployment metrics

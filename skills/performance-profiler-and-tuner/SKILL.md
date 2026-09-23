@@ -5,7 +5,7 @@ description: |
   and runtime execution profiling. Use when performance is degraded,
   a bottleneck is identified, or optimization is needed. Do NOT use
   for general code refactoring (see refactor-and-cleanup) or for
-  security auditing (see secops-and-vulnerability-scanner).
+   security auditing (see bug-hunting).
   
 model: big-pickle
 version: 2.0.0
@@ -43,10 +43,10 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## Relationship to existing skills
 
-- dev-craft/plugins/performance-profiling: Provides the performance profiling plugin within dev-craft; performance-profiler-and-tuner provides a standalone profiling workflow.
+- dev-craft/plugins/performance-profiling: Merged into this skill (stack profiler table, EXPLAIN ANALYZE hot-path rule folded in below).
 - debugging-and-error-recovery: Uses profiling results to identify performance-related bugs; performance-profiler-and-tuner produces the profiling data that debugging-and-error-recovery then uses.
 - refactor-and-cleanup: Cleans up code that may be causing performance issues; performance-profiler-and-tuner identifies the specific performance bottlenecks.
-- secops-and-vulnerability-scanner: Security can impact performance (e.g., excessive input validation); performance-profiler-and-tuner ensures security does not degrade performance.
+- bug-hunting: Security can impact performance (e.g., excessive input validation); performance-profiler-and-tuner ensures security does not degrade performance.
 
 ## When to Use
 
@@ -57,12 +57,14 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Query performance needs optimization
 - Runtime execution profiling is needed
 - Pre-release performance validation
+- Before scaling infrastructure
+- After significant code changes
 - Comparing performance between two implementations
 
 ## When NOT to Use
 
 - General code refactoring — see refactor-and-cleanup
-- Security auditing — see secops-and-vulnerability-scanner
+- Security auditing — see bug-hunting
 - Architecture decision documentation — see architecture-decision-records
 - Adding new features — see dev-craft
 - General debugging — see debugging-and-error-recovery
@@ -84,6 +86,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
    - Frontend: Lighthouse, Chrome DevTools Performance panel, bundle analyzer
    - Database: query analyzer, EXPLAIN plans, slow query log
    - Network: bandwidth analysis, latency measurement
+   - Stack quick-start: Node.js `clinic doctor -- node server.js` · Python `python -m cProfile -o output.prof script.py` / `py-spy` · Go `go tool pprof` · Rust `cargo flamegraph`
 2. **Identify the top bottlenecks**: rank by impact (time spent, memory used, bundle size)
 3. **Classify each bottleneck**:
    - CPU-bound: excessive computation, inefficient algorithms
@@ -97,7 +100,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 1. **Investigate each bottleneck**: trace the execution path from symptom to root cause
 2. **For CPU bottlenecks**: identify the hot functions, loops, or algorithms causing the slowdown
 3. **For memory bottlenecks**: identify the objects that are not being garbage collected, the retention paths, and the allocation patterns
-4. **For I/O bottlenecks**: identify the slow queries, network calls, or file operations
+4. **For I/O bottlenecks**: identify the slow queries, network calls, or file operations — enable slow query logging, run `EXPLAIN ANALYZE` on all queries in hot paths, check for missing indexes (sequential scans) and N+1 patterns
 5. **For bundle bottlenecks**: identify the large dependencies, unused imports, or unoptimized assets
 6. **Validate root causes**: use profiling data to confirm each hypothesis
 7. **Prioritize bottlenecks** by impact and ease of fix

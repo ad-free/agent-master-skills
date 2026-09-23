@@ -24,7 +24,7 @@ metadata:
   origin: agent-master-skills
   preferred-model: nemotron-3-ultra-free
   memory-levels: 5
-  integrates-with: [learn, retro, dev-craft, agent-orchestration, token-budget, cost-optimizer, handoff, context-guard]
+  integrates-with: [continuous-learning-v2, retro, dev-craft, conductor, cost-optimizer, handoff, context-guard]
 ---
 
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
@@ -179,7 +179,7 @@ Estimate before loading. If a doc is 3k tokens and only 1k remains in budget, do
 
 ## Cross-Agent Context
 
-When using `agent-orchestration` or `dispatching-parallel-agents`, each agent gets only its slice. Shared context is limited to: API contract, compressed domain model, conventions, glossary. Master agent maintains the holistic view; per-agent handoffs stored in `.agent-orchestration/`. See `agent-orchestration` for per-role context breakdown.
+When using `conductor` or `dispatching-parallel-agents`, each agent gets only its slice. Shared context is limited to: API contract, compressed domain model, conventions, glossary. Master agent maintains the holistic view; per-agent handoffs stored in `.agent-orchestration/`. See `conductor` for per-role context breakdown.
 
 ---
 
@@ -218,7 +218,7 @@ When using `agent-orchestration` or `dispatching-parallel-agents`, each agent ge
 
 Every dev-craft phase has a context budget. The HANDOFF phase follows this skill's rotation protocol.
 
-### agent-orchestration
+### conductor
 
 Master agent loads this skill for context slicing. Each worker gets a Level 2 subset via `.agent-orchestration/state.json`.
 
@@ -256,7 +256,7 @@ Gate 5 (LLM-Judge) operates within defined budget. If diff > 4k tokens, split in
 - [ ] Latest handoff loaded on resume (not an old one)
 - [ ] Cross-agent context sliced per role — no leaking across boundaries
 - [ ] ADRs and decisions from latest session, not stale
-- [ ] Token budget tracked via `token-budget` skill
+- [ ] Token budget tracked via `cost-optimizer` skill
 - [ ] Cost tracking via `cost-optimizer` skill
 
 ---
@@ -269,14 +269,14 @@ On context rotation (>70%): invokes `skill("handoff")` with context:
 
 On session resume: loads `handoff` + `state.json` + `domain.md` + `plan.md`
 
-On cross-agent coordination: invokes `skill("agent-orchestration")` for context slicing
+On cross-agent coordination: invokes `skill("conductor")` for context slicing
 
 ---
 
 ## See Also
 
 - `dev-craft` — Full-stack pipeline with HANDOFF phase
-- `agent-orchestration` — Multi-agent builds with per-agent context slicing
+- `conductor` — Multi-agent builds with per-agent context slicing
 - `dispatching-parallel-agents` — Parallel execution with isolated context
 - `verification-before-completion` — LLM-Judge context budget for evaluation
 - `verification-before-completion` — Evidence gates for state.json accuracy

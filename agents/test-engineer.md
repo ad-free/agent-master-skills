@@ -101,7 +101,7 @@ Test behavior, not implementation. Pyramid over ice cream cone. Flaky tests are 
 3. `skill("dev-craft")` — implementation phases
 4. `skill("code-review-and-quality")` — self-review
 5. `skill("verification-before-completion")` — final gate
-6. `skill("learn")` — record learnings
+6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with test paths

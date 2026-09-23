@@ -24,7 +24,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: planning-execution
-  integrates-with: [agent-orchestration, dev-craft]
+  integrates-with: [conductor, dev-craft]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -142,4 +142,4 @@ Tasks independent (no shared files, no dependencies)? → **PARALLEL**. Same fil
 
 ## Integration
 
-**Use with:** `agent-orchestration`, `dev-craft` BUILD (parallel tests), `verification-before-completion`.
+**Use with:** `conductor`, `dev-craft` BUILD (parallel tests), `verification-before-completion`.

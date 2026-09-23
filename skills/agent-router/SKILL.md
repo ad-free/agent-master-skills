@@ -32,7 +32,7 @@ metadata:
   preferred-model: gpt-5-nano
   version: 2.1.0
   domain: planning-execution
-  integrates-with: [prompt-optimizer, product-thinking, planning-and-task-breakdown, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, ship, verification-before-completion, retro, learn, context-engineering, handoff, project-discovery, api-design, devops-automation, cost-optimizer, token-budget, qa-and-edge-case-tester, testing-strategies, bug-hunting, secops-and-vulnerability-scanner, grilling, architecture-decision-records, documentation-engineering]
+  integrates-with: [prompt-optimizer, product-thinking, planning-and-task-breakdown, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, ship, verification-before-completion, retro, continuous-learning-v2, context-engineering, handoff, project-discovery, api-design, devops-automation, cost-optimizer, qa-and-edge-case-tester, testing-strategies, bug-hunting, grilling, architecture-decision-records, documentation-engineering]
   source-enhancements: v2.1.0 prompt-optimizer integration
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
@@ -58,11 +58,11 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 | "Audit agent architecture / diagnose wrapper layers" | `agent-architecture-audit` → `prompt-optimizer` → `verification-before-completion` | prompt-optimizer, verification-before-completion, debugging-and-error-recovery | `skill("prompt-optimizer")` |
 | "Design the API for webhooks" | `api-designer` → `prompt-optimizer` → `api-design` | prompt-optimizer, api-design, dev-craft (CONTRACT phase) | `skill("prompt-optimizer")` |
 | "Set up CI/CD for microservices" | `devops-engineer` → `prompt-optimizer` → `devops-automation` | prompt-optimizer, devops-automation, dev-craft | `skill("prompt-optimizer")` |
-| "Weekly retrospective" | `retro-analyst` → `prompt-optimizer` → `retro` → `learn` | prompt-optimizer, retro, learn, context-engineering | `skill("prompt-optimizer")` |
+| "Weekly retrospective" | `retro-analyst` → `prompt-optimizer` → `retro` → `continuous-learning-v2` | prompt-optimizer, retro, continuous-learning-v2, context-engineering | `skill("prompt-optimizer")` |
 | "Ship this release" | `shipper` → `prompt-optimizer` → `ship` → `verification-before-completion` | prompt-optimizer, ship, verification-before-completion | `skill("prompt-optimizer")` |
-| "Optimize LLM costs" | `planner` → `cost-optimizer` | cost-optimizer, token-budget | `skill("cost-optimizer")` |
-| "My context is full / rotate session" | `context-guard` → `context-engineering` → `handoff` | context-engineering, handoff, learn | `skill("context-engineering")` |
-| "What did we learn last sprint?" | `retro-analyst` → `prompt-optimizer` → `learn` | prompt-optimizer, learn, retro | `skill("prompt-optimizer")` |
+| "Optimize LLM costs" | `planner` → `cost-optimizer` | cost-optimizer | `skill("cost-optimizer")` |
+| "My context is full / rotate session" | `context-guard` → `context-engineering` → `handoff` | context-engineering, handoff, continuous-learning-v2 | `skill("context-engineering")` |
+| "What did we learn last sprint?" | `retro-analyst` → `prompt-optimizer` → `continuous-learning-v2` | prompt-optimizer, continuous-learning-v2, retro | `skill("prompt-optimizer")` |
 
 ---
 
@@ -99,7 +99,7 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 
 ### Code Review
 - **Review code, check the diff, pre-landing review, "look at my changes"** → `/review` (invokes `code-review-and-quality` → `verification-before-completion`)
-- **Security review, OWASP, vulnerabilities, "is this secure"** → `bug-hunting` → `secops-and-vulnerability-scanner`
+- **Security review, OWASP, vulnerabilities, "is this secure"** → `bug-hunting`
 
 ### Deployment & Shipping
 - **Ship, deploy, push, create a PR, "let's land this", "send it"** → `/ship` (invokes `ship` → `verification-before-completion` → `verification-before-completion`)
@@ -109,16 +109,16 @@ TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 - **Update docs after shipping** → `documentation-engineering`
 
 ### Context & Session Management
-- **Save progress, checkpoint, "save my work"** → `/context-save` (invokes `context-compressor-and-pruner` → `learn` → `handoff`)
-- **Resume, restore, "where was I", "continue work"** → `/context-restore` (invokes `context-engineering` → `handoff` → `learn`)
-- **Weekly retro, what did we ship, "how'd we do", "sprint retro"** → `/retro` (invokes `retro` → `learn`)
+- **Save progress, checkpoint, "save my work"** → `/context-save` (invokes `context-compressor-and-pruner` → `continuous-learning-v2` → `handoff`)
+- **Resume, restore, "where was I", "continue work"** → `/context-restore` (invokes `context-engineering` → `handoff` → `continuous-learning-v2`)
+- **Weekly retro, what did we ship, "how'd we do", "sprint retro"** → `/retro` (invokes `retro` → `continuous-learning-v2`)
 
 ### Documentation
 - **Write docs from scratch, generate documentation, "document this feature/module"** → `documentation-engineering`
 - **Update docs after shipping** → `documentation-engineering`
 
 ### Cost & Optimization
-- **Optimize LLM costs, model routing, API budget, prompt caching** → `cost-optimizer` → `token-budget`
+- **Optimize LLM costs, model routing, API budget, prompt caching** → `cost-optimizer`
 
 ---
 
@@ -240,7 +240,7 @@ prompt-optimizer (pre-routing) → tech-advisor (research + recommend)
 6. `skill("verification-before-completion")` — per slice
 7. `skill("verification-before-completion")` — pre-merge
 8. `skill("ship")` — release
-9. `skill("learn")` — capture learnings
+9. `skill("continuous-learning-v2")` — capture learnings
 
 **Estimated:** 3-5 slices over 1-2 weeks
 

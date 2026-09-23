@@ -91,7 +91,7 @@ Data integrity + performance. Every query fast, every migration safe, every sche
 2. `skill("dev-craft")` — implementation phases
 3. `skill("code-review-and-quality")` — self-review
 4. `skill("verification-before-completion")` — final gate
-5. `skill("learn")` — record learnings
+5. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with migration/query paths
