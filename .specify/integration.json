@@ -1,0 +1,25 @@
+{
+  "version": "1.0.12",
+  "integration_state_schema": 1,
+  "installed_integrations": [
+    "opencode",
+    "claude",
+    "omp"
+  ],
+  "integration_settings": {
+    "opencode": {
+      "script": "sh",
+      "invoke_separator": "."
+    },
+    "claude": {
+      "script": "sh",
+      "invoke_separator": "-"
+    },
+    "omp": {
+      "script": "sh",
+      "invoke_separator": "."
+    }
+  },
+  "integration": "opencode",
+  "default_integration": "opencode"
+}

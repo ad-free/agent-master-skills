@@ -126,7 +126,7 @@ This table applies **only where the current platform actually supports named sub
 | Task | Primary agent | Start with | Add only when needed |
 |---|---|---|---|
 | Vague feature / product idea | `planner` | product-thinking, planning-and-task-breakdown | grilling |
-| Spec-driven work | `planner` → `implementer` | project-discovery, planning-and-task-breakdown | dev-craft |
+| Substantial feature in this Spec Kit-enabled repository | Spec Kit SDD | native Spec Kit commands/skills | domain skills and verification |
 | Small/new feature | `implementer` | dev-craft | planning-and-task-breakdown |
 | Bug / failing test | `debugger` | debugging-and-error-recovery | verification-before-completion |
 | Behavior-preserving refactor | `debugger` / `implementer` | debugging-and-error-recovery, refactor-and-cleanup | |
@@ -153,11 +153,20 @@ Route once per task unless scope materially changes. Skills are capabilities loa
 Deterministic route (no router load — agent lazy-loads its chain):
 - Bug/failing test → `debugger` → skill(debugging-and-error-recovery)
 - UI/component/page → `frontend-engineer` → skill(ui-pattern-extractor) → skill(fe-visual-loop); full pipeline → + skill(ui-craft); stack question → + skill(tech-advisor) first
-- Feature per spec → `implementer` → skill(dev-craft)
+- Substantial feature in this Spec Kit-enabled repository → Spec Kit SDD below; routine or small features → `implementer` → skill(dev-craft)
 - Review/PR → `which ocr` → if present: `ocr delegate preview/rule` for file list + rules, then `code-reviewer` → skill(code-review-and-quality); if absent: prompt-only flow (unchanged); audit → `security-auditor` → skill(bug-hunting)
 - Tests/docs/ship → `test-engineer`/`docs-engineer` → skill(testing-strategies|documentation-engineering|ship) → skill(verification-before-completion)
 - Vague/spec/multi-step only → skill(agent-router)
 Never invoke `surgical-patch`/`caveman-review` (no such skill; use debugging-and-error-recovery / caveman-evidence-review).
+
+### Spec Kit in this repository
+
+This repository has project-scoped Spec Kit integrations for OpenCode, OMP, and
+Claude Code. For substantial feature work, follow the shared global Spec Kit SDD
+policy and use `.specify/feature.json` plus `specs/<feature>/` as the authoritative
+feature artifacts. Do not create a parallel `PRODUCT.md`/`PLAN.md` for the same
+feature through `/spec` or `/plan`; domain skills may supplement implementation
+without duplicating requirements or task planning.
 
 **Skill notes (only where the skill exists in this environment — see §1.9):**
 - `dev-craft` — default implementation posture (Ponytail: reuse first, minimal footprint).
@@ -281,4 +290,3 @@ repo/
 Do not repeat the full plan, tool transcripts, memory history, unchanged source, or entire test logs.
 
 A task is complete when the requested behavior is implemented, task-relevant verification is fresh, the diff has been reviewed, and any remaining risk is clearly disclosed.
-
