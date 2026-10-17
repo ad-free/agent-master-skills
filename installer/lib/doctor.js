@@ -68,8 +68,10 @@ export async function doctor(options) {
       console.log(`\n  Checking ${entry}...`);
       
       if (!existsSync(skillPath)) {
-        console.log(`    ✗ Missing SKILL.md`);
-        totalIssues++;
+        // Not every directory here is a skill: shared reference/data dirs
+        // (e.g. `references/`) legitimately live alongside skills and are
+        // loaded by SKILL.md files. Downgrade to info, not an issue.
+        console.log(`    ⚠ Not a skill (no SKILL.md) — shared/reference directory, skipping`);
         continue;
       }
       
