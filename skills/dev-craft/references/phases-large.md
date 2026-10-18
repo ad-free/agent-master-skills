@@ -58,9 +58,9 @@ separately.
    model and migrations** (tables, constraints, indexes, rollback), and **infra/config changes**.
 2. Map the dependency graph, then fix the build order (modules in DAG order, slices per module).
 3. Slice vertically: one complete feature path per slice.
-4. Write tasks with Given-When-Then acceptance criteria (`planning-and-task-breakdown`).
+4. Write tasks with Given-When-Then acceptance criteria (`dev-craft`).
 5. Write ADRs for architecture decisions, in `documentation-engineering` format.
-6. API surface change: invoke `api-design`. Structural pattern decision: invoke `architecture-patterns`.
+6. API surface change: invoke `api-design`. Structural pattern decision: invoke `backend-patterns`.
 
 **Exit:** a plan ready for the checkpoint. **State:** plan, build order, and ADR summaries in `spec.md`.
 

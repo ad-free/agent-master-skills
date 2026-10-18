@@ -22,7 +22,7 @@ metadata:
   preferred-model: big-pickle
   version: 2.0.0
   domain: context-memory
-  integrates-with: [ui-craft, planning-and-task-breakdown]
+  integrates-with: [ui-craft, dev-craft]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.

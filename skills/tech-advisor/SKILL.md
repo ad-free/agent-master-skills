@@ -22,7 +22,7 @@ metadata:
   preferred-model: big-pickle
   version: 1.0.0
   domain: advisory
-  integrates-with: [ui-craft, dev-craft, planning-and-task-breakdown]
+  integrates-with: [ui-craft, dev-craft, dev-craft]
 ---
 
 # Tech Advisor — Technology Research & Recommendation

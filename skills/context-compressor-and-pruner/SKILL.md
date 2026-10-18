@@ -6,7 +6,7 @@ description: |
   Use when agent context is approaching token limits, when resuming
   long-running sessions, or when managing multi-session context.
   Do NOT use for general context setup (see context-engineering)
-  or for agent routing (see agent-router).
+  or for agent routing (see dev-craft).
   
 model: big-pickle
 version: 2.0.0
@@ -62,7 +62,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 ## When NOT to Use
 
 - Setting up initial context for a new session — see context-engineering
-- Routing requests to the right agent — see agent-router
+- Routing requests to the right agent — see dev-craft
 - General conversation management — see context-engineering
 - Adding new context or memories — see context-engineering
 

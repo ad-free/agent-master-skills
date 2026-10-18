@@ -42,7 +42,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 ## Relationship to existing skills
 
 - animation-craft: Merged into this skill (staggered lists, Vue Transition, spring easing, no-flash guard folded in below).
-- ui-component-builder: Produces components that may need animations; animation-and-interactions adds motion to components built by ui-component-builder.
+- ui-craft: Produces components that may need animations; animation-and-interactions adds motion to components built by ui-craft.
 - accessibility-deep: Ensures animations respect `prefers-reduced-motion` and do not cause accessibility issues; animation-and-interactions must follow accessibility rules.
 - design-system-validate: Validates animation consistency with design tokens; animation-and-interactions must use design tokens for animation timing and easing.
 - ui-craft: The frontend pipeline; animation-and-interactions is invoked during ui-craft's BUILD phase for animated components.
@@ -60,7 +60,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 ## When NOT to Use
 
 - General UI styling or layout — see ui-craft
-- Building new UI components from scratch — see ui-component-builder
+- Building new UI components from scratch — see ui-craft
 - Accessibility auditing — see accessibility-deep
 - Design token generation — see design-system-validate
 - Performance profiling of non-animation code — see performance-profiler-and-tuner

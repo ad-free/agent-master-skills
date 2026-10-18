@@ -1,5 +1,5 @@
 name: compare-review-patterns
-description: Compare code-review-and-quality vs review-orchestrator (parallel subagents)
+description: Compare code-review-and-quality single pass vs parallel subagents (see references/folded-review-orchestrator.md)
 repo: .
 files:
   - src/**/*.ts
@@ -16,6 +16,6 @@ judge:
     prompt: |
       Compare the two review approaches:
       Approach A: Single code-review-and-quality pass (8 axes)
-      Approach B: Parallel review-subagents (security, style, debug, perf)
+      Approach B: Parallel subagents (security, style, debug, perf)
 
       Which approach found more issues? Which was faster? Which had better signal-to-noise?

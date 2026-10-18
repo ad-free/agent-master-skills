@@ -30,12 +30,6 @@
   ],
   "skills": [
     {
-      "name": "agent-router",
-      "description": "Primary entry point for all agent work. Maps user requests to the correct agent and skill chain.",
-      "source": "./skills/agent-router",
-      "category": "orchestration"
-    },
-    {
       "name": "dev-craft",
       "description": "Full-stack engineering pipeline with 15 phases from LOAD to SHIP.",
       "source": "./skills/dev-craft",
@@ -57,12 +51,6 @@
       "name": "project-discovery",
       "description": "Ingest existing specifications (xlsx/csv/md/pdf) into a domain model.",
       "source": "./skills/project-discovery",
-      "category": "engineering"
-    },
-    {
-      "name": "planning-and-task-breakdown",
-      "description": "Break work into ordered, verifiable tasks with DAG-based dependency mapping.",
-      "source": "./skills/planning-and-task-breakdown",
       "category": "engineering"
     },
     {
@@ -100,12 +88,6 @@
       "description": "Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting.",
       "source": "./skills/observability-engineering",
       "category": "devops"
-    },
-    {
-      "name": "architecture-patterns",
-      "description": "Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices patterns.",
-      "source": "./skills/architecture-patterns",
-      "category": "engineering"
     },
     {
       "name": "database-migrations",
@@ -150,18 +132,6 @@
       "category": "review"
     },
     {
-      "name": "review-orchestrator",
-      "description": "Parallel specialized review subagents (security, style, debug, performance).",
-      "source": "./skills/review-orchestrator",
-      "category": "review"
-    },
-    {
-      "name": "review-subagents",
-      "description": "Individual specialized subagents invoked by review-orchestrator.",
-      "source": "./skills/review-subagents",
-      "category": "review"
-    },
-    {
       "name": "debugging-and-error-recovery",
       "description": "Systematic root-cause investigation with hypothesis testing and regression prevention.",
       "source": "./skills/debugging-and-error-recovery",
@@ -184,12 +154,6 @@
       "description": "Static analysis, OWASP Top 10, dependency audit, secrets detection.",
       "source": "./skills/secops-and-vulnerability-scanner",
       "category": "security"
-    },
-    {
-      "name": "ui-component-builder",
-      "description": "Build accessible, modular React/Vue/Tailwind components with design tokens.",
-      "source": "./skills/ui-component-builder",
-      "category": "frontend"
     },
     {
       "name": "design-system-auditor",
@@ -324,18 +288,6 @@
       "category": "context"
     },
     {
-      "name": "graphify",
-      "description": "Turn any input into a persistent knowledge graph with query, path, and explain tools.",
-      "source": "./skills/graphify",
-      "category": "context"
-    },
-    {
-      "name": "agent-orchestration",
-      "description": "Multi-agent parallel builds with git worktree isolation and shared contracts.",
-      "source": "./skills/agent-orchestration",
-      "category": "orchestration"
-    },
-    {
       "name": "dispatching-parallel-agents",
       "description": "Run independent tasks simultaneously using subagents.",
       "source": "./skills/dispatching-parallel-agents",
@@ -372,34 +324,16 @@
       "category": "devops"
     },
     {
-      "name": "release-pipeline",
-      "description": "Full release pipeline: ship, land-and-deploy, canary, benchmark.",
-      "source": "./skills/release-pipeline",
-      "category": "devops"
-    },
-    {
       "name": "diataxis-docs",
       "description": "Diataxis documentation framework: tutorial, howto, reference, explanation sync.",
       "source": "./skills/diataxis-docs",
       "category": "documentation"
     },
     {
-      "name": "skill-composer",
-      "description": "Dynamic skill chaining from a task graph with dependency-aware execution order.",
-      "source": "./skills/skill-composer",
-      "category": "orchestration"
-    },
-    {
       "name": "skill-creator",
       "description": "Create new skills, modify and improve existing skills for the library.",
       "source": "./skills/skill-creator",
       "category": "orchestration"
-    },
-    {
-      "name": "gbrain-sync",
-      "description": "Sync knowledge graph state across sessions and agents.",
-      "source": "./skills/gbrain-sync",
-      "category": "context"
     }
   ]
 }

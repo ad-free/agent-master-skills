@@ -31,7 +31,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.1.0
   domain: context-memory
-  integrates-with: [prompt-optimizer, context-engineering, dev-craft, agent-router]
+  integrates-with: [prompt-optimizer, context-engineering, dev-craft]
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
@@ -47,4 +47,4 @@ Offer the user a choice about response depth **before** answering when they ment
 1. **Estimate input**: prose `words × 1.3`; code-heavy `chars / 4` (dominant type wins for mixed content).
 2. **Estimate response**: Trivial 0.1–0.3x, Simple 0.5–1.0x, Standard 1.5–3.0x, Complex 3.0–6.0x.
 3. **Offer choice**: Brief (25%) / Standard (100%) / Detailed (200%) / Exhaustive (400%) with token projections; wait for selection, maintain it for the session, enforce via progressive disclosure.
-4. Called by `agent-router` at session start on depth-preference hints; invokable mid-session via `/token-budget`; respects `context-engineering` token ceilings.
+4. Called by `dev-craft` at session start on depth-preference hints; invokable mid-session via `/token-budget`; respects `context-engineering` token ceilings.

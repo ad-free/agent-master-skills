@@ -42,7 +42,7 @@ report_savings_dashboard()
 
 ## Integration Points
 
-1. **Pre-routing** (triage/agent-router): Runs on every user request before classification (Pipeline Mode)
+1. **Pre-routing** (triage/dev-craft): Runs on every user request before classification (Pipeline Mode)
 2. **Per-agent** (debugger, code-reviewer, verifier, api-designer, frontend-engineer, database-engineer, devops-engineer, security-auditor, test-engineer, docs-engineer, retro-analyst): Runs on each agent's task context (Pipeline Mode)
 3. **NOT used by:** planner, implementer (their skills handle requirement gathering directly)
 4. **Cost tracking**: Metrics appended to JSONL file after each optimization

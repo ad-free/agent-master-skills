@@ -14,7 +14,7 @@ allowed-tools:
 default-skills:
   - dev-craft
   - ui-craft
-  - planning-and-task-breakdown
+  - dev-craft
   - debugging-and-error-recovery
   - verification-before-completion
 ---
@@ -27,11 +27,11 @@ Optimized for writing code, implementing features, and building systems.
 ## Default Behaviors
 - **Model**: big-pickle (coding-optimized)
 - **Preamble**: Standard (tier 3) — includes SHARED.md, relevant skill refs
-- **Skills**: Auto-load dev-craft, ui-craft, planning-and-task-breakdown
+- **Skills**: Auto-load dev-craft, ui-craft, dev-craft
 - **Verification**: verification-before-completion after each phase
 
 ## Phase Flow
-1. **SCOPE** → planning-and-task-breakdown (if no PLAN.md)
+1. **SCOPE** → dev-craft (if no PLAN.md)
 2. **BUILD** → dev-craft / ui-craft (TDD enforced via tdd-enforcer)
 3. **TEST** → qa-and-edge-case-tester
 4. **HARDEN** → verification-before-completion, secops-and-vulnerability-scanner

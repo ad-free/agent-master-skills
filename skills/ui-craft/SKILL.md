@@ -474,3 +474,8 @@ Write state after LOAD.
 - `references/review-protocol.md` — 8 UI-specific review axes and finding categorization
 - `references/redesign-audit.md` — 100+ prioritized audit checks for existing projects
 - `references/image-first-workflow.md` — Image-first design workflow for visual tasks
+
+## Folded skills
+
+- `references/folded-ui-pattern-extractor.md`: before writing UI on an existing codebase, extract its tokens, component conventions, and responsive behavior.
+- `references/folded-ui-component-builder.md`: build accessible, token-based React/Vue/Tailwind components.

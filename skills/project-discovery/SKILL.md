@@ -24,7 +24,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.1.0
   domain: planning
-  integrates-with: [product-thinking, planning-and-task-breakdown]
+  integrates-with: [product-thinking, dev-craft]
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 

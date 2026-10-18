@@ -26,7 +26,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: planning-execution
-  integrates-with: [planning-and-task-breakdown, dev-craft]
+  integrates-with: [dev-craft, dev-craft]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
@@ -37,7 +37,7 @@ Grill the plan relentlessly. Find every hole before implementation starts. The g
 
 ## When to Use
 
-- **MANDATORY** after `planning-and-task-breakdown` produces PLAN.md
+- **MANDATORY** after `dev-craft` produces PLAN.md
 - Before any major architecture decision
 - Before committing to external dependencies
 - When stakes are high (payments, auth, data migration, security)
@@ -125,7 +125,7 @@ Generate 5-7 specific disaster scenarios. For each, trace back to a decision poi
 
 2. **Auth system down for 4 hours** → Root cause: Single-point-of-failure in token validation service
    - Plan gap: No HA architecture review in DESIGN phase
-   - Fix: Add `architecture-patterns` skill to DESIGN
+   - Fix: Add `backend-patterns` skill to DESIGN
 
 3. **Mobile app crashes on iOS 18** → Root cause: Deprecated API used in networking layer
    - Plan gap: No mobile compatibility matrix

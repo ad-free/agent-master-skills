@@ -36,7 +36,7 @@ metadata:
   preferred-model: gpt-5-nano
   version: 1.0.0
   domain: context-memory
-  integrates-with: [context-engineering, retro, handoff, agent-router]
+  integrates-with: [context-engineering, retro, handoff, dev-craft]
 ---
 TOKEN CEILING: ~4K tokens. If skill exceeds, extract sections to references/.
 
@@ -156,7 +156,7 @@ Legacy `learn` triggers route here:
 - **context-engineering**: Instincts loaded at SessionStart, saved at SessionEnd
 - **retro**: Cross-session pattern extraction feeds instinct creation
 - **handoff**: Instincts included in handoff documents
-- **agent-router**: Instincts can suggest skill/agent choices
+- **dev-craft**: Instincts can suggest skill/agent choices
 - **dev-craft/ui-craft**: Phase patterns extracted as instincts
 
 ## Implementation

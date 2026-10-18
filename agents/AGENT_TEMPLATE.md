@@ -50,8 +50,8 @@ One paragraph describing what this agent does and its core responsibility.
 - [ ] Updated `state.json` with completed slice
 
 ## Skill Chain
-1. `skill("agent-router")` — routes to pipeline
-2. `skill("planning-and-task-breakdown")` — if no PLAN.md
+1. `skill("dev-craft")` — routes to pipeline
+2. `skill("dev-craft")` — if no PLAN.md
 3. `skill("dev-craft")` — for implementation (loads plugins as needed)
 4. `skill("code-review-and-quality")` — self-review before verifier
 5. `skill("verification-before-completion")` — final gate

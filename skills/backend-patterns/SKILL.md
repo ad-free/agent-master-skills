@@ -193,3 +193,7 @@ On completion, the skill must produce:
 - **Existing test failures after restructuring**: revert the structural changes to that module, investigate, and fix before proceeding
 - **Pattern mismatch**: if the chosen pattern does not fit the problem, return to Phase 1 and re-evaluate
 - **User rejects pattern choice**: do not proceed, document the rejection reason, and suggest alternatives
+
+## Folded skill: architecture-patterns
+
+Load `references/folded-architecture-patterns.md` when needed: Choosing a structural pattern: hexagonal/clean, DDD, event-driven, microservices decomposition.

@@ -14,7 +14,7 @@ allowed-tools:
 default-skills:
   - project-discovery
   - product-thinking
-  - architecture-patterns
+  - backend-patterns
   - backend-patterns
 ---
 
@@ -31,7 +31,7 @@ Optimized for exploring codebases, researching solutions, and learning.
 
 ## Workflow
 1. **Discover** — project-discovery (parse specs), codegraph_explore (codebase)
-2. **Analyze** — architecture-patterns, backend-patterns, frontend patterns
+2. **Analyze** — backend-patterns, backend-patterns, frontend patterns
 3. **Synthesize** — product-thinking for structured output
 4. **Document** — documentation-engineering for findings
 
