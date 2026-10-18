@@ -1,6 +1,7 @@
 ---
 name: debugging-and-error-recovery
 description: |
+  ALWAYS invoke before changing code for any bug, failing test, 500/error report or unexpected behavior.
   Systematic root-cause investigation with hypothesis testing, regression
   prevention, and automated self-correction loops. Use when tests fail, builds
   break, or behavior is unexpected — no guessing. Invoked by: debugger,

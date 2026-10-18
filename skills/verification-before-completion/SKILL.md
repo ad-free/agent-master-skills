@@ -1,6 +1,7 @@
 ---
 name: verification-before-completion
 description: |
+  ALWAYS invoke before saying "done", "fixed" or "complete".
   Use when you must prove completion with fresh evidence before any "done" claim. 5 gates: structure → deterministic → security → convention → LLM judge. Invoked by verifier, implementer, gatekeeper.
 model: big-pickle
 version: 2.1.0
