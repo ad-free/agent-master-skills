@@ -13,3 +13,6 @@ eval-report.html
 .dev-craft/eval/**/results/
 skills/**/eval/results/
 skills/**/eval/logs/
+
+# Claude Code claude.ai skills sync (written via the ~/.claude/skills symlink)
+skills/synced/
