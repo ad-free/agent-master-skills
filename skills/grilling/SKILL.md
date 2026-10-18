@@ -5,6 +5,7 @@ description: |
   Use before finalizing any plan, architecture, or design. Outputs risk register with mitigations.
   (from mattpocock grilling skill)
   
+disable-model-invocation: true
 model: nemotron-3-ultra-free
 version: 2.0.0
 preamble-tier: 2

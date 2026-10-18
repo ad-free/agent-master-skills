@@ -3,9 +3,9 @@ name: ship
 description: |
   Automated ship workflow: detect base branch, run tests, review diff, bump VERSION, update CHANGELOG,
   commit, push, create PR. Use when asked to "ship", "deploy", "push to main", "create a PR", "merge and push",
-  or "get it deployed". Proactively invoke when user says code is ready, asks about deploying, wants to push
-  code up, or asks to create a PR. (gstack)
+  or "get it deployed". (gstack)
   
+disable-model-invocation: true
 model: deepseek-v4-flash-free
 version: 2.0.0
 preamble-tier: 4

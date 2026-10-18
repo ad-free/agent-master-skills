@@ -1,6 +1,6 @@
 ---
 name: tdd-seam
-description: Use when you need TDD seam-based testing enforcement. Ensures tests are written at pre-agreed public seams, not against internals. Enforces red-green-refactor loop with vertical slices. Ported from mattpocock/engineering/tdd.
+description: ALWAYS invoke when fixing a bug or adding tests; write the failing test first. Use when you need TDD seam-based testing enforcement. Ensures tests are written at pre-agreed public seams, not against internals. Enforces red-green-refactor loop with vertical slices. Ported from mattpocock/engineering/tdd.
 model: nemotron-3-ultra-free
 version: 1.0.0
 preamble-tier: 3
