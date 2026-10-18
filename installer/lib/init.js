@@ -12,15 +12,15 @@ const TEMPLATES = {
     agents: ['implementer', 'verifier'],
   },
   fullstack: {
-    skills: ['dev-craft', 'ui-craft', 'planning-and-task-breakdown', 'verification-before-completion', 'debugging-and-error-recovery', 'code-review-and-quality'],
+    skills: ['dev-craft', 'ui-craft', 'dev-craft', 'verification-before-completion', 'debugging-and-error-recovery', 'code-review-and-quality'],
     agents: ['planner', 'implementer', 'frontend-engineer', 'verifier', 'debugger', 'code-reviewer'],
   },
   frontend: {
-    skills: ['ui-craft', 'planning-and-task-breakdown', 'verification-before-completion', 'design-system-validate', 'accessibility-deep'],
+    skills: ['ui-craft', 'dev-craft', 'verification-before-completion', 'design-system-validate', 'accessibility-deep'],
     agents: ['planner', 'frontend-engineer', 'verifier'],
   },
   backend: {
-    skills: ['dev-craft', 'planning-and-task-breakdown', 'verification-before-completion', 'backend-patterns', 'database-migrations'],
+    skills: ['dev-craft', 'dev-craft', 'verification-before-completion', 'backend-patterns', 'database-migrations'],
     agents: ['planner', 'implementer', 'verifier', 'database-engineer'],
   },
 };
@@ -120,20 +120,20 @@ Route by task type, not by tech stack. Skills chain — follow the arrow.
 
 | Task signal | Route |
 |---|---|
-| Vague idea, "how should we..." | product-thinking → planning-and-task-breakdown → dev-craft | ui-craft |
-| Spec files (xlsx/csv/md/pdf) | project-discovery → planning-and-task-breakdown → dev-craft |
-| New feature / new project | planning-and-task-breakdown → dev-craft | ui-craft |
+| Vague idea, "how should we..." | product-thinking → dev-craft → dev-craft | ui-craft |
+| Spec files (xlsx/csv/md/pdf) | project-discovery → dev-craft → dev-craft |
+| New feature / new project | dev-craft → dev-craft | ui-craft |
 | Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
 | Frontend / UI work | ui-craft (+ frontend-design for visual polish) → verification-before-completion |
 | Screenshot / image reference | image-to-design-spec → ui-craft |
 | Infra / IaC / deploy change | dev-craft → Infra Safety → verification-before-completion |
-| Large multi-module project | dev-craft + agent-orchestration |
+| Large multi-module project | dev-craft + conductor |
 | Multiple independent tasks | dispatching-parallel-agents |
 | Review code | code-review-and-quality |
 | Security audit / vuln discovery | bug-hunting → verification-before-completion |
 | About to claim "done" | verification-before-completion (mandatory) |
 
-**Unsure which skill?** Start with \`planning-and-task-breakdown\` — it produces a plan every other skill can execute against.
+**Unsure which skill?** Start with \`dev-craft\` — it produces a plan every other skill can execute against.
 
 ---
 

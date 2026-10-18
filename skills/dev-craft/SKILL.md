@@ -1,6 +1,6 @@
 ---
 name: dev-craft
-description: Right-sized engineering workflow for building features, multi-file changes, refactors, schema/API/UI work, and resuming earlier work. Use it whenever the user asks to build, implement, add, or extend a feature, start a module, resume a task, or "run dev-craft", even if they never name a pipeline. Scales from a short Task Brief for small changes to a full phased pipeline with persistent state for large ones. Enforces requirements traceability, evidence before claims, and project conventions. Skip it for typos, one-line fixes, and trivial config edits.
+description: Default entry for any non-trivial coding task. Right-sized engineering workflow for building features, fixing bugs, multi-file changes, refactors, schema/API/UI work, and resuming earlier work. Use it whenever the user says to start, work on, build, implement, add, fix, change, or extend something (e.g. "start working on task A, B"), start a module, resume a task, or "run dev-craft", even if they never name a pipeline. Scales from a short Task Brief for small changes to a full phased pipeline with persistent state for large ones. Enforces requirements traceability, evidence before claims, and project conventions. Skip it for typos, one-line fixes, and trivial config edits.
 version: 3.0.0
 ---
 
@@ -47,6 +47,17 @@ State the tier in one line and let the user override it.
    of the diff, handoff in the format `AGENTS.md` defines.
 
 Standard tasks create no state files, ADRs, or codebase map.
+
+## 3b. Modes (folded from lean-build, surgical-patch, safe-refactor, investigate-first)
+
+Pick the mode that matches the request; each narrows the Standard path.
+
+| Mode | Rules | Stop when |
+|---|---|---|
+| **Feature (lean)** | Derive acceptance and non-goals from the request. Deliver one end-to-end path through the layers that own the invariants. Reuse the fitting seam. Add no modes, config, dependency, or service unless acceptance needs it; state any material tradeoff. | Acceptance passes. Report only material omissions. |
+| **Bug (surgical)** | Reproduce first when economical, else capture the strongest evidence. Trace symptom to mechanism. Change the narrowest layer that owns the wrong behavior. No cleanup, renaming, or abstraction outside the fix. Add only the relevant regression proof. | Failure fixed and regression proof passes. |
+| **Refactor (safe)** | Define the behavior boundary and establish verification before structural edits. No feature changes. One ownership boundary at a time; keep every intermediate state buildable. Preserve public interfaces, failure behavior, and ordering. | Same proof passes before and after; requested structure achieved. |
+| **Investigate** | Gather evidence before editing. Separate observed symptom from inferred cause. Rank hypotheses by evidence and cheap falsification. No edit until one mechanism explains the evidence. | Cause (or exact blocker) named with proof. No fix unless authorized. |
 
 ## 4. Large path
 
@@ -184,3 +195,7 @@ References (load on demand):
 - `references/modern-patterns.md`: clean patterns and defensive programming
 - `references/codebase-map-template.md`: template for the SCAN phase
 - `references/cross-skill.md`: cross-skill conventions and best practices
+
+## Folded skill: planning-and-task-breakdown
+
+Load `references/folded-planning-and-task-breakdown.md` when needed: Standalone plan with DAG dependencies and Given/When/Then acceptance criteria; use when the Large path needs a written PLAN.md.

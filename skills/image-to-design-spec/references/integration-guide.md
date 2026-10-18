@@ -11,7 +11,7 @@ image-to-design-spec
     │
     ├──→ dev-craft (Phase 2: ALIGN)
     ├──→ ui-craft (Phase 2: ALIGN)
-    └──→ planning-and-task-breakdown (Step 1)
+    └──→ dev-craft (Step 1)
 ```
 
 ## dev-craft Integration
@@ -130,7 +130,7 @@ Add to `.ui-craft/state.json`:
 }
 ```
 
-## planning-and-task-breakdown Integration
+## dev-craft Integration
 
 ### When to Invoke
 
@@ -181,7 +181,7 @@ If user provides screenshot:
 
 ```
 1. User provides screenshot
-2. planning-and-task-breakdown
+2. dev-craft
    └─→ Runs image analysis
    └─→ Creates enriched plan
 3. dev-craft or ui-craft

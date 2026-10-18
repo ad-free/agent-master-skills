@@ -91,7 +91,7 @@ Every service architecture must include:
 
 ## Skill Chain
 1. `skill("prompt-optimizer")` — optimize architecture context
-2. `skill("architecture-patterns")` — structural patterns
+2. `skill("backend-patterns")` — structural patterns
 3. `skill("grilling")` — adversarial stress-test
 4. `skill("code-review-and-quality")` — design review
 5. `skill("verification-before-completion")` — final gate

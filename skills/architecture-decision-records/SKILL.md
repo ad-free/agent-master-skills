@@ -4,7 +4,7 @@ description: |
   Draft, evaluate, and maintain ADRs, technical trade-off matrices,
   and system architecture blueprints. Use when making architecture
   decisions, documenting trade-offs, or creating/updating ADRs.
-  Do NOT use for implementing architecture (see architecture-patterns)
+  Do NOT use for implementing architecture (see backend-patterns)
   or for general code refactoring (see refactor-and-cleanup).
   
 model: nemotron-3-ultra-free
@@ -32,7 +32,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: specialized-engineering
-  integrates-with: [dev-craft, planning-and-task-breakdown]
+  integrates-with: [dev-craft, dev-craft]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -41,7 +41,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## Relationship to existing skills
 
-- architecture-patterns: Provides the pattern options and trade-off analysis; architecture-decision-records documents the decision and rationale.
+- backend-patterns: Provides the pattern options and trade-off analysis; architecture-decision-records documents the decision and rationale.
 - documentation-engineering: Provides the ADR format and docs-as-code pipeline; architecture-decision-records applies it specifically to architecture decisions.
 - dev-craft: Provides the engineering pipeline; architecture-decision-records is invoked during the DESIGN phase for architecture decisions.
 - backend-patterns: Provides implementation patterns; architecture-decision-records documents why a pattern was chosen.
@@ -58,7 +58,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## When NOT to Use
 
-- Implementing an architecture pattern — see architecture-patterns
+- Implementing an architecture pattern — see backend-patterns
 - General documentation writing — see documentation-engineering
 - Code refactoring or cleanup — see refactor-and-cleanup
 - Security vulnerability assessment — see bug-hunting

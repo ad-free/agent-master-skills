@@ -8,13 +8,13 @@ Determine which skill to load based on your current situation:
 User Request Received
 │
 ├── Is the prompt vague, short, or idea-stage?
-│   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft or ui-craft
+│   └── Yes → product-thinking → dev-craft or ui-craft
 │
 ├── Are spec files provided (xlsx, csv, md, pdf)?
-│   └── Yes → project-discovery → dev-craft (REQUIRE) → planning-and-task-breakdown
+│   └── Yes → project-discovery → dev-craft (REQUIRE)
 │
 ├── Is this a large multi-module project?
-  │   └── Yes → product-thinking → planning-and-task-breakdown → dev-craft + conductor
+  │   └── Yes → product-thinking → dev-craft + conductor
 │
 ├── SCOPE gate (run first in dev-craft / ui-craft): what is the topology & domain?
 │   ├── 2 separate repos (BE + FE)? → topology = multi → paired branches, shared api-contract.md in contractRepo
@@ -27,14 +27,14 @@ User Request Received
 │
 ├── Is this a new feature or project?
 │   ├── Yes → Do you have a clear spec?
-│   │   ├── Yes → planning-and-task-breakdown
+│   │   ├── Yes → dev-craft
 │   │   │         → dev-craft or ui-craft
-│   │   └── No → planning-and-task-breakdown
+│   │   └── No → dev-craft
 │   │             (collect info, verify, ask questions, write plan)
 │   └── No → Is this a bug fix or improvement?
 │       ├── Yes → debugging-and-error-recovery
 │       └── No → What needs to happen?
-│           ├── Code review → review-orchestrator (parallel subagents) → code-review-and-quality
+│           ├── Code review → code-review-and-quality (parallel subagents optional)
 │           ├── Security audit → bug-hunting
 │           ├── Parallel work → dispatching-parallel-agents
 │           └── Other → plan first, then execute
@@ -99,24 +99,24 @@ does not copy those rules; they have one source of truth.
 
 | Situation | Load This Skill |
 |-----------|-----------------|
-| Starting new feature | `planning-and-task-breakdown` |
+| Starting new feature | `dev-craft` |
 | Building backend/API | `dev-craft` |
 | Building UI/frontend | `ui-craft` |
-| Extracting UI patterns from codebase | `ui-pattern-extractor` |
-| Building UI components | `ui-component-builder` |
+| Extracting UI patterns from codebase | `ui-craft` |
+| Building UI components | `ui-craft` |
 | Designing APIs (REST/GraphQL/gRPC) | `api-design` |
 | Researching technology alternatives | `tech-advisor` |
 | Establishing testing strategy | `testing-strategies` |
 | Setting up documentation/ADRs | `documentation-engineering` |
 | Setting up CI/CD/IaC/deployment | `devops-automation` |
 | Implementing observability (logs/metrics/traces/SLOs) | `observability-engineering` |
-| Choosing architecture pattern | `architecture-patterns` |
+| Choosing architecture pattern | `backend-patterns` |
 | Database schema change or migration | `database-migrations` |
 | Structuring backend service internals | `backend-patterns` |
 | Cleaning up code or removing dead code | `refactor-and-cleanup` |
 | Tests failing | `debugging-and-error-recovery` |
 | Systematic root-cause investigation | `debugging-and-error-recovery` |
-| Building UI components | `ui-component-builder` |
+| Building UI components | `ui-craft` |
 | Auditing design consistency and accessibility | `design-system-validate` |
 | Adding animations and micro-interactions | `animation-and-interactions` |
 | Designing API contracts and type definitions | `api-contract-designer` |
@@ -126,7 +126,7 @@ does not copy those rules; they have one source of truth.
 | Profiling and tuning performance | `performance-profiler-and-tuner` |
 | Compressing and pruning agent context | `context-compressor-and-pruner` |
 | Evaluating and benchmarking agent output | `agent-eval` |
-| Reviewing code (parallel subagents) | `review-orchestrator` |
+| Reviewing code (parallel subagents) | `code-review-and-quality` |
 | Reviewing code (8-axis) | `code-review-and-quality` |
 | Security audit / bug bounty | `bug-hunting` |
 | About to say "done" | `verification-before-completion` |
@@ -154,12 +154,12 @@ does not copy those rules; they have one source of truth.
 | "did the deploy actually succeed" | `verification-before-completion` | `devops-automation` |
 | "what should we alert on for this service" | `observability-engineering` | `bug-hunting` / `dev-craft` HARDEN |
 | "is this service hardened against attack" | `dev-craft` HARDEN / `bug-hunting` | `observability-engineering` |
-| "should this be one service or three" | `architecture-patterns` | `dev-craft` ARCH-SCAN |
-| "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `architecture-patterns` |
+| "should this be one service or three" | `backend-patterns` | `dev-craft` ARCH-SCAN |
+| "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `backend-patterns` |
 | "migrate the database schema" | `database-migrations` | `backend-patterns` |
 | "clean up this module" | `refactor-and-cleanup` | `backend-patterns` |
 | "debug this failing test" | `debugging-and-error-recovery` | `verification-before-completion` |
-| "build a new UI component" | `ui-component-builder` | `ui-craft` (general UI work) |
+| "build a new UI component" | `ui-craft` | `redesign` (existing UI upgrade) |
 | "audit the design consistency" | `design-system-validate` | `ui-craft` (general UI work) |
 | "add animation to this component" | `animation-and-interactions` | `ui-craft` (general UI work) |
 | "design the API contract for this feature" | `api-contract-designer` | `api-design` (high-level API decisions) |
@@ -173,9 +173,9 @@ does not copy those rules; they have one source of truth.
 | "did the deploy actually succeed" | `verification-before-completion` | `devops-automation` |
 | "what should we alert on for this service" | `observability-engineering` | `bug-hunting` / `dev-craft` HARDEN |
 | "is this service hardened against attack" | `dev-craft` HARDEN / `bug-hunting` | `observability-engineering` |
-| "should this be one service or three" | `architecture-patterns` | `dev-craft` ARCH-SCAN |
-| "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `architecture-patterns` |
-| "what framework should I use" | `tech-advisor` | `architecture-patterns` (structural decisions) |
+| "should this be one service or three" | `backend-patterns` | `dev-craft` ARCH-SCAN |
+| "what's wrong with the current codebase structure" | `dev-craft` ARCH-SCAN | `backend-patterns` |
+| "what framework should I use" | `tech-advisor` | `backend-patterns` (structural decisions) |
 | "is there a better alternative to [X]" | `tech-advisor` | `refactor-and-cleanup` (code cleanup) |
 | "should I upgrade this dependency" | `tech-advisor` | `dev-craft` (general dev work) |
 
@@ -183,10 +183,10 @@ does not copy those rules; they have one source of truth.
 
 ```
 1. product-thinking / project-discovery → PRODUCT.md / DOMAIN.md
-2. planning-and-task-breakdown → PLAN.md
+2. dev-craft → PLAN.md
 3. grilling (adversarial review of plan)
 4. dev-craft / ui-craft → executes plan
-   ├── dev-craft phases use: architecture-patterns, api-design, testing-strategies, devops-automation
+   ├── dev-craft phases use: backend-patterns, api-design, testing-strategies, devops-automation
    ├── ui-craft phases use: design-intelligence, anti-slop, testing-strategies
    ├── Both use: debugging-and-error-recovery (failures)
 5. code-review-and-quality → per-slice review
@@ -218,7 +218,7 @@ does not copy those rules; they have one source of truth.
 | `documentation-engineering` | ADRs, API docs, docs-as-code pipelines, technical writing | **NO UNDOCUMENTED IRREVERSIBLE DECISION** | Establishing doc standards, generating API refs, runbooks | 1.0.0 | 3 |
 | `devops-automation` | CI/CD pipeline design, IaC (Terraform/Kubernetes), security-by-default, automated rollback, validation gates | Setting up CI/CD, migrating to IaC, deployment strategies | 2.0.0 | 3 |
 | `observability-engineering` | Structured logging, metrics (RED/USE), distributed tracing, SLOs, alerting | **NO ALERT WITHOUT AN OWNER AND A RUNBOOK LINK** | Setting up observability, debugging production, SLO design | 1.0.0 | 3 |
-| `architecture-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices with trade-offs | **NO PATTERN WITHOUT A STATED TRADE-OFF** | Starting new project, refactoring legacy, evaluating patterns | 1.0.0 | 2 |
+| `backend-patterns` | Hexagonal/Clean, DDD, Event-driven, CQRS, Microservices with trade-offs | **NO PATTERN WITHOUT A STATED TRADE-OFF** | Starting new project, refactoring legacy, evaluating patterns | 1.0.0 | 2 |
 | `database-migrations` | Safe schema changes with rollback, backfill, and zero-downtime deployment | **NO MIGRATION WITHOUT A BACKUP AND ROLLBACK PLAN** | Any schema change, data migration, migration strategy | 1.0.0 | 3 |
 | `backend-patterns` | Hexagonal, layered, CQRS, repository, saga, event sourcing implementation patterns | **NO DEPENDENCY VIOLATION IN THE DOMAIN LAYER** | Structuring backend services, refactoring toward clean architecture | 1.0.0 | 3 |
 | `refactor-and-cleanup` | Dead code removal, duplication elimination, naming, complexity reduction | **NO REFACTORING WITHOUT A TEST SAFETY NET** | Cleaning up technical debt, improving code quality | 1.0.0 | 2 |
@@ -234,12 +234,12 @@ does not copy those rules; they have one source of truth.
 
 | Skill | Purpose | When to Use | Version | Tier |
 |-------|---------|-------------|---------|------|
-| `planning-and-task-breakdown` | Breaks work into ordered, verifiable tasks with DAG dependency mapping and Gherkin acceptance criteria | Have a spec, need implementable units | 2.0.0 | 2 |
+| `dev-craft` | Breaks work into ordered, verifiable tasks with DAG dependency mapping and Gherkin acceptance criteria | Have a spec, need implementable units | 2.0.0 | 2 |
 | `conductor` | Parallel multi-agent builds with isolated workspaces + shared API contract | Large project, 3+ modules, or parallel BE/FE/mobile agents | 1.1.0 | 3 |
 | `debugging-and-error-recovery` | Root-cause investigation (4-phase + hypothesis testing + regression prevention + self-correction loops) | Tests fail, bugs reported, unexpected behavior | 2.0.0 | 4 |
 | `verification-before-completion` | Evidence gates preventing false completion | Before claiming any task/phase is complete | 1.0.0 | 3 |
 | `dispatching-parallel-agents` | Parallel subagent execution | Multiple independent tasks exist | 1.1.0 | 3 |
-| `ui-component-builder` | Build accessible, modular React/Vue/Tailwind components with design tokens | **NO COMPONENT WITHOUT DESIGN TOKEN CONSISTENCY** | Creating UI components, component libraries, responsive UI | 1.0.0 | 3 |
+| `ui-craft` | Build accessible, modular React/Vue/Tailwind components with design tokens | **NO COMPONENT WITHOUT DESIGN TOKEN CONSISTENCY** | Creating UI components, component libraries, responsive UI | 1.0.0 | 3 |
 | `design-system-validate` | Audit UI code for design consistency, responsiveness, performance, and WCAG | **NO UI WITHOUT DESIGN TOKEN COMPLIANCE** | Validating UI against design tokens and accessibility standards | 1.0.0 | 1 |
 | `animation-and-interactions` | CSS/Framer Motion animations, micro-interactions, and visual polish | **NO ANIMATION WITHOUT PERFORMANCE BUDGET** | Adding motion, transitions, and micro-interactions to UI | 1.0.0 | 3 |
 | `api-contract-designer` | OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data | **NO INTEGRATION WITHOUT A SIGNED CONTRACT** | Designing FE-BE integration contracts and generating types | 1.0.0 | 3 |
@@ -248,8 +248,6 @@ does not copy those rules; they have one source of truth.
 | `performance-profiler-and-tuner` | Bottleneck analysis, memory leak detection, query optimization, profiling | **NO OPTIMIZATION WITHOUT MEASURED IMPACT** | Performance degradation, bottleneck analysis, runtime profiling | 1.0.0 | 3 |
 | `context-compressor-and-pruner` | Context window management, summarization, stale context pruning | **NO PRUNING WITHOUT PRESERVING OPERATIONAL MEMORY** | Long-running sessions, context overflow, agent handoff | 1.0.0 | 3 |
 | `agent-eval` | Self-correcting evaluation loops, agent output benchmarking, failure diagnosis | **NO EVALUATION WITHOUT SELF-CORRECTION** | Agent quality assessment, output benchmarking, failure diagnosis | 1.0.0 | 3 |
-| `review-orchestrator` | Parallel specialized review subagents (security, style, debug, performance) with aggregated findings | **NO REVIEW WITHOUT PARALLEL PERSPECTIVES** | Code review, pre-merge quality gate, security audit | 1.0.0 | 3 |
-| `review-subagents` | Individual specialized review subagents invoked by review-orchestrator | **NO SUBAGENT WITHOUT COMPRESSED FINDINGS** | Subagent delegation, focused code review | 1.0.0 | 3 |
 | `image-to-design-spec` | Analyzes screenshots → design tokens | User provides visual reference material | 2.0.0 | 3 |
 | `skill-creator` | Create/modify skills for agent-master-skills | Building new skills, improving existing | 2.0.0 | 2 |
 
@@ -264,7 +262,6 @@ does not copy those rules; they have one source of truth.
 | `cost-optimizer` | Model routing (Haiku/Sonnet), budget tracking, prompt caching | ECC | LLM API cost control | 2.0.0 | 4 |
 | `grilling` | Adversarial stress-test of plans/designs | mattpocock | Plan validation, risk identification | 2.0.0 | 2 |
 | `handoff` | Agent-to-agent and session-to-session context transfer | mattpocock | Context rotation, multi-agent coordination | 2.0.0 | 1 |
-| `agent-router` | Single entry point: maps request → agent → skill chain | New (bootstrap) | First skill to load; routes all work | 2.0.0 | 1 |
 
 ---
 
@@ -274,12 +271,12 @@ does not copy those rules; they have one source of truth.
 Entry Point
     │
     ▼
-agent-router (bootstrap) ──→ routes to pipeline
+dev-craft (default entry) ──→ routes to pipeline
     │
     ├── product-thinking / project-discovery (if vague/specs)
     │       │
     │       ▼
-    ├── planning-and-task-breakdown ──→ PLAN.md
+    ├── dev-craft ──→ PLAN.md
     │       │
     │       ▼
     │   grilling (adversarial review)
@@ -288,14 +285,14 @@ agent-router (bootstrap) ──→ routes to pipeline
     ├── dev-craft / ui-craft (main pipelines)
     │       │
     │       ├── Phase 0-2: SCOPE, ALIGN, DESIGN
-    │       │   └── Plugins: architecture-patterns, api-design, design-intelligence, backend-patterns
+    │       │   └── Plugins: backend-patterns, api-design, design-intelligence
     │       │
     │       ├── Phase 3-5: SOURCE, BUILD, TEST
     │       │   └── Uses: debugging-and-error-recovery, testing-strategies, database-migrations
     │       │   └── Refactor: refactor-and-cleanup
     │       │   └── Parallel: dispatching-parallel-agents
     │       │   └── Multi-agent: conductor (git worktrees)
-    │       │   └── UI: ui-component-builder, animation-and-interactions, design-system-validate
+    │       │   └── UI: ui-craft, animation-and-interactions, design-system-validate
     │       │   └── Integration: api-contract-designer, qa-and-edge-case-tester
     │       │   └── Architecture: architecture-decision-records
     │       │   └── Security: bug-hunting
@@ -304,7 +301,7 @@ agent-router (bootstrap) ──→ routes to pipeline
     │       │   └── Evaluation: agent-eval
     │       │
     │       ├── Phase 6: REVIEW
-    │       │   └── Uses: review-orchestrator (parallel subagents) → code-review-and-quality (8-axis + gates)
+    │       │   └── Uses: code-review-and-quality (parallel subagents optional) (8-axis + gates)
     │       │
     │       ├── Phase 7: HARDEN
     │       │   └── Uses: verification-before-completion (5 gates), bug-hunting (security)

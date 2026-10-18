@@ -16,6 +16,7 @@ FRONT_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
 rows = []
 for path in glob(GLOB, recursive=True):
     rel = os.path.relpath(path, ROOT)
+    if '/_archive/' in rel.replace(os.sep, '/'): continue
     with open(path, 'r', encoding='utf-8') as f:
         text = f.read()
     m = FRONT_RE.search(text)

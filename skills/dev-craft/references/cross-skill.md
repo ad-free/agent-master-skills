@@ -7,19 +7,19 @@ Driven by dev-craft SCOPE gate (§0.2). The contract artifact is ALWAYS named
 
 | Workflow | Pipeline | When |
 |----------|----------|------|
-| SaaS MVP | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | New SaaS product |
+| SaaS MVP | product-thinking → dev-craft → dev-craft + ui-craft | New SaaS product |
 | Admin Dashboard | dev-craft + ui-craft | Internal tool |
-| E-commerce | product-thinking → planning-and-task-breakdown → dev-craft + ui-craft | Online store |
+| E-commerce | product-thinking → dev-craft → dev-craft + ui-craft | Online store |
 | API Service | dev-craft only | Backend API |
 | Mobile App | dev-craft (backend) + conductor (mobile) | Mobile with backend |
 | Landing Page | ui-craft only | Marketing site |
-| Multi-module | product-thinking → planning-and-task-breakdown → dev-craft + conductor | Large project |
+| Multi-module | product-thinking → dev-craft → dev-craft + conductor | Large project |
 
 ## Orchestration Pattern
 
 1. THINK — Vague prompt → product-thinking for PRODUCT.md
 2. DISCOVER — Spec files → project-discovery for DOMAIN.md
-3. PLAN — planning-and-task-breakdown for PLAN.md
+3. PLAN — dev-craft for PLAN.md
 4. REQUIRE — Load PRODUCT.md / DOMAIN.md into dev-craft
 5. ALIGN — Domain-calibrated questions
 6. DESIGN — Spec + ADRs + task list
@@ -27,7 +27,7 @@ Driven by dev-craft SCOPE gate (§0.2). The contract artifact is ALWAYS named
 8. SOURCE — Official docs verification
 9. BUILD — Large: conductor with git worktree; Small: single-agent vertical slices
 10. TEST — Full suite
-11. REVIEW — review-orchestrator (spawns review-subagents) → code-review-and-quality (8-axis scoring)
+11. REVIEW — code-review-and-quality (8-axis scoring)
 12. HARDEN — Cross-cutting security
 13. SHIP — Commit + docs
 

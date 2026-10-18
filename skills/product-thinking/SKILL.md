@@ -27,7 +27,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: product-discovery
-  integrates-with: [planning-and-task-breakdown, project-discovery]
+  integrates-with: [dev-craft, project-discovery]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
@@ -49,7 +49,7 @@ Load this skill when **any** of these are true:
 | Prompt is short or vague | "Build me a CRM" |
 | User says "I have an idea..." | "I have an idea for a platform" |
 | Key details are missing | No users, no workflow, no scope |
-| Before `planning-and-task-breakdown` | You sense the spec isn't solid enough to plan |
+| Before `dev-craft` | You sense the spec isn't solid enough to plan |
 | User says "something like X but for Y" | "Like Airbnb but for boat rentals" |
 | Non-technical stakeholder input | "We need a system to manage stuff" |
 | Ambiguous success criteria | "Make it better" or "Modernize it" |
@@ -208,7 +208,7 @@ Primary users: [roles]
 Suggested build: [Phase 1 → Phase 2 → Phase 3]
 Open questions: [count] — documented in spec
 
-Ready for [planning-and-task-breakdown / dev-craft].
+Ready for [dev-craft / dev-craft].
 ```
 
 ---
@@ -265,10 +265,10 @@ User says "I have an idea" or vague prompt
     │
     ▼
 ┌─────────────────────────────────────────────────┐
-│  planning-and-task-breakdown                     │
+│  dev-craft                     │
 │  Input: PRODUCT.md                               │
 │  Output: Task list with acceptance criteria      │
-│  Invoke: skill(name="planning-and-task-breakdown")│
+│  Invoke: skill(name="dev-craft")│
 └─────────────────────────────────────────────────┘
     │
     ▼
@@ -285,7 +285,7 @@ User says "I have an idea" or vague prompt
 | Scenario | Go Directly To |
 |----------|---------------|
 | Bug fix with clear reproduction steps | `debugging-and-error-recovery` |
-| Well-documented feature request | `planning-and-task-breakdown` |
+| Well-documented feature request | `dev-craft` |
 | Screenshot with visible changes | `image-to-design-spec` → `ui-craft` |
 | Security audit request | `bug-hunting` |
 | Single-file change with obvious scope | Direct implementation |
@@ -301,4 +301,4 @@ User says "I have an idea" or vague prompt
 | 3 Feature Extraction | Job Listings → "As a client, I want to post a job with budget/deliverables so designers can apply." AC: requires title, desc, budget, category; auto-post or admin approval. Proposals → "As a designer, I want to submit a proposal with rate and portfolio so clients can evaluate me." |
 | 4 Priority & Sequencing | G1: Auth, Profiles, Listings, Proposals. G2: Contracts, Payments, Messaging. G3: Reviews, Analytics, Escrow. Dependencies: Payments ← Contracts ← Proposals ← Profiles ← Auth |
 
-**Handoff:** PRODUCT.md → `planning-and-task-breakdown`
+**Handoff:** PRODUCT.md → `dev-craft`

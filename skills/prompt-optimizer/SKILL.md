@@ -28,7 +28,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: prompt-engineering
-  integrates-with: [agent-router, triage, context-engineering, cost-optimizer, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, verification-before-completion]
+  integrates-with: [triage, context-engineering, cost-optimizer, dev-craft, ui-craft, debugging-and-error-recovery, code-review-and-quality, verification-before-completion]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
@@ -339,7 +339,7 @@ Notice the simple task doesn't get XML tags, a role, or a sectioning — and the
 
 ## Pipeline Mode (Agent-to-Agent Workflows)
 
-When invoked by agents in a pipeline (`agent-router`, `triage`, per-agent), use **Pipeline Mode** instead of Case B chat prompts.
+When invoked by agents in a pipeline (`dev-craft`, `triage`, per-agent), use **Pipeline Mode** instead of Case B chat prompts.
 
 ### Activation
 Pass `mode: "pipeline"` via the wrapper utility. Default for `optimize_pre_routing()` and `optimize_for_agent()`.
@@ -424,7 +424,7 @@ Pipeline mode applies profile automatically:
     - Suggested agent and skill chain
   </acceptance_criteria>
   <output_format>
-    Structured classification for agent-router
+    Structured classification for dev-craft
   </output_format>
 </task>
 
@@ -467,7 +467,7 @@ Execute this task directly. Think before answering (take time to reason through 
 ## Integration with agent-master-skills
 
 ### Pre-routing (Triage Level)
-When invoked by `triage` or `agent-router` before classification:
+When invoked by `triage` or `dev-craft` before classification:
 - Input: Raw user request
 - Output: Optimized, structured request that triage can classify accurately
 - Reduces clarification rounds by 60-80%
@@ -477,7 +477,7 @@ When invoked by agents (`debugger`, `code-reviewer`, `verifier`, `api-designer`,
 - Input: Agent-specific task context + user request
 - Output: Optimized prompt tailored to agent's specialization (Pipeline Mode)
 - Each agent declares its optimization profile in frontmatter metadata
-- **Not used by:** `planner`, `implementer` — their skills (`product-thinking`, `planning-and-task-breakdown`, `dev-craft`) handle requirement gathering
+- **Not used by:** `planner`, `implementer` — their skills (`product-thinking`, `dev-craft`, `dev-craft`) handle requirement gathering
 
 ### Cost Tracking
 Token savings from optimization are reported to `cost-optimizer` for budget analytics:

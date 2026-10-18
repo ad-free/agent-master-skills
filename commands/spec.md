@@ -31,7 +31,7 @@ skill("product-thinking")  # 4-round refinement: problem → solution → scope 
 
 ### 3. Planning
 ```
-skill("planning-and-task-breakdown")  # Decompose spec into verifiable tasks
+skill("dev-craft")  # Decompose spec into verifiable tasks
 ```
 
 ### 4. Architecture (if needed)

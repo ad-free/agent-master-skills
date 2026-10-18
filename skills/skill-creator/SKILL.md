@@ -23,7 +23,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: tooling
-  integrates-with: [skill-composer, agent-router]
+  integrates-with: [dev-craft]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.

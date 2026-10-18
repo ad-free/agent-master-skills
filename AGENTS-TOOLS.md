@@ -12,17 +12,17 @@ subagent.
 
 | Task | Entry skill | Add only when needed |
 |---|---|---|
-| Vague product idea | `product-thinking` (→ `PRODUCT.md`) | `planning-and-task-breakdown` |
-| Existing spec files (xlsx/csv/md/pdf) | `project-discovery` (→ `DOMAIN.md`) | `planning-and-task-breakdown` |
-| Break work into tasks | `planning-and-task-breakdown` (→ `PLAN.md`) | — |
-| Multi-file feature | `dev-craft` | `quality-gates` before merge |
+| Vague product idea | `product-thinking` (→ `PRODUCT.md`) | `dev-craft` |
+| Existing spec files (xlsx/csv/md/pdf) | `project-discovery` (→ `DOMAIN.md`) | `dev-craft` |
+| Multi-file feature | `dev-craft` | `verification-before-completion` before merge |
 | Frontend / UI work | `ui-craft` | `image-to-design-spec` for screenshot-led work |
 | Bug / failing test | `debugging-and-error-recovery` | `bug-hunting` if security-relevant |
 | Code review | `code-review-and-quality` | `bug-hunting` |
 | Security audit | `bug-hunting` | `code-review-and-quality` |
-| Pre-merge validation | `quality-gates` | — |
-| Completion check | `verification-before-completion` | — |
-| Large multi-module build | `agent-orchestration` | `dispatching-parallel-agents` |
+| Completion check | `verification-before-completion` | `evidence-ledger` for stored proof |
+| Ship / PR text | `ship` (prepare only unless the user names commit/push/PR) | `retro` at sprint end |
+| Handoff / resume | `handoff` | `context-engineering` |
+| Large multi-module build | `conductor` | `dispatching-parallel-agents` |
 | Long sessions, handoffs | `context-engineering` | — |
 
 Anything not in this table (small fixes, refactors, docs, config) does not need a skill. Do the work on the
@@ -36,21 +36,21 @@ Never run two requirement-to-task pipelines for the same feature.
   Inspect the active feature state first (`.specify/feature.json` if present) and resume rather than
   duplicate. Reuse the existing constitution and resolve critical findings before coding. Do not create
   `PRODUCT.md`, `DOMAIN.md`, or `PLAN.md` alongside it.
-- Otherwise use the skills chain: `product-thinking` or `project-discovery` →
-  `planning-and-task-breakdown` → `dev-craft`.
+- Otherwise (the usual case: most projects have no `.specify/`) use the skills chain: `product-thinking` or `project-discovery` →
+  `dev-craft` (its plan step covers task breakdown).
 - Never initialize Spec Kit, install a workflow, or overwrite managed or uncommitted files without approval.
 - Checklist or phase completion does not replace tests or review.
 
 ## When to use `dev-craft`
 
-Use it for multi-file features, new modules, or work that needs design and review phases. Do not use it for
-bug fixes, small edits, refactors, or docs. For those, follow `AGENTS.md` §4.
+Use it for multi-file features, new modules, or work that needs design and review phases. Its §3b modes
+(bug, refactor, investigate) also cover focused fixes and refactors. Skip it for typos, one-line fixes, and docs.
 
 ## Subagents
 
 Delegate only when the host permits it and the work is independent, a specialist review, or an isolated
 workstream. For independent tasks use `dispatching-parallel-agents`; for multi-module builds use
-`agent-orchestration` (shared contract and git worktree isolation).
+`conductor` (shared contract and git worktree isolation).
 
 - **Before dispatch**, define: one goal, minimal context, expected deliverable, file/interface ownership,
   acceptance criteria, read-only vs. may-edit. Use isolated worktrees for parallel writers.

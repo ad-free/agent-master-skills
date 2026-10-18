@@ -60,7 +60,7 @@ metadata:
 | `docs-engineer` | technical writer | markdown-sections | true | none | false |
 | `retro-analyst` | engineering analyst | markdown-sections | false | none | false |
 
-**Note:** `planner` and `implementer` do NOT use prompt-optimizer — their skills (`product-thinking`, `planning-and-task-breakdown`, `dev-craft`) handle requirement gathering directly.
+**Note:** `planner` and `implementer` do NOT use prompt-optimizer — their skills (`product-thinking`, `dev-craft`, `dev-craft`) handle requirement gathering directly.
 
 ## Wrapper Functions
 

@@ -33,8 +33,8 @@ Patterns to extract from sessions and convert into instincts.
 ### Planning
 - **Pattern**: Always create PLAN.md before implementation, vertical slices
 - **Context**: all, planning
-- **Trigger**: session-start, planning-and-task-breakdown
-- **Example**: "Run planning-and-task-breakdown before any multi-file change"
+- **Trigger**: session-start, dev-craft
+- **Example**: "Run dev-craft before any multi-file change"
 
 ### Verification
 - **Pattern**: Run lint + typecheck + test before claiming done, read actual output

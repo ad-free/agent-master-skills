@@ -29,7 +29,7 @@ triggers:
 metadata:
   origin: agent-master-skills
   domain: frontend
-  integrates-with: [ui-craft, ui-pattern-extractor, anti-slop, image-to-design-spec, playwright-skill, visual-regression, verification-before-completion]
+  integrates-with: [ui-craft, ui-craft, anti-slop, image-to-design-spec, playwright-skill, visual-regression, verification-before-completion]
 ---
 
 # FE Visual Loop v1.0
@@ -73,7 +73,7 @@ Inferred taste is not agreement. The agent shows; the human picks; then the agen
 ### Step 4: Build to the Winner
 
 - Implement against the picked mock's tokens, spacing, and composition. Deviations need a stated reason.
-- Reuse `ui-pattern-extractor` output on existing codebases so the new UI matches surrounding patterns.
+- Reuse `ui-craft` output on existing codebases so the new UI matches surrounding patterns.
 
 ### Step 5: Proof (hard gate)
 

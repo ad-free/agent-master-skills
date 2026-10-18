@@ -5,7 +5,7 @@ Goal: scaffold a small task-tracker backend service and test harness.
 Steps (agent-driven):
 
 1. Load `product-thinking` with prompt: "Build a simple task-tracker API (CRUD tasks)" → outputs `PRODUCT.md`.
-2. Run `planning-and-task-breakdown` on `PRODUCT.md` → outputs `PLAN.md` with vertical slice for an API server.
+2. Run `dev-craft` on `PRODUCT.md` → outputs `PLAN.md` with vertical slice for an API server.
 3. Run `dev-craft` with scope `backend`:
    - ARCH-SCAN: detect language (Python/FastAPI)
    - ALIGN: confirm database choice (SQLite for demo)

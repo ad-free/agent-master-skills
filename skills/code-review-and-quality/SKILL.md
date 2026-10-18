@@ -385,3 +385,6 @@ Wait 10+ minutes, then review as if you're seeing the code for the first time. C
 - `references/prompt-defense.md` — Security baseline for reviewers
 - `references/review-output-format.md` — Output template
 - `references/two-axis-mode.md` — Two-axis (Standards + Spec) review mode
+## Parallel review (folded from review-orchestrator and review-subagents)
+
+For Large diffs or security-relevant changes, spawn read-only subagents per axis (security, style, debug, performance) and aggregate. Load `references/folded-review-orchestrator.md` for the workflow (scope, spawn, aggregate, dedupe, report) and `references/folded-review-subagents.md` for the per-axis prompts. Default is a single pass; use parallel review only when the diff is large enough to justify the cost.

@@ -160,3 +160,7 @@ On completion, the skill must produce:
 - **Data integrity check failure**: halt, do not proceed to application deploy, preserve the migration state for investigation
 - **Rollback failure**: escalate immediately; the database may be in an inconsistent state requiring manual intervention
 - **Backup not found**: halt migration until a verified backup is confirmed
+
+## Folded skill: migration
+
+Load `references/folded-migration.md` when needed: Reversible, compatibility-safe transitions (schema, data, API, protocol, config, dependency): rollback and preservation proof.

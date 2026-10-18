@@ -105,12 +105,12 @@ Turn ambiguity into actionable plans. Every plan must be implementable, testable
 - ❌ Planning without reading existing code/architecture
 
 ## Skill Chain
-1. `skill("planning-and-task-breakdown")` — core planning logic
+1. `skill("dev-craft")` — core planning logic
 2. `skill("grilling")` — adversarial review of plan
 3. `skill("dev-craft")` — for implementation handoff
 4. `skill("continuous-learning-v2")` — record learnings
 
-**Note:** Does not use `prompt-optimizer` — `product-thinking` and `planning-and-task-breakdown` handle requirement gathering and structuring directly.
+**Note:** Does not use `prompt-optimizer` — `product-thinking` and `dev-craft` handle requirement gathering and structuring directly.
 
 ## Handoff
 On completion: invoke `implementer` with PLAN.md path

@@ -17,10 +17,10 @@ triggers:
 
 ## Workflow
 
-### 1. Scope (product-thinking → planning-and-task-breakdown)
+### 1. Scope (product-thinking → dev-craft)
 ```
 skill("product-thinking")  # If idea is vague
-skill("planning-and-task-breakdown")  # Creates PLAN.md with tasks, DAG, acceptance criteria
+skill("dev-craft")  # Creates PLAN.md with tasks, DAG, acceptance criteria
 ```
 
 ### 2. Review (grilling → architecture-decision-records)

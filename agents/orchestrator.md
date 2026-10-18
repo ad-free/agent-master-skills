@@ -117,7 +117,7 @@ Execute complex multi-module work faster through parallel, coordinated agents �
 ## Skill Chain
 1. `skill("conductor")` — core orchestration logic
 2. `skill("dispatching-parallel-agents")` — parallel execution
-3. `skill("agent-router")` — agent routing
+3. `skill("dev-craft")` — agent routing
 4. `skill("verification-before-completion")` — final gate
 5. `skill("ship")` — deployment after verification
 6. `skill("continuous-learning-v2")` — record learnings

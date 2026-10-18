@@ -45,7 +45,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 - api-design: Handles the high-level API design decisions (REST vs GraphQL, versioning, auth); api-contract-designer produces the concrete contract artifacts (specs, types, mocks).
 - backend-patterns: Ensures the backend implementation follows clean architecture; api-contract-designer defines the contract that the backend must fulfill.
-- ui-component-builder: Consumes the API contract to build type-safe frontend components; api-contract-designer produces the types that ui-component-builder imports.
+- ui-craft: Consumes the API contract to build type-safe frontend components; api-contract-designer produces the types that ui-craft imports.
 - dev-craft: Provides the engineering pipeline; api-contract-designer is invoked during the CONTRACT phase.
 
 ## When to Use
@@ -63,7 +63,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Deciding API architecture (REST vs GraphQL vs gRPC) — see api-design
 - Implementing API endpoints — see api-design or dev-craft BUILD phase
 - General database design or migration — see database-migrations
-- Frontend component implementation — see ui-component-builder
+- Frontend component implementation — see ui-craft
 - Security auditing of API endpoints — see bug-hunting
 
 ## Workflow
