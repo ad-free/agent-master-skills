@@ -1,201 +1,101 @@
 ---
 name: dev-craft
-description: Default entry for any non-trivial coding task. Right-sized engineering workflow for building features, fixing bugs, multi-file changes, refactors, schema/API/UI work, and resuming earlier work. Use it whenever the user says to start, work on, build, implement, add, fix, change, or extend something (e.g. "start working on task A, B"), start a module, resume a task, or "run dev-craft", even if they never name a pipeline. Scales from a short Task Brief for small changes to a full phased pipeline with persistent state for large ones. Enforces requirements traceability, evidence before claims, and project conventions. Skip it for typos, one-line fixes, and trivial config edits.
-version: 3.0.0
+description: Default entry for non-trivial coding work - building features, fixing bugs, refactors, schema/API/UI/full-stack changes, reviewing a diff or answering PR comments, resuming earlier work. Use when the user says start, build, implement, add, fix, change, extend, review, or "run dev-craft". Tests the request against the repo, sets read/write scope, plans small tested slices, and requires real command output before "done". Skip for typos, one-line edits, trivial config, quick questions, and throwaway scripts.
+version: 4.0.0
 ---
 
 # dev-craft
 
-Build the right thing, to project conventions, with proof. Scale the ceremony to the task: do not run the
-full pipeline for small work.
+Build the right thing, to project conventions, with proof. Scale the ceremony to the task; a full pipeline for
+a small change is a failure.
 
-Precedence: the user's request, then the project `AGENTS.md`, then this skill, then `references/` defaults.
-Where this skill conflicts with `AGENTS.md` hard rules (commits, destructive ops, secrets), `AGENTS.md` wins.
+Precedence: the user's request, then project `AGENTS.md` and repo rules (lint, formatter, design system), then
+this skill, then `references/` defaults. `AGENTS.md` hard rules (commits, destructive ops, secrets) always win.
 
-## 1. Pick the tier first
-
-State the tier in one line and let the user override it.
+## 1. Pick the tier (say it in one line; the user can override; unsure = one tier up)
 
 | Tier | When | Path |
 |---|---|---|
-| **Trivial** | typo, rename, one-line fix, trivial config | No pipeline. The Minimum Bar (no cryptic names, no legacy idioms) and the project lint gate still apply. |
-| **Standard** | a feature or fix touching a few files, a UI change, one endpoint, a small schema change | §3 |
-| **Large** | new module, schema + API + UI together, public interface or migration with risk, auth/security, ambiguous scope, multi-session work | §4 |
+| **Trivial** | typo, rename, one-line fix, trivial config | Edit, run the relevant check. Project lint and clean-code minimum still apply. |
+| **Standard** | feature or fix in a few files, one endpoint, a UI change, a small schema change, a review | Section 3 |
+| **Large** | new module or service, schema + API + UI together, risky migration, auth/security, ambiguous scope, multi-session | Section 3 + `references/workflow.md` Large path |
 
-## 2. Input quality gate
+Vague input ("Build HRM", "make me a CRM") or attached spec files: read `references/workflow.md` §Input gate
+before anything else. Do not start building from a one-liner.
 
-| Input | Action |
-|---|---|
-| Short or vague ("Build HRM", "Make me a CRM") | Do not start building. Draft a Task Brief from what is known, list the open questions, and ask the user to confirm. Offer `product-thinking` if the idea itself is unformed. |
-| "Just build it, I'll know it when I see it" | Same: draft the brief and get a yes. Building without written requirements usually produces rework. |
-| Spec files attached (md, pdf, xlsx, csv) | Load `project-discovery` to extract the domain model, then continue. |
-| `PRODUCT.md`, `DOMAIN.md`, or `PLAN.md` exists | Load it as the requirements source. |
-| Clear request or spec | Proceed. |
+## 2. Scope: what you may write, what you must read
 
-## 3. Standard path
+Set it in Frame, state it in one line, keep it visible in the Task Brief:
+`Scope: frontend; write: frontend; read-only: backend, database`.
 
-1. **Task Brief** (5-10 lines, in chat): goal; numbered requirements `REQ-1..n` (these are the acceptance
-   criteria); out of scope; affected layers (FE / BE / DB / infra / tests); assumptions; open questions the
-   user owns. Proceed if no assumption is risky and no open question blocks. Otherwise wait for the user.
-2. **Context** (read only what the layers need): project `AGENTS.md`; the nearest similar feature; for UI the
-   design source; for data the schema and latest migrations; for API the existing contract; for infra the
-   compose/CI/config files. Reuse detected conventions from `.dev-craft/state.json` if present and current.
-3. **Build in slices** (one complete path per slice): write a failing test → minimal code → match conventions
-   → lint (read-only check) → type check → run the relevant tests. Detail: `references/build-protocol.md`.
-4. **UI slices:** apply §6 and look at the result before moving on.
-5. **Finish:** requirements check (every `REQ` marked done / partial / not done, with evidence), self-review
-   of the diff, handoff in the format `AGENTS.md` defines.
+- The other side is read-only, not out of sight. A UI is only right if it matches the real API; a backend change
+  is only safe if you know who consumes it. Read the real endpoints, shapes, errors, and consumers.
+- Something outside write scope seems wrong or missing: report it as a finding with options. Never edit it
+  quietly and never invent the field or endpoint. Editing it needs the user's approval and makes the task
+  full-stack (`references/fullstack.md`).
 
-Standard tasks create no state files, ADRs, or codebase map.
-
-## 3b. Modes (folded from lean-build, surgical-patch, safe-refactor, investigate-first)
-
-Pick the mode that matches the request; each narrows the Standard path.
-
-| Mode | Rules | Stop when |
-|---|---|---|
-| **Feature (lean)** | Derive acceptance and non-goals from the request. Deliver one end-to-end path through the layers that own the invariants. Reuse the fitting seam. Add no modes, config, dependency, or service unless acceptance needs it; state any material tradeoff. | Acceptance passes. Report only material omissions. |
-| **Bug (surgical)** | Reproduce first when economical, else capture the strongest evidence. Trace symptom to mechanism. Change the narrowest layer that owns the wrong behavior. No cleanup, renaming, or abstraction outside the fix. Add only the relevant regression proof. | Failure fixed and regression proof passes. |
-| **Refactor (safe)** | Define the behavior boundary and establish verification before structural edits. No feature changes. One ownership boundary at a time; keep every intermediate state buildable. Preserve public interfaces, failure behavior, and ordering. | Same proof passes before and after; requested structure achieved. |
-| **Investigate** | Gather evidence before editing. Separate observed symptom from inferred cause. Rank hypotheses by evidence and cheap falsification. No edit until one mechanism explains the evidence. | Cause (or exact blocker) named with proof. No fix unless authorized. |
-
-## 4. Large path
-
-Full detail per phase: `references/phases-large.md`. Load it phase by phase, not all at once.
+## 3. Flow
 
 ```
-LOAD → SCOPE → REQUIRE → SCAN → ALIGN → DESIGN → TRACE ──[ONE APPROVAL CHECKPOINT]──→
-BUILD → TEST → REVIEW → HARDEN → SHIP-PREP
-(SOURCE and CONTRACT run only when needed; STATUS is available any time)
+Frame -> Challenge -> Brief/Spec -> (Design) -> (Contract) -> Plan -> Implement -> Review -> Verify -> Finalize
 ```
+Parenthesised steps run only for UI work (Design) or 2+ components (Contract). Moving backward is normal: if
+Implement or Review shows the spec is wrong, stop, record it, return to Challenge/Brief. Never adapt silently.
 
-| Phase | Output |
-|---|---|
-| LOAD | `state.json` initialized or resumed |
-| SCOPE | layer (be / fe / fullstack) and mode (build / ticket) |
-| REQUIRE | `domain.md` from specs, or confirmed "no specs" |
-| SCAN | conventions and codebase map (once; cached by git commit) |
-| ALIGN | scope confirmed, assumptions, out of scope, glossary |
-| DESIGN | spec + plan + build order + ADRs (includes data model and infra changes) |
-| TRACE | requirements matrix `REQ-ID → task → acceptance criterion` (coverage gate) |
-| BUILD | vertical slices (§3 step 3 loop) |
-| TEST | full relevant suites; contract conformance for fullstack |
-| REVIEW | seven-axis review, lint gate, requirements reality-check |
-| HARDEN | cross-cutting security and risk register |
-| SHIP-PREP | rollback plan, ADR updates, final verification, proposed commit message |
+| Step | Do | Read now | Gate to leave |
+|---|---|---|---|
+| Frame | Restate task; read AGENTS.md, nearest similar feature, tests, stack versions; set scope + tier | `references/workflow.md` | Scope, tier, stack known |
+| Challenge | Test the request against the repo and itself; findings tagged by basis; <=3 questions with defaults; <=3 proposals | `references/challenge.md` | Blocking questions answered; assumptions listed |
+| Brief | Task Brief with numbered `REQ-n` as testable acceptance criteria, each with a concrete example | `references/workflow.md` | User confirmed (Standard: shown, nothing risky open) |
+| Design (UI) | Choose screens, components, design system, states, charts; write `design.md` | `references/frontend-design.md` (+ `ui-patterns/<domain>.md`) | User confirmed direction |
+| Data (schema touched) | Review the model; findings as options; check queries | `references/data-modeling.md` (new service: `architecture.md`) | Findings decided |
+| Contract (2+ sides) | Define request/response/errors/auth once, consumers listed | `references/fullstack.md` | Consumers agree |
+| Plan | Thin vertical slices; every REQ maps to a test | `references/workflow.md`, Large: `phases-large.md` | Every REQ has a test and a done-condition |
+| Implement | Failing test, minimal code, match conventions, lint, types, tests; stay in write scope | `references/build-protocol.md`, `idioms/README.md` | Slice proof passes |
+| Review | Review your own diff as a stranger would; try to break it | `references/review.md` | No open high-severity finding |
+| Verify | Run everything after the last edit; fill the Evidence table; screenshots for UI | `references/verify.md` | Evidence table complete or gaps stated |
+| Finalize | Walk REQs, handoff per `AGENTS.md`, propose commit message (do not commit) | `references/verify.md` | Report matches what was done |
 
-**One approval checkpoint:** after TRACE, present the brief, plan, build order, and matrix together and get one
-explicit approval before BUILD. Do not ask for sign-off at each phase.
+Other entry points: **bug** (reproduce, failing test, root cause, fix, regression proof), **refactor**,
+**investigate**, **review a diff**, **incoming PR comments**: see `references/workflow.md` §Modes and
+`references/review.md`. Large work runs the phased path in `references/phases-large.md` with one approval
+checkpoint after TRACE.
 
-**Ticket mode** (small change inside an already-understood codebase): LOAD → SCOPE → scoped BUILD → TEST →
-REVIEW → SHIP-PREP. Skip REQUIRE and TRACE unless the change alters spec coverage.
-
-## 5. Hard gates
+## 4. Hard gates
 
 <HARD-GATE>
-1. **No commit, push, or merge.** Stage the intended files and propose a conventional commit message. Commit
-   only when the user explicitly asks. Creating a feature branch is allowed (`git switch -c <type>/<slug>`).
-2. **Branch guard.** Never edit while on `main`, `master`, or `develop`. Create a feature branch first, in
-   every repo the scope touches.
-3. **No code without an approved brief.** Standard: the brief was shown and nothing risky is open. Large: the
-   explicit checkpoint approval.
+1. **No commit, push, or merge.** The history is the user's; stage intended files and propose a conventional
+   message. Creating a feature branch (`git switch -c <type>/<slug>`) is allowed.
+2. **Branch guard.** Never edit on `main`, `master`, or `develop`: protected-branch mistakes are hard to undo.
+   Branch first, in every repo the scope touches.
+3. **No code without a shown brief** (Large: explicit approval). Unwritten requirements are the main source of rework.
 4. **Coverage (Large).** Every P1 requirement traces to a task with an acceptance criterion before BUILD.
-   Lower-priority gaps may be deferred only with the user's explicit acknowledgement.
-5. **Evidence before done.** A claim counts only with output from this session, produced after the last
-   relevant edit: a command and its result, a test, a screenshot, or `path:line`. Never write "should work"
-   or "zero issues" without evidence. Unverified requirements are not complete.
-6. **State integrity (Large).** `state.json` and `session.md` are current at every phase boundary.
+5. **Evidence before done.** A claim counts only with output from this session produced after the last
+   relevant edit. "Should work" is a guess. Anything not run goes under "Not verified".
+6. **Write scope.** No edits outside it without approval; the boundary is the user's call, not yours.
+7. **State integrity (Large).** `state.json` and `session.md` are current at every phase boundary, or a
+   resumed session starts from lies.
 </HARD-GATE>
 
-## 6. Layer rules
+## 5. Read-now table
 
-- **Conventions:** project conventions always win. `references/clean-code-defaults.md` applies only where the
-  project has no convention. Match the nearest existing example.
-- **UI:** read the design source (project `DESIGN.md`/theme/tokens first, then `~/.config/agents/DESIGN.md`).
-  Reuse existing components, use tokens only, handle loading / empty / error / disabled / long-content states.
-  Before moving on, run the app and capture screenshots at mobile and desktop widths of every changed route;
-  compare with the nearest existing screen. If the app cannot run, say so and report the remaining risk.
-  Larger UI pipelines go to `ui-craft`.
-- **Data:** read the current schema and the latest migrations first. Every change is a migration with a
-  rollback, plus NOT NULL, defaults, foreign keys, and indexes on FK and filtered columns. State the effect on
-  existing data. For migrations, prove upgrade and rollback in a disposable database.
-- **API:** extract the existing contract from source, never guess. New endpoints are tagged `[NEW]` in
-  `api-contract.md`. Validate input at the boundary, return errors in the project's error format, check
-  authorization on every new endpoint.
-- **Infra and config:** read existing compose/CI/IaC first, name the target environment, list new env vars in
-  the handoff, and never hardcode secrets or environment-specific values.
-- **Stack versions:** read exact versions from dependency files. Fetch official docs only for new libraries,
-  new APIs, or version-sensitive code (SOURCE phase), not for every dependency.
-
-## 7. Per-slice quality gates
-
-Every slice passes before it is staged: lint (read-only check), type check, relevant tests, convention match,
-security basics (no hardcoded secrets, no `eval`, no unsafe HTML injection), and the clean-code minimum bar.
-Run `references/lint-rules.md` as the deterministic lint gate where the project uses it.
-
-**Review stance:** assume the first pass needs work, but cap revision cycles at two. After that, summarize
-what was tried and ask. Automatic fail: claiming "zero issues" or a perfect score without running the tools.
-
-## 8. State (Large only)
-
-```
-.dev-craft/
-├── state.json    # phase, tier, stack, conventions + git hash, requirements status, sessionFile
-├── spec.md       # brief, plan, build order, requirements matrix, ADR summaries
-└── session.md    # handoff for context rotation: goal, decisions, changed files, verification, open items
-```
-
-Add `.dev-craft/` to `.git/info/exclude` so it does not pollute `git status`. Update state at phase boundaries,
-not after every step.
-
-| Resume scenario | Behavior |
+| Condition | File |
 |---|---|
-| No `.dev-craft/` | Start at LOAD |
-| State exists and `sessionFile` is current | Load state, skip completed phases |
-| `sessionFile` missing or stale | Flag it to the user before proceeding |
-| All phases complete | Ask whether this is a new task before creating a session |
-| Context near limit | Write `session.md`, resume from it |
+| Any Standard/Large task | `references/workflow.md` |
+| Weighing the request, ambiguity, assumptions | `references/challenge.md` |
+| UI built or changed | `references/frontend-design.md`, `references/checklists/ui.md`, one `ui-patterns/` file |
+| Tables/schema/queries touched; new service | `references/data-modeling.md`; `references/architecture.md` |
+| 2+ components, or FE-only/BE-only against the other side | `references/fullstack.md` |
+| Writing code | `references/build-protocol.md`, `references/clean-code-defaults.md`, `references/idioms/README.md` |
+| Lint gate | `references/lint-rules.md` |
+| Review a diff, PR comments, REVIEW phase | `references/review.md` |
+| Before saying done | `references/verify.md`, `references/red-flags.md` |
+| Large phases, state, ADR/spec templates | `references/phases-large.md`, `references/phase-templates.md`, `references/codebase-map-template.md` |
+| HARDEN | `references/harden-checks.md` |
+| Written plan with DAG | `references/folded-planning-and-task-breakdown.md` |
 
-## 9. Status reporting
-
-- Standard: just the handoff. No status block.
-- Large: after each phase and when resuming, print one block, and fold ad-hoc user fixes into the current
-  phase instead of silently editing.
-
-```
-STATUS: Phase <n> [done/pending] | NEXT: <single next action> | STATE: sessionFile=<file>
-```
-
-## 10. Failure handling
-
-| Failure | Response |
-|---|---|
-| State missing or stale | Repair state and session file first |
-| Tests fail | Invoke `debugging-and-error-recovery`; rerun after each fix |
-| Lint or type check fails | Fix and rerun, never skip |
-| Two failed fix attempts | Stop, summarize, change approach or ask |
-| Critical or High security finding | Block, remediate before proceeding |
-| Contract conformance fails | Fix the implementation to match the contract |
-
-## 11. Related skills and references
-
-Skills (invoke only for the phase that needs them): `planning-and-task-breakdown` (task slicing),
-`testing-strategies` (before writing tests), `api-design`, `architecture-patterns`, `code-review-and-quality`
-and `bug-hunting` (REVIEW, security-sensitive code), `observability-engineering` (HARDEN),
-`verification-before-completion` (phase exits), `debugging-and-error-recovery`, `product-thinking`,
-`project-discovery`, `ui-craft`.
-
-References (load on demand):
-- `references/phases-large.md`: detailed workflow per Large-path phase
-- `references/phase-template.md`: template for each phase
-- `references/clean-code-defaults.md`: naming, structure, error handling, typing defaults
-- `references/build-protocol.md`: per-slice SECURE and MATCH detail, worktree mode
-- `references/harden-checks.md`: eight cross-cutting security checks
-- `references/lint-rules.md`: deterministic lint gate
-- `references/modern-patterns.md`: clean patterns and defensive programming
-- `references/codebase-map-template.md`: template for the SCAN phase
-- `references/cross-skill.md`: cross-skill conventions and best practices
-
-## Folded skill: planning-and-task-breakdown
-
-Load `references/folded-planning-and-task-breakdown.md` when needed: Standalone plan with DAG dependencies and Given/When/Then acceptance criteria; use when the Large path needs a written PLAN.md.
+Related skills (invoke only when that step needs them): `testing-strategies`, `tdd-seam`, `api-design`,
+`code-review-and-quality`, `bug-hunting`, `debugging-and-error-recovery`, `observability-engineering`,
+`verification-before-completion`, `product-thinking`, `project-discovery`, `ui-craft` (full UI pipeline).
+Plugins under `plugins/`: `tdd-enforcer`, `database-migrations`, `security-audit`, `api-versioning`,
+`dependency-audit`, `language-rules`.

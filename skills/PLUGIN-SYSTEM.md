@@ -13,7 +13,7 @@ skills/
 │   │   ├── database-migrations/
 │   │   ├── api-versioning/
 │   │   ├── dependency-audit/
-│   │   └── language-rules/         # TS/Python/Go/Rust conventions
+│   │   └── language-rules/         # TS/Python conventions
 │   ├── scripts/
 │   └── references/
 ├── ui-craft/
@@ -65,7 +65,7 @@ Plugins are registered in `state.json`:
 | `database-migrations` | Safe migration patterns | Schema changes |
 | `api-versioning` | API version management | Public APIs |
 | `dependency-audit` | Dependency vulnerability scanning | Security |
-| `language-rules` | Language-specific conventions (TS/Python/Go/Rust) | BUILD & REVIEW |
+| `language-rules` | Language-specific conventions (TS/Python) | BUILD & REVIEW |
 
 ### ui-craft Plugins
 

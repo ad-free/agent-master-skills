@@ -132,7 +132,7 @@ Beyond the core skills, two pipelines have plugin systems for extending function
 
 | Pipeline | Plugin | Phase | Purpose |
 |----------|--------|-------|---------|
-| `dev-craft` | `language-rules` | BUILD / REVIEW | Language-specific conventions for TS, Python, Go, Rust |
+| `dev-craft` | `language-rules` | BUILD / REVIEW | Language-specific conventions for TS and Python |
 | `ui-craft` | `design-intelligence` | DESIGN | Structured design system generation (palettes, typography, styles) |
 | `ui-craft` | `anti-slop` | BUILD | Anti-generic UI rules — no emoji icons, proper spacing, intentional gradients |
 | `ui-craft` | `visual-regression` | REVIEW | Playwright screenshot comparison with baseline management and diff visualization |

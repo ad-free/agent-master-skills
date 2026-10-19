@@ -206,7 +206,7 @@ does not copy those rules; they have one source of truth.
 
 | Skill | Purpose | Lines | Version | Preamble Tier |
 |-------|---------|-------|---------|---------------|
-| `dev-craft` | Full-stack engineering pipeline (15 phases) | 1142 | 2.0.0 | 3 |
+| `dev-craft` | Right-sized engineering workflow: tiers, request challenge, read/write scope, evidence-before-done, Large phased path | SKILL.md 101 (+ references loaded on demand) | 4.0.0 | 3 |
 | `ui-craft` | Frontend development pipeline (10 phases) | 813 | 2.0.0 | 3 |
 
 ### Specialized Engineering Skills

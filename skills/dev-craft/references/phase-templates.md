@@ -1,14 +1,14 @@
 # Phase Templates
 
-Templates for documents produced during the dev-craft pipeline. These are consumed by agents in subsequent phases and phases.
+Templates for documents produced during the dev-craft pipeline. These are consumed by agents in subsequent phases.
 
-## Spec Template (Phase 3 — DESIGN)
+## Spec Template (DESIGN)
 
 ```markdown
 # Spec: [Project/Feature Name]
 
 ## Objective
-[What we're building and why. User stories or acceptance criteria.]
+[What we're building and why. Scope line: write / read-only. Acceptance criteria as REQ-n, each with an example.]
 
 ## Tech Stack
 [Framework, language, key dependencies with versions detected in Phase 1]
@@ -30,7 +30,7 @@ docs/          → Documentation
 
 ## Code Style
 [One real code snippet showing the style for each language in use.
- Follow references/modern-patterns.md for guidance.]
+ Follow references/idioms/ for the detected stack.]
 
 ## Testing Strategy
 - Framework: [pytest / vitest / jest / etc.]
@@ -51,7 +51,7 @@ docs/          → Documentation
 - [Anything unresolved needing human input]
 ```
 
-## Task Template (Phase [3] — DESIGN)
+## Task Template (DESIGN)
 
 ```markdown
 ## Task [N]: [Short descriptive title]
@@ -77,7 +77,7 @@ docs/          → Documentation
 **Estimated scope:** [XS / S / M / L]
 ```
 
-## ADR Template (Phase 3 — DESIGN)
+## ADR Template (DESIGN)
 
 ```markdown
 # ADR-[NNN]: [Title]
@@ -102,7 +102,7 @@ docs/          → Documentation
 [What tradeoffs did we accept? What does this enable or prevent in the future?]
 ```
 
-## Task Breakdown Example (Phase 3 — DESIGN)
+## Task Breakdown Example (DESIGN)
 
 ### Phase 1: Foundation
 - [ ] Task 1: Set up database schema and migrations
@@ -128,7 +128,7 @@ docs/          → Documentation
 - [ ] All acceptance criteria met
 - [ ] Human review approved
 
-## Handoff Template (Phase H)
+## Handoff Template (handoff)
 
 ```markdown
 # Session Handoff: [YYYY-MM-DD-N]
@@ -186,7 +186,7 @@ docs/          → Documentation
 }
 ```
 
-## Estimation Template (Phase 3 — DESIGN)
+## Estimation Template (DESIGN)
 
 ```markdown
 MODULE ESTIMATION:
