@@ -46,6 +46,10 @@ These apply regardless of task. Only an explicit user instruction that names the
 4. **Root cause over symptom.** Reproduce or gather evidence first when practical. Never mask failures with
    retries, broad catches, disabled validation, or weakened tests.
 5. **Evidence before claims.** Report only verification you actually ran, fresh. Say what you did not check.
+   Before reporting an issue, writing a task, or proposing a fix, confirm it is real in this session: read the
+   file (a grep hit is a lead, not proof), run it, and confirm the pattern you propose already exists in the
+   codebase. Never list something as "verified" that you did not check; put it under "not verified". If a
+   check shows an earlier claim was wrong, retract it explicitly.
 6. **Ask only when the user owns the decision:** destructive or irreversible actions, public contract
    changes, data-loss risk, product trade-offs, or requirements ambiguous in a way that changes the output.
    Batch questions into one message. Otherwise choose the safest established default, record the assumption,
@@ -154,7 +158,7 @@ Run the smallest fresh proof that covers the change. Never run every gate by def
 |---|---|
 | Bug fix | Failing reproduction → fix → regression test → directly affected tests |
 | Code | Lint, type-check, focused tests for touched modules |
-| UI | Targeted tests, then run the app and **look at it** (screenshot at mobile and desktop widths when a browser tool exists); check console errors; compare against the nearest existing screen |
+| UI | Targeted tests, then run the app and **look at it** (screenshot at mobile and desktop widths when a browser tool exists); check console errors; compare against the nearest existing screen; see "Verifying findings" below |
 | Migration | Upgrade, rollback, constraints, data preservation |
 | API | Contract/request-response test; error cases return the project's error format |
 | Docs / config | Syntax, parsing, links, internal consistency |
@@ -167,6 +171,22 @@ Run the smallest fresh proof that covers the change. Never run every gate by def
 - Never weaken, skip, or delete a failing test just to get green output.
 - If a required check is blocked (for example, no browser tool for a UI change), state the blocker and the
   remaining risk. Do not claim success.
+
+### Verifying findings (UI/UX reports, bugs, task docs)
+
+- Reproduce UI/UX findings with a browser tool (Playwright) on the running app against a **real backend**,
+  not mocked API data. Findings that came from a mock are artefacts: retract them.
+- Cover several roles (admin, manager, plain employee, and a role with no permissions), at mobile and
+  desktop widths, in every language the app ships. State exactly which roles and widths you ran; never write
+  "all" when you ran some.
+- Use a disposable database or fixture. Never migrate, seed, or modify the user's own dev database without
+  approval; if it is behind head, create a throwaway DB instead and drop it afterwards.
+- Audits by grep or scan: say which directories and patterns you excluded, and do not skip shared UI
+  folders. List unresolved hits as unchecked, not as fixed.
+- Do not reformat whole data or config files (for example a JSON round-trip). Check `git diff --stat` after
+  editing and revert unrelated churn.
+- Clean up what you started: stop dev servers and containers, drop throwaway databases. Kill by PID, not by
+  `pkill -f <pattern>` (it can match your own shell).
 
 ## 7. UI/UX standards
 
