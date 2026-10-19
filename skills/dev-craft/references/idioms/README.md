@@ -19,7 +19,11 @@ an API. If an idiom here conflicts with the repo's convention, the repo wins.
 | React + TypeScript | `react-typescript.md`; plus `tailwind.md`, one of `shadcn-ui.md` / `material-ui.md` (detected, never both), `frontend-data.md`, `testing-frontend.md`, `charts.md` as used |
 | Language not listed | Detect conventions from the repo and `clean-code-defaults.md`; do not invent a house style |
 
-Verification status of these files (2026-10-19): checked against the official docs: Tailwind v4 `@theme` tokens
-(`tailwind.md`), Pydantic v2 names and `pydantic-settings` (`pydantic.md`). Written from general knowledge and
-not yet checked: FastAPI, SQLAlchemy/Alembic, MUI, shadcn/ui, TanStack, Playwright/MSW, Postgres. Treat those
-as defaults and read the installed version's docs for anything version-sensitive.
+Verification status of these files (2026-10-19), checked against official docs via context7 or the docs site:
+Tailwind v4 `@theme`, Pydantic v2 names and `pydantic-settings`, FastAPI `dependency_overrides` and `Annotated`
+dependencies, SQLAlchemy 2.0 `Mapped`/`mapped_column`/`selectinload`, Alembic autogenerate limits, naming
+conventions, `autocommit_block` and `postgresql_concurrently`, MUI `createTheme`/`sx`, shadcn `components.json`
+and `npx shadcn@latest add`, TanStack Query v5 keys and `invalidateQueries`, Postgres `CREATE INDEX CONCURRENTLY`.
+Not checked: MUI X DataGrid license tiers, `lock_timeout` details, BRIN/GIN guidance, httpx `ASGITransport`,
+pytest-asyncio vs anyio, Playwright, MSW, React Hook Form + Zod, TanStack Table/Router, Recharts/ECharts/Tremor.
+Treat the unchecked ones as defaults and read the installed version's docs for anything version-sensitive.

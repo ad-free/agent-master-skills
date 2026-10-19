@@ -2,7 +2,8 @@
 
 Default backend framework, but detect: if the repo uses Django or Flask, follow that instead.
 - Routers per module; thin handlers, logic in services, data access in repositories (match the repo's layers).
-- Dependency injection (`Depends`) for DB session, current user, settings; override in tests.
+- Dependency injection for DB session, current user, settings, in the `Annotated[T, Depends(fn)]` style; tests
+  swap them with `app.dependency_overrides[fn] = fake` and reset it to `{}` afterwards.
 - Pydantic request and response models on every endpoint (`response_model`); never return ORM objects raw.
 - Errors: raise `HTTPException` or a project exception handler producing the repo's error format; correct
   status codes (409 duplicates, 422 validation, 401 vs 403).

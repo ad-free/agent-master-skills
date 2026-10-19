@@ -9,6 +9,8 @@ Detect the version (features differ). See `data-modeling.md` for the review proc
   sequential scans on big tables, row-estimate gaps, sorts spilling to disk.
 - Search: full-text (`tsvector`) or `pg_trgm` for fuzzy matching. Reporting: materialized views with a refresh plan.
 - Multi-tenancy: tenant column, with row-level security where the tenant boundary must be enforced by the DB.
-- Safe migrations: `CREATE INDEX CONCURRENTLY`, add columns nullable then backfill in batches then enforce,
+- Safe migrations: `CREATE INDEX CONCURRENTLY` (not allowed inside a transaction block; only one concurrent
+  build per table at a time; a failed build leaves an INVALID index: drop it and retry, or `REINDEX INDEX
+  CONCURRENTLY`), add columns nullable then backfill in batches then enforce,
   avoid table rewrites and long locks, set `lock_timeout`.
 - Operations: connection pooling (pgbouncer or the app pool), partition only past a measured need.
