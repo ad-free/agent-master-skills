@@ -1,10 +1,9 @@
 # Lint Rules — Universal Readability & Modern-Code Gate
 
-This is the **deterministic enforcement** companion to `modern-patterns.md`.
-That file explains *what* modern code looks like per language. This file makes
-violations **fail a gate** so the agent cannot quietly emit single-char names,
-cryptic abbreviations, or legacy/deprecated syntax. Run these before claiming
-REVIEW is done — for **backend and frontend, every supported language**.
+This is the **deterministic enforcement** companion to `idioms/` (which says *what* modern code looks like
+for the detected version). This file makes violations **fail a gate** so the agent cannot quietly emit
+single-char names, cryptic abbreviations, or legacy/deprecated syntax. Run it before claiming REVIEW is done,
+for backend (Python) and frontend (TypeScript/JavaScript). Other languages: use the repo's own lint config.
 
 The two universal rules this file exists to enforce (agents keep violating them):
 
@@ -12,16 +11,14 @@ The two universal rules this file exists to enforce (agents keep violating them)
    `cfg` are banned outside a tight loop scope. Names must be self-documenting.
 2. **No legacy / deprecated idioms.** Each ecosystem has a "modern" baseline
    (e.g. Python `X | None` over `Optional[X]`, TS `unknown` over `any`). Using
-   the legacy form is an automatic fail.
+   the legacy form fails the gate, because these are machine-detectable and not worth a reviewer's time.
 
-These rules are **language-agnostic in principle** but **language-specific in
-enforcement** — you cannot lint what you have not configured. Below is a
-copy-paste gate for every ecosystem the skills support. Use the one that matches
-the detected stack; if a stack is missing, add it here rather than improvising.
+Enforcement is language-specific: you cannot lint what you have not configured. Use the gate for the detected
+stack. Where the repo already has a lint config, extend it; do not replace it.
 
 ---
 
-## Universal Forbidden Patterns (automatic fail)
+## Universal forbidden patterns (fail the gate)
 
 | Category | Forbidden | Required |
 |---|---|---|
@@ -71,59 +68,13 @@ grep -rnE '^\s*[a-z]{1,3} = ' src/ && { echo "FAIL: cryptic identifiers"; exit 1
 Legacy→modern map: `any`→`unknown`, `var`→`const/let`, `.then()`→`async/await`,
 default export→named export, `interface` over `type` for object shapes.
 
-## Rust
-
-```toml
-# rustfmt.toml + clippy in CI
-# clippy lints catch most legacy/deprecated idioms
-[tool.clippy]  # via cargo clippy -- -D warnings
-```
-
-Naming is already enforced by `rustc` (snake_case vars, CamelCase types). Add:
-
-```bash
-cargo clippy --all-targets -- -D warnings
-```
-
-## Go
-
-```bash
-# go vet + golangci-lint; gofmt enforces naming (camelCase, no underscores)
-gofmt -l .          # fails if any file is unformatted
-go vet ./...
-golangci-lint run   # enable: revive (var-naming), gocyclo, errcheck
-```
-
-Go convention bans single-char names except `i`, `j`, `k`, `err`, `ok`, `v`.
-
-## Ruby
-
-```yaml
-# .rubocop.yml
-Style/VariableName:
-  Enabled: true      # snake_case, no single-char except i/j/k
-Lint/UnusedVariable:
-  Enabled: true
-Style/IdenticalConditionalBranches: Enabled
-```
-
-## PHP
-
-```jsonc
-// .php-cs-fixer.php or phpstan.neon
-// phpstan level 8 + eslint-equivalent: squizlabs/php_codesniffer PSR-12
-```
-PSR-12 naming: camelCase methods, no single-char variables outside loops.
-
----
-
 ## Enforcement Protocol (every language)
 
-1. Detect the stack (dev-craft ALIGN / ui-craft detect phase).
+1. Detect the stack (Frame / SCAN; `idioms/README.md`).
 2. Apply the matching config above to the project's lint config.
 3. During REVIEW, **run the linter and read the output** — do not infer pass/fail.
-4. Any cryptic-name hit or legacy-idiom violation = automatic fail; rename /
-   modernize before proceeding. Do not "fix the message."
+4. Any cryptic-name hit or legacy-idiom violation fails the gate; rename or modernize before proceeding.
+   Fix the code, not the message (suppressing the rule hides the problem).
 5. For stacks without a semantic lint rule for cryptic names, add the grep gate.
 
 ## Why

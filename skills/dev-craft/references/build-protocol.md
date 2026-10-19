@@ -1,9 +1,8 @@
 # BUILD — Deep Protocol (TDD Loop, SECURE, MATCH, Worktree)
 
-Deep reference for dev-craft `[5] BUILD`. The main `SKILL.md` states the goal,
-branch-isolation rules, and the 9-step per-slice loop skeleton; load this file
-only when executing BUILD's per-slice detail so the trees below don't sit in
-context during earlier phases.
+Deep reference for the Implement / BUILD step. Per-slice loop: failing test, minimal code, SECURE, MATCH, lint,
+type check, tests. SECURE is the *per-slice* check; `harden-checks.md` is the *cross-slice* pass at HARDEN, so
+do not repeat its eight checks here. Red-green rules: `plugins/tdd-enforcer`. Load idioms per `idioms/README.md`.
 
 ---
 
@@ -135,6 +134,7 @@ Conventions detected: [fileOrg, naming, imports, errorHandling, testing, structu
 ---
 
 **Rules:**
+- **Write scope** — Edit only inside the scope line; report anything outside it (`fullstack.md`)
 - **Simplicity first** — Three similar lines > premature abstraction
 - **Scope discipline** — Don't touch code outside slice
 - **One slice at a time** — Pipeline loops over slices
@@ -182,15 +182,16 @@ git worktree remove ../project-api
 ## Branch Verification Script (per-repo, used by BUILD step 0b and SHIP pre-commit)
 
 ```bash
+STATE="${DEV_CRAFT_STATE:-.dev-craft/state.json}"   # or .dev-craft/runs/<slug>/state.json
 REPOS=(".")
 # for multi: REPOS=("$beRepo" "$feRepo")
 
 for R in "${REPOS[@]}"; do
-  BRANCH="$(jq -r --arg r "$R" '.linkedBranches[$r] // .activeBranch // empty' .dev-craft/state.json)"
+  BRANCH="$(jq -r --arg r "$R" '.linkedBranches[$r] // .activeBranch // empty' "$STATE")"
   if [ -z "$BRANCH" ]; then
     BRANCH="<type>/<scope>-<short-description>"
-    jq --arg r "$R" --arg b "$BRANCH" '.linkedBranches[$r] = $b' .dev-craft/state.json > .dev-craft/state.tmp \
-      && mv .dev-craft/state.tmp .dev-craft/state.json
+    jq --arg r "$R" --arg b "$BRANCH" '.linkedBranches[$r] = $b' "$STATE" > "$STATE.tmp" \
+      && mv "$STATE.tmp" "$STATE"
   fi
   ( cd "$R" && {
     if git show-ref --verify --quiet "refs/heads/$BRANCH"; then

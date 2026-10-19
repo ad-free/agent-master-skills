@@ -1,6 +1,6 @@
 ---
 name: language-rules
-description: Use when you need language-specific coding conventions and style enforcement for TypeScript, Python, Go, or Rust during the BUILD or REVIEW phase.
+description: Use when you need language-specific coding conventions and style enforcement for TypeScript or Python during the BUILD or REVIEW phase.
 model: big-pickle
 version: 1.0.0
 preamble-tier: 1
@@ -24,7 +24,7 @@ metadata:
 
 ## When to Use
 
-Writing/reviewing code in TypeScript, Python, Go, or Rust.
+Writing/reviewing code in TypeScript or Python. Version-specific idioms for the rest of the stack live in `references/idioms/`.
 
 ## Language Rules
 
@@ -65,44 +65,6 @@ Writing/reviewing code in TypeScript, Python, Go, or Rust.
 - Prefer `|` for unions in isinstance checks: `isinstance(x, int | str)`
 - Exception types: be specific; no bare `except:` without re-raise
 - Tests: pytest with plain `assert` — no unittest.TestCase
-```
-
-### Go
-
-```
-- `gofmt` standard — no tabs vs spaces debate (tabs, 1 tab = 1 indent)
-- Error handling: always check errors; `if err != nil { return ... }` is idiomatic, not repetitive
-- Use `errors.Is` / `errors.As` for error comparison; never `==` on errors
-- Receiver naming: 1-2 letter abbreviation of type (`u User` → `u`)
-- Exported = `PascalCase`, unexported = `camelCase`
-- No getter/setter boilerplate — use direct field access
-- Use `context.Context` as first param in public functions that do I/O
-- Prefer `make()` for maps/slices with known size
-- Nil slices are valid — don't initialize to empty slice unless needed
-- Use `defer` for cleanup (close, unlock, etc.) immediately after acquisition
-- Interface types should describe behavior (small, 1-3 methods), not data
-- Avoid `init()` — explicit initialization preferred
-- Tests: `_test.go` files, `go test`; use `t` parameter for Fatal/Error
-- Use `golangci-lint` for linting with default config + errcheck
-```
-
-### Rust
-
-```
-- `cargo fmt` and `cargo clippy` must pass before commit
-- Use `Result<T, E>` for fallible functions; `Option<T>` for optional values
-- Prefer `match` over `if let` when exhaustiveness matters
-- Use `impl Trait` in argument position, generics with `where` for complex bounds
-- Use `thiserror` for library error types; `anyhow` for application/binary code
-- Prefer `?` operator over manual `match` on Result/Option
-- Use `&str` over `&String`; `&[T]` over `&Vec<T>` for function parameters
-- Derive common traits: `Debug, Clone, Copy, PartialEq, Eq, Hash, Default`
-- Use `struct` with named fields over tuple structs unless single-field newtype
-- Field naming: `snake_case` for functions/variables, `PascalCase` for types/traits/enums
-- Module hierarchy: one concern per module; `mod.rs` deprecated — use `module_name.rs` + `module_name/`
-- Avoid `unsafe` unless FFI or performance-critical hot path with proof of safety
-- Tests: `#[test]` in same file or `tests/` integration; `#[cfg(test)] mod tests` for unit
-- Use `clippy` pedantic mode for new projects; `allow` specific rules with justification
 ```
 
 Load via `skill("language-rules")` during BUILD or REVIEW. If `state.json` has `primaryLanguage`, only that language's rules load.

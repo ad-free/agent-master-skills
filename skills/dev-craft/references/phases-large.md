@@ -8,7 +8,8 @@ LOAD · SCOPE · REQUIRE · SCAN · ALIGN · DESIGN · TRACE · SOURCE · CONTRA
 SHIP-PREP
 
 ## LOAD
-1. Load or initialize `.dev-craft/state.json`. Add `.dev-craft/` to `.git/info/exclude` if missing.
+1. Load or initialize `.dev-craft/runs/<slug>/state.json` (a legacy `.dev-craft/state.json` is used as-is).
+   Add `.dev-craft/` to `.git/info/exclude` if missing.
 2. If every phase was completed, ask "New task on the same project?" before continuing.
 3. Create or reuse `session.md` with: date, task summary, tier and scope, expected phases. Record `sessionFile`.
 
@@ -17,10 +18,12 @@ SHIP-PREP
 ## SCOPE
 1. Classify the layer: `be`, `fe`, or `fullstack`. Classify the mode: `build` (new capability) or `ticket`
    (bounded change in an understood codebase). Record both in state.
-2. `fe` only: use the UI rules in `SKILL.md` §6 and `ui-craft` for large UI pipelines. Record a
-   `skillOverride` in state if dev-craft is intentionally driving a frontend-only task.
-3. `ticket`: follow the ticket short-circuit in `SKILL.md` §4.
-4. Multi-repo (`multi` topology): list every repo the scope touches. Branches and checks apply to each.
+2. Set the scope line (`SKILL.md` §2: write vs read-only). Single-side tasks follow `fullstack.md`; the other
+   side is read-only and boundary problems become findings.
+3. `fe` only: UI rules in `frontend-design.md`; `ui-craft` for large UI pipelines. Record a `skillOverride`
+   in state if dev-craft is intentionally driving a frontend-only task.
+4. `ticket`: follow the ticket short-circuit in `workflow.md` (Large path).
+5. Multi-repo (`multi` topology): list every repo the scope touches. Branches and checks apply to each.
 
 **Exit:** layer and mode recorded.
 
@@ -44,8 +47,9 @@ Run once. If the stored map's git commit hash matches `HEAD`, reuse it. Otherwis
 separately.
 
 ## ALIGN
-1. Use the domain model to ask calibrated questions. Without one, ask one question at a time.
-2. Surface assumptions. Define "out of scope" explicitly.
+1. Run the Challenge pass (`challenge.md`): findings tagged by basis, at most 3 questions per round with
+   defaults, at most 3 proposals. Use the domain model to calibrate questions.
+2. Record assumptions and decisions in `session.md`. Define "out of scope" explicitly.
 3. Detect the stack: framework, linter, formatter, type checker, with exact versions. If there is no linter or
    formatter, tell the user and ask whether to proceed without one.
 4. Build the glossary (shared domain language) into `spec.md`.
@@ -55,10 +59,11 @@ separately.
 
 ## DESIGN
 1. Write the spec: objective, commands, project structure, code style, testing strategy, boundaries, **data
-   model and migrations** (tables, constraints, indexes, rollback), and **infra/config changes**.
+   model and migrations** (run `data-modeling.md`; tables, constraints, indexes, rollback), and **infra/config
+   changes** (`architecture.md` for a new service). UI work: write `design.md` (`frontend-design.md`).
 2. Map the dependency graph, then fix the build order (modules in DAG order, slices per module).
 3. Slice vertically: one complete feature path per slice.
-4. Write tasks with Given-When-Then acceptance criteria (`dev-craft`).
+4. Write tasks with Given-When-Then acceptance criteria and the test that proves each.
 5. Write ADRs for architecture decisions, in `documentation-engineering` format.
 6. API surface change: invoke `api-design`. Structural pattern decision: invoke `backend-patterns`.
 
@@ -87,9 +92,9 @@ the repo.
 3. Extract API signatures and deprecation warnings. Cite the source inline while building.
 
 ## CONTRACT (fullstack only)
-1. Extract the existing API endpoints from source. Do not guess. Extract the existing schema the same way.
-2. Add new endpoints to `api-contract.md` tagged `[NEW]`. Record the path in state (`apiContract`).
-3. The frontend consumes this file and does not invent endpoints.
+Follow the contract step in `fullstack.md`: extract existing endpoints and schema from source, write
+`api-contract.md` with `[NEW]` endpoints, record `apiContract` in state, list all consumers. The frontend consumes
+the contract and does not invent endpoints.
 
 **Exit:** `api-contract.md` exists and matches the existing endpoints.
 
@@ -111,9 +116,9 @@ the repo.
 **Exit:** all relevant suites pass and contract conformance holds.
 
 ## REVIEW
-1. Invoke `code-review-and-quality` over the full diff on seven axes: correctness, readability, architecture,
-   performance, security, testing, modern patterns. Add `bug-hunting` for security-critical code.
-2. Run the lint gate from `lint-rules.md`. Cryptic-name hits and listed rule violations are automatic fails.
+1. Review the full diff per `review.md` (axes, try-to-break-it, findings format); add `code-review-and-quality`
+   and, for security-critical code, `bug-hunting`.
+2. Run the lint gate from `lint-rules.md`. Cryptic-name hits and listed rule violations fail the gate.
 3. Categorize findings (Critical / Optional) and fix everything Critical.
 4. Requirements reality-check: for each P1 row in the matrix, confirm the built code satisfies it, with
    evidence (`path:line`, test, or screenshot). Cap revision cycles at two.
@@ -131,10 +136,10 @@ the repo.
 
 ## SHIP-PREP
 1. Update ADRs for decisions made during BUILD and HARDEN. Add new terms to the glossary.
-2. Final verification: lint, type check, build, and tests pass; secrets scan run; dead code removed.
+2. Final verification per `verify.md`: lint, type check, build, tests, Evidence table; secrets scan run; dead code removed.
 3. Define the rollback strategy. For migrations, prove upgrade and rollback in a disposable database.
-4. Prepare the handoff: changed files, requirement statuses with evidence, verification commands and results,
-   risks and skipped checks, new env vars, and a proposed conventional commit message.
+4. Prepare the handoff: changed files, requirement statuses with evidence, Evidence table, decisions and
+   assumptions, "Not verified", risks, new env vars, and a proposed conventional commit message.
 5. Mark the state complete. Do not commit unless the user asks.
 
 **Exit:** a staged, verified change with a rollback plan and a proposed commit message.
