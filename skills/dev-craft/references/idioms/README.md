@@ -22,8 +22,10 @@ an API. If an idiom here conflicts with the repo's convention, the repo wins.
 Verification status of these files (2026-10-19), checked against official docs via context7 or the docs site:
 Tailwind v4 `@theme`, Pydantic v2 names and `pydantic-settings`, FastAPI `dependency_overrides` and `Annotated`
 dependencies, SQLAlchemy 2.0 `Mapped`/`mapped_column`/`selectinload`, Alembic autogenerate limits, naming
-conventions, `autocommit_block` and `postgresql_concurrently`, MUI `createTheme`/`sx`, shadcn `components.json`
-and `npx shadcn@latest add`, TanStack Query v5 keys and `invalidateQueries`, Postgres `CREATE INDEX CONCURRENTLY`.
-Not checked: MUI X DataGrid license tiers, `lock_timeout` details, BRIN/GIN guidance, httpx `ASGITransport`,
-pytest-asyncio vs anyio, Playwright, MSW, React Hook Form + Zod, TanStack Table/Router, Recharts/ECharts/Tremor.
+conventions, `autocommit_block` and `postgresql_concurrently`, MUI `createTheme`/`sx` and MUI X DataGrid license
+tiers, shadcn `components.json` and `npx shadcn@latest add`, TanStack Query v5 keys and `invalidateQueries`,
+TanStack Table manual pagination/sorting, React Hook Form `zodResolver`, httpx `ASGITransport`, pytest-asyncio
+modes, Playwright viewport and `toHaveScreenshot`, MSW v2 handlers, Postgres `CREATE INDEX CONCURRENTLY`,
+`lock_timeout`, GIN/BRIN.
+Not checked: TanStack Router, Recharts/ECharts/Tremor specifics, `pg_trgm`/RLS details, Radix/shadcn component APIs.
 Treat the unchecked ones as defaults and read the installed version's docs for anything version-sensitive.

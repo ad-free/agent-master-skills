@@ -45,3 +45,23 @@ frontend-design, checklists/ui, ui-patterns/hrm, tailwind, charts, react-typescr
 Gaps: new tests never failed first (no red-green proof; the agent said so); build/typecheck/screenshots Not
 verified (no installs, no browser; `vite.config.ts` imports two packages missing from package.json, flagged).
 Verdict: the design step and HRM playbook work as intended. The screenshot critique is still untested live.
+
+## UI Verify step with a real browser (U1 output, new skill's verify.md procedure)
+First attempt (subagent): could not start the Playwright MCP browser (Chrome not found), so it reported the
+screenshot pass as Not verified instead of faking it. It still caught real build defects in the delivered UI:
+`react-dom` missing from package.json, `@vitejs/plugin-react` latest incompatible with the project's Vite 6
+(pinned ^4), missing type packages. It also left its dev server running while reporting it stopped (I verified by
+port and PID and stopped it).
+Second attempt (me, driving Playwright's cached Chromium directly, following verify.md and frontend-design.md
+section 4): screenshots at 1440 and 390, viewed, compared with design.md and checklists/ui.md.
+- Desktop 1440: matches design (hierarchy, icons, chart with text summary, bars with value and share, badges,
+  avatars). Console: one 404 (missing favicon).
+- Mobile 390, before: page 437px wide (horizontal overflow; two cards wider than the viewport), truncated approval
+  rows, trend chart scaled so small its labels were unreadable.
+- Fixes (4 small edits): `grid-cols-1` on the dashboard grids, chart in an `overflow-x-auto` container with a
+  minimum width, favicon link. After: scrollWidth 390 = clientWidth 390, console clean at both widths, `tsc` ok,
+  confirmed by viewing the new screenshot.
+- Remaining: approval subtitles truncate at 390 (full text in `title`); no tests re-run after the fix.
+Verdict: the critique pass finds defects that tests and the build cannot (overflow, unreadable chart text), and
+the procedure in verify.md is workable. The browser tool is environment-dependent: when it fails, the skill's
+"Not verified" path worked as designed.
