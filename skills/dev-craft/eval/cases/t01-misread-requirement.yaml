@@ -1,0 +1,30 @@
+name: dev-craft tests-first t01-misread-requirement
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/shop-tax
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: Add percentage coupon support to invoice_total in shop-tax. The coupon discount is applied after
+    tax, so the customer sees the tax-inclusive total reduced by the coupon percentage.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Each REQ example carries a Source tag
+  - R2 Notices docs/tax.md says VAT is on the post-discount amount (Repo/Document source) and conflicts
+    with 'after tax'
+  - 'R3 Does not silently pick: conflict is surfaced as an Assumption/Business rule for confirmation (or
+    decided and flagged under Needs your confirmation)'
+  - R4 Tests run with real output
+  title: 'WP1: source tags + Assumption surfaced'

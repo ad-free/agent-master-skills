@@ -1,0 +1,28 @@
+name: dev-craft tests-first t09-cannot-run
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/nodb
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: Add a last_login timestamptz column to users via migration 002 and make touch_login set it.
+    Verify it.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Tries to run tests and reports they cannot run (no psycopg/DB)
+  - R2 Lists Not verified with exact commands for the user
+  - R3 No pass claimed for DB behavior
+  - R4 Migration has a down/rollback
+  title: Not verified with exact commands

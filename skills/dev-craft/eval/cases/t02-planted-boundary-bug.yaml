@@ -1,0 +1,31 @@
+name: dev-craft tests-first t02-planted-boundary-bug
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/splitbill
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: 'Add split_bill(total_cents, people) to bill/money.py returning a list with one amount per person.
+    Example: split_bill(100, 4) == [25, 25, 25, 25]. Reuse share() from the same module.'
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Notices the amounts must sum to total_cents (invariant) and that share() drops the remainder (split_bill(100,3)
+    loses 1 cent)
+  - R2 Failing test for a non-divisible total
+  - 'R3 Distributes the remainder deterministically and says which rule (a Business rule: who pays the
+    extra cent)'
+  - 'R4 Money risk flag handled: independent check or Verifier, real output shown'
+  - R5 Rejects people < 1
+  title: Money invariant hidden in an existing helper

@@ -1,0 +1,28 @@
+name: dev-craft tests-first t05-invariant-violation
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/ledger
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: 'Add a flat fee to Ledger.transfer: transfer(src, dst, cents, fee_cents=0). The fee is charged
+    to the sender and credited to an account named ''fees''.'
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Brief has an Invariants line (total balance conserved)
+  - R2 A test for the invariant exists, including a failed transfer (unknown dst)
+  - R3 Detects/handles that a failed transfer loses money in the existing code (seeded bug)
+  - R4 Real output shown
+  title: Invariants list + atomicity test

@@ -1,0 +1,20 @@
+1. What does 'ECONNRESET' mean in Node?
+2. Change the default port in config.yaml from 8000 to 8080.
+3. Rename the variable `tmp` to `buffer` in utils.py.
+4. Give me a regex that matches ISO dates.
+5. run dev-craft: implement soft delete for projects
+6. Continue the leave-request feature we started yesterday, the plan is in PLAN.md.
+7. Which is better for a small blog, SQLite or Postgres? Just your opinion.
+8. We need a last_login column on users, exposed in the admin API and shown in the user table.
+9. Write me a throwaway script that renames all .jpeg files in this folder to .jpg.
+10. Add a CSV export button to the invoices page, including the API endpoint and tests.
+11. Build an HRM module with employees, leave and approvals.
+12. The reviewer left 6 comments on my PR; go through them and address what's right.
+13. Summarise what src/auth/session.py does in two sentences.
+14. Extend the dashboard with a team-utilisation chart and filters.
+15. What's the git command to undo my last commit but keep the changes?
+16. Refactor the payment module so the retry logic lives in one place.
+17. Users get a 500 when they submit an empty cart. Fix it.
+18. Explain how Python's GIL works.
+19. Review this diff before I merge it.
+20. Fix the typo in the README: 'recieve' should be 'receive'.

@@ -1,0 +1,102 @@
+[
+ {
+  "id": 1,
+  "prompt": "What does 'ECONNRESET' mean in Node?",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 2,
+  "prompt": "Change the default port in config.yaml from 8000 to 8080.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 3,
+  "prompt": "Rename the variable `tmp` to `buffer` in utils.py.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 4,
+  "prompt": "Give me a regex that matches ISO dates.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 5,
+  "prompt": "run dev-craft: implement soft delete for projects",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 6,
+  "prompt": "Continue the leave-request feature we started yesterday, the plan is in PLAN.md.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 7,
+  "prompt": "Which is better for a small blog, SQLite or Postgres? Just your opinion.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 8,
+  "prompt": "We need a last_login column on users, exposed in the admin API and shown in the user table.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 9,
+  "prompt": "Write me a throwaway script that renames all .jpeg files in this folder to .jpg.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 10,
+  "prompt": "Add a CSV export button to the invoices page, including the API endpoint and tests.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 11,
+  "prompt": "Build an HRM module with employees, leave and approvals.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 12,
+  "prompt": "The reviewer left 6 comments on my PR; go through them and address what's right.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 13,
+  "prompt": "Summarise what src/auth/session.py does in two sentences.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 14,
+  "prompt": "Extend the dashboard with a team-utilisation chart and filters.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 15,
+  "prompt": "What's the git command to undo my last commit but keep the changes?",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 16,
+  "prompt": "Refactor the payment module so the retry logic lives in one place.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 17,
+  "prompt": "Users get a 500 when they submit an empty cart. Fix it.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 18,
+  "prompt": "Explain how Python's GIL works.",
+  "expect_devcraft": 0
+ },
+ {
+  "id": 19,
+  "prompt": "Review this diff before I merge it.",
+  "expect_devcraft": 1
+ },
+ {
+  "id": 20,
+  "prompt": "Fix the typo in the README: 'recieve' should be 'receive'.",
+  "expect_devcraft": 0
+ }
+]
