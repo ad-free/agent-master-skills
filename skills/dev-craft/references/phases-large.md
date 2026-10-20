@@ -22,7 +22,7 @@ SHIP-PREP
    side is read-only and boundary problems become findings.
 3. `fe` only: UI rules in `frontend-design.md`; `ui-craft` for large UI pipelines. Record a `skillOverride`
    in state if dev-craft is intentionally driving a frontend-only task.
-4. `ticket`: follow the ticket short-circuit in `workflow.md` (Large path).
+4. `ticket`: follow the ticket short-circuit in Large overview below.
 5. Multi-repo (`multi` topology): list every repo the scope touches. Branches and checks apply to each.
 
 **Exit:** layer and mode recorded.
@@ -75,6 +75,7 @@ separately.
 3. Trace each requirement to a plan task with an acceptance criterion. Build the matrix in `spec.md`.
 4. Self-review the matrix against the spec. Do not delegate this step.
 5. Present the matrix and the gaps together with the brief, plan, and build order (the single checkpoint).
+6. After approval, run the Test Designer (`test-agent.md`) before BUILD; BUILD must satisfy its tests.
 
 <HARD-GATE>
 Every P1 requirement is traced to a task with an acceptance criterion. Lower-priority gaps may be deferred only
@@ -112,6 +113,7 @@ the contract and does not invent endpoints.
 1. Run the suites the scope touches (the relevant repo for `multi`).
 2. Fullstack: assert that the running app matches `api-contract.md`.
 3. On any failure, invoke `debugging-and-error-recovery`, then rerun the relevant suites after each fix.
+4. Run the Verifier, and the UI Verifier for UI work (`test-agent.md`); reconcile their findings before REVIEW.
 
 **Exit:** all relevant suites pass and contract conformance holds.
 
@@ -143,3 +145,56 @@ the contract and does not invent endpoints.
 5. Mark the state complete. Do not commit unless the user asks.
 
 **Exit:** a staged, verified change with a rollback plan and a proposed commit message.
+
+## Large overview
+
+Load `phases-large.md` one phase at a time.
+
+```
+LOAD -> SCOPE -> REQUIRE -> SCAN -> ALIGN (incl. Challenge) -> DESIGN -> TRACE --[ONE APPROVAL]--> BUILD -> TEST -> REVIEW -> HARDEN -> SHIP-PREP
+(SOURCE and CONTRACT run only when needed; STATUS any time)
+```
+
+| Phase | Output |
+|---|---|
+| LOAD | state initialized or resumed |
+| SCOPE | layer (be / fe / fullstack), mode (build / ticket), scope line |
+| REQUIRE | `domain.md` from specs, or confirmed "no specs" |
+| SCAN | conventions and codebase map (once; cached by git commit) |
+| ALIGN | findings, assumptions, out of scope, glossary |
+| DESIGN | spec + plan + build order + ADRs; `design.md` for UI; data model and infra changes |
+| TRACE | matrix `REQ-ID -> task -> acceptance criterion -> test`; then Test Designer (`test-agent.md`) |
+| BUILD | vertical slices, against the Test Designer's tests |
+| TEST | Verifier (+ UI Verifier for UI work, `test-agent.md`); full relevant suites; contract conformance for fullstack |
+| REVIEW | `review.md` axes, lint gate, requirements reality-check |
+| HARDEN | `harden-checks.md`, risk register |
+| SHIP-PREP | rollback plan, ADR updates, final verification, proposed commit message |
+
+**One approval checkpoint** after TRACE: present brief, plan, build order, and matrix together. Do not ask for
+sign-off per phase.
+**Ticket mode** (bounded change in an understood codebase): LOAD, SCOPE, scoped BUILD, TEST, REVIEW, SHIP-PREP.
+
+## State (Large only)
+
+```
+.dev-craft/runs/<slug>/
+  state.json   # phase, tier, scope, stack, conventions + git hash, requirement status, sessionFile
+  spec.md      # brief, plan, build order, requirements matrix, ADR summaries, design/contract if any
+  session.md   # handoff: goal, done, next, blockers, changed files, verification, DECISIONS, ASSUMPTIONS
+```
+(Matches `skills/SHARED.md`. A legacy `.dev-craft/state.json` is read as-is if it exists.) Add `.dev-craft/` to
+`.git/info/exclude`. Update state at phase boundaries only.
+
+`session.md` keeps two lists so nothing is decided silently and the final report can quote them:
+`Decision: <what>; why; basis Code|Docs|Run|Logic; reversible yes|no` and `ASSUMPTION: <what>; basis`.
+
+| Resume scenario | Behavior |
+|---|---|
+| No `.dev-craft/` | Start at LOAD |
+| State exists, `sessionFile` current | Load state, skip completed phases |
+| `sessionFile` missing or stale | Flag it to the user before proceeding |
+| All phases complete | Ask whether this is a new task before creating a session |
+| Context near limit | Write `session.md`, resume from it |
+
+Large status line after each phase and on resume (fold ad-hoc user fixes into the current phase):
+`STATUS: Phase <n> [done/pending] | NEXT: <single next action> | STATE: sessionFile=<file>`. Standard: handoff only.

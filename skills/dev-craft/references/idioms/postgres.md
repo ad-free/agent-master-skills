@@ -7,8 +7,11 @@ Detect the version (features differ). See `data-modeling.md` for the review proc
 - Indexes: B-tree default; GIN for `jsonb`/arrays/full-text (multi-valued columns); partial for hot subsets; BRIN for huge tables whose
   column correlates with physical row order (for example append-only timestamps); index foreign keys. Index to the real query, then verify with `EXPLAIN (ANALYZE, BUFFERS)`: look for
   sequential scans on big tables, row-estimate gaps, sorts spilling to disk.
-- Search: full-text (`tsvector`) or `pg_trgm` for fuzzy matching. Reporting: materialized views with a refresh plan.
-- Multi-tenancy: tenant column, with row-level security where the tenant boundary must be enforced by the DB.
+- Search: full-text (`tsvector`) or `pg_trgm` (`GIN (col gin_trgm_ops)`; also speeds `LIKE`/`ILIKE`/`~`; similarity
+  operators `%` and `<%`). Reporting: materialized views with a refresh plan.
+- Multi-tenancy: tenant column, with row-level security where the tenant boundary must be enforced by the DB:
+  `ENABLE ROW LEVEL SECURITY` plus `CREATE POLICY`; the table owner bypasses policies unless `FORCE ROW LEVEL
+  SECURITY`, and superusers and `BYPASSRLS` roles always bypass, so the app must connect as a plain role.
 - Safe migrations: `CREATE INDEX CONCURRENTLY` (not allowed inside a transaction block; only one concurrent
   build per table at a time; a failed build leaves an INVALID index: drop it and retry, or `REINDEX INDEX
   CONCURRENTLY`), add columns nullable then backfill in batches then enforce,

@@ -26,6 +26,9 @@ Makes test-first non-optional for each dev-craft slice: **RED, VERIFY RED, GREEN
 A test that never failed proves nothing, which is why the "watch it fail" steps are the point of this plugin.
 Seam and public-interface choice: `tdd-seam`. What kind of test to write: `testing-strategies`.
 
+The red-green cycle still applies inside each slice; Test Designer tests (`references/test-agent.md`) are the
+outer acceptance tests the slices must satisfy.
+
 ## Iron law
 
 No production code without a failing test first. Code written before its test is deleted and redone from the

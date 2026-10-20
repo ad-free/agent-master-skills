@@ -8,8 +8,10 @@ the spec and the diff.
 
 Seven always: correctness, security, tests, design, performance, readability, scope (anything outside the
 brief or write scope). Add when relevant: **boundary** (`fullstack.md` boundary checks), **UI**
-(`checklists/ui.md`), **schema** (`data-modeling.md`). Bug classes and security: `bug-hunting`,
-`harden-checks.md`. Full eight-axis scoring: `code-review-and-quality`. Do not restate their checklists here.
+(`checklists/ui.md`), **schema** (`data-modeling.md`). Bug classes: `bug-hunting`, else `checklists/bugs.md`.
+Security: `checklists/security.md` (deep pass: `harden-checks.md`). Test quality: `checklists/testing.md`.
+If the named skill is available use it and skip the inline file. Full eight-axis scoring:
+`code-review-and-quality`. Do not restate checklist content here.
 
 ## Try to break it
 
@@ -19,13 +21,27 @@ format, retry) and run them. Check the same bug class elsewhere in the repo.
 ## Findings format
 
 ```markdown
-1. [High | confidence: high] src/orders.py:88 - refund ignores partial shipments, so customers are over-refunded.
-   Fix: subtract shipped quantity (see `orders.py:61`); add test `test_partial_refund`.
-## Questions (low confidence)
+1. [High | confidence: high | Confirmed] orders.py:88 refund over-refunds partial shipments.
+   Repro: pytest tests/test_refund.py::test_partial -> FAILED, expected 40.00, got 100.00
+   Fix: subtract shipped quantity (see `orders.py:61`).
+2. [Medium | confidence: low | Cited] cart.py:52 total may skip the discount when `coupon` is empty string.
+   Likely issue; please verify at cart.py:52. Tried: 2 inputs, no failure reproduced (High downgraded).
+## Questions (Suspected)
 - src/cart.py:40 - is `None` price intended for gifts?
 ```
+
+| State | Meaning | Allowed wording |
+|---|---|---|
+| Confirmed | Reproduced: command, input and real output, or a failing test | "bug", "issue", "problem" |
+| Cited | `file:line` with a traced reason, not run | "likely issue; please verify at path:line" |
+| Suspected | Reasoning only (basis Logic or Unknown) | a question, not an issue |
+
+- Only Confirmed items may be called a bug, issue or problem. Before reporting a High finding, try to reproduce
+  it (failing test or command, time-boxed); if you cannot, downgrade it and say what you tried. Claiming "the
+  test is wrong" or "the requirement is wrong" needs the contradicting source cited. The same states apply to
+  PR-comment assessments, HARDEN findings and subagent returns (`test-agent.md`).
 - Severity High / Medium / Low; confidence high / low. Cap at about 10, grouped by severity. Every finding has
-  `file:line` and a concrete fix. Low-confidence items go under Questions, not as findings.
+  `file:line` and a concrete fix. Suspected items go under Questions, not as findings.
 - Do not flag: anything the linter or formatter enforces, pure preference, pre-existing code outside the diff
   (mention once as scope drift if serious).
 - Spec gaps found in review go back to the brief; do not patch around them.

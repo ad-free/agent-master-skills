@@ -1,7 +1,7 @@
 # HARDEN — Cross-Cutting Security Checks
 
 Deep reference for the HARDEN phase (Large path, `phases-large.md`). Load it only when executing HARDEN. The
-per-slice SECURE check lives in `build-protocol.md`; this file is the cross-slice pass.
+per-slice SECURE check lives in `build-protocol.md` and `checklists/security.md`; this file is the cross-slice pass.
 
 **Goal of the phase:** Verify security across all slices, not within individual
 slices. Catch cross-cutting issues that per-slice SECURE checks miss. The agent

@@ -7,4 +7,7 @@ heatmaps), Tremor (dashboard-ready blocks on Tailwind).
 - Colors from the theme, colorblind-safe, with direction not color-only (labels, patterns); consistent color per category.
 - Every chart has a title, units, a legend when more than one series, readable axes, a tooltip, and
   loading, empty and error states. Use a text summary or table for accessibility.
+- Recharts: v3 enables `accessibilityLayer` (keyboard + screen-reader tooltip) by default, v2 needs the prop; wrap in
+  `ResponsiveContainer` (ResizeObserver). ECharts heatmaps use progressive rendering above 3000 points (tune
+  `progressive`); there is no separate `large` mode for heatmap. `@tremor/react` bundles Recharts.
 - Format numbers, currency and dates for the locale; keep the data fetch separate from the chart component.
