@@ -1,6 +1,6 @@
 ---
 name: dev-craft
-description: Default entry for non-trivial coding work - building features, fixing bugs, refactors, schema/API/UI/full-stack changes, reviewing a diff or answering PR comments, resuming earlier work. Use when the user says start, build, implement, add, fix, change, extend, review, or "run dev-craft". Tests the request against the repo, sets read/write scope, plans small tested slices, and requires real command output before "done". Skip for typos, one-line edits, trivial config, quick questions, and throwaway scripts.
+description: Use for non-trivial coding work - building or changing features, fixing bugs, refactors, schema/API/UI changes, reviewing a diff or PR comments, resuming earlier work. Skip typos, one-line edits, trivial config, quick questions, and throwaway scripts.
 version: 4.0.0
 ---
 
@@ -18,7 +18,7 @@ this skill, then `references/` defaults. `AGENTS.md` hard rules (commits, destru
 |---|---|---|
 | **Trivial** | typo, rename, one-line fix, trivial config | Edit, run the relevant check. Project lint and clean-code minimum still apply. |
 | **Standard** | feature or fix in a few files, one endpoint, a UI change, a small schema change, a review | Section 3 |
-| **Large** | new module or service, schema + API + UI together, risky migration, auth/security, ambiguous scope, multi-session | Section 3 + `references/workflow.md` Large path |
+| **Large** | new module or service, schema + API + UI together, risky migration, auth/security, ambiguous scope, multi-session | Section 3 + `references/phases-large.md` |
 
 Vague input ("Build HRM", "make me a CRM") or attached spec files: read `references/workflow.md` §Input gate
 before anything else. Do not start building from a one-liner.
@@ -46,7 +46,7 @@ Implement or Review shows the spec is wrong, stop, record it, return to Challeng
 |---|---|---|---|
 | Frame | Restate task; read AGENTS.md, nearest similar feature, tests, stack versions; set scope + tier | `references/workflow.md` | Scope, tier, stack known |
 | Challenge | Test the request against the repo and itself; findings tagged by basis; <=3 questions with defaults; <=3 proposals | `references/challenge.md` | Blocking questions answered; assumptions listed |
-| Brief | Task Brief with numbered `REQ-n` as testable acceptance criteria, each with a concrete example | `references/workflow.md` | User confirmed (Standard: shown, nothing risky open) |
+| Brief | Task Brief: numbered `REQ-n`, each with a concrete example and `Source:` tag; `Invariants:` list | `references/workflow.md`, `references/challenge.md` | User confirmed (Standard: shown, nothing risky open) |
 | Design (UI) | Choose screens, components, design system, states, charts; write `design.md` | `references/frontend-design.md` (+ `ui-patterns/<domain>.md`) | User confirmed direction |
 | Data (schema touched) | Review the model; findings as options; check queries | `references/data-modeling.md` (new service: `architecture.md`) | Findings decided |
 | Contract (2+ sides) | Define request/response/errors/auth once, consumers listed | `references/fullstack.md` | Consumers agree |
@@ -88,7 +88,10 @@ checkpoint after TRACE.
 | 2+ components, or FE-only/BE-only against the other side | `references/fullstack.md` |
 | Writing code | `references/build-protocol.md`, `references/clean-code-defaults.md`, `references/idioms/README.md` |
 | Lint gate | `references/lint-rules.md` |
-| Review a diff, PR comments, REVIEW phase | `references/review.md` |
+| Parallel agents / 3+ modules / multi-repo branch check | `references/build-extras.md` |
+| Review a diff, PR comments, REVIEW phase | `references/review.md`, `references/checklists/bugs.md`, `references/checklists/security.md` |
+| Writing or judging tests | `references/checklists/testing.md` |
+| Large task, or Standard with a risk flag (money, authorization, personal data, migration, contract, concurrency) | `references/test-agent.md` |
 | Before saying done | `references/verify.md`, `references/red-flags.md` |
 | Large phases, state, ADR/spec templates | `references/phases-large.md`, `references/phase-templates.md`, `references/codebase-map-template.md` |
 | HARDEN | `references/harden-checks.md` |
@@ -96,6 +99,9 @@ checkpoint after TRACE.
 
 Related skills (invoke only when that step needs them): `testing-strategies`, `tdd-seam`, `api-design`,
 `code-review-and-quality`, `bug-hunting`, `debugging-and-error-recovery`, `observability-engineering`,
-`verification-before-completion`, `product-thinking`, `project-discovery`, `ui-craft` (full UI pipeline).
-Plugins under `plugins/`: `tdd-enforcer`, `database-migrations`, `security-audit`, `api-versioning`,
+`verification-before-completion`, `qa-and-edge-case-tester`, `fe-visual-loop`, `playwright-skill`,
+`dispatching-parallel-agents`, `product-thinking`, `project-discovery`, `ui-craft` (full UI pipeline).
+If a related skill or plugin is not available, use the matching file in `references/checklists/`
+(`bug-hunting` -> `bugs.md`/`security.md`, `testing-strategies` -> `testing.md`); if it is available, use it and
+skip the inline file. Plugins under `plugins/`: `tdd-enforcer`, `database-migrations`, `security-audit`, `api-versioning`,
 `dependency-audit`, `language-rules`.

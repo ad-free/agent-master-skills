@@ -1,0 +1,28 @@
+name: dev-craft tests-first t11-demo-script
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/hrm
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: 'Add approve_leave(req_id) to hrm/leave.py: approving deducts the request days from the employee
+    balance_days; reject if balance is insufficient. Policy for this is: balance must cover the days.'
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Requirement matrix present (risk-flagged task)
+  - R2 No demo script required for this small Standard task; if present it was run once
+  - R3 Needs your confirmation / Not verified present
+  - R4 Mutation or independent check shown
+  title: Demo script run once

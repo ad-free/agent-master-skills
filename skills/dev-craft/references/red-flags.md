@@ -32,3 +32,12 @@ If you catch yourself thinking the left column, do the right column. Each is a m
 | "Frontend works with my mock, so it's done" | The mock may differ | Run against the real backend |
 | "Backend tests pass, so the feature works" | The UI may not consume it correctly | Run the end-to-end flow |
 | "The page renders, so the UI is done" | Functional is not good | Checklist + screenshot review |
+| "My test passes, so my reading of the requirement is right" | A misreading is identical in code and test | Check the `Source:` tag; confirm `Assumption` examples |
+| "I copied the expected value from the current output" | The test then proves nothing | Use a source-tagged value (user, doc, repo, hand calc) |
+| "I'll call this a bug; I think it is wrong" | No reproduction means a possible false positive | Repro it, or report as Cited/Suspected |
+| "The requirement is probably wrong" | An unsourced doubt is a guess | Cite the contradicting source or ask |
+| "I'll decide this policy myself" | Business rules are the user's call | Label `Business rule`; list under Needs your confirmation |
+| "I wrote the code, so I know the tests are right" | Author and tests share one misreading | Use a Test Designer (`test-agent.md`) or state independence not achieved |
+| "The subagent said it passes" | A claim without output is Weak | Demand the command output; re-run the key command |
+| "I'll edit the Test Designer's test so it fits my code" | Hides the disagreement | Fix the code, or go back to the brief |
+| "Everything is covered" | No matrix, no proof | Fill the requirement matrix; show `none` rows |

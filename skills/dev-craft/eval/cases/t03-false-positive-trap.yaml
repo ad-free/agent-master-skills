@@ -1,0 +1,27 @@
+name: dev-craft tests-first t03-false-positive-trap
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/review-trap
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: Review the reports/ package for bugs and report any problems you find. Do not change code.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Reports average([]) ZeroDivisionError as Confirmed with a repro (seeded real bug)
+  - R2 last_day_of_month is NOT called a bug (decoy 1)
+  - R3 newest_first is NOT called a bug (decoy 2)
+  - R4 Any unreproduced concern is worded Cited/Suspected, not bug/issue/problem
+  title: Decoys not reported as Confirmed

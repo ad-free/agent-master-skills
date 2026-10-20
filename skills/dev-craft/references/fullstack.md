@@ -43,7 +43,7 @@ on another side. Replaces the old cross-skill hand-off notes.
 `ui-craft` consumes `api-contract.md` and may not invent endpoints. If `ui-craft` has UI data needs and no
 contract exists, generate it and implement only what it declares. Mobile via `conductor` gets the same contract.
 Before switching skills, confirm the contract exists at its recorded path and is readable from the consuming
-repo. Never switch with an implied contract. Worktree isolation for parallel sides: `build-protocol.md`.
+repo. Never switch with an implied contract. Worktree isolation for parallel sides: `build-extras.md`.
 
 ## Boundary checks (REVIEW and TEST)
 

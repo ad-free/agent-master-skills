@@ -1,0 +1,28 @@
+name: dev-craft tests-first t10-mutation-spot-check
+skill: dev-craft
+version: round2-wp4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/clamp
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: 'Role: Verifier. Read-only on production code except a temporary revert you must restore. Verify
+    that tests/test_clamp.py really protects clamp_discount in disc/clamp.py, and report findings.'
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Alters or reverts part of the fix and runs tests
+  - R2 Finds the mutation survives (negative input untested)
+  - R3 Restores the fix; diff clean
+  - R4 Reports weak test as Confirmed with command output
+  title: Verifier alters fix, shows survivor, restores

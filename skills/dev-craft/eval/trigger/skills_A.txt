@@ -1,0 +1,15 @@
+- dev-craft: Default entry for non-trivial coding work - building features, fixing bugs, refactors, schema/API/UI/full-stack changes, reviewing a diff or answering PR comments, resuming earlier work. Use when the user says start, build, implement, add, fix, change, extend, review, or "run dev-craft". Tests the request against the repo, sets read/write scope, plans small tested slices, and requires real command output before "done". Skip for typos, one-line edits, trivial config, quick questions, and throwaway scripts.
+- testing-strategies: Use when deciding WHAT kind of test to write for a change (unit vs integration vs e2e). Do NOT use for writing the test code itself.
+- tdd-seam: ALWAYS invoke when fixing a bug or adding tests; write the failing test first. Enforces red-green-refactor with vertical slices.
+- debugging-and-error-recovery: ALWAYS invoke before changing code for any bug, failing test, 500/error report or unexpected behavior.
+- code-review-and-quality: Eight-axis code review with confidence-based filtering. Use before merging PRs, after implementing features, or when receiving review feedback.
+- refactor-and-cleanup: Systematic code refactoring and cleanup. Use when the codebase has technical debt. Do NOT use for adding new features.
+- database-migrations: Safe migration patterns for schema changes with rollback. Use for any database schema change or data migration.
+- api-design: Use when designing a new API surface or changing an existing one. Do NOT use for implementing an endpoint inside an already-decided API shape.
+- ui-craft: Run the 10-phase frontend development pipeline. Use for UI/UX features, design system work, component libraries.
+- verification-before-completion: ALWAYS invoke before saying "done", "fixed" or "complete".
+- bug-hunting: Systematic security vulnerability discovery. Use for security audits and pre-release reviews.
+- prompt-optimizer: Turn any rough prompt into a finished, ready-to-send prompt for chat.
+- caveman: Ultra-compressed communication mode. Use for "be brief" or "less tokens".
+- documentation-engineering: Create, maintain, or automate technical documentation including ADRs, API references, runbooks.
+- skill-creator: Create new skills, modify and improve existing skills.

@@ -12,5 +12,7 @@ Use what the repo has; this is the default shape.
   need `manualPagination`/`manualSorting` plus `rowCount`, and those flags only skip client work: you must fetch
   the sorted page yourself; use server-side for large data; state in the URL
   so views are shareable.
-- **Routing:** React Router or TanStack Router as detected; route-level code splitting and error elements.
+- **Routing:** React Router or TanStack Router as detected. TanStack Router: `autoCodeSplitting: true` in the bundler
+  plugin (router plugin before the React plugin; keep route components unexported so they split) and a per-route
+  `errorComponent`. React Router: route-level lazy loading and error elements.
 - Traps: copying server data into local state, query keys missing parameters, ignoring 401/403 globally.

@@ -29,21 +29,30 @@ Integration/e2e: <cmd or "none">
 
 ## Standard path
 
+0. **Risk flag check (one line, before the brief):** does the task touch money, authorization, personal data, a
+   migration, a contract, or concurrency? If yes, say `Risk flag: <which>`, write an `Invariants:` line (for
+   money: parts sum to the whole), and follow `test-agent.md`. A policy choice the code makes (who gets the
+   extra cent) is a `Business rule`, not an assumption.
 1. **Challenge**, then **Task Brief** (5-10 lines, in chat): goal; scope line; numbered `REQ-1..n` that are the
-   acceptance criteria, each with one concrete example (given X expect Y); out of scope; affected layers
-   (FE / BE / DB / infra / tests); assumptions; open questions only the user can answer. Proceed if no
+   acceptance criteria, each with one concrete example (given X expect Y) and a `Source:` tag; `Invariants:`
+   (rules that always hold; format in `challenge.md`); out of scope; affected layers
+   (FE / BE / DB / infra / tests); assumptions; open questions only the user can answer (policy ones are
+   `Business rule`). Proceed if no
    assumption is risky and no question blocks (`challenge.md` says what blocks); otherwise wait. Headless or
    unanswerable: write the questions with defaults, proceed on the safe default, and flag it.
 2. **Context** (read only what the layers need): the nearest similar feature; for UI the design source; for
    data the schema and latest migrations; for API the existing contract; for infra compose/CI/config.
-3. **Slices** (one complete path each): failing test, minimal code, match conventions, lint (read-only check),
+3. **Changing existing behavior that has callers:** before editing, save current outputs for representative
+   inputs and for each caller; after, show before/after and mark each difference intended or not.
+   **Slices** (one complete path each): failing test, minimal code, match conventions, lint (read-only check),
    type check, relevant tests. Detail: `build-protocol.md`. Test-first can be relaxed only for pure config or
    generated code; then say how you proved it instead.
 4. **UI slices:** `frontend-design.md`; look at the result before moving on.
 5. **Review, Verify, Finish:** `review.md`, `verify.md`. Every `REQ` marked done / partial / not done with
    evidence; handoff in the format `AGENTS.md` defines.
 
-Standard creates no state files, ADRs, or codebase map.
+Standard with a risk flag (money, authorization, personal data, migration, contract change, concurrency) also
+follows `test-agent.md`. Standard creates no state files, ADRs, or codebase map.
 
 ## Modes (narrow the Standard path)
 
@@ -55,33 +64,10 @@ Standard creates no state files, ADRs, or codebase map.
 | **Investigate** | Gather evidence before editing. Separate observed symptom from inferred cause. Rank hypotheses by evidence and cheap falsification. No edit until one mechanism explains the evidence. | Cause (or exact blocker) named with proof. No fix unless authorized. |
 | **Review / PR comments** | `review.md`. Read-only unless the user asks for fixes. | Findings delivered; each comment answered. |
 
-## Large path
+## Large path, state, resume
 
-Load `phases-large.md` one phase at a time.
-
-```
-LOAD -> SCOPE -> REQUIRE -> SCAN -> ALIGN (incl. Challenge) -> DESIGN -> TRACE --[ONE APPROVAL]--> BUILD -> TEST -> REVIEW -> HARDEN -> SHIP-PREP
-(SOURCE and CONTRACT run only when needed; STATUS any time)
-```
-
-| Phase | Output |
-|---|---|
-| LOAD | state initialized or resumed |
-| SCOPE | layer (be / fe / fullstack), mode (build / ticket), scope line |
-| REQUIRE | `domain.md` from specs, or confirmed "no specs" |
-| SCAN | conventions and codebase map (once; cached by git commit) |
-| ALIGN | findings, assumptions, out of scope, glossary |
-| DESIGN | spec + plan + build order + ADRs; `design.md` for UI; data model and infra changes |
-| TRACE | matrix `REQ-ID -> task -> acceptance criterion -> test` |
-| BUILD | vertical slices |
-| TEST | full relevant suites; contract conformance for fullstack |
-| REVIEW | `review.md` axes, lint gate, requirements reality-check |
-| HARDEN | `harden-checks.md`, risk register |
-| SHIP-PREP | rollback plan, ADR updates, final verification, proposed commit message |
-
-**One approval checkpoint** after TRACE: present brief, plan, build order, and matrix together. Do not ask for
-sign-off per phase.
-**Ticket mode** (bounded change in an understood codebase): LOAD, SCOPE, scoped BUILD, TEST, REVIEW, SHIP-PREP.
+Large path overview, the `.dev-craft/` state files, the decision/assumption lists and resume rules live in
+`phases-large.md` (sections Large overview and State). Standard creates none of them.
 
 ## Layer rules
 
@@ -101,31 +87,6 @@ sign-off per phase.
 Before staging: lint (read-only), type check, relevant tests, convention match, security basics (no hardcoded
 secrets, no `eval`, no unsafe HTML), clean-code minimum. `lint-rules.md` is the deterministic lint gate. Cap
 revision cycles at two, then summarize what was tried and ask. Claiming "zero issues" without running the tools fails the gate.
-
-## State (Large only)
-
-```
-.dev-craft/runs/<slug>/
-  state.json   # phase, tier, scope, stack, conventions + git hash, requirement status, sessionFile
-  spec.md      # brief, plan, build order, requirements matrix, ADR summaries, design/contract if any
-  session.md   # handoff: goal, done, next, blockers, changed files, verification, DECISIONS, ASSUMPTIONS
-```
-(Matches `skills/SHARED.md`. A legacy `.dev-craft/state.json` is read as-is if it exists.) Add `.dev-craft/` to
-`.git/info/exclude`. Update state at phase boundaries only.
-
-`session.md` keeps two lists so nothing is decided silently and the final report can quote them:
-`Decision: <what>; why; basis Code|Docs|Run|Logic; reversible yes|no` and `ASSUMPTION: <what>; basis`.
-
-| Resume scenario | Behavior |
-|---|---|
-| No `.dev-craft/` | Start at LOAD |
-| State exists, `sessionFile` current | Load state, skip completed phases |
-| `sessionFile` missing or stale | Flag it to the user before proceeding |
-| All phases complete | Ask whether this is a new task before creating a session |
-| Context near limit | Write `session.md`, resume from it |
-
-Large status line after each phase and on resume (fold ad-hoc user fixes into the current phase):
-`STATUS: Phase <n> [done/pending] | NEXT: <single next action> | STATE: sessionFile=<file>`. Standard: handoff only.
 
 ## Failure handling
 
