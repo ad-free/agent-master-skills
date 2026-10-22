@@ -10,7 +10,6 @@ const __dirname = dirname(__filename);
 const REPO_ROOT = resolve(__dirname, '..', '..');
 
 const HARNESS_PATHS = {
-  opencode: '~/.config/opencode/skills',
   claude: '~/.claude/skills',
   cursor: '~/.cursor/skills',
   codex: '~/.codex/skills',
@@ -32,11 +31,19 @@ function parseSkillFrontmatter(content) {
   return parseYaml(match[1]);
 }
 
-function findSkillsInRepo(repoPath) {
-  const skillFiles = globSync('**/SKILL.md', { cwd: repoPath, absolute: true });
+export function findSkillsInRepo(repoPath) {
+  const skillFiles = globSync('**/SKILL.md', {
+    cwd: repoPath,
+    absolute: true,
+    ignore: ['**/node_modules/**', '**/_archive/**', '**/synced/**'],
+  });
+  // A SKILL.md inside another skill's folder (e.g. dev-craft/plugins/*) is part of that skill, not a new one
+  const skillDirs = skillFiles.map((file) => dirname(file));
+  const topLevel = skillFiles.filter((file) =>
+    !skillDirs.some((dir) => dir !== dirname(file) && dirname(file).startsWith(dir + '/')));
   const skills = [];
   
-  for (const file of skillFiles) {
+  for (const file of topLevel) {
     try {
       const content = readFileSync(file, 'utf-8');
       const frontmatter = parseSkillFrontmatter(content);

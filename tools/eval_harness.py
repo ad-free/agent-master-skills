@@ -47,8 +47,15 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 CASES_GLOB = os.path.join(ROOT, "skills", "**", "eval", "cases", "*.yaml")
 
 
+# Archived skills and the claude.ai sync folder are not part of the library
+SKIP_DIRS = ("_archive", "synced")
+
+
 def discover_cases():
-    return sorted(glob(CASES_GLOB, recursive=True))
+    return sorted(
+        p for p in glob(CASES_GLOB, recursive=True)
+        if not any(part in SKIP_DIRS for part in os.path.relpath(p, ROOT).split(os.sep))
+    )
 
 
 def load_case(path):
@@ -147,6 +154,11 @@ def run_llm_judge(check):
         return (f"llm judge: score={score} (expected >= {expected_score})", ok)
     except Exception as e:
         return (f"llm judge: [ERROR - {e}]", False)
+
+
+def is_behavior_case(case):
+    """Behavior cases need a live agent run on a fixture; deterministic CI cannot grade them."""
+    return case.get("kind") == "behavior"
 
 
 def run_case(path, trial=1):
@@ -248,6 +260,9 @@ def run_all(trials=1):
 
     for path in cases:
         case = load_case(path)
+        if is_behavior_case(case):
+            print(f"[SKIP] {case.get('name', os.path.basename(path))} (behavior case: needs a live agent run)")
+            continue
         # Check if this case should only run in CI or has pass@k requirements
         use_trials = trials if case.get("execution", {}).get("pass_at_k", False) else 1
 
@@ -318,6 +333,9 @@ def main():
             return 0
         failures = []
         for path in cases:
+            if is_behavior_case(load_case(path)):
+                print(f"[SKIP] {load_case(path).get('name', os.path.basename(path))} (behavior case: needs a live agent run)")
+                continue
             name, passed, total, results = run_case(
                 path
             )  # Fixed: was using undefined `cases` variable
