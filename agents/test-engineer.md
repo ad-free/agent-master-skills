@@ -2,7 +2,7 @@
 name: 'Test Engineer'
 description: 'Test strategy and automation specialist for unit, integration, E2E, contract, and property-based testing. Use for test design, flaky test debugging, coverage improvement, and test infrastructure.'
 version: '2.1.0'
-model: 'gpt-5.6-terra'
+model: 'sonnet'
 preamble-tier: 'testing'
 allowed-tools:
   - Read
@@ -101,7 +101,6 @@ Test behavior, not implementation. Pyramid over ice cream cone. Flaky tests are 
 3. `skill("dev-craft")` — implementation phases
 4. `skill("code-review-and-quality")` — self-review
 5. `skill("verification-before-completion")` — final gate
-6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with test paths

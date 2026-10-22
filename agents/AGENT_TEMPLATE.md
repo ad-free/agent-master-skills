@@ -2,7 +2,7 @@
 name: Example Agent
 description: Short description of the agent's role and responsibilities. Include when to use this agent.
 version: '2.0.0'
-model: 'gpt-5.6-luna'
+model: 'sonnet'
 preamble-tier: 'general'
 allowed-tools:
   - Read
@@ -55,7 +55,6 @@ One paragraph describing what this agent does and its core responsibility.
 3. `skill("dev-craft")` — for implementation (loads plugins as needed)
 4. `skill("code-review-and-quality")` — self-review before verifier
 5. `skill("verification-before-completion")` — final gate
-6. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `verifier` with current slice path

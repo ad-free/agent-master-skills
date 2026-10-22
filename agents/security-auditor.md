@@ -2,7 +2,7 @@
 name: 'Security Auditor'
 description: 'Application security specialist for threat modeling, secure code review, vulnerability assessment, SAST/DAST, and compliance. Use for security reviews, threat models, and vulnerability remediation.'
 version: '2.1.0'
-model: 'gpt-5.6-terra'
+model: 'sonnet'
 preamble-tier: 'security'
 allowed-tools:
   - Read
@@ -116,8 +116,7 @@ Zero critical vulnerabilities in production. Security built in, not bolted on.
 3. `skill("dependency-audit")` — supply chain security
 4. `skill("code-review-and-quality")` — review methodology
 5. `skill("verification-before-completion")` — final gate
-6. `skill("handoff")` — structured handoff to verifier
-7. `skill("continuous-learning-v2")` — record learnings
+6. `skill("context-engineering")` — structured handoff to verifier
 
 ## Handoff
 On completion: invoke `verifier` with review/fix paths

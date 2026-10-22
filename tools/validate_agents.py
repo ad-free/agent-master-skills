@@ -29,24 +29,10 @@ REQUIRED = [
 ]
 OPTIONAL = ["color", "tools"]
 
-# Models available in OpenCode (Codex / ChatGPT)
-FREE_MODELS = {
-    "gpt-5.6-sol",
-    "gpt-5.6-terra",
-    "gpt-5.6-luna",
-    "gpt-5.4-mini",
-    "gpt-5.4-nano",
-    "gpt-5.3-codex",
-    "gpt-5.2-codex",
-    "gpt-4.1",
-    "gpt-4.1-mini",
-    "gpt-4.1-nano",
-    "o4-mini",
-    "o3",
-    "o3-mini",
-}
+# Claude Code subagent models: aliases, or a full model ID (claude-*)
+MODEL_ALIASES = {"sonnet", "opus", "haiku", "fable", "inherit"}
 
-# Tools available in OpenCode
+# Tools agents may request
 ALLOWED_TOOLS = {
     "Read",
     "Write",
@@ -116,10 +102,10 @@ def validate_file(path):
 
     # model validation
     model = meta.get("model")
-    if model not in FREE_MODELS:
+    if model not in MODEL_ALIASES and not str(model).startswith("claude-"):
         return (
             False,
-            f"model '{model}' not in known free models: {', '.join(sorted(FREE_MODELS))}",
+            f"model '{model}' is not a Claude Code model ({', '.join(sorted(MODEL_ALIASES))}, or a claude-* ID)",
         )
 
     # tools/allowed-tools validation (v2.0.0 uses allowed-tools, legacy uses tools)

@@ -2,7 +2,7 @@
 name: 'Code Reviewer'
 description: 'Expert code review specialist. Use IMMEDIATELY after writing or modifying code. Performs security, correctness, maintainability, and performance reviews with confidence-based filtering.'
 version: '2.1.0'
-model: 'gpt-5.6-terra'
+model: 'sonnet'
 preamble-tier: 'review'
 allowed-tools:
   - Read
@@ -208,8 +208,7 @@ Never withhold approval to appear rigorous. If the diff is clean, approve it.
 1. `skill("prompt-optimizer")` — optimize PR context for review
 2. `skill("code-review-and-quality")` — loads review methodology
 3. `skill("verification-before-completion")` — final gate
-4. `skill("handoff")` — structured handoff to verifier
-5. `skill("continuous-learning-v2")` — record learnings
+4. `skill("context-engineering")` — structured handoff to verifier
 
 ## Handoff
 On completion: invoke `verifier` with reviewed PR/slice path

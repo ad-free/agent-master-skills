@@ -1,7 +1,6 @@
 ---
 name: skill-creator
 description: "Create new skills, modify and improve existing skills for the agent-master-skills library. Use when the user wants to create a skill from scratch, edit or optimize an existing skill, or add a plugin. Follows the skill-composer integration pattern for dependency-aware loading."
-model: deepseek-v4-flash-free
 version: 2.0.0
 preamble-tier: 2
 allowed-tools:
@@ -145,4 +144,4 @@ Before finishing:
 - [ ] Directory structure matches conventions
 - [ ] Router updated in SHARED.md
 - [ ] README.md updated if needed
-- [ ] No broken symlinks in `~/.config/opencode/skills/`
+- [ ] No broken symlinks in `~/.claude/skills/`
