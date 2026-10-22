@@ -30,7 +30,7 @@ jobs:
           python tools/eval_harness.py ci
           cat eval-results.json
 
-      - name: Run pass@k trials (only for cases with pass_at_k: true)
+      - name: "Run pass@k trials (only for cases with pass_at_k: true)"
         run: |
           # Check if any cases require pass@k trials
           if grep -q "pass_at_k: true" skills/*/eval/cases/*.yaml 2>/dev/null; then
