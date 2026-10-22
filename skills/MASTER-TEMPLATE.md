@@ -3,7 +3,7 @@ name: <skill-name>
 description: |
   <One-line description of when to use this skill. Include what it does,
   when it is invoked, and what it explicitly does NOT do.>
-model: <model-name>
+# No top-level `model:` — Claude Code switches to that model while the skill runs. Use metadata.preferred-model.
 version: 1.0.0
 preamble-tier: <1-4>
 allowed-tools:

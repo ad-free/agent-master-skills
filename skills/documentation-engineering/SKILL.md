@@ -3,7 +3,6 @@ name: documentation-engineering
 description: |
   Use when you need to create, maintain, or automate technical documentation including ADRs,
   API references, runbooks, onboarding guides, and docs-as-code pipelines.
-model: gpt-5-nano
 version: 2.1.0
 preamble-tier: 2
 allowed-tools:
@@ -27,7 +26,7 @@ metadata:
   preferred-model: gpt-5-nano
   version: 2.1.0
   domain: documentation
-  integrates-with: [dev-craft, architecture-decision-records, ship]
+  integrates-with: [dev-craft, ship]
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 

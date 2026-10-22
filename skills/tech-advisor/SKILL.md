@@ -1,7 +1,7 @@
 ---
+disable-model-invocation: true
 name: tech-advisor
 description: "Use when you need to research and propose technology improvements, framework upgrades, or better alternatives for a project. Runs AFTER codebase analysis but BEFORE implementation. Compares current stack vs modern alternatives with reasoning, benchmarks, and migration cost. Makes informed recommendations, not just follows what exists."
-model: big-pickle
 version: 1.0.0
 preamble-tier: 3
 allowed-tools:

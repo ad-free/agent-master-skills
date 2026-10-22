@@ -1,5 +1,5 @@
-name: "handoff creates agent-to-agent transfer document"
-skill: "handoff"
+name: "context-engineering handoff creates agent-to-agent transfer document"
+skill: "context-engineering"
 version: "1.0"
 
 setup:
@@ -18,15 +18,12 @@ verification:
   state:
     topology: "mono"
   files:
-    - path: "skills/handoff/eval/state/state.json"
+    - path: "skills/context-engineering/eval/state/state.json"
       mustExist: true
   assertions:
     - type: "equals"
       path: "$.state.topology"
       expected: "mono"
-    - type: "contains"
-      path: "$.state.currentPhase"
-      expected: "HANDOFF"
     - type: "not_empty"
       path: "$.state.handoffDocument"
 

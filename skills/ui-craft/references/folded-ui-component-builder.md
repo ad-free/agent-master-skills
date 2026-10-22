@@ -44,7 +44,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - ui-craft: Provides the frontend development pipeline; ui-component-builder is invoked for individual component implementation within ui-craft's BUILD phase.
 - design-system-validate: Validates components against design tokens; ui-component-builder produces components that must pass design-system-validate.
 - accessibility-deep: Provides WCAG AAA compliance auditing; ui-component-builder must follow accessibility rules from the start.
-- backend-patterns: Ensures the component's data layer follows clean architecture patterns when fetching or mutating data.
+- dev-craft (`references/architecture.md`): Ensures the component's data layer follows clean architecture patterns when fetching or mutating data.
 
 ## When to Use
 
@@ -60,8 +60,8 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - General UI styling or layout — see ui-craft
 - Generating design tokens or design system configuration — see design-system-validate
 - WCAG accessibility auditing — see accessibility-deep
-- Animating components — see animation-and-interactions
-- API contract design for FE-BE integration — see api-contract-designer
+- Animating components — see `references/motion.md`
+- API contract design for FE-BE integration — see api-design (`references/contract-first.md`)
 
 ## Workflow
 

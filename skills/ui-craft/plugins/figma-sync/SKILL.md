@@ -1,7 +1,6 @@
 ---
 name: figma-sync
 description: Use when you need to sync design tokens and components from Figma via MCP or API integration.
-model: gpt-5-nano
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

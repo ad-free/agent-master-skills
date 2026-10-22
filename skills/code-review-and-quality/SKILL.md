@@ -381,8 +381,8 @@ Wait 10+ minutes, then review as if you're seeing the code for the first time. C
 **Use with:** `verification-before-completion`, `debugging-and-error-recovery`, `bug-hunting`, `dev-craft` BUILD phase.
 
 **References:**
-- `references/false-positives.md` — Complete false positive catalog
-- `references/prompt-defense.md` — Security baseline for reviewers
+- `../references/false-positives.md` — Complete false positive catalog
+- `../references/prompt-defense.md` — Security baseline for reviewers
 - `references/review-output-format.md` — Output template
 - `references/two-axis-mode.md` — Two-axis (Standards + Spec) review mode
 ## Parallel review (folded from review-orchestrator and review-subagents)

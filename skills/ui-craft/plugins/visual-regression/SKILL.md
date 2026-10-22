@@ -1,7 +1,6 @@
 ---
 name: visual-regression
 description: Use when you need Playwright or Cypress screenshot comparison for visual testing and regression detection. Includes baseline management, diff visualization, threshold configuration, and CI integration.
-model: big-pickle
 version: 2.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

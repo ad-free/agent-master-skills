@@ -1,7 +1,6 @@
 ---
 name: accessibility-deep
 description: Use when you need WCAG 2.2 AAA compliance auditing with automated and manual testing patterns.
-model: big-pickle
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

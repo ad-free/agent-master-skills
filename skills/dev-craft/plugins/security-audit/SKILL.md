@@ -1,7 +1,6 @@
 ---
 name: security-audit
 description: Use when you need security vulnerability scanning, dependency auditing, and supply chain risk assessment.
-model: big-pickle
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

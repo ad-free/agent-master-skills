@@ -6,7 +6,6 @@ description: |
   or "get it deployed". (gstack)
   
 disable-model-invocation: true
-model: deepseek-v4-flash-free
 version: 2.0.0
 preamble-tier: 4
 allowed-tools:
@@ -292,5 +291,4 @@ gh pr create \
 - Uses `verification-before-completion` for gates
 - Uses `code-review-and-quality` for review
 - Uses `verification-before-completion` for layered validation
-- Feeds `continuous-learning-v2` with release learnings
 - Feeds `retro` with deployment metrics

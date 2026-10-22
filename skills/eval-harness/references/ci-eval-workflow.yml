@@ -8,7 +8,6 @@ on:
       - 'skills/**/SKILL.md'
       - 'skills/**/eval/**'
       - 'skills/eval-harness/**'
-      - 'skills/agent-eval/**'
       - 'tools/**'
       - '.github/workflows/**'
   pull_request:
@@ -16,7 +15,6 @@ on:
       - 'skills/**/SKILL.md'
       - 'skills/**/eval/**'
       - 'skills/eval-harness/**'
-      - 'skills/agent-eval/**'
       - 'tools/**'
       - '.github/workflows/**'
   workflow_dispatch:

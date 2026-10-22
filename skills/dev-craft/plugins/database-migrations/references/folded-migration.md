@@ -1,20 +1,3 @@
----
-name: migration
-description: Implement reversible compatibility-safe transitions. Use for schema, data, API, protocol, configuration, or dependency migrations requiring rollback and preservation proof.
-version: 1.0.0
-preamble-tier: 4
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-triggers:
-  - "migration plan"
-  - "reversible migration"
----
-
 # Migration
 
 Map current readers, writers, data shape, compatibility window, and ownership before editing.

@@ -62,7 +62,6 @@ Plugins are registered in `state.json`:
 | Plugin | Description | Use Case |
 |--------|-------------|----------|
 | `security-audit` | Agent-driven STRIDE + OWASP audit | Production deployments |
-| `database-migrations` | Safe migration patterns | Schema changes |
 | `api-versioning` | API version management | Public APIs |
 | `dependency-audit` | Dependency vulnerability scanning | Security |
 | `language-rules` | Language-specific conventions (TS/Python) | BUILD & REVIEW |

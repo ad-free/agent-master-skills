@@ -4,7 +4,6 @@ description: |
   Use when running golden test cases against each skill to verify behavior and catch regressions.
   CI gate for skill changes. Implements Eval-Driven Development (EDD) with pass@k metrics,
   capability/regression evals, and code/model/human grader types.
-model: gpt-5-nano
 version: 2.1.0
 preamble-tier: 2
 allowed-tools:
@@ -28,7 +27,7 @@ metadata:
   preferred-model: gpt-5-nano
   version: 2.1.0
   domain: quality-safety
-  integrates-with: [verification-before-completion, code-review-and-quality, agent-eval]
+  integrates-with: [verification-before-completion, code-review-and-quality]
   source-enhancements: v2.1.0 EDD + pass@k from ECC eval-harness
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
@@ -232,7 +231,6 @@ Verify skill interfaces:
 Verify cross-skill workflows:
 - dev-craft → ui-craft handoff
 - planning → dev-craft execution
-- conductor → dispatching-parallel-agents
 
 ### 4. Edge Case Tests
 - Invalid inputs handled gracefully
@@ -484,4 +482,3 @@ Fails on any regression; run on skill changes
 
 - `references/test-case-schema.json` — YAML test case schema
 - `references/ci-eval-workflow.yml` — GitHub Actions CI workflow
-- `skills/agent-eval/` — Head-to-head agent comparison (sister skill)

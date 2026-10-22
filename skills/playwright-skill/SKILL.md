@@ -5,7 +5,6 @@ description: |
   or perform any browser-based testing including screenshots, forms, responsive design, and UX validation.
   Enhanced with real browser QA: accessibility checks, performance metrics, console error detection,
   visual regression, and automated interaction testing.
-model: gpt-5-nano
 version: 2.0.0
 preamble-tier: 4
 allowed-tools:
@@ -29,6 +28,7 @@ triggers:
   - "accessibility check"
   - "a11y test"
 metadata:
+  preferred-model: gpt-5-nano
   origin: agent-master-skills
   version: 2.0.0
   ports: playwright-skill, taste-skill qa

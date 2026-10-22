@@ -1,7 +1,6 @@
 ---
 name: api-design
-description: "Use when designing a new API surface or changing an existing one — choosing REST vs GraphQL vs gRPC, versioning strategy, auth/rate-limiting shape. Do NOT use for implementing an endpoint inside an already-decided API shape (that's plain BUILD work). Do NOT use for reviewing an existing API's security posture after the fact (see bug-hunting)."
-model: big-pickle
+description: "Use when designing a new API surface or changing an existing one — choosing REST vs GraphQL vs gRPC, versioning strategy, auth/rate-limiting shape, and the contract-first flow (OpenAPI/GraphQL spec, generated types, mocks) so frontend and backend agree before building. Do NOT use for implementing an endpoint inside an already-decided API shape (that's plain BUILD work). Do NOT use for reviewing an existing API's security posture after the fact (see bug-hunting)."
 version: 2.0.0
 preamble-tier: 3
 allowed-tools:
@@ -44,21 +43,26 @@ Before designing a shape, state who consumes it and what breaks for them if this
 
 1. **Who calls this, and how many independent clients?**
    - Single internal caller, tight coupling acceptable → plain internal function/RPC may be enough; don't over-engineer a public API for it.
-   - Multiple/external clients, resource-oriented data → **REST**. → `reference/rest-design.md`
-   - Multiple clients with divergent data needs (mobile wants less, web wants more) → **GraphQL**. → `reference/graphql-design.md`
-   - Internal service-to-service, performance-sensitive, strongly-typed → **gRPC**. → `reference/grpc-design.md`
+   - Multiple/external clients, resource-oriented data → **REST**.
+   - Multiple clients with divergent data needs (mobile wants less, web wants more) → **GraphQL**.
+   - Internal service-to-service, performance-sensitive, strongly-typed → **gRPC**.
 
 2. **Will this contract need to change before all consumers upgrade?**
-   - Yes → decide versioning strategy now, before shipping v1.
-     → `reference/versioning-strategies.md` (URL path vs header vs media type — pick one and state why, don't leave it implicit)
+   - Yes → decide versioning strategy now, before shipping v1. (URL path vs header vs media type — pick one and state why, don't leave it implicit)
 
 3. **What's the trust boundary?**
-   - Public/external → auth model, rate limiting, and CORS must be decided before the shape is finalized, not bolted on after. → `reference/api-security.md`
+   - Public/external → auth model, rate limiting, and CORS must be decided before the shape is finalized, not bolted on after.
    - Internal only → still state the trust boundary explicitly so a later change to "internal only" doesn't silently become public.
 
 4. **How will consumers discover the contract?**
    - REST → OpenAPI/Swagger spec generated from the design, not written by hand after the fact.
-   - GraphQL → schema is the contract; document deprecations in-schema. → `reference/api-documentation-generation.md`
+   - GraphQL → schema is the contract; document deprecations in-schema.
+
+## Contract-first
+
+When two sides must agree before building (FE + BE, service + service), follow `references/contract-first.md`:
+write the spec, generate types/validation/mocks from it, lint and contract-test it, then change it only additively or
+with a deprecation window.
 
 ## Output
 

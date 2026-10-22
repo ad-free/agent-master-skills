@@ -1,7 +1,6 @@
 ---
 name: tdd-enforcer
 description: Use when you need to enforce strict Test-Driven Development (RED-GREEN-REFACTOR) in the dev-craft BUILD phase. No production code without a failing test first.
-model: big-pickle
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

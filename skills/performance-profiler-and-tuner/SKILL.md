@@ -4,10 +4,9 @@ description: |
   Analyze bottlenecks, memory leaks, query optimizations, bundle sizes,
   and runtime execution profiling. Use when performance is degraded,
   a bottleneck is identified, or optimization is needed. Do NOT use
-  for general code refactoring (see refactor-and-cleanup) or for
+  for general code refactoring (see dev-craft refactor mode) or for
    security auditing (see bug-hunting).
   
-model: big-pickle
 version: 2.0.0
 preamble-tier: 3
 allowed-tools:
@@ -45,7 +44,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 - dev-craft/plugins/performance-profiling: Merged into this skill (stack profiler table, EXPLAIN ANALYZE hot-path rule folded in below).
 - debugging-and-error-recovery: Uses profiling results to identify performance-related bugs; performance-profiler-and-tuner produces the profiling data that debugging-and-error-recovery then uses.
-- refactor-and-cleanup: Cleans up code that may be causing performance issues; performance-profiler-and-tuner identifies the specific performance bottlenecks.
+- dev-craft (refactor mode): Cleans up code that may be causing performance issues; performance-profiler-and-tuner identifies the specific performance bottlenecks.
 - bug-hunting: Security can impact performance (e.g., excessive input validation); performance-profiler-and-tuner ensures security does not degrade performance.
 
 ## When to Use
@@ -63,9 +62,9 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## When NOT to Use
 
-- General code refactoring — see refactor-and-cleanup
+- General code refactoring — see dev-craft (refactor mode)
 - Security auditing — see bug-hunting
-- Architecture decision documentation — see architecture-decision-records
+- Architecture decision documentation — see dev-craft (`references/architecture.md`)
 - Adding new features — see dev-craft
 - General debugging — see debugging-and-error-recovery
 

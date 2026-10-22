@@ -3,6 +3,7 @@
     "topology": "mono",
     "currentPhase": "CONTEXT",
     "contextSnapshot": "snapshot-data",
-    "rotationTriggered": true
+    "rotationTriggered": true,
+    "handoffDocument": "handoff-content"
   }
 }

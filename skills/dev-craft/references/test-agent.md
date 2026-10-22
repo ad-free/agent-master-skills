@@ -3,8 +3,7 @@
 The agent that writes the code also writes its tests and its verification, so it shares its own misreadings.
 This file is a thin contract for separating those roles. It routes to sibling skills and does not repeat them.
 
-Uses, when installed: `testing-strategies` (what kind of test), `tdd-seam` (public seams), `qa-and-edge-case-tester`
-(edge cases), `fe-visual-loop` / `playwright-skill` (screenshots), `dispatching-parallel-agents` (running
+Uses, when installed: `testing-strategies` (what kind of test, edge cases), `tdd-seam` (public seams), `fe-visual-loop` / `playwright-skill` (screenshots), `dispatching-parallel-agents` (running
 subagents). If one is absent, follow this file and `checklists/testing.md` alone.
 
 ## When to use

@@ -27,7 +27,7 @@ skill("testing-strategies")  # Decide: unit vs integration vs E2E vs contract vs
 
 ### 2. Test Generation
 ```
-skill("qa-and-edge-case-tester")  # Automated E2E/unit generation, edge-case analysis, boundary testing
+skill("testing-strategies")  # Automated E2E/unit generation, edge-case analysis, boundary testing
 ```
 
 ### 3. Run Tests

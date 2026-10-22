@@ -33,7 +33,7 @@ Optimized for writing code, implementing features, and building systems.
 ## Phase Flow
 1. **SCOPE** → dev-craft (if no PLAN.md)
 2. **BUILD** → dev-craft / ui-craft (TDD enforced via tdd-enforcer)
-3. **TEST** → qa-and-edge-case-tester
+3. **TEST** → testing-strategies
 4. **HARDEN** → verification-before-completion, secops-and-vulnerability-scanner
 5. **REVIEW** → code-review-and-quality
 

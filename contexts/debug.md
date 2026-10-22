@@ -14,7 +14,7 @@ allowed-tools:
 default-skills:
   - debugging-and-error-recovery
   - verification-before-completion
-  - qa-and-edge-case-tester
+  - testing-strategies
 ---
 
 # Debug Context

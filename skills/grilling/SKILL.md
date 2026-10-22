@@ -6,7 +6,6 @@ description: |
   (from mattpocock grilling skill)
   
 disable-model-invocation: true
-model: nemotron-3-ultra-free
 version: 2.0.0
 preamble-tier: 2
 allowed-tools:
@@ -126,7 +125,7 @@ Generate 5-7 specific disaster scenarios. For each, trace back to a decision poi
 
 2. **Auth system down for 4 hours** → Root cause: Single-point-of-failure in token validation service
    - Plan gap: No HA architecture review in DESIGN phase
-   - Fix: Add `backend-patterns` skill to DESIGN
+   - Fix: Add an HA architecture review (dev-craft `references/architecture.md`) to DESIGN
 
 3. **Mobile app crashes on iOS 18** → Root cause: Deprecated API used in networking layer
    - Plan gap: No mobile compatibility matrix

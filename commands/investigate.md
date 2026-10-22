@@ -42,7 +42,7 @@ skill("debugging-and-error-recovery")  # Full context: trace, input, state
 
 ### 5. Regression Test
 ```
-skill("qa-and-edge-case-tester")  # Add test for the bug
+skill("testing-strategies")  # Add test for the bug
 ```
 
 ### 6. Verify

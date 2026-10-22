@@ -1,7 +1,6 @@
 ---
 name: language-rules
 description: Use when you need language-specific coding conventions and style enforcement for TypeScript or Python during the BUILD or REVIEW phase.
-model: big-pickle
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

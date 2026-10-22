@@ -9,28 +9,23 @@ const REPO_ROOT = resolve(__dirname, '..', '..');
 const TEMPLATES = {
   minimal: {
     skills: ['dev-craft', 'verification-before-completion'],
-    agents: ['implementer', 'verifier'],
+    agents: ['verifier'],
   },
   fullstack: {
-    skills: ['dev-craft', 'ui-craft', 'dev-craft', 'verification-before-completion', 'debugging-and-error-recovery', 'code-review-and-quality'],
-    agents: ['planner', 'implementer', 'frontend-engineer', 'verifier', 'debugger', 'code-reviewer'],
+    skills: ['dev-craft', 'ui-craft', 'verification-before-completion', 'debugging-and-error-recovery', 'code-review-and-quality'],
+    agents: ['verifier', 'debugger', 'code-reviewer', 'test-engineer'],
   },
   frontend: {
-    skills: ['ui-craft', 'dev-craft', 'verification-before-completion', 'design-system-validate', 'accessibility-deep'],
-    agents: ['planner', 'frontend-engineer', 'verifier'],
+    skills: ['ui-craft', 'dev-craft', 'verification-before-completion', 'accessibility', 'fe-visual-loop'],
+    agents: ['verifier', 'code-reviewer'],
   },
   backend: {
-    skills: ['dev-craft', 'dev-craft', 'verification-before-completion', 'backend-patterns', 'database-migrations'],
-    agents: ['planner', 'implementer', 'verifier', 'database-engineer'],
+    skills: ['dev-craft', 'verification-before-completion', 'api-design', 'debugging-and-error-recovery'],
+    agents: ['verifier', 'debugger', 'security-auditor'],
   },
 };
 
 const HARNESS_CONFIGS = {
-  opencode: {
-    configDir: '.opencode',
-    agentsDir: '.opencode/agents',
-    skillsDir: '.opencode/skills',
-  },
   claude: {
     configDir: '.claude',
     agentsDir: '.claude/agents',
@@ -110,30 +105,25 @@ export async function initProject(options) {
     if (!existsSync(agentsMdPath)) {
       const agentsMd = `# AGENTS.md — Project Agent Instructions
 
-Project-level OpenCode configuration. Extends global \`~/.config/opencode/AGENTS.md\`.
+Project-level agent instructions. Extend the user-level \`AGENTS.md\` if one exists.
 
 ---
 
 ## Skill Router — decide before acting
 
-Route by task type, not by tech stack. Skills chain — follow the arrow.
+| Task | Entry skill | Add only when needed |
+|---|---|---|
+| Vague product idea | product-thinking | then dev-craft |
+| Spec files (xlsx/csv/md/pdf) | project-discovery | then dev-craft |
+| Feature, bug, refactor, migration, schema/API change | dev-craft | debugging-and-error-recovery (cause unknown), tdd-seam, api-design |
+| Frontend / UI pipeline, redesign, motion | ui-craft | fe-visual-loop, image-to-design-spec, accessibility |
+| Review code | code-review-and-quality | bug-hunting |
+| Security audit | bug-hunting | code-review-and-quality |
+| Completion check outside dev-craft | verification-before-completion | — |
+| Long session, handoff, resume | context-engineering | — |
+| Independent tasks in parallel | dispatching-parallel-agents | — |
 
-| Task signal | Route |
-|---|---|
-| Vague idea, "how should we..." | product-thinking → dev-craft → dev-craft | ui-craft |
-| Spec files (xlsx/csv/md/pdf) | project-discovery → dev-craft → dev-craft |
-| New feature / new project | dev-craft → dev-craft | ui-craft |
-| Bug / failing test / weird behavior | debugging-and-error-recovery → verification-before-completion |
-| Frontend / UI work | ui-craft (+ frontend-design for visual polish) → verification-before-completion |
-| Screenshot / image reference | image-to-design-spec → ui-craft |
-| Infra / IaC / deploy change | dev-craft → Infra Safety → verification-before-completion |
-| Large multi-module project | dev-craft + conductor |
-| Multiple independent tasks | dispatching-parallel-agents |
-| Review code | code-review-and-quality |
-| Security audit / vuln discovery | bug-hunting → verification-before-completion |
-| About to claim "done" | verification-before-completion (mandatory) |
-
-**Unsure which skill?** Start with \`dev-craft\` — it produces a plan every other skill can execute against.
+Typos, one-line fixes, docs and config need no skill.
 
 ---
 

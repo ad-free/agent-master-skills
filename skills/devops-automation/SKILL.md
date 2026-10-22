@@ -7,7 +7,6 @@ description: |
   infrastructure-as-code choices. Do NOT use for "is this ready to deploy" (see
   verification-before-completion) or for writing the pipeline YAML itself (that's plain BUILD work
   once the strategy is decided).
-model: deepseek-v4-flash-free
 version: 2.0.0
 preamble-tier: 3
 allowed-tools:
@@ -219,15 +218,3 @@ A deployment strategy doc containing: environment topology, promotion triggers, 
 | Security scan finds Critical/High CVEs | Block deploy, remediate or accept with documented risk |
 | Post-deploy health checks fail | Trigger automated rollback, investigate before re-deploying |
 | SLO burn-rate exceeded during canary | Auto-rollback canary, fix before full rollout |
-
-## References
-
-- `references/argocd-rollouts.md` — ArgoCD + Argo Rollouts progressive delivery configuration
-- `references/terraform-vm-deploy.md` — Terraform + VM deployment with SSH/Ansible rollback
-- `references/serverless-deploy.md` — Serverless deployment with traffic shifting
-- `references/promotion-strategy.md` — Dev → Staging → Prod promotion strategies
-- `references/preview-environments.md` — Ephemeral preview environments per PR
-- `references/progressive-delivery.md` — Canary/blue-green with SLO burn-rate alerts
-- `references/rolling-update.md` — Rolling update configuration with health checks
-- `references/secrets-management.md` — External Secrets Operator + Vault/Secrets Manager setup
-- `references/iac-best-practices.md` — Terraform/OpenTofu best practices and state management

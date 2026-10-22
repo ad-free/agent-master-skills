@@ -2,7 +2,6 @@
 name: project-discovery
 description: |
   Use when you have requirement documents (xlsx/csv/md/pdf) and need to parse them into a structured DOMAIN.md.
-model: nemotron-3-ultra-free
 version: 2.1.0
 preamble-tier: 2
 allowed-tools:
