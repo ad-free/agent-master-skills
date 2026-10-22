@@ -7,7 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const HARNESS_PATHS = {
-  opencode: '~/.config/opencode/skills',
   claude: '~/.claude/skills',
   cursor: '~/.cursor/skills',
   codex: '~/.codex/skills',
@@ -29,7 +28,8 @@ function parseSkillFrontmatter(content) {
   return parseYaml(match[1]);
 }
 
-const REQUIRED_KEYS = ['name', 'description', 'version', 'preamble-tier', 'allowed-tools', 'triggers'];
+// Same schema as tools/validate_skills.py: hosts need only name and description
+const REQUIRED_KEYS = ['name', 'description'];
 const ALLOWED_TOOLS = ['Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent', 'AskUserQuestion', 'WebSearch', 'Task'];
 
 export async function doctor(options) {

@@ -1,12 +1,9 @@
 ---
 name: debugging-and-error-recovery
 description: |
-  ALWAYS invoke before changing code for any bug, failing test, 500/error report or unexpected behavior.
-  Systematic root-cause investigation with hypothesis testing, regression
-  prevention, and automated self-correction loops. Use when tests fail, builds
-  break, or behavior is unexpected — no guessing. Invoked by: debugger,
-  implementer, test-engineer.
-model: nemotron-3-ultra-free
+  Use when the cause of a bug, failing test, build break, 500 or unexpected behavior is not yet known:
+  reproduce, form and test hypotheses, find the root cause before any fix, then prevent regression.
+  dev-craft's Bug mode calls this; when the cause is already clear, dev-craft alone is enough.
 version: 2.0.0
 preamble-tier: 4
 allowed-tools:
@@ -270,9 +267,3 @@ This loop prevents the most common debugging failure mode: declaring a fix done 
 | Self-correction loop fails | Restart from the failing step, do not skip |
 | Context degradation suspected | Rotate context, reload relevant files only |
 | 3+ failed fix attempts | Stop, suspect architectural problem, revert and re-investigate |
-
-## References
-
-- `references/debugging-hypothesis.md` — Hypothesis-testing template and falsification checklist
-- `references/regression-checklist.md` — Expanded regression prevention checklist
-- `references/self-correction-loop.md` — Automated self-correction loop protocol

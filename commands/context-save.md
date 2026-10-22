@@ -20,7 +20,7 @@ triggers:
 
 ### 1. Capture State
 ```
-skill("context-compressor-and-pruner")  # Summarize context, prune stale
+skill("context-engineering")  # Summarize context, prune stale
 ```
 
 ### 2. Persist Learnings
@@ -30,7 +30,7 @@ skill("learn")  # Log project learnings
 
 ### 3. Save Handoff
 ```
-skill("handoff")  # Create structured handoff document
+skill("context-engineering")  # Create structured handoff document
 ```
 
 ### 4. Git Checkpoint (optional)

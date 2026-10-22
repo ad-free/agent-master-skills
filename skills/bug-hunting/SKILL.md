@@ -5,7 +5,6 @@ description: |
   Use for security audits, pre-release reviews, and vulnerability assessments.
   Invoked by: security-auditor, code-reviewer.
   
-model: nemotron-3-ultra-free
 version: 2.0.0
 preamble-tier: 4
 allowed-tools:
@@ -395,7 +394,6 @@ On completion, invokes: `skill("code-review-and-quality")` with context:
   - `regressionTests`: [paths]
 
 Then: `skill("verification-before-completion")` to verify fixes
-Then: `skill("continuous-learning-v2")` to capture security learnings
 
 ## Integration
 

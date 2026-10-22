@@ -1,7 +1,6 @@
 ---
 name: dependency-audit
 description: Use when you need dependency vulnerability scanning, license compliance, and supply chain security checks.
-model: big-pickle
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

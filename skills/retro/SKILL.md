@@ -1,9 +1,9 @@
 ---
+disable-model-invocation: true
 name: retro
 description: |
   Use when you need a weekly engineering retrospective with git analysis, team contributions,
   code quality trends, and actionable learnings. Also runs proactively at sprint end.
-model: deepseek-v4-flash-free
 version: 2.1.0
 preamble-tier: 2
 allowed-tools:
@@ -22,7 +22,7 @@ metadata:
   preferred-model: deepseek-v4-flash-free
   version: 2.1.0
   domain: orchestration
-  integrates-with: [continuous-learning-v2, prompt-optimizer]
+  integrates-with: [prompt-optimizer]
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 

@@ -1,6 +1,6 @@
 ---
 name: dev-craft
-description: Use for non-trivial coding work - building or changing features, fixing bugs, refactors, schema/API/UI changes, reviewing a diff or PR comments, resuming earlier work. Skip typos, one-line edits, trivial config, quick questions, and throwaway scripts.
+description: Use for non-trivial coding work - building or changing features, fixing bugs, refactors and cleanup, migrations, schema/API/UI changes, architecture choices, reviewing a diff or PR comments, resuming earlier work. Skip typos, one-line edits, trivial config, quick questions, and throwaway scripts.
 version: 4.0.0
 ---
 
@@ -87,6 +87,9 @@ checkpoint after TRACE.
 | Tables/schema/queries touched; new service | `references/data-modeling.md`; `references/architecture.md` |
 | 2+ components, or FE-only/BE-only against the other side | `references/fullstack.md` |
 | Writing code | `references/build-protocol.md`, `references/clean-code-defaults.md`, `references/idioms/README.md` |
+| Refactor or cleanup (dead code, duplication, naming) | `references/refactor.md` |
+| Migration (schema, data, API, config, dependency) | `plugins/database-migrations/SKILL.md` |
+| Choosing a structure or a hard-to-reverse option (ADR) | `references/architecture.md` |
 | Lint gate | `references/lint-rules.md` |
 | Parallel agents / 3+ modules / multi-repo branch check | `references/build-extras.md` |
 | Review a diff, PR comments, REVIEW phase | `references/review.md`, `references/checklists/bugs.md`, `references/checklists/security.md` |
@@ -99,7 +102,7 @@ checkpoint after TRACE.
 
 Related skills (invoke only when that step needs them): `testing-strategies`, `tdd-seam`, `api-design`,
 `code-review-and-quality`, `bug-hunting`, `debugging-and-error-recovery`, `observability-engineering`,
-`verification-before-completion`, `qa-and-edge-case-tester`, `fe-visual-loop`, `playwright-skill`,
+`verification-before-completion`, `fe-visual-loop`, `playwright-skill`,
 `dispatching-parallel-agents`, `product-thinking`, `project-discovery`, `ui-craft` (full UI pipeline).
 If a related skill or plugin is not available, use the matching file in `references/checklists/`
 (`bug-hunting` -> `bugs.md`/`security.md`, `testing-strategies` -> `testing.md`); if it is available, use it and

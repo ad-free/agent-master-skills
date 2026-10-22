@@ -2,9 +2,9 @@
 name: ui-craft
 description: |
   Run the 10-phase frontend development pipeline with persistent `.ui-craft`
-  state. Use for UI/UX features, design system work, component libraries, or
-  resuming sessions. Invoked by: planner → frontend-engineer → verifier.
-model: big-pickle
+  state. Use for UI/UX features, design system work, component libraries,
+  redesigning an existing UI, animation and micro-interactions, or resuming
+  sessions. Do NOT use for a small UI tweak inside a feature (dev-craft covers it).
 version: 2.0.0
 preamble-tier: 3
 allowed-tools:
@@ -472,8 +472,8 @@ Write state after LOAD.
 - `references/harden-checks.md` — Cross-cutting frontend security audit
 - `references/ai-tells-banned.md` — Banned AI-generated UI patterns
 - `references/review-protocol.md` — 8 UI-specific review axes and finding categorization
-- `references/redesign-audit.md` — 100+ prioritized audit checks for existing projects
-- `references/image-first-workflow.md` — Image-first design workflow for visual tasks
+- `references/redesign-audit.md` — 100+ prioritized audit checks for existing projects (redesign requests start here)
+- `references/motion.md` — Animation tool choice, timings, reduced motion, performance check
 
 ## Folded skills
 

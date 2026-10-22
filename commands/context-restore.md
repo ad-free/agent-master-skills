@@ -25,7 +25,7 @@ skill("context-engineering")  # Load memory hierarchy, restore context
 
 ### 2. Read Handoff
 ```
-skill("handoff")  # Read latest handoff document
+skill("context-engineering")  # Read latest handoff document
 ```
 
 ### 3. Review Learnings

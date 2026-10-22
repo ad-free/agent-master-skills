@@ -65,7 +65,7 @@ separately.
 3. Slice vertically: one complete feature path per slice.
 4. Write tasks with Given-When-Then acceptance criteria and the test that proves each.
 5. Write ADRs for architecture decisions, in `documentation-engineering` format.
-6. API surface change: invoke `api-design`. Structural pattern decision: invoke `backend-patterns`.
+6. API surface change: invoke `api-design`. Structural pattern or hard-to-reverse choice: `references/architecture.md`.
 
 **Exit:** a plan ready for the checkpoint. **State:** plan, build order, and ADR summaries in `spec.md`.
 

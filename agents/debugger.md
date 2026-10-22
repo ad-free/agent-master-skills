@@ -2,7 +2,7 @@
 name: 'Debugger'
 description: 'Systematic root-cause investigator for test failures, bugs, and unexpected behavior. Uses 4-phase methodology: Reproduce → Isolate → Hypothesize → Verify. Use when tests fail, bugs reported, or behavior is unexpected.'
 version: '2.1.0'
-model: 'gpt-5.6-terra'
+model: 'sonnet'
 preamble-tier: 'debugging'
 allowed-tools:
   - Read
@@ -114,7 +114,6 @@ Identify the exact cause of failures. Fix the root, not the error message.
 1. `skill("prompt-optimizer")` — optimize bug report for debugging
 2. `skill("debugging-and-error-recovery")` — core methodology
 3. `skill("verification-before-completion")` — fix verification
-4. `skill("continuous-learning-v2")` — record learnings
 
 ## Handoff
 On completion: invoke `implementer` (if fix needed) or `verifier` (if fix done)

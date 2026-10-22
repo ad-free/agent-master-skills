@@ -12,20 +12,18 @@ subagent.
 
 | Task | Entry skill | Add only when needed |
 |---|---|---|
-| Vague product idea | `product-thinking` (→ `PRODUCT.md`) | `dev-craft` |
-| Existing spec files (xlsx/csv/md/pdf) | `project-discovery` (→ `DOMAIN.md`) | `dev-craft` |
-| Multi-file feature | `dev-craft` | `verification-before-completion` before merge |
-| Frontend / UI work | `ui-craft` | `image-to-design-spec` for screenshot-led work |
-| Bug / failing test | `debugging-and-error-recovery` | `bug-hunting` if security-relevant |
+| Vague product idea | `product-thinking` (→ `PRODUCT.md`) | then `dev-craft` |
+| Existing spec files (xlsx/csv/md/pdf) | `project-discovery` (→ `DOMAIN.md`) | then `dev-craft` |
+| Feature, bug, refactor, migration, schema/API change | `dev-craft` (picks tier and mode) | `debugging-and-error-recovery` when the bug's cause is unknown; `tdd-seam` for test placement; `api-design` for a new or changed API surface |
+| Frontend / UI pipeline, redesign, motion | `ui-craft` | `fe-visual-loop` for show-before-build; `image-to-design-spec` for screenshot-led work; `accessibility` |
 | Code review | `code-review-and-quality` | `bug-hunting` |
 | Security audit | `bug-hunting` | `code-review-and-quality` |
-| Completion check | `verification-before-completion` | `evidence-ledger` for stored proof |
-| Ship / PR text | `ship` (prepare only unless the user names commit/push/PR) | `retro` at sprint end |
-| Handoff / resume | `handoff` | `context-engineering` |
-| Large multi-module build | `conductor` | `dispatching-parallel-agents` |
-| Long sessions, handoffs | `context-engineering` | — |
+| Completion check outside dev-craft, stored proof | `verification-before-completion` (includes the evidence ledger) | — |
+| Ship / PR text | `ship` (user-invoked; prepare only unless the user names commit/push/PR) | `retro` (user-invoked) |
+| Long session, handoff, resume | `context-engineering` | — |
+| Independent tasks in parallel | `dispatching-parallel-agents` | — |
 
-Anything not in this table (small fixes, refactors, docs, config) does not need a skill. Do the work on the
+Anything not in this table (typos, one-line fixes, docs, config) does not need a skill. Do the work on the
 short path from `AGENTS.md` §4.
 
 ## Planning pipeline: one source of truth
@@ -43,14 +41,16 @@ Never run two requirement-to-task pipelines for the same feature.
 
 ## When to use `dev-craft`
 
-Use it for multi-file features, new modules, or work that needs design and review phases. Its §3b modes
-(bug, refactor, investigate) also cover focused fixes and refactors. Skip it for typos, one-line fixes, and docs.
+Use it for every non-trivial code change: features, bugs, refactors and cleanup, migrations, architecture
+choices, reviews. Its modes (`references/workflow.md` §Modes) scale the process to the task. It absorbed the
+former refactor-and-cleanup, database-migrations, backend-patterns and architecture-decision-records skills.
+Skip it for typos, one-line fixes, and docs.
 
 ## Subagents
 
 Delegate only when the host permits it and the work is independent, a specialist review, or an isolated
-workstream. For independent tasks use `dispatching-parallel-agents`; for multi-module builds use
-`conductor` (shared contract and git worktree isolation).
+workstream. For independent tasks use `dispatching-parallel-agents`; for multi-module builds with a shared
+contract and git worktree isolation, follow dev-craft `references/build-extras.md`.
 
 - **Before dispatch**, define: one goal, minimal context, expected deliverable, file/interface ownership,
   acceptance criteria, read-only vs. may-edit. Use isolated worktrees for parallel writers.

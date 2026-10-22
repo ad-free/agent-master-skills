@@ -1,4 +1,5 @@
 ---
+disable-model-invocation: true
 name: agent-architecture-audit
 description: |
   Use when auditing agent or LLM applications for wrapper regression, memory pollution,
@@ -6,7 +7,6 @@ description: |
   severity-ranked findings with code-first fixes. Essential for developers building
   agent applications, autonomous loops, or any LLM-powered feature.
 version: 1.0.0
-model: gpt-5.6-luna
 preamble-tier: 3
 allowed-tools:
   - Read
@@ -21,9 +21,10 @@ triggers:
   - "tools flaky"
   - "model works in playground but breaks in wrapper"
 metadata:
+  preferred-model: gpt-5.6-luna
   origin: agent-master-skills
   domain: agent-quality
-  integrates-with: [verification-before-completion, debugging-and-error-recovery, agent-eval]
+  integrates-with: [verification-before-completion, debugging-and-error-recovery]
 ---
 
 # Agent Architecture Audit
@@ -50,7 +51,6 @@ A diagnostic workflow for agent systems that hide failures behind wrapper layers
 - General code debugging — use `debugging-and-error-recovery`
 - Code review — use `code-review-and-quality`
 - Security scanning — use `bug-hunting`
-- Agent performance benchmarking — use `agent-eval`
 - Writing new features — use the appropriate workflow skill
 
 ## The 12-Layer Stack
@@ -271,7 +271,6 @@ Audits should produce structured reports following this shape:
 ## Related Skills
 
 - `agent-introspection-debugging` — Debug agent runtime failures (loops, timeouts, state errors)
-- `agent-eval` — Benchmark agent performance head-to-head
 - `bug-hunting` — Security audit for code and configuration
 - `autonomous-agent-harness` — Set up autonomous agent operations
 - `dispatching-parallel-agents` — Parallel investigation of independent failures

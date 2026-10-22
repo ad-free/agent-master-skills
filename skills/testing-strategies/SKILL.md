@@ -4,7 +4,6 @@ description: |
   Use when deciding WHAT kind of test to write for a change — unit vs integration vs e2e vs contract vs property-based, and what failure mode each test covers.
   Do NOT use for "did tests pass" (see verification-before-completion) or "review my test coverage" (see code-review-and-quality).
   Do NOT use for writing the test code itself (that's BUILD work once the test type/failure-mode is decided).
-model: nemotron-3-ultra-free
 version: 2.0.0
 preamble-tier: 3
 allowed-tools:
@@ -45,11 +44,11 @@ Every test must declare what specific failure it detects: "this test fails if X 
 ## Decision tree
 
 1. **What fails if this code is wrong?**
-   - A pure function's output → **unit test** (fast, deterministic, no I/O). → `reference/unit-test-patterns.md`
-   - A database query or external API call → **integration test** (real DB/service or Testcontainers). → `reference/integration-test-patterns.md`
-   - A user-facing flow across the stack → **e2e test** (Playwright/Cypress, critical paths only). → `reference/e2e-test-patterns.md`
-   - A contract between producer/consumer (API, message schema) → **contract test** (Pact for consumer-driven, schema validation for provider). → `reference/contract-test-patterns.md`
-   - Complex logic with many input combinations → **property-based test** (Hypothesis/fast-check, find edge cases humans miss). → `reference/property-based-test-patterns.md`
+   - A pure function's output → **unit test** (fast, deterministic, no I/O).
+   - A database query or external API call → **integration test** (real DB/service or Testcontainers).
+   - A user-facing flow across the stack → **e2e test** (Playwright/Cypress, critical paths only).
+   - A contract between producer/consumer (API, message schema) → **contract test** (Pact for consumer-driven, schema validation for provider).
+   - Complex logic with many input combinations → **property-based test** (Hypothesis/fast-check, find edge cases humans miss).
 
 2. **Where does this test run in CI?**
    - Unit: every PR, < 30s total
@@ -67,7 +66,12 @@ Every test must declare what specific failure it detects: "this test fails if X 
 
 4. **Flaky test protocol:**
    - If a test flakes > 1/20 runs: quarantine immediately (`@pytest.mark.flaky`), fix or delete within 48h
-   - Root cause before re-enable: timing? shared state? external dependency? → `reference/flaky-test-protocol.md`
+   - Root cause before re-enable: timing? shared state? external dependency? → `references/edge-cases.md`
+
+## Edge cases
+
+Before listing tests, walk the boundary table in `references/edge-cases.md` (input, type, money/time, UI
+state, timing, concurrency, trust). Each boundary that applies becomes a test with its own failure mode.
 
 ## Output
 

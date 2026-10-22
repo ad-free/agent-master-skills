@@ -21,7 +21,7 @@ metadata:
   preferred-model: big-pickle
   version: 1.0.0
   domain: frontend
-  integrates-with: [ui-craft, ui-component-builder, image-to-code]
+  integrates-with: [ui-craft, ui-component-builder]
 ---
 
 # UI Pattern Extractor — Understand Before You Write

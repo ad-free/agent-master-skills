@@ -6,7 +6,6 @@ description: |
   winner, then screenshot-verifies the build against it. Use for page builds,
   redesigns, and component work too big to free-style but smaller than a full
   ui-craft run. Invoked by: frontend-engineer, ui-craft (Phases 2/3/8).
-model: big-pickle
 version: 1.0.0
 preamble-tier: 2
 allowed-tools:
@@ -27,6 +26,7 @@ triggers:
   - "pick a design"
   - "screenshot the design"
 metadata:
+  preferred-model: big-pickle
   origin: agent-master-skills
   domain: frontend
   integrates-with: [ui-craft, ui-craft, anti-slop, image-to-design-spec, playwright-skill, visual-regression, verification-before-completion]

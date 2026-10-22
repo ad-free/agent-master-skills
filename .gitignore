@@ -16,3 +16,6 @@ skills/**/eval/logs/
 
 # Claude Code claude.ai skills sync (written via the ~/.claude/skills symlink)
 skills/synced/
+
+# CodeGraph local index (machine-specific)
+.codegraph/

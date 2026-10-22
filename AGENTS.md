@@ -1,6 +1,6 @@
 # AGENTS.md — User-Level Agent Policy
 
-Shared policy for Codex, OpenCode, Oh-my-pi, and Claude Code (via a thin `CLAUDE.md` containing `@AGENTS.md`).
+Shared policy for Claude Code (via a thin `CLAUDE.md` containing `@AGENTS.md`) and Codex.
 Tool, plugin, and skill-routing guidance lives in `AGENTS-TOOLS.md`.
 **Read its "Skill routing" section for any feature, UI, DB, API, or infra task.** Read the rest only when a
 task needs graph/memory retrieval, Spec Kit, RTK, or subagent dispatch. Do not preload it.

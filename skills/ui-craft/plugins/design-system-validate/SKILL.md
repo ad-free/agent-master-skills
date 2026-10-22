@@ -1,7 +1,6 @@
 ---
 name: design-system-validate
 description: Use when you need to validate UI code against design system tokens and component library specifications, or audit UI for design consistency, responsiveness, performance, and WCAG accessibility standards.
-model: gpt-5-nano
 version: 1.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

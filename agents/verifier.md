@@ -2,7 +2,7 @@
 name: 'Verifier'
 description: 'Verification specialist that runs fresh evidence checks before any completion claim. Use MANDATORILY before claiming any task/phase done. Runs tests, lint, typecheck, build.'
 version: '2.1.0'
-model: 'gpt-5.6-luna'
+model: 'haiku'
 preamble-tier: 'verification'
 allowed-tools:
   - Read
@@ -114,8 +114,7 @@ or
 ## Skill Chain
 1. `skill("prompt-optimizer")` — optimize verification context
 2. `skill("verification-before-completion")` — core verification logic
-3. `skill("evidence-ledger")` — tamper-evident verification records
-4. `skill("continuous-learning-v2")` — record learnings
+3. `skill("verification-before-completion")` — tamper-evident verification records
 
 ## Handoff
 On PASS: invoke `verifier` (if final) or `implementer` (next slice)

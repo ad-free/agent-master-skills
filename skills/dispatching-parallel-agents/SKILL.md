@@ -5,7 +5,6 @@ description: |
   have no dependencies and can execute concurrently.
   Invoked by: implementer, orchestrator, test-engineer.
   
-model: nemotron-3-ultra-free
 version: 2.0.0
 preamble-tier: 3
 allowed-tools:
@@ -24,7 +23,7 @@ metadata:
   preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: planning-execution
-  integrates-with: [conductor, dev-craft]
+  integrates-with: [dev-craft]
   source-enhancements: v2.0.0 Master Template alignment
 ---
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -142,4 +141,4 @@ Tasks independent (no shared files, no dependencies)? → **PARALLEL**. Same fil
 
 ## Integration
 
-**Use with:** `conductor`, `dev-craft` BUILD (parallel tests), `verification-before-completion`.
+**Use with:** `dispatching-parallel-agents`, `dev-craft` BUILD (parallel tests), `verification-before-completion`.

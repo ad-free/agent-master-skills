@@ -3,7 +3,6 @@ name: prompt-optimizer
 description: |
   Turn any rough prompt, half-formed idea, or task description into a finished, ready-to-send prompt optimized for any LLM model inside a chat interface — NOT the API. Use this skill whenever the user wants to write, rewrite, optimize, improve, sharpen, or polish a prompt for chat. Trigger phrases include "rewrite this prompt", "make this a better prompt", "optimize this prompt", "turn this into a prompt", "help me prompt this", "draft a prompt that...", "I want to ask...", or whenever the user pastes a draft prompt and asks for improvements. Also trigger when the user describes a task they plan to send to an LLM model and clearly wants a reusable, well-structured prompt rather than a direct answer. The output is always a single, copy-pasteable prompt in a code block that the user sends as-is — never a template with placeholders.
   
-model: deepseek-v4-flash-free
 version: 2.0.0
 preamble-tier: 2
 allowed-tools:
@@ -477,7 +476,7 @@ When invoked by agents (`debugger`, `code-reviewer`, `verifier`, `api-designer`,
 - Input: Agent-specific task context + user request
 - Output: Optimized prompt tailored to agent's specialization (Pipeline Mode)
 - Each agent declares its optimization profile in frontmatter metadata
-- **Not used by:** `planner`, `implementer` — their skills (`product-thinking`, `dev-craft`, `dev-craft`) handle requirement gathering
+- **Not used by:** `planner`, `implementer` — their skills (`product-thinking`, `dev-craft`) handle requirement gathering
 
 ### Cost Tracking
 Token savings from optimization are reported to `cost-optimizer` for budget analytics:
@@ -505,4 +504,4 @@ metadata:
     self-check: true
 ```
 
-Profiles are loaded by the shared wrapper utility (`skills/references/prompt-optimizer-wrapper.md`).
+Profiles are loaded by the shared wrapper utility (`../references/prompt-optimizer-wrapper.md`).

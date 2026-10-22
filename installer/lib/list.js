@@ -7,7 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const HARNESS_PATHS = {
-  opencode: '~/.config/opencode/skills',
   claude: '~/.claude/skills',
   cursor: '~/.cursor/skills',
   codex: '~/.codex/skills',

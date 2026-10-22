@@ -63,7 +63,6 @@ def check_dependencies() -> dict:
 def load_env():
     env_paths = [
         Path(__file__).parent.parent.parent / ".env",
-        Path.home() / ".opencode" / ".env",
         Path.home() / ".claude" / ".env",
     ]
     for env_path in env_paths:

@@ -43,3 +43,9 @@ def test_eval_harness_ci():
     passed, total = int(m.group(1)), int(m.group(2))
     assert total > 0, out
     assert passed == total, out
+
+
+def test_validate_skills():
+    py = sys.executable
+    code, out = run([py, "tools/validate_skills.py"])
+    assert code == 0, out

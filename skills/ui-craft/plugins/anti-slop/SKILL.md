@@ -1,7 +1,6 @@
 ---
 name: anti-slop
 description: Use when building UI components to enforce anti-generic design rules — no emoji icons, no generic gradients, proper spacing, and motion that follows design principles. Includes Brief Inference, Three Dials (VARIANCE/MOTION/DENSITY), design system mapping, and comprehensive AI-tell prevention.
-model: gpt-5-nano
 version: 2.0.0
 preamble-tier: 1
 allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]

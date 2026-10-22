@@ -5,11 +5,11 @@ description: |
   Ensures WCAG 2.2 Level AA compliance for interfaces built with React, Vue, Tailwind, and other frontend frameworks.
   Covers semantic markup, ARIA, focus management, target sizes, error handling, and cross-platform accessibility traits.
 metadata:
+  preferred-model: gpt-5.6-luna
   origin: agent-master-skills
   domain: agent-quality
   integrates-with: [design-system-validate, ui-craft, verification-before-completion]
 version: 1.0.0
-model: gpt-5.6-luna
 preamble-tier: 3
 allowed-tools:
   - Read
@@ -159,7 +159,7 @@ import { Button } from '@ui-components/library';
 
 - `design-system-validate` — Audit UI code for design consistency and accessibility
 - `ui-craft` — Build accessible, modular React/Vue/Tailwind components
-- `animation-and-interactions` — Ensure animations respect reduced-motion preferences
+- `ui-craft` — Ensure animations respect reduced-motion preferences
 - `verification-before-completion` — Verify accessibility gates before completion
 
 ## References

@@ -36,7 +36,7 @@ skill("dev-craft")  # Decompose spec into verifiable tasks
 
 ### 4. Architecture (if needed)
 ```
-skill("architecture-decision-records")  # Document key decisions
+skill("dev-craft")  # Document key decisions
 ```
 
 ## Output

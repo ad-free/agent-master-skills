@@ -2,7 +2,7 @@
 """Validate SKILL.md files under skills/ for frontmatter and risky content.
 
 Checks:
-- YAML frontmatter contains required keys: name, description, version, preamble-tier, allowed-tools, triggers
+- YAML frontmatter contains required keys: name, description (the only keys hosts need; others are optional)
 - Warns/errors on absolute local paths, inline secrets patterns, risky commands
 - Validates allowedTools against whitelist (if present)
 - Validates gate patterns: HUMAN CHECKPOINT — Gate N
@@ -29,7 +29,10 @@ RE_RISKY_CMDS = re.compile(r"\b(curl|wget|scp|ssh|aws|gcloud|kubectl)\b", re.I)
 ALLOWED_TOOLS = {'Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent', 'AskUserQuestion', 'WebSearch', 'Task'}
 
 # Required frontmatter keys
-REQUIRED_KEYS = ['name', 'description', 'version', 'preamble-tier', 'allowed-tools', 'triggers']
+REQUIRED_KEYS = ['name', 'description']
+
+# Archived skills and the claude.ai sync folder are not part of the library
+SKIP_DIRS = ('_archive', 'synced')
 
 # Gate pattern to validate
 GATE_PATTERN = re.compile(r'###\s*\[\d+(\.\d+)?\]\s*HUMAN CHECKPOINT\s*—\s*Gate\s+\d+:')
@@ -66,6 +69,8 @@ def parse_frontmatter(text):
 
 for path in glob(SKILLS_GLOB, recursive=True):
     rel = os.path.relpath(path, ROOT)
+    if any(part in SKIP_DIRS for part in rel.split(os.sep)):
+        continue
     try:
         with open(path, 'r', encoding='utf-8') as f:
             text = f.read()
@@ -77,6 +82,8 @@ for path in glob(SKILLS_GLOB, recursive=True):
         errors.append(f'{rel}: missing or invalid YAML frontmatter')
         continue
     # check required keys
+    if 'model' in fm:
+        errors.append(f'{rel}: top-level `model` switches the session model in Claude Code; use metadata.preferred-model')
     for key in REQUIRED_KEYS:
         if key not in fm:
             errors.append(f'{rel}: frontmatter missing required key `{key}`')

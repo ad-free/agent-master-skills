@@ -1,7 +1,6 @@
 ---
 name: image-to-design-spec
 description: "Use when analyzing UI screenshots or images to generate structured design specs with colors, layout, components, and design tokens."
-model: big-pickle
 version: 2.0.0
 preamble-tier: 2
 allowed-tools:

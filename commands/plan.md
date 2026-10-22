@@ -23,10 +23,10 @@ skill("product-thinking")  # If idea is vague
 skill("dev-craft")  # Creates PLAN.md with tasks, DAG, acceptance criteria
 ```
 
-### 2. Review (grilling → architecture-decision-records)
+### 2. Review (grilling → dev-craft `references/architecture.md` for ADRs)
 ```
 skill("grilling")  # Stress-test the plan
-skill("architecture-decision-records")  # Document key decisions as ADRs
+skill("dev-craft")  # Document key decisions as ADRs
 ```
 
 ### 3. Approve

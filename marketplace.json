@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "agent-master-skills",
-  "description": "Skills for AI coding agents — composable, disciplined, evidence-based. 77 skills across engineering, frontend, security, orchestration, and more.",
+  "description": "Skills for AI coding agents — composable, disciplined, evidence-based. 32 skills across engineering, frontend, security, orchestration, and more.",
   "owner": {
     "name": "adfree",
     "url": "https://github.com/adfree/agent-master-skills"
@@ -31,13 +31,13 @@
   "skills": [
     {
       "name": "dev-craft",
-      "description": "Full-stack engineering pipeline with 15 phases from LOAD to SHIP.",
+      "description": "Use for non-trivial coding work - building or changing features, fixing bugs, refactors and cleanup, migrations, schema/API/UI changes, architecture choices, reviewing a diff or PR comments, resuming ",
       "source": "./skills/dev-craft",
       "category": "engineering"
     },
     {
       "name": "ui-craft",
-      "description": "Frontend development pipeline with 10 phases from LOAD to SHIP.",
+      "description": "Run the 10-phase frontend development pipeline with persistent `.ui-craft` state.",
       "source": "./skills/ui-craft",
       "category": "frontend"
     },
@@ -61,13 +61,13 @@
     },
     {
       "name": "api-design",
-      "description": "Design robust APIs (REST, GraphQL, gRPC) with versioning, docs, security.",
+      "description": "Use when designing a new API surface or changing an existing one — choosing REST vs GraphQL vs gRPC, versioning strategy, auth/rate-limiting shape, and the contract-first flow (OpenAPI/GraphQL spec, g",
       "source": "./skills/api-design",
       "category": "engineering"
     },
     {
       "name": "testing-strategies",
-      "description": "Comprehensive testing: unit, integration, e2e, contract, property-based.",
+      "description": "Use when deciding WHAT kind of test to write for a change — unit vs integration vs e2e vs contract vs property-based, and what failure mode each test covers.",
       "source": "./skills/testing-strategies",
       "category": "testing"
     },
@@ -90,33 +90,9 @@
       "category": "devops"
     },
     {
-      "name": "database-migrations",
-      "description": "Safe schema changes with rollback, backfill, and zero-downtime deployment.",
-      "source": "./skills/database-migrations",
-      "category": "engineering"
-    },
-    {
-      "name": "backend-patterns",
-      "description": "Hexagonal, layered, CQRS, repository, saga, event sourcing patterns.",
-      "source": "./skills/backend-patterns",
-      "category": "engineering"
-    },
-    {
-      "name": "refactor-and-cleanup",
-      "description": "Dead code removal, duplication elimination, naming, complexity reduction.",
-      "source": "./skills/refactor-and-cleanup",
-      "category": "engineering"
-    },
-    {
       "name": "verification-before-completion",
-      "description": "Layered validation: structure, deterministic, security, convention, LLM-judge.",
+      "description": "Use before saying \"done\", \"fixed\" or \"complete\" on work done outside dev-craft, or when proof must outlive the session (CI handoff, release, audit) via the hash-chained evidence ledger.",
       "source": "./skills/verification-before-completion",
-      "category": "quality"
-    },
-    {
-      "name": "verify-gate",
-      "description": "Mandatory verification before done claims — blocks premature completion.",
-      "source": "./skills/verify-gate",
       "category": "quality"
     },
     {
@@ -126,14 +102,8 @@
       "category": "review"
     },
     {
-      "name": "two-axis-review",
-      "description": "Two-axis code review: Standards (lint, types, style) + Spec (contract, intent, scope).",
-      "source": "./skills/two-axis-review",
-      "category": "review"
-    },
-    {
       "name": "debugging-and-error-recovery",
-      "description": "Systematic root-cause investigation with hypothesis testing and regression prevention.",
+      "description": "Use when the cause of a bug, failing test, build break, 500 or unexpected behavior is not yet known: reproduce, form and test hypotheses, find the root cause before any fix, then prevent regression.",
       "source": "./skills/debugging-and-error-recovery",
       "category": "quality"
     },
@@ -142,48 +112,6 @@
       "description": "Deep security vulnerability discovery: Recon, Scan, Test, Exploit, Disclose.",
       "source": "./skills/bug-hunting",
       "category": "security"
-    },
-    {
-      "name": "agent-shield",
-      "description": "AgentShield security scanner integration: threat detection, prompt injection defense.",
-      "source": "./skills/agent-shield",
-      "category": "security"
-    },
-    {
-      "name": "secops-and-vulnerability-scanner",
-      "description": "Static analysis, OWASP Top 10, dependency audit, secrets detection.",
-      "source": "./skills/secops-and-vulnerability-scanner",
-      "category": "security"
-    },
-    {
-      "name": "design-system-auditor",
-      "description": "Audit UI code for design consistency, responsiveness, performance, and WCAG.",
-      "source": "./skills/design-system-auditor",
-      "category": "frontend"
-    },
-    {
-      "name": "animation-and-interactions",
-      "description": "CSS/Framer Motion animations, micro-interactions, and visual polish.",
-      "source": "./skills/animation-and-interactions",
-      "category": "frontend"
-    },
-    {
-      "name": "image-to-code",
-      "description": "Image-first website design: screenshot to component hierarchy to code generation.",
-      "source": "./skills/image-to-code",
-      "category": "frontend"
-    },
-    {
-      "name": "imagegen",
-      "description": "Premium frontend image generation: hero images, illustrations, product shots.",
-      "source": "./skills/imagegen",
-      "category": "frontend"
-    },
-    {
-      "name": "redesign",
-      "description": "Existing project design audit and upgrade: pain points, before/after, polish.",
-      "source": "./skills/redesign",
-      "category": "frontend"
     },
     {
       "name": "image-to-design-spec",
@@ -198,28 +126,10 @@
       "category": "testing"
     },
     {
-      "name": "qa-and-edge-case-tester",
-      "description": "Automated test generation, edge-case analysis, boundary testing.",
-      "source": "./skills/qa-and-edge-case-tester",
-      "category": "testing"
-    },
-    {
       "name": "tdd-seam",
-      "description": "Seam-based TDD: isolate boundaries, test across seams, pin behavior at integration points.",
+      "description": "Use when deciding where a new test attaches (a public seam, not internals) and running red-green-refactor in vertical slices; write the failing test first.",
       "source": "./skills/tdd-seam",
       "category": "testing"
-    },
-    {
-      "name": "api-contract-designer",
-      "description": "OpenAPI/Swagger specs, GraphQL schemas, type definitions, and mock data.",
-      "source": "./skills/api-contract-designer",
-      "category": "engineering"
-    },
-    {
-      "name": "architecture-decision-records",
-      "description": "Draft, evaluate, and maintain ADRs and trade-off matrices.",
-      "source": "./skills/architecture-decision-records",
-      "category": "documentation"
     },
     {
       "name": "performance-profiler-and-tuner",
@@ -229,26 +139,8 @@
     },
     {
       "name": "context-engineering",
-      "description": "Agent context setup, memory hierarchy, session continuity, context rotation.",
+      "description": "Use when a session is long or near its context limit, when handing work to another agent or a later session (write a handoff doc), when resuming earlier work, or when pruning stale context.",
       "source": "./skills/context-engineering",
-      "category": "context"
-    },
-    {
-      "name": "context-compressor-and-pruner",
-      "description": "Context window management, summarization, stale context pruning.",
-      "source": "./skills/context-compressor-and-pruner",
-      "category": "context"
-    },
-    {
-      "name": "token-budget",
-      "description": "Token estimation, user-chosen response depth, context compression.",
-      "source": "./skills/token-budget",
-      "category": "context"
-    },
-    {
-      "name": "cost-optimizer",
-      "description": "Model routing (Haiku/Sonnet), budget tracking, prompt caching.",
-      "source": "./skills/cost-optimizer",
       "category": "context"
     },
     {
@@ -258,57 +150,15 @@
       "category": "context"
     },
     {
-      "name": "learn",
-      "description": "Persistent project learnings DB: search, prune, export, stats.",
-      "source": "./skills/learn",
-      "category": "context"
-    },
-    {
       "name": "retro",
       "description": "Weekly engineering retrospective with git analysis and trend tracking.",
       "source": "./skills/retro",
       "category": "context"
     },
     {
-      "name": "handoff",
-      "description": "Agent-to-agent and session-to-session context transfer protocol.",
-      "source": "./skills/handoff",
-      "category": "context"
-    },
-    {
-      "name": "continuous-learning-v2",
-      "description": "Continuous learning system: session observations, decision logs, practice extraction.",
-      "source": "./skills/continuous-learning-v2",
-      "category": "context"
-    },
-    {
-      "name": "evidence-ledger",
-      "description": "Evidence-based decision tracking: structured ledger of choices, outcomes, rationale.",
-      "source": "./skills/evidence-ledger",
-      "category": "context"
-    },
-    {
       "name": "dispatching-parallel-agents",
       "description": "Run independent tasks simultaneously using subagents.",
       "source": "./skills/dispatching-parallel-agents",
-      "category": "orchestration"
-    },
-    {
-      "name": "conductor",
-      "description": "Git worktree orchestration for parallel sprint execution across agents.",
-      "source": "./skills/conductor",
-      "category": "orchestration"
-    },
-    {
-      "name": "pair-agent",
-      "description": "Cross-agent browser sharing: review another agent's live work in real-time.",
-      "source": "./skills/pair-agent",
-      "category": "orchestration"
-    },
-    {
-      "name": "agent-eval",
-      "description": "Head-to-head agent comparison: pass rate, cost, time, consistency on custom tasks.",
-      "source": "./skills/agent-eval",
       "category": "orchestration"
     },
     {
@@ -324,16 +174,52 @@
       "category": "devops"
     },
     {
-      "name": "diataxis-docs",
-      "description": "Diataxis documentation framework: tutorial, howto, reference, explanation sync.",
-      "source": "./skills/diataxis-docs",
-      "category": "documentation"
-    },
-    {
       "name": "skill-creator",
       "description": "Create new skills, modify and improve existing skills for the library.",
       "source": "./skills/skill-creator",
       "category": "orchestration"
+    },
+    {
+      "name": "accessibility",
+      "description": "Use when designing, implementing, or auditing inclusive digital products for AI agents and LLM-powered applications.",
+      "source": "./skills/accessibility",
+      "category": "frontend"
+    },
+    {
+      "name": "agent-architecture-audit",
+      "description": "Use when auditing agent or LLM applications for wrapper regression, memory pollution, tool discipline failures, hidden repair loops, or rendering corruption.",
+      "source": "./skills/agent-architecture-audit",
+      "category": "quality"
+    },
+    {
+      "name": "caveman",
+      "description": "Ultra-compressed communication mode that cuts output tokens while keeping technical accuracy.",
+      "source": "./skills/caveman",
+      "category": "context"
+    },
+    {
+      "name": "caveman-commit",
+      "description": "Write a Conventional Commits message compressed to intent only.",
+      "source": "./skills/caveman-commit",
+      "category": "engineering"
+    },
+    {
+      "name": "caveman-compress",
+      "description": "Compress a memory file such as CLAUDE.md or a todo list into caveman format to save input tokens, keeping a readable backup.",
+      "source": "./skills/caveman-compress",
+      "category": "context"
+    },
+    {
+      "name": "fe-visual-loop",
+      "description": "Show-before-build visual loop for any UI-visible task.",
+      "source": "./skills/fe-visual-loop",
+      "category": "frontend"
+    },
+    {
+      "name": "tech-advisor",
+      "description": "Use when you need to research and propose technology improvements, framework upgrades, or better alternatives for a project.",
+      "source": "./skills/tech-advisor",
+      "category": "engineering"
     }
   ]
 }
