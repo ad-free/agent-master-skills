@@ -17,7 +17,7 @@ this skill, then `references/` defaults. `AGENTS.md` hard rules (commits, destru
 | Tier | When | Path |
 |---|---|---|
 | **Trivial** | typo, rename, one-line fix, trivial config | Edit, run the relevant check. Project lint and clean-code minimum still apply. |
-| **Standard** | feature or fix in a few files, one endpoint, a UI change, a small schema change, a review | Section 3 |
+| **Standard** | feature or fix in a few files, one endpoint, a UI change, a small schema change, a review | Section 3, without reference files unless the task hits a condition in Section 5 |
 | **Large** | new module or service, schema + API + UI together, risky migration, auth/security, ambiguous scope, multi-session | Section 3 + `references/phases-large.md` |
 
 Vague input ("Build HRM", "make me a CRM") or attached spec files: read `references/workflow.md` §Input gate
@@ -41,6 +41,8 @@ Frame -> Challenge -> Brief/Spec -> (Design) -> (Contract) -> Plan -> Implement 
 ```
 Parenthesised steps run only for UI work (Design) or 2+ components (Contract). Moving backward is normal: if
 Implement or Review shows the spec is wrong, stop, record it, return to Challenge/Brief. Never adapt silently.
+The "Read now" column is for Large tasks; a Standard task reads a file there only when Section 5 lists a
+condition the task hits (UI, schema, migration, risk flag, review).
 
 | Step | Do | Read now | Gate to leave |
 |---|---|---|---|
@@ -81,7 +83,7 @@ checkpoint after TRACE.
 
 | Condition | File |
 |---|---|
-| Any Standard/Large task | `references/workflow.md` |
+| Large task (Standard tasks read only the rows below that match) | `references/workflow.md` |
 | Weighing the request, ambiguity, assumptions | `references/challenge.md` |
 | UI built or changed | `references/frontend-design.md`, `references/checklists/ui.md`, one `ui-patterns/` file |
 | Tables/schema/queries touched; new service | `references/data-modeling.md`; `references/architecture.md` |
