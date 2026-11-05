@@ -3,7 +3,7 @@
 Read this only when a task needs skill routing, a planning pipeline, or subagent dispatch.
 Skills come from `github.com/ad-free/agent-master-skills`. Use only skills that are actually installed in the
 current host. If one is absent, follow the equivalent workflow directly. Honor skills marked
-user-invoked-only. Tool-managed behavior (RTK, CodeGraph, Graphify, Ponytail) is described in `AGENTS.md` §5.
+user-invoked-only. Tool-managed behavior (RTK, CodeGraph, Ponytail) is covered in `AGENTS.md` §5.
 
 ## Skill routing
 

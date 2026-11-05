@@ -86,7 +86,7 @@ EOF
     local original_tokens=$(echo "$optimized" | grep -o '"original_tokens":[0-9]*' | cut -d: -f2)
     local optimized_tokens=$(echo "$optimized" | grep -o '"optimized_tokens":[0-9]*' | cut -d: -f2)
     
-    # Report to cost-optimizer
+    # Record savings
     report_savings "triage" "pre-routing" "$original_tokens" "$optimized_tokens"
     
     echo "$optimized"
@@ -162,7 +162,7 @@ get_agent_profile() {
 
 ### `report_savings(agent, stage, original, optimized)`
 
-Reports token savings to cost-optimizer for budget tracking.
+Appends token savings to `.dev-craft/prompt-optimizer-metrics.jsonl`.
 
 ```bash
 report_savings() {
@@ -176,7 +176,7 @@ report_savings() {
         savings_pct=$(( (original - optimized) * 100 / original ))
     fi
     
-    # Append to cost-optimizer tracking
+    # Append to the metrics file
     local metrics_file=".dev-craft/prompt-optimizer-metrics.jsonl"
     mkdir -p "$(dirname "$metrics_file")"
     
@@ -227,12 +227,10 @@ All savings are logged to `.dev-craft/prompt-optimizer-metrics.jsonl` for analys
 {"timestamp":"2026-08-04T10:30:10Z","agent":"code-reviewer","stage":"per-agent","original_tokens":3100,"optimized_tokens":2200,"savings_percent":29}
 ```
 
-### Cost-Optimizer Integration
+### Reading the metrics
 
-The `cost-optimizer` skill reads this file to:
-- Report total token savings per session
-- Adjust model routing based on optimized prompt complexity
-- Calculate ROI of prompt-optimizer integration
+The `cost-optimizer` skill that used to read this file is archived (`skills/_archive/`). Nothing reads it
+automatically; inspect it by hand, e.g. `jq -s 'map(.savings_percent) | add / length' <file>`.
 
 ## Configuration
 

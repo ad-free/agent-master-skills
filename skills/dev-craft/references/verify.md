@@ -20,6 +20,13 @@ reasoning it should work is how unverified claims get through.
 Not verified: <anything not run, and why; manual steps for the user>
 ```
 Include only rows you actually ran. "Not verified" is the honest alternative to overclaiming; use it.
+
+**"Not verified" is for checks that cannot run here**: real hardware, a screen reader, a third-party system, a
+missing credential. It is not for checks that only cost time. If the project has the command (full suite, e2e,
+another role, another locale, another width), run it before handoff; the project's pre-handoff gate in its
+`AGENTS.md`/`CLAUDE.md` is mandatory. Each "Not verified" line names its blocker; "to save time" and "risk: low"
+are not blockers. If a required run would take over ~15 minutes, say so in the brief and ask once then, not at
+the end.
 Subagent results follow the reconciliation rule in `test-agent.md`: no command output means Weak, and the main
 agent re-runs the key command.
 
@@ -54,6 +61,12 @@ agent re-runs the key command.
 1. Did I run the code, not just read it? 2. Did I re-run everything after my last edit? 3. Does every `REQ` have
 a test and a result? 4. Did I touch anything out of scope? 5. What would a skeptical reviewer ask? 6. Am I
 claiming anything I have not shown?
+
+## Clean up before the report
+
+Wait for background runs through their completion notification, not `sleep` loops. Before the report, list the
+servers, test runs and containers you started; stop them (by PID) unless the user asked to keep them, and say
+which are still running.
 
 ## Final report
 

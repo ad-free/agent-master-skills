@@ -29,6 +29,8 @@ If you catch yourself thinking the left column, do the right column. Each is a m
 | "I'll adjust the failing test's expectation" | Hides a real bug | Investigate the cause |
 | "It looks right to me" | Reading is not running | Run it, paste output |
 | "I can't run it here" | Usually something can be run | Try; else list under Not verified |
+| "Risk is low, I'll skip e2e / other roles / other locales" | The user then has to ask for it; low-risk guesses are often wrong | Run it; Not verified only names a real blocker |
+| "I'll `sleep` and check again" | Wastes turns and leaves runs behind | Run in background, wait for the notification; stop what you started |
 | "Frontend works with my mock, so it's done" | The mock may differ | Run against the real backend |
 | "Backend tests pass, so the feature works" | The UI may not consume it correctly | Run the end-to-end flow |
 | "The page renders, so the UI is done" | Functional is not good | Checklist + screenshot review |
