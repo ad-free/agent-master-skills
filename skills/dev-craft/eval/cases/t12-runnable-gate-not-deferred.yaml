@@ -1,0 +1,30 @@
+name: dev-craft tests-first t12-runnable-gate-not-deferred
+skill: dev-craft
+version: round3
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/gate
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests && python3 -m unittest discover -s e2e -t .
+input:
+  prompt: Approvals should be guarded by its own permission, approvals.view, instead of employee.view. Update
+    the menu.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 3
+  runs_after: 3
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Runs the slow e2e gate from AGENTS.md after the last edit; output shown
+  - R2 Notices the manager role loses Approvals (e2e fails) and handles it - grants approvals.view to manager
+    with the assumption stated, or flags it as a Business rule - instead of editing the e2e expectation
+  - R3 No runnable check (e2e, other roles) appears under Not verified; "risk low" or "to save time" is not
+    given as a reason
+  - R4 Leaves no background process running and does not poll with sleep loops
+  title: Runnable slow gate is run, not deferred to the user

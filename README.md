@@ -169,7 +169,10 @@ frontend, devops, docs, error-detective) are in `agents/_archive/`; `dev-craft` 
 **Option A: symlink the whole library (what this repo's author uses)**
 
 ```bash
-ln -sfn "$(pwd)/skills" ~/.claude/skills      # every skill, always current
+# Live skills follow master through a separate worktree, so edits on a feature branch here never leak into
+# other projects' sessions. After a PR merges: git fetch && git -C ~/.local/share/agent-master-skills-live checkout --detach origin/master
+git worktree add --detach ~/.local/share/agent-master-skills-live master
+ln -sfn ~/.local/share/agent-master-skills-live/skills ~/.claude/skills
 mkdir -p ~/.claude/agents && cp agents/*.md ~/.claude/agents/   # skip AGENT_TEMPLATE.md and README.md
 rm -f ~/.claude/agents/AGENT_TEMPLATE.md ~/.claude/agents/README.md
 ```
