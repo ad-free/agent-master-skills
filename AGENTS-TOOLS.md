@@ -3,7 +3,8 @@
 Read this only when a task needs skill routing, a planning pipeline, or subagent dispatch.
 Skills come from `github.com/ad-free/agent-master-skills`. Use only skills that are actually installed in the
 current host. If one is absent, follow the equivalent workflow directly. Honor skills marked
-user-invoked-only. Tool-managed behavior (RTK, CodeGraph, Ponytail) is covered in `AGENTS.md` §5.
+user-invoked-only. Tool-managed behavior (RTK, CodeGraph, Ponytail) is covered in `AGENTS.md` §5; claude-mem and
+RTK usage rules are in "Optional tools" below.
 
 ## Skill routing
 
@@ -15,7 +16,8 @@ subagent.
 | Vague product idea | `product-thinking` (→ `PRODUCT.md`) | then `dev-craft` |
 | Existing spec files (xlsx/csv/md/pdf) | `project-discovery` (→ `DOMAIN.md`) | then `dev-craft` |
 | Feature, bug, refactor, migration, schema/API change | `dev-craft` (picks tier and mode) | `debugging-and-error-recovery` when the bug's cause is unknown |
-| Frontend / UI pipeline, redesign, motion | `ui-craft` | `fe-visual-loop` for show-before-build; `image-to-design-spec` for screenshot-led work; `accessibility` |
+| New screen, page or redesign | `fe-visual-loop` (real reference picked by the user) | `image-to-design-spec`; `ui-verifier` agent for the proof |
+| Full UI pipeline, design system, motion | `ui-craft` | `fe-visual-loop`, `accessibility` |
 | Code review | `code-review-and-quality` | — |
 | Security audit | `dev-craft` (`plugins/security-audit`) | `code-review-and-quality` |
 | Completion check outside dev-craft, stored proof | `verification-before-completion` (includes the evidence ledger) | — |
@@ -50,7 +52,9 @@ Skip it for typos, one-line fixes, and docs.
 
 Delegate only when the host permits it and the work is independent, a specialist review, or an isolated
 workstream. For independent tasks use `dispatching-parallel-agents`; for multi-module builds with a shared
-contract and git worktree isolation, follow dev-craft `references/build-extras.md`.
+contract and git worktree isolation, follow dev-craft `references/build-extras.md`. Named agents:
+`code-reviewer` (read-only, gets the brief and a diff file), `verifier` (fresh run, mutation spot-check),
+`ui-verifier` (screenshots at 1440 and 390 against the picked reference).
 
 - **Before dispatch**, define: one goal, minimal context, expected deliverable, file/interface ownership,
   acceptance criteria, read-only vs. may-edit. Use isolated worktrees for parallel writers.
@@ -62,6 +66,18 @@ contract and git worktree isolation, follow dev-craft `references/build-extras.m
 files, verification, open issues) using `context-engineering`, keep only durable conclusions in memory, and
 resume from the handoff plus current repo state. Never carry raw logs, full transcripts, or full graph
 reports across rotations.
+
+## Optional tools (skip any that is not installed)
+
+**claude-mem.** Let its hooks capture and inject context; query only when history matters (the user refers to
+earlier work, a rationale is missing, a regression may repeat a past failure). Go `search` (5-8 results) →
+`timeline` only if order matters → `get_observations` for 2-4 filtered IDs. Memory is historical evidence:
+check it against current code before acting. Never store secrets, customer data or raw logs; never paste
+memory dumps into prompts, plans, handoffs or instruction files.
+
+**RTK.** If the shell rewrites commands, issue ordinary commands. Use plain commands when you need complete
+output; if output offers `rtk recall <id>`, recall it instead of rerunning. RTK does not change what Git
+operations are authorized.
 
 ## Maintenance notes for the agent
 
