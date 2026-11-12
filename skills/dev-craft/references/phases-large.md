@@ -65,7 +65,7 @@ separately.
 3. Slice vertically: one complete feature path per slice.
 4. Write tasks with Given-When-Then acceptance criteria and the test that proves each.
 5. Write ADRs for architecture decisions, in `documentation-engineering` format.
-6. API surface change: invoke `api-design`. Structural pattern or hard-to-reverse choice: `references/architecture.md`.
+6. API surface change: `fullstack.md` §New or reshaped API. Structural pattern or hard-to-reverse choice: `references/architecture.md`.
 
 **Exit:** a plan ready for the checkpoint. **State:** plan, build order, and ADR summaries in `spec.md`.
 
@@ -119,7 +119,7 @@ the contract and does not invent endpoints.
 
 ## REVIEW
 1. Review the full diff per `review.md` (axes, try-to-break-it, findings format); add `code-review-and-quality`
-   and, for security-critical code, `bug-hunting`.
+   and, for security-critical code, `plugins/security-audit`.
 2. Run the lint gate from `lint-rules.md`. Cryptic-name hits and listed rule violations fail the gate.
 3. Categorize findings (Critical / Optional) and fix everything Critical.
 4. Requirements reality-check: for each P1 row in the matrix, confirm the built code satisfies it, with
@@ -132,7 +132,7 @@ the contract and does not invent endpoints.
    dependency CVEs, config/infra, cross-slice audit, BE-FE contract conformance, risk register.
 2. Check that the changes follow the documented component hierarchy, API contract, and schema conventions.
    Update the codebase map if it is outdated.
-3. Invoke `observability-engineering` (a separate concern from security).
+3. Observability (a separate concern from security): the `architecture.md` line on logs, errors, health checks.
 
 **Exit:** Critical and High findings resolved. Accepted risks are recorded with reasons in `spec.md`.
 

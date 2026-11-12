@@ -22,6 +22,9 @@ violation is a required fix, not a suggestion.
 
 - Edit only inside the scope line; report anything outside it (`fullstack.md`).
 - Three similar lines beat a premature abstraction. One slice at a time. Do not touch code outside the slice.
-- Test at public seams. Mock only at boundaries (real, then fakes, then stubs, then mocks).
+- Test at public seams (function, HTTP endpoint, repository, CLI, event/message), never internals. Mock only at
+  boundaries (real, then fakes, then stubs, then mocks). Name tests by behavior: "rejects duplicate email".
+- Test smells: breaks on a refactor with no behavior change (coupled to internals); expected value recomputed
+  the way the code does (tautological: use a known literal); all tests written before any code (horizontal).
 - Feature flag risky production changes. Use design tokens, no ad-hoc values. React forms: React Hook Form + Zod.
 - Order: SECURE, then MATCH, then lint.

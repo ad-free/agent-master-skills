@@ -1,6 +1,6 @@
 # Security checklist (per slice and review minimum)
 
-Fallback for `bug-hunting`. `plugins/security-audit` stays the deep pass at HARDEN; run it for auth, payment
+`plugins/security-audit` is the deep pass at HARDEN; run it for auth, payment
 or personal-data work. Each item is checkable in a diff or by one request.
 
 ## Access

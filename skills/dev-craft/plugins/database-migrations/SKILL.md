@@ -1,18 +1,9 @@
 ---
 name: database-migrations
 description: Use when you need safe migration patterns for schema changes with rollback, data backfill, and zero-downtime deployment.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "database migration"
-  - "schema change"
-  - "data migration"
-  - "rollback"
-  - "zero downtime migration"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
-  preferred-model: big-pickle
 ---
 
 <!-- TOKEN CEILING: ~2K -->

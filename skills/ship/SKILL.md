@@ -6,27 +6,8 @@ description: |
   or "get it deployed". (gstack)
   
 disable-model-invocation: true
-version: 2.0.0
-preamble-tier: 4
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - Agent
-  - AskUserQuestion
-triggers:
-  - "ship it"
-  - "create a pr"
-  - "push to main"
-  - "deploy this"
-  - "merge and push"
-  - "get it deployed"
 metadata:
   origin: agent-master-skills
-  preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: planning-execution
   integrates-with: [dev-craft, verification-before-completion, verification-before-completion]

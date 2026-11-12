@@ -207,27 +207,28 @@ See `README.md` → "Agents" (verifier, code-reviewer, debugger, test-engineer, 
 | `refactor-and-cleanup` | `dev-craft` (Refactor mode, `references/refactor.md`) |
 | `database-migrations` | `dev-craft` (`plugins/database-migrations/`) |
 | `backend-patterns`, `architecture-decision-records` | `dev-craft` (`references/architecture.md`) |
-| `api-contract-designer` | `api-design` (`references/contract-first.md`) |
-| `qa-and-edge-case-tester` | `testing-strategies` (`references/edge-cases.md`) |
+| `api-contract-designer`, `api-design` | `dev-craft` (`references/fullstack.md`) |
+| `qa-and-edge-case-tester`, `testing-strategies`, `tdd-seam` | `dev-craft` (`references/checklists/testing.md`, `edge-cases.md`, `build-protocol.md`) |
 | `handoff`, `context-compressor-and-pruner` | `context-engineering` |
 | `evidence-ledger`, `verify-gate` | `verification-before-completion` |
 | `redesign`, `animation-and-interactions`, `animation-craft` | `ui-craft` (`redesign-audit.md`, `motion.md`) |
 | `two-axis-review` | `code-review-and-quality` |
-| `secops-and-vulnerability-scanner`, `agent-payment-x402` | `bug-hunting` |
+| `secops-and-vulnerability-scanner`, `agent-payment-x402`, `bug-hunting` | `dev-craft` (`checklists/security.md`, `plugins/security-audit`) |
 | `agent-sort`, `agent-orchestration`, `conductor` | `dispatching-parallel-agents` |
 | `design-system-auditor` | `ui-craft` plugin `design-system-validate` |
 | `diataxis-docs` | `documentation-engineering` |
-| `performance-profiling` (was plugin) | `performance-profiler-and-tuner` |
-| `image-to-code`, `imagegen`, `agent-shield`, `pair-agent`, `cost-optimizer`, `token-budget`, `learn`, `continuous-learning-v2`, `agent-eval`, `agent-self-evaluation` | Retired; restore from `skills/_archive/` if needed |
+| `playwright-skill` | Playwright MCP |
+| `image-to-code`, `imagegen`, `performance-profiling`, `performance-profiler-and-tuner`, `observability-engineering`, `prompt-optimizer`, `caveman`, `caveman-commit`, `caveman-compress`, `grilling`, `tech-advisor`, `agent-architecture-audit`, `agent-shield`, `pair-agent`, `cost-optimizer`, `token-budget`, `learn`, `continuous-learning-v2`, `agent-eval`, `agent-self-evaluation` | Retired; restore from `skills/_archive/` if needed |
 
 ### Removed Agents (use the replacement)
 
 | Removed Agent | Now Use |
 |--------------|---------|
 | `planner`, `implementer`, `orchestrator`, `fullstack-developer`, `senior-developer` | `dev-craft` skill in the main agent |
-| `backend-architect`, `api-designer`, `database-engineer` | `dev-craft` + `api-design` |
+| `backend-architect`, `api-designer`, `database-engineer` | `dev-craft` (`references/fullstack.md`) |
 | `frontend-engineer`, `frontend-developer` | `ui-craft` |
 | `devops-engineer` | `devops-automation` skill |
+| `debugger`, `test-engineer`, `security-auditor` | `debugging-and-error-recovery`, `verifier` agent, dev-craft `plugins/security-audit` |
 | `docs-engineer`, `technical-writer` | `documentation-engineering` skill |
 | `error-detective` | `debugger` agent |
 | `application-security-engineer` | `security-auditor` agent |

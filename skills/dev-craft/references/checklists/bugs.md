@@ -1,6 +1,6 @@
 # Bug-class checklist
 
-Fallback for `bug-hunting` (see `SKILL.md` §5). Each item is checkable in a diff or by running one input.
+Each item is checkable in a diff or by running one input.
 
 ## How to hunt
 - For each changed function, list its callers; check each still holds.

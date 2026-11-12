@@ -4,27 +4,11 @@ description: |
   Use when the cause of a bug, failing test, build break, 500 or unexpected behavior is not yet known:
   reproduce, form and test hypotheses, find the root cause before any fix, then prevent regression.
   dev-craft's Bug mode calls this; when the cause is already clear, dev-craft alone is enough.
-version: 2.0.0
-preamble-tier: 4
-allowed-tools:
-  - Read
-  - Bash
-  - Grep
-  - Glob
-  - AskUserQuestion
-triggers:
-  - "debug this failure"
-  - "test is failing"
-  - "find root cause"
-  - "investigate this error"
-  - "hypothesis test"
-  - "regression check"
 metadata:
   origin: agent-master-skills
-  preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: debugging
-  integrates-with: [verification-before-completion, dev-craft, test-engineer, bug-hunting]
+  integrates-with: [verification-before-completion, dev-craft]
 ---
 
 TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
@@ -33,7 +17,6 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 
 ## Relationship to existing skills
 
-- `bug-hunting` — security-focused debugging; this skill covers general debugging
 - `dev-craft` — invokes this skill during TEST phase when suites fail
 - `verification-before-completion` — runs after fixes to confirm evidence
 - `code-review-and-quality` — validates that the fix does not introduce new issues
@@ -242,7 +225,7 @@ This loop prevents the most common debugging failure mode: declaring a fix done 
 
 ## Integration
 
-**Use with:** `dev-craft` (BUILD TDD loop), `verification-before-completion` (verify fixes), `bug-hunting` (security vuln debugging).
+**Use with:** `dev-craft` (BUILD TDD loop), `verification-before-completion` (verify fixes).
 
 ## Quality Gates
 

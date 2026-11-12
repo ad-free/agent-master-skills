@@ -1,22 +1,10 @@
 ---
 name: design-system-validate
 description: Use when you need to validate UI code against design system tokens and component library specifications, or audit UI for design consistency, responsiveness, performance, and WCAG accessibility standards.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "design system validation"
-  - "token compliance"
-  - "design audit"
-  - "component validation"
-  - "design system check"
-  - "audit UI"
-  - "design consistency"
-  - "WCAG audit"
 disable-model-invocation: true
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
-  preferred-model: gpt-5-nano
 ---
 
 <!-- TOKEN CEILING: ~2K -->

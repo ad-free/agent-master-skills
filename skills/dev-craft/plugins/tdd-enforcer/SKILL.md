@@ -1,20 +1,11 @@
 ---
 name: tdd-enforcer
 description: Use when you need to enforce strict Test-Driven Development (RED-GREEN-REFACTOR) in the dev-craft BUILD phase. No production code without a failing test first.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "tdd"
-  - "test driven development"
-  - "red green refactor"
-  - "test first"
-  - "enforce tdd"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
   plugin-for: dev-craft
   phase: BUILD
-  preferred-model: big-pickle
 ---
 
 <!-- TOKEN CEILING: ~2K -->
@@ -23,7 +14,7 @@ metadata:
 
 Makes test-first non-optional for each dev-craft slice: **RED, VERIFY RED, GREEN, VERIFY GREEN, REFACTOR**.
 A test that never failed proves nothing, which is why the "watch it fail" steps are the point of this plugin.
-Seam and public-interface choice: `tdd-seam`. What kind of test to write: `testing-strategies`.
+Seam choice and test anti-patterns: `references/build-protocol.md`. What kind of test: `references/checklists/testing.md`.
 
 The red-green cycle still applies inside each slice; Test Designer tests (`references/test-agent.md`) are the
 outer acceptance tests the slices must satisfy.

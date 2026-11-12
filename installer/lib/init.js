@@ -20,7 +20,7 @@ const TEMPLATES = {
     agents: ['verifier', 'code-reviewer', 'ui-verifier'],
   },
   backend: {
-    skills: ['dev-craft', 'verification-before-completion', 'api-design', 'debugging-and-error-recovery'],
+    skills: ['dev-craft', 'verification-before-completion', 'debugging-and-error-recovery'],
     agents: ['verifier', 'code-reviewer'],
   },
 };
@@ -115,10 +115,10 @@ Project-level agent instructions. Extend the user-level \`AGENTS.md\` if one exi
 |---|---|---|
 | Vague product idea | product-thinking | then dev-craft |
 | Spec files (xlsx/csv/md/pdf) | project-discovery | then dev-craft |
-| Feature, bug, refactor, migration, schema/API change | dev-craft | debugging-and-error-recovery (cause unknown), tdd-seam, api-design |
+| Feature, bug, refactor, migration, schema/API change | dev-craft | debugging-and-error-recovery (cause unknown) |
 | Frontend / UI pipeline, redesign, motion | ui-craft | fe-visual-loop, image-to-design-spec, accessibility |
-| Review code | code-review-and-quality | bug-hunting |
-| Security audit | bug-hunting | code-review-and-quality |
+| Review code | code-review-and-quality | — |
+| Security audit | dev-craft (plugins/security-audit) | code-review-and-quality |
 | Completion check outside dev-craft | verification-before-completion | — |
 | Long session, handoff, resume | context-engineering | — |
 | Independent tasks in parallel | dispatching-parallel-agents | — |

@@ -35,6 +35,26 @@ def test_validate_agents_rejects_ignored_fields(tmp_path):
     assert not check(good.replace("maxTurns: 5", "maxTurns: 0"))[0]
 
 
+def test_validate_skills_rejects_ignored_fields(tmp_path):
+    import shutil
+
+    (tmp_path / "tools").mkdir()
+    shutil.copy(os.path.join(HERE, "tools", "validate_skills.py"), tmp_path / "tools")
+    skill = tmp_path / "skills" / "x"
+    skill.mkdir(parents=True)
+
+    def check(front):
+        (skill / "SKILL.md").write_text(f"---\n{front}\n---\n\nbody\n")
+        return run([sys.executable, str(tmp_path / "tools" / "validate_skills.py")])[0]
+
+    good = "name: x\ndescription: Use when testing.\nmetadata:\n  version: 1.0.0"
+    assert check(good) == 0
+    assert check(good + "\ntriggers: [a]") != 0
+    assert check(good + "\npreamble-tier: 3") != 0
+    assert check("version: 1.0.0\n" + good.replace("metadata:\n  version: 1.0.0", "")) != 0
+    assert check(good + "\n  preferred-model: big-pickle") != 0
+
+
 def test_validate_dev_craft_state_good():
     py = sys.executable
     sample = os.path.join(HERE, "tests", "fixtures", "project_with_dev_craft")

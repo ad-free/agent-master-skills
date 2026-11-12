@@ -5,29 +5,10 @@ description: |
   state. Use for UI/UX features, design system work, component libraries,
   redesigning an existing UI, animation and micro-interactions, or resuming
   sessions. Do NOT use for a small UI tweak inside a feature (dev-craft covers it).
-version: 2.0.0
-preamble-tier: 3
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - Agent
-  - AskUserQuestion
-  - Task
-triggers:
-  - "build this UI"
-  - "run ui-craft"
-  - "design this component"
-  - "implement the design"
-  - "create design tokens"
 metadata:
   origin: agent-master-skills
   phase-count: 10
   plugins: [design-intelligence, anti-slop]
-  preferred-model: big-pickle
   version: 2.0.0
   domain: frontend
   integrates-with: [dev-craft, design-system-validate, accessibility-deep]
@@ -43,7 +24,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - `design-system-validate` — validates UI code against design system tokens and component contracts; this skill enforces those standards
 - `accessibility-deep` — WCAG 2.2 AAA compliance auditing; this skill integrates the AA checklist at every phase
 - `image-to-design-spec` — extracts design tokens from screenshots; used in ALIGN phase
-- `bug-hunting` — security methodology for frontend vulnerability discovery
+- dev-craft `references/checklists/security.md` — frontend security checks
 
 ## When to Use
 

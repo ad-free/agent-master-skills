@@ -4,27 +4,8 @@ description: |
   Use when running golden test cases against each skill to verify behavior and catch regressions.
   CI gate for skill changes. Implements Eval-Driven Development (EDD) with pass@k metrics,
   capability/regression evals, and code/model/human grader types.
-version: 2.1.0
-preamble-tier: 2
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-triggers:
-  - "evaluate skill"
-  - "test skill"
-  - "run eval"
-  - "benchmark skill"
-  - "eval-driven development"
-  - "pass@k"
-  - "capability eval"
-  - "regression eval"
 metadata:
   origin: agent-master-skills
-  preferred-model: gpt-5-nano
   version: 2.1.0
   domain: quality-safety
   integrates-with: [verification-before-completion, code-review-and-quality]

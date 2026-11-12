@@ -30,6 +30,8 @@ ALLOWED_TOOLS = {'Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent', 'AskU
 
 # Required frontmatter keys
 REQUIRED_KEYS = ['name', 'description']
+# Fields Claude Code ignores for skills; version belongs under metadata
+DEAD_KEYS = ('triggers', 'preamble-tier', 'version', 'preferred-model')
 
 # Archived skills and the claude.ai sync folder are not part of the library
 SKIP_DIRS = ('_archive', 'synced')
@@ -83,7 +85,12 @@ for path in glob(SKILLS_GLOB, recursive=True):
         continue
     # check required keys
     if 'model' in fm:
-        errors.append(f'{rel}: top-level `model` switches the session model in Claude Code; use metadata.preferred-model')
+        errors.append(f'{rel}: top-level `model` switches the session model in Claude Code; remove it')
+    for key in DEAD_KEYS:
+        if key in fm:
+            errors.append(f'{rel}: `{key}` is not a skill field Claude Code reads; remove it (version: under metadata)')
+    if 'preferred-model' in (fm.get('metadata') or {}):
+        errors.append(f'{rel}: `metadata.preferred-model` is unused; remove it')
     for key in REQUIRED_KEYS:
         if key not in fm:
             errors.append(f'{rel}: frontmatter missing required key `{key}`')
@@ -98,22 +105,6 @@ for path in glob(SKILLS_GLOB, recursive=True):
             warnings.append(f'{rel}: description should start with "Use when" (discovery guidance)')
     else:
         errors.append(f'{rel}: frontmatter missing `description`')
-    # version validation
-    version = fm.get('version')
-    if version:
-        try:
-            _ = tuple(int(x) for x in str(version).split('.') if x)
-        except Exception:
-            warnings.append(f'{rel}: `version` should be semantic version (e.g., 1.0.0)')
-    # preamble-tier validation
-    tier = fm.get('preamble-tier')
-    if tier is not None:
-        try:
-            t = int(tier)
-            if t < 1 or t > 4:
-                warnings.append(f'{rel}: `preamble-tier` should be 1-4')
-        except (ValueError, TypeError):
-            warnings.append(f'{rel}: `preamble-tier` should be integer 1-4')
     # allowed-tools validation
     atools = fm.get('allowed-tools')
     if atools is not None:
@@ -123,13 +114,6 @@ for path in glob(SKILLS_GLOB, recursive=True):
             for t in atools:
                 if t not in ALLOWED_TOOLS:
                     warnings.append(f'{rel}: `allowed-tools` contains unknown tool: {t} (allowed: {", ".join(sorted(ALLOWED_TOOLS))})')
-    # triggers validation
-    triggers = fm.get('triggers')
-    if triggers is not None:
-        if not isinstance(triggers, list):
-            warnings.append(f'{rel}: `triggers` should be a YAML list')
-        elif len(triggers) == 0:
-            warnings.append(f'{rel}: `triggers` list should not be empty')
     # validate gate patterns in body
     gate_matches = GATE_PATTERN.findall(text)
     if len(gate_matches) == 0:

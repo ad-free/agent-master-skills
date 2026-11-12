@@ -3,27 +3,8 @@ name: documentation-engineering
 description: |
   Use when you need to create, maintain, or automate technical documentation including ADRs,
   API references, runbooks, onboarding guides, and docs-as-code pipelines.
-version: 2.1.0
-preamble-tier: 2
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-triggers:
-  - "write documentation"
-  - "create ADR"
-  - "API docs"
-  - "runbook"
-  - "onboarding guide"
-  - "docs-as-code"
-  - "diataxis"
-  - "docs sync"
 metadata:
   origin: agent-master-skills
-  preferred-model: gpt-5-nano
   version: 2.1.0
   domain: documentation
   integrates-with: [dev-craft, ship]

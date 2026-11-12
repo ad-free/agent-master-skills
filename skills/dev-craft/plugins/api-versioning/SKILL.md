@@ -1,18 +1,9 @@
 ---
 name: api-versioning
 description: Use when you need API version management with deprecation policies, migration guides, and backward compatibility patterns.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "api version"
-  - "versioning strategy"
-  - "deprecation policy"
-  - "api compatibility"
-  - "breaking change migration"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
-  preferred-model: big-pickle
 ---
 
 <!-- TOKEN CEILING: ~2K -->

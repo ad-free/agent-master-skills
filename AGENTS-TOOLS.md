@@ -14,10 +14,10 @@ subagent.
 |---|---|---|
 | Vague product idea | `product-thinking` (→ `PRODUCT.md`) | then `dev-craft` |
 | Existing spec files (xlsx/csv/md/pdf) | `project-discovery` (→ `DOMAIN.md`) | then `dev-craft` |
-| Feature, bug, refactor, migration, schema/API change | `dev-craft` (picks tier and mode) | `debugging-and-error-recovery` when the bug's cause is unknown; `tdd-seam` for test placement; `api-design` for a new or changed API surface |
+| Feature, bug, refactor, migration, schema/API change | `dev-craft` (picks tier and mode) | `debugging-and-error-recovery` when the bug's cause is unknown |
 | Frontend / UI pipeline, redesign, motion | `ui-craft` | `fe-visual-loop` for show-before-build; `image-to-design-spec` for screenshot-led work; `accessibility` |
-| Code review | `code-review-and-quality` | `bug-hunting` |
-| Security audit | `bug-hunting` | `code-review-and-quality` |
+| Code review | `code-review-and-quality` | — |
+| Security audit | `dev-craft` (`plugins/security-audit`) | `code-review-and-quality` |
 | Completion check outside dev-craft, stored proof | `verification-before-completion` (includes the evidence ledger) | — |
 | Ship / PR text | `ship` (user-invoked; prepare only unless the user names commit/push/PR) | `retro` (user-invoked) |
 | Long session, handoff, resume | `context-engineering` | — |

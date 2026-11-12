@@ -5,25 +5,8 @@ description: |
   Use when input is vague, incomplete, or "I have an idea..." — before planning.
   Invoked by: triage, planner.
   
-version: 2.0.0
-preamble-tier: 2
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - AskUserQuestion
-triggers:
-  - "I have an idea"
-  - "vague requirements"
-  - "help me plan this product"
-  - "refine this concept"
-  - "create a spec from idea"
 metadata:
   origin: agent-master-skills
-  preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: product-discovery
   integrates-with: [dev-craft, project-discovery]
@@ -286,7 +269,7 @@ User says "I have an idea" or vague prompt
 | Bug fix with clear reproduction steps | `debugging-and-error-recovery` |
 | Well-documented feature request | `dev-craft` |
 | Screenshot with visible changes | `image-to-design-spec` → `ui-craft` |
-| Security audit request | `bug-hunting` |
+| Security audit request | `dev-craft` (`plugins/security-audit`) |
 | Single-file change with obvious scope | Direct implementation |
 
 ## Example Walkthrough

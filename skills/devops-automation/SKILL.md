@@ -7,30 +7,8 @@ description: |
   infrastructure-as-code choices. Do NOT use for "is this ready to deploy" (see
   verification-before-completion) or for writing the pipeline YAML itself (that's plain BUILD work
   once the strategy is decided).
-version: 2.0.0
-preamble-tier: 3
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - AskUserQuestion
-  - Task
-triggers:
-  - "deploy"
-  - "ci/cd"
-  - "infrastructure"
-  - "devops"
-  - "pipeline"
-  - "terraform"
-  - "kubernetes"
-  - "rollback strategy"
-  - "iac"
 metadata:
   origin: agent-master-skills
-  preferred-model: deepseek-v4-flash-free
   version: 2.0.0
   domain: devops
   integrates-with: [verification-before-completion, dev-craft, verification-before-completion, security-audit]

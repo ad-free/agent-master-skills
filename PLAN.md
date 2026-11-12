@@ -3,7 +3,9 @@
 Status: Phase 1 done in the working tree (2026-11-12, D1 = archive), not committed. Install step done:
 `~/.claude/agents/{code-reviewer,verifier,ui-verifier}.md` link to the live worktree (old copies in
 `~/.claude/agents.bak-2026-11-12`); the new agents take effect once this branch reaches `origin/master`.
-Phases 2 to 4 not started.
+Phase 1 merged (#29). Phase 2 done in the working tree on `chore/skills-prune` (D2/D3/D5/D6 defaults; D4 default
+plus `project-discovery` kept; `eval-harness` kept in place because `tools/validate_eval_cases.py` reads its
+schema); load target not met (Standard bug fix 607, target 500). Phases 3 and 4 not started.
 Branch: `chore/skills-agents-cleanup-plan`. Written 2026-11-12.
 
 ## Goal

@@ -5,25 +5,10 @@ description: |
   Ensures WCAG 2.2 Level AA compliance for interfaces built with React, Vue, Tailwind, and other frontend frameworks.
   Covers semantic markup, ARIA, focus management, target sizes, error handling, and cross-platform accessibility traits.
 metadata:
-  preferred-model: gpt-5.6-luna
+  version: 1.0.0
   origin: agent-master-skills
   domain: agent-quality
   integrates-with: [design-system-validate, ui-craft, verification-before-completion]
-version: 1.0.0
-preamble-tier: 3
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-triggers:
-  - "make this accessible"
-  - "audit accessibility"
-  - "WCAG compliance"
-  - "ARIA roles"
-  - "focus management"
 ---
 
 # Accessibility (WCAG 2.2 AA for AI Agent Interfaces)
