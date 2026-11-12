@@ -4,24 +4,11 @@ description: |
   Eight-axis code review with confidence-based filtering, pre-report gate, and false positive suppression.
   Use before merging PRs, after implementing features, or when receiving review feedback.
   Invoked by: code-reviewer, implementer, verifier.
-version: 2.0.0
-preamble-tier: 3
-allowed-tools:
-  - Read
-  - Grep
-  - Glob
-  - Bash
-  - AskUserQuestion
-triggers:
-  - "review this PR"
-  - "code review"
-  - "review my changes"
-  - "check this code"
 metadata:
+  version: 2.0.0
   origin: agent-master-skills
-  preferred-model: nemotron-3-ultra-free
   axes: 8
-  integrates-with: [verification-before-completion, verification-before-completion, bug-hunting]
+  integrates-with: [verification-before-completion, dev-craft]
   source-enhancements: ECC code-reviewer (Pre-Report Gate, False Positives, Confidence Filtering)
 ---
 
@@ -193,7 +180,7 @@ Any N+1 queries, unbounded loops, sync I/O that should be async, missing paginat
 Input validated, secrets not in code/logs, parameterized queries, external data untrusted, auth checks in place, no unsafe deserialization. Review every regex for ReDoS, user-controlled input, missing anchors, and Unicode safety.
 
 ### Axis 6: Testing
-Tests exist for new code, cover edge cases, are maintainable, and mock at boundaries only. Judge tests against their stated failure mode (see `testing-strategies`).
+Tests exist for new code, cover edge cases, are maintainable, and mock at boundaries only. Judge tests against their stated failure mode (see dev-craft `references/checklists/testing.md`).
 
 ### Axis 7: Modern Patterns
 No deprecated APIs, code follows current-version docs, no legacy typing/deprecated idioms (blocked by linter per `dev-craft/references/lint-rules.md`).
@@ -378,7 +365,7 @@ Wait 10+ minutes, then review as if you're seeing the code for the first time. C
 
 ## Integration
 
-**Use with:** `verification-before-completion`, `debugging-and-error-recovery`, `bug-hunting`, `dev-craft` BUILD phase.
+**Use with:** `verification-before-completion`, `debugging-and-error-recovery`, `dev-craft` BUILD phase (security: dev-craft `references/checklists/security.md`).
 
 **References:**
 - `../references/false-positives.md` — Complete false positive catalog

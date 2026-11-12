@@ -8,7 +8,7 @@ anything the repo already decided.
 - Auth and roles (SSO-ready, RBAC at API and UI), secrets management.
 - Database, caching, background jobs and queues (idempotent for retries), file storage, search.
 - Environments (dev / staging / prod), containers, CI/CD, migrations in the pipeline.
-- Observability: structured logs, error tracking, health checks, metrics (`observability-engineering`).
+- Observability: structured logs, error tracking, health checks, metrics.
 - Backups and restore tests; security headers, rate limiting, input validation.
 - Cost and operational burden of each option.
 

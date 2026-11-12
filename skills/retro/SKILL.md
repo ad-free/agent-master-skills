@@ -4,25 +4,10 @@ name: retro
 description: |
   Use when you need a weekly engineering retrospective with git analysis, team contributions,
   code quality trends, and actionable learnings. Also runs proactively at sprint end.
-version: 2.1.0
-preamble-tier: 2
-allowed-tools:
-  - Read
-  - Write
-  - Bash
-  - Grep
-  - Glob
-triggers:
-  - "weekly retro"
-  - "what did we ship"
-  - "engineering retrospective"
-  - "retro"
 metadata:
   origin: agent-master-skills
-  preferred-model: deepseek-v4-flash-free
   version: 2.1.0
   domain: orchestration
-  integrates-with: [prompt-optimizer]
 ---
 TOKEN CEILING: ~3K tokens. If skill exceeds, extract sections to references/.
 

@@ -61,7 +61,7 @@ TOKEN CEILING: ~2K tokens. If skill exceeds, extract sections to references/.
 - Generating design tokens or design system configuration — see design-system-validate
 - WCAG accessibility auditing — see accessibility-deep
 - Animating components — see `references/motion.md`
-- API contract design for FE-BE integration — see api-design (`references/contract-first.md`)
+- API contract design for FE-BE integration — see dev-craft `references/fullstack.md`
 
 ## Workflow
 

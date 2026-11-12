@@ -1,20 +1,11 @@
 ---
 name: design-intelligence
 description: Use when you need structured design system generation with color palettes, typography pairings, UI styles, and component patterns for a UI project.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "design system"
-  - "design tokens"
-  - "color palette"
-  - "typography"
-  - "ui style"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
   plugin-for: ui-craft
   phase: DESIGN
-  preferred-model: big-pickle
 ---
 
 <!-- TOKEN CEILING: ~2K -->

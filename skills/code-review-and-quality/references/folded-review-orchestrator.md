@@ -26,7 +26,7 @@ metadata:
   preferred-model: big-pickle
   version: 1.0.0
   domain: quality-safety
-  integrates-with: [review-subagents, code-review-and-quality, verification-before-completion, dispatching-parallel-agents, bug-hunting]
+  integrates-with: [review-subagents, code-review-and-quality, verification-before-completion, dispatching-parallel-agents]
 ---
 
 # Review Orchestrator
@@ -290,6 +290,6 @@ Runs as a parallel sub-agent checking:
 - `skills/code-review-and-quality/` — 8-axis scoring (consumes findings)
 - `skills/verification-before-completion/` — Gate integration
 - `skills/dispatching-parallel-agents/` — Parallel execution pattern
-- `skills/bug-hunting/` — Security reviewer methodology
+- dev-craft `references/checklists/security.md` — Security reviewer checklist
 - `skills/debugging-and-error-recovery/` — Debug reviewer methodology
 - `skills/code-review-and-quality/references/two-axis-mode.md` — Standards + Spec review (mattpocock port)

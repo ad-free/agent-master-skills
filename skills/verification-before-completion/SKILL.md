@@ -5,27 +5,11 @@ description: |
   the session (CI handoff, release, audit) via the hash-chained evidence ledger. Grades evidence
   FRESH/STALE/MISSING; 5 gates: structure, deterministic, security, convention, LLM judge. Inside dev-craft,
   its Verify step covers this.
-version: 2.1.0
-preamble-tier: 3
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - Task
-triggers:
-  - "about to claim done"
-  - "verify before completion"
-  - "verification gates"
-  - "quality gates"
 metadata:
   origin: agent-master-skills
-  preferred-model: big-pickle
   version: 2.1.0
   domain: quality-safety
-  integrates-with: [dev-craft, debugging-and-error-recovery, code-review-and-quality, bug-hunting, ship]
+  integrates-with: [dev-craft, debugging-and-error-recovery, code-review-and-quality, ship]
 ---
 TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
@@ -46,8 +30,7 @@ systems, also:
 - Hidden repair loops: No silent LLM passes running after the main agent loop?
 - Rendering integrity: Does the output look correct in the target platform?
 
-**Gate 4 — Convention:** Ensure code follows project conventions (no single-char vars, modern idioms, etc.). For agent systems, verify the agent-architecture-audit findings are addressed.
-
+**Gate 4 — Convention:** Ensure code follows project conventions (no single-char vars, modern idioms, etc.).
 **Gate 5 — LLM Judge:** Use an LLM to evaluate if the change is genuinely complete and correct. For agent systems, the judge should specifically verify:
 - No wrapper regression vs. base model
 - Tool calls match the required set

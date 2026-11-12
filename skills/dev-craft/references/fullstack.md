@@ -38,6 +38,18 @@ on another side. Replaces the old cross-skill hand-off notes.
 - **Errors end to end:** every error the contract lists has a defined UI behavior.
 - Load only the `idioms/` files for each side; run commands from the right directory in monorepos.
 
+## New or reshaped API
+
+Name the consumers and what breaks for them if the contract changes; no named consumer, no endpoint.
+- Style: one internal caller -> a plain function or RPC; several clients, resource data -> REST; clients with
+  divergent data needs -> GraphQL; internal, typed, performance-sensitive -> gRPC.
+- Decide versioning (path, header or media type) before v1 ships if consumers upgrade on their own schedule.
+- State the trust boundary; public means auth, rate limits and CORS are part of the shape, not added later.
+- Spec in the repo's format; generate types, runtime validation (Zod/Pydantic) and mocks (MSW/Prism) from it;
+  lint it (Spectral); a contract test checks mocks and real responses against it.
+- Additive changes are safe; removing, renaming or narrowing a field is breaking: new version or deprecation
+  window, consumers told, types and mocks regenerated.
+
 ## Handing off to other skills
 
 `ui-craft` consumes `api-contract.md` and may not invent endpoints. If `ui-craft` has UI data needs and no

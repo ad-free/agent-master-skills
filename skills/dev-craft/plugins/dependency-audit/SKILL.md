@@ -1,18 +1,9 @@
 ---
 name: dependency-audit
 description: Use when you need dependency vulnerability scanning, license compliance, and supply chain security checks.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "dependency audit"
-  - "vulnerability scan"
-  - "supply chain"
-  - "license check"
-  - "dependency security"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
-  preferred-model: big-pickle
 ---
 
 <!-- TOKEN CEILING: ~2K -->

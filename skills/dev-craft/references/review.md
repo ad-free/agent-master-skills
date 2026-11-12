@@ -8,7 +8,7 @@ the spec and the diff.
 
 Seven always: correctness, security, tests, design, performance, readability, scope (anything outside the
 brief or write scope). Add when relevant: **boundary** (`fullstack.md` boundary checks), **UI**
-(`checklists/ui.md`), **schema** (`data-modeling.md`). Bug classes: `bug-hunting`, else `checklists/bugs.md`.
+(`checklists/ui.md`), **schema** (`data-modeling.md`). Bug classes: `checklists/bugs.md`.
 Security: `checklists/security.md` (deep pass: `harden-checks.md`). Test quality: `checklists/testing.md`.
 If the named skill is available use it and skip the inline file. Full eight-axis scoring:
 `code-review-and-quality`. Do not restate checklist content here.

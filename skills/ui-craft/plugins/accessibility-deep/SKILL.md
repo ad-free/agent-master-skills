@@ -1,18 +1,9 @@
 ---
 name: accessibility-deep
 description: Use when you need WCAG 2.2 AAA compliance auditing with automated and manual testing patterns.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "accessibility"
-  - "wcag"
-  - "a11y audit"
-  - "screen reader"
-  - "accessibility compliance"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
-  preferred-model: big-pickle
 ---
 
 <!-- TOKEN CEILING: ~2K -->

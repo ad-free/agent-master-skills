@@ -6,30 +6,11 @@ description: |
   winner, then screenshot-verifies the build against it. Use for page builds,
   redesigns, and component work too big to free-style but smaller than a full
   ui-craft run. Invoked by: frontend-engineer, ui-craft (Phases 2/3/8).
-version: 1.0.0
-preamble-tier: 2
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - AskUserQuestion
-triggers:
-  - "show me options"
-  - "visual direction"
-  - "mockup first"
-  - "redesign this page"
-  - "build this page"
-  - "design options"
-  - "pick a design"
-  - "screenshot the design"
 metadata:
-  preferred-model: big-pickle
+  version: 1.0.0
   origin: agent-master-skills
   domain: frontend
-  integrates-with: [ui-craft, ui-craft, anti-slop, image-to-design-spec, playwright-skill, visual-regression, verification-before-completion]
+  integrates-with: [ui-craft, ui-craft, anti-slop, image-to-design-spec, visual-regression, verification-before-completion]
 ---
 
 # FE Visual Loop v1.0
@@ -61,7 +42,7 @@ Inferred taste is not agreement. The agent shows; the human picks; then the agen
 ### Step 2: Mock (live HTML, not AI images)
 
 - Build each direction as a small static HTML mock in a scratch dir (real layout, real type scale, palette applied — lorem content is fine).
-- Screenshot every mock with `playwright-skill` (desktop + one mobile width).
+- Screenshot every mock with the Playwright MCP (desktop + one mobile width).
 - Present screenshots side by side with a one-line read per direction.
 
 ### Step 3: Pick (hard gate)

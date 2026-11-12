@@ -1,7 +1,8 @@
 ---
 name: dev-craft
 description: Use for non-trivial coding work - building or changing features, fixing bugs, refactors and cleanup, migrations, schema/API/UI changes, architecture choices, reviewing a diff or PR comments, resuming earlier work. Skip typos, one-line edits, trivial config, quick questions, and throwaway scripts.
-version: 4.0.0
+metadata:
+  version: 4.0.0
 ---
 
 # dev-craft
@@ -102,11 +103,8 @@ checkpoint after TRACE.
 | HARDEN | `references/harden-checks.md` |
 | Written plan with DAG | `references/folded-planning-and-task-breakdown.md` |
 
-Related skills (invoke only when that step needs them): `testing-strategies`, `tdd-seam`, `api-design`,
-`code-review-and-quality`, `bug-hunting`, `debugging-and-error-recovery`, `observability-engineering`,
-`verification-before-completion`, `fe-visual-loop`, `playwright-skill`,
-`dispatching-parallel-agents`, `product-thinking`, `project-discovery`, `ui-craft` (full UI pipeline).
-If a related skill or plugin is not available, use the matching file in `references/checklists/`
-(`bug-hunting` -> `bugs.md`/`security.md`, `testing-strategies` -> `testing.md`); if it is available, use it and
-skip the inline file. Plugins under `plugins/`: `tdd-enforcer`, `database-migrations`, `security-audit`, `api-versioning`,
+Related skills (invoke only when that step needs them): `debugging-and-error-recovery`, `code-review-and-quality`,
+`verification-before-completion`, `fe-visual-loop`, `dispatching-parallel-agents`, `product-thinking`,
+`project-discovery`, `ui-craft` (full UI pipeline). Bugs, security and tests: `references/checklists/`.
+Plugins under `plugins/`: `tdd-enforcer`, `database-migrations`, `security-audit`, `api-versioning`,
 `dependency-audit`, `language-rules`.

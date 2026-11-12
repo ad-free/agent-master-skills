@@ -1,21 +1,12 @@
 ---
 name: anti-slop
 description: Use when building UI components to enforce anti-generic design rules — no emoji icons, no generic gradients, proper spacing, and motion that follows design principles. Includes Brief Inference, Three Dials (VARIANCE/MOTION/DENSITY), design system mapping, and comprehensive AI-tell prevention.
-version: 2.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "anti slop"
-  - "generic design"
-  - "ai generated ui"
-  - "design quality"
-  - "ui consistency"
 disable-model-invocation: true
 metadata:
+  version: 2.0.0
   origin: agent-master-skills
   plugin-for: ui-craft
   phase: BUILD
-  preferred-model: gpt-5-nano
   ports: taste-skill
 ---
 

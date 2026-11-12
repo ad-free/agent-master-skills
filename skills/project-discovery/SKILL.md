@@ -2,25 +2,8 @@
 name: project-discovery
 description: |
   Use when you have requirement documents (xlsx/csv/md/pdf) and need to parse them into a structured DOMAIN.md.
-version: 2.1.0
-preamble-tier: 2
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - Task
-triggers:
-  - "parse requirements"
-  - "ingest spec"
-  - "xlsx to domain"
-  - "csv to domain"
-  - "project discovery"
 metadata:
   origin: agent-master-skills
-  preferred-model: nemotron-3-ultra-free
   version: 2.1.0
   domain: planning
   integrates-with: [product-thinking, dev-craft]

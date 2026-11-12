@@ -4,25 +4,9 @@ description: |
   Use when a session is long or near its context limit, when handing work to another agent or a later
   session (write a handoff doc), when resuming earlier work, or when pruning stale context. Covers memory
   hierarchy, rotation, handoff format, and pollution prevention.
-version: 2.0.0
-preamble-tier: 1
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Grep
-  - Glob
-  - AskUserQuestion
-triggers:
-  - "manage context"
-  - "session context"
-  - "prevent context drift"
-  - "resume session"
-  - "handoff context"
 metadata:
+  version: 2.0.0
   origin: agent-master-skills
-  preferred-model: nemotron-3-ultra-free
   memory-levels: 5
   integrates-with: [dev-craft, dispatching-parallel-agents]
 ---

@@ -1,37 +1,23 @@
 name: agent-master-skills
 version: 2.2.0
-description: Skills for AI coding agents — composable, disciplined, evidence-based. 32 skills across engineering, frontend, security, orchestration, and more.
+description: Skills for AI coding agents — composable, disciplined, evidence-based. 18 skills across engineering, frontend, security, orchestration, and more.
 author: adfree
 provides_skills:
   - dev-craft
   - ui-craft
   - product-thinking
   - project-discovery
-  - grilling
-  - api-design
-  - testing-strategies
   - documentation-engineering
   - devops-automation
-  - observability-engineering
   - verification-before-completion
   - code-review-and-quality
   - debugging-and-error-recovery
-  - bug-hunting
   - image-to-design-spec
-  - playwright-skill
-  - tdd-seam
-  - performance-profiler-and-tuner
   - context-engineering
-  - prompt-optimizer
   - retro
   - dispatching-parallel-agents
   - eval-harness
   - ship
   - skill-creator
   - accessibility
-  - agent-architecture-audit
-  - caveman
-  - caveman-commit
-  - caveman-compress
   - fe-visual-loop
-  - tech-advisor

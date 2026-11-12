@@ -1,6 +1,6 @@
 # Test-quality checklist
 
-Fallback for `testing-strategies` (see `SKILL.md` §5). Each item is checkable in a diff or a test run.
+Each item is checkable in a diff or a test run. Walk the boundary table in `edge-cases.md` before listing tests.
 
 ## Requirements
 - Every `REQ` maps to at least one test; the mapping is listed in the report.
@@ -12,6 +12,9 @@ Fallback for `testing-strategies` (see `SKILL.md` §5). Each item is checkable i
   intentional.
 
 ## Test design
+- Type follows what breaks: pure logic -> unit; query or external call -> integration; producer/consumer shape
+  -> contract; many input combinations -> property-based; cross-stack user flow -> e2e (critical paths only).
+- Each test states its failure mode ("fails if <behavior> breaks") in its name or a one-line comment.
 - Test behavior through the public interface, not private details; one behavior per test; the name states it.
 - A new test was seen failing for the right reason before the fix, output shown (red-green proof: `verify.md`).
 - Cover happy path, edge cases, error paths, authorization (401 vs 403) and validation errors (422 for FastAPI).

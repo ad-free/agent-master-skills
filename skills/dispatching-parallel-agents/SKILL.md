@@ -3,24 +3,10 @@ name: dispatching-parallel-agents
 description: |
   Run independent tasks simultaneously using subagents. Use when multiple tasks
   have no dependencies and can execute concurrently.
-  Invoked by: implementer, orchestrator, test-engineer.
+  Invoked by: dev-craft (parallel slices, Verifier / UI Verifier dispatch).
   
-version: 2.0.0
-preamble-tier: 3
-allowed-tools:
-  - Agent
-  - Read
-  - Bash
-  - Grep
-  - Glob
-triggers:
-  - "run these in parallel"
-  - "dispatch parallel agents"
-  - "execute concurrently"
-  - "run tests in parallel"
 metadata:
   origin: agent-master-skills
-  preferred-model: nemotron-3-ultra-free
   version: 2.0.0
   domain: planning-execution
   integrates-with: [dev-craft]

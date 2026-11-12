@@ -1,20 +1,11 @@
 ---
 name: security-audit
 description: Use when you need security vulnerability scanning, dependency auditing, and supply chain risk assessment.
-version: 1.0.0
-preamble-tier: 1
-allowed-tools: [Read, Write, Edit, Bash, Grep, Glob, AskUserQuestion]
-triggers:
-  - "security audit"
-  - "vulnerability assessment"
-  - "security scan"
-  - "threat model"
-  - "security review"
 metadata:
+  version: 1.0.0
   origin: agent-master-skills
   plugin-for: dev-craft
   phase: HARDEN
-  preferred-model: big-pickle
 
 ---
 
