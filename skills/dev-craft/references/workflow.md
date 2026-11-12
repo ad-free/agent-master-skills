@@ -2,17 +2,6 @@
 
 Detail for the flow in `SKILL.md`. Read the section you need.
 
-## Input gate
-
-| Input | Action |
-|---|---|
-| Short or vague ("Build HRM", "Make me a CRM") | Do not build. Draft a Task Brief from what is known, list open questions, ask the user to confirm. Offer `product-thinking` if the idea itself is unformed. |
-| "Just build it, I'll know it when I see it" | Same: draft the brief and get a yes. Building without written requirements produces rework. |
-| Spec files attached (md, pdf, xlsx, csv) | Load `project-discovery` to extract the domain model, then continue. |
-| `PRODUCT.md`, `DOMAIN.md`, or `PLAN.md` exists | Load it as the requirements source. |
-| Thin description | Offer the task template in `challenge.md`. |
-| Clear request or spec | Proceed. |
-
 ## Frame (all Standard/Large tasks)
 
 1. Read project `AGENTS.md`, the nearest similar feature, the test setup, and exact stack versions from
@@ -64,23 +53,10 @@ follows `test-agent.md`. Standard creates no state files, ADRs, or codebase map.
 | **Investigate** | Gather evidence before editing. Separate observed symptom from inferred cause. Rank hypotheses by evidence and cheap falsification. No edit until one mechanism explains the evidence. | Cause (or exact blocker) named with proof. No fix unless authorized. |
 | **Review / PR comments** | `review.md`. Read-only unless the user asks for fixes. | Findings delivered; each comment answered. |
 
-## Large path, state, resume
-
-Large path overview, the `.dev-craft/` state files, the decision/assumption lists and resume rules live in
-`phases-large.md` (sections Large overview and State). Standard creates none of them.
-
 ## Layer rules
 
-- **Conventions:** project conventions win; `clean-code-defaults.md` only where the project has none. Match
-  the nearest existing example.
-- **UI:** `frontend-design.md`, `checklists/ui.md`. Larger UI pipelines go to `ui-craft`.
-- **Data:** `data-modeling.md`. Every change is a migration with rollback; state the effect on existing data.
-- **API:** extract the existing contract from source, never guess; tag new endpoints `[NEW]`; validate input at
-  the boundary; errors in the project's format; authorization on every new endpoint. See `fullstack.md`.
-- **Infra/config:** read existing compose/CI/IaC first, name the target environment, list new env vars in the
-  handoff, never hardcode secrets or environment-specific values.
-- **Stack versions:** read exact versions from dependency files; fetch official docs only for new libraries,
-  new APIs, or version-sensitive code.
+Project conventions win; `clean-code-defaults.md` only where the project has none (no linter config or settled
+pattern for that area). Data, API and infra rules: `AGENTS.md` §8 plus the read-now table in `SKILL.md`.
 
 ## Per-slice quality gates
 
@@ -90,12 +66,7 @@ revision cycles at two, then summarize what was tried and ask. Claiming "zero is
 
 ## Failure handling
 
-| Failure | Response |
-|---|---|
-| State missing or stale | Repair state and session file first |
-| Tests fail | `debugging-and-error-recovery`; rerun after each fix; never loosen the test |
-| Lint or type check fails | Fix and rerun, never skip |
-| Two failed fix attempts | Stop, summarize, change approach or ask |
-| Critical or High security finding | Block, remediate before proceeding |
-| Contract conformance fails | Fix the implementation to match the contract |
-| Spec found wrong during Implement/Review | Stop, record in `session.md`, return to Challenge/Brief |
+Tests fail: `debugging-and-error-recovery`, re-run after each fix, never loosen the test. Critical or High
+security finding: block until fixed. Contract check fails: fix the implementation, not the contract. Spec found
+wrong in Implement or Review: stop, record it, return to Challenge/Brief. Large state missing or stale: repair it
+first (`phases-large.md`).

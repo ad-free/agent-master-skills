@@ -59,6 +59,19 @@ Evidence table rows (command, real output trimmed), findings list
 `[severity | confidence | state] path:line, reproduction, suggested fix`, "Not verified" with reasons, and the
 exact commands to reproduce.
 
+## Requirement matrix
+
+**Requirement matrix** (Large, risk-flagged, or when asked; otherwise a plain REQ list is enough. One row per
+`REQ` and per invariant):
+```markdown
+| REQ | Example (source) | Test | Result | Independent check | Status |
+|---|---|---|---|---|---|
+| REQ-2 | 5-3=2 (Hand calc) | test_approve_leave | 1 passed | mutation spot check | done |
+| INV-1 | balance = accruals - usages | test_ledger_invariant | 1 passed | none | done (lower confidence) |
+```
+`Independent check`: `Test Designer test`, `Verifier run`, `invariant`, `characterization/differential`,
+`mutation spot check`, `e2e run`, `screenshot`, `user demo`, `none`. A `none` row is shown as lower confidence.
+
 ## Reconciliation (main agent)
 
 - Re-run at least the single most important command yourself; record `verified by: <role>, re-run by main: yes`.

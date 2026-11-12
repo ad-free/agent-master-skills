@@ -48,13 +48,8 @@ agent re-runs the key command.
 
 ## By kind of change
 
-- **UI:** run the app, screenshot each key screen at desktop and mobile widths, *look at them*, compare with
-  `design.md` and `checklists/ui.md`, fix, include screenshots. At least one critique-and-fix pass. If the
-  browser cannot run, "Not verified" plus the preview commands.
-- **DB:** migration up, down, up on a copy with sample data; `EXPLAIN` on the key queries (`data-modeling.md`).
-- **2+ sides:** backend tests, frontend tests/type-check/lint, a contract check, one real end-to-end run per
-  acceptance criterion, every contract error exercised once. UI ran against a mock = "backend not verified".
-- **Scope:** say which scope you verified and which side you did not.
+UI: `frontend-design.md` §4. DB: `data-modeling.md` (up, down, up; `EXPLAIN`). 2+ sides: `fullstack.md` §Boundary
+checks. Say which scope you verified and which side you did not.
 
 ## Pre-completion self-check
 
@@ -70,24 +65,7 @@ which are still running.
 
 ## Final report
 
-Outcome first, then: files and behavior changed; requirement matrix; Evidence table; decisions and
+Outcome first, then: files and behavior changed; requirement matrix (format: `test-agent.md`); Evidence table; decisions and
 assumptions; **Needs your confirmation** (every `Assumption` and `Business rule`); open proposals (not
-built); Not verified; risks; new env vars; branch; proposed commit message; demo script. After a Large task add
+built); Not verified; risks; new env vars; branch; proposed commit message; demo script (Large, UI or when asked; `phases-large.md` §SHIP-PREP). After a Large task add
 "What was missing from the task". Do not commit.
-
-**Requirement matrix** (Large, risk-flagged, or when asked; otherwise a plain REQ list is enough. One row per
-`REQ` and per invariant):
-```markdown
-| REQ | Example (source) | Test | Result | Independent check | Status |
-|---|---|---|---|---|---|
-| REQ-2 | 5-3=2 (Hand calc) | test_approve_leave | 1 passed | mutation spot check | done |
-| INV-1 | balance = accruals - usages | test_ledger_invariant | 1 passed | none | done (lower confidence) |
-```
-`Independent check`: `Test Designer test`, `Verifier run`, `invariant`, `characterization/differential`,
-`mutation spot check`, `e2e run`, `screenshot`, `user demo`, `none`. A `none` row is shown as lower confidence.
-
-**Demo script** (Large, UI, or when asked; skip for small Standard tasks): end with steps the user can run in about 5 minutes: seed command, exact commands or URLs, and
-what to observe per `REQ` (UI: route, viewport, what to see). Run it once yourself; its output is Evidence.
-
-Worked example of a failing claim caught: "Fixed the 500 on empty cart." -> no output shown -> run
-`pytest tests/test_cart.py::test_empty` first; paste "1 passed"; show it failed before the fix.
