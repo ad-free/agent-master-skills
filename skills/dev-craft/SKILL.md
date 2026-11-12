@@ -50,7 +50,7 @@ condition the task hits (UI, schema, migration, risk flag, review).
 | Frame | Restate task; read AGENTS.md, nearest similar feature, tests, stack versions; set scope + tier | `references/workflow.md` | Scope, tier, stack known |
 | Challenge | Test the request against the repo and itself; findings tagged by basis; <=3 questions with defaults; <=3 proposals | `references/challenge.md` | Blocking questions answered; assumptions listed |
 | Brief | Task Brief: numbered `REQ-n`, each with a concrete example and `Source:` tag; `Invariants:` list | `references/workflow.md`, `references/challenge.md` | User confirmed (Standard: shown, nothing risky open) |
-| Design (UI) | Choose screens, components, design system, states, charts; write `design.md` | `references/frontend-design.md` (+ `ui-patterns/<domain>.md`) | User confirmed direction |
+| Design (UI) | New screen or redesign: `fe-visual-loop` (real reference, picked by the user); tweak: 3 lines in the brief | `references/frontend-design.md` (+ `ui-patterns/<domain>.md`) | User picked reference and mock screenshots |
 | Data (schema touched) | Review the model; findings as options; check queries | `references/data-modeling.md` (new service: `architecture.md`) | Findings decided |
 | Contract (2+ sides) | Define request/response/errors/auth once, consumers listed | `references/fullstack.md` | Consumers agree |
 | Plan | Thin vertical slices; every REQ maps to a test | `references/workflow.md`, Large: `phases-large.md` | Every REQ has a test and a done-condition |

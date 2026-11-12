@@ -281,7 +281,7 @@ Write state after LOAD.
 6. Route to design style (SaaS → Minimalism, E-commerce → Glassmorphism, etc.)
 7. Build glossary in context.md
 8. Image analysis (if screenshot provided) — reference `image-to-design-spec` skill
-9. Visual direction gate — run `fe-visual-loop` Steps 1–3: produce 2–3 screenshotted direction mocks, get an explicit human pick. Implementation work is blocked until the pick is recorded.
+9. Visual direction gate — run `fe-visual-loop` Steps 1–5: the human picks a real reference (the agent finds 3–5 when none is given), it is extracted into `DESIGN.md`, real content is filled, and the human picks a screenshotted mock built from it. Implementation work is blocked until both picks are recorded.
 
 **Exit criterion:** Human confirms scope with explicit yes AND picks a visual direction from screenshotted mocks.
 
@@ -432,7 +432,7 @@ Write state after LOAD.
 - [ ] No secrets, debug tags, or temp files remain
 - [ ] Lint + type + build all pass
 - [ ] Accessibility scan passed (no Critical/High findings)
-- [ ] Visual proof passed: built UI screenshotted at desktop + mobile widths and matched against the picked direction (`fe-visual-loop` Step 5), or an explicit waiver with reason recorded in state.json
+- [ ] Visual proof passed: built UI screenshotted at desktop + mobile widths and matched against the picked reference and mock by `ui-verifier` with no high-severity defect on the second pass (`fe-visual-loop` Step 7), or an explicit waiver with reason recorded in state.json
 
 ## Error Handling
 

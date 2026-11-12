@@ -14,7 +14,10 @@ override anything here. This file holds principles and defaults, not brand value
   framer-motion only for meaningful transitions, not decoration.
 - Tables: TanStack Table (shadcn data-table pattern). Forms: react-hook-form + zod + shadcn Form.
   Dates: date-fns + react-day-picker. Charts: Recharts via shadcn chart.
-- Typography: one variable font (Inter or Geist) loaded locally via `@fontsource-variable/*`.
+- Typography: one variable font (Inter or Geist) loaded locally via `@fontsource-variable/*`. This default is
+  for app and admin screens; marketing pages and storefronts take their type from the picked reference.
+- New screens and redesigns start from a real reference the user picks (`fe-visual-loop`); its extracted
+  structure goes in the project `DESIGN.md` under `## Reference`.
 - UI verification: Playwright (screenshots, e2e), `@axe-core/playwright` (accessibility), MSW (mock API
   states so loading/empty/error can be rendered on demand).
 - Routing, i18n, and client-state libraries are project choices. Follow the project.
