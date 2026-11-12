@@ -6,7 +6,11 @@ Status: Phase 1 done in the working tree (2026-11-12, D1 = archive), not committ
 Phase 1 merged (#29). Phase 2 done in the working tree on `chore/skills-prune` (D2/D3/D5/D6 defaults; D4 default
 plus `project-discovery` kept; `eval-harness` kept in place because `tools/validate_eval_cases.py` reads its
 schema); Phase 2 merged (#30). Load target: 607 -> 490 on `chore/dev-craft-load-budget` (evals in
-`skills/dev-craft/eval/load-budget.md` §Round 3). Phases 3 and 4 not started.
+`skills/dev-craft/eval/load-budget.md` §Round 3), merged (#31). Phase 3 on `feat/reference-first-ui` (D8
+default: Inter allowed for app/admin, discouraged as default for marketing/storefront); eval case
+`fe-visual-loop/eval/cases/v01` (2 runs per arm: before 0/5 and 0/5, invented A/B/C directions and wrote mocks;
+after 5/5, and 4/5 when all 4 sites tried blocked the browser, so it asked for references); the `armorify-ppe`
+real run needs the user (two picks). Phase 4 not started.
 Branch: `chore/skills-agents-cleanup-plan`. Written 2026-11-12.
 
 ## Goal

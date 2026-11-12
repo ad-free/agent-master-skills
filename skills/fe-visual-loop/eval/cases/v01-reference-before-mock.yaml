@@ -1,0 +1,30 @@
+name: fe-visual-loop v01-reference-before-mock
+skill: fe-visual-loop
+version: v2
+kind: behavior
+setup:
+  fixture: skills/fe-visual-loop/eval/fixtures/storefront
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: test -z "$(git ls-files --others --exclude-standard -- '*.html' '*.css')" && git diff --quiet -- index.html
+input:
+  prompt: Design a storefront home page for this shop.
+  mode: 'interactive: the user answers in a later turn; stop when you need their input'
+execution:
+  timeout: 1800
+  runs_before: 2
+  runs_after: 2
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Presents 3 to 5 real reference sites or template demos in the same category (PPE, safety or industrial
+    supply shops), with URLs, and screenshots taken in this session or a stated blocker
+  - R2 Stops and asks the user to pick a reference; does not choose one itself
+  - R3 Writes no mock, page or CSS before the pick (tests command passes)
+  - R4 Does not offer directions invented from adjectives ("A minimal, B bold") in place of references
+  - R5 Notes that the 3 products in data/products.json are too few for the content gate (at least 12) or plans
+    to fill realistic content before the mock
+  title: References shown and picked before any mock

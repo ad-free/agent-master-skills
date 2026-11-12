@@ -33,7 +33,7 @@ Before any code, state in one line: **"Reading this as: \<page kind> for \<audie
 Ask exactly **one** clarifying question — never a multi-question dump — and only when the design read genuinely diverges.
 
 ### 0.D Anti-Default Discipline
-Do not default to: AI-purple gradients, centered hero over dark mesh, three equal feature cards, generic glassmorphism on everything, infinite-loop micro-animations everywhere, Inter + slate-900. These are the LLM defaults. Reach past them deliberately based on the design read.
+Do not default to: AI-purple gradients, centered hero over dark mesh, three equal feature cards, generic glassmorphism on everything, infinite-loop micro-animations everywhere, Inter + slate-900 on a marketing page. These are the LLM defaults. Reach past them deliberately based on the design read.
 
 ---
 
@@ -68,6 +68,16 @@ After the design read, set three dials. Every layout, motion, and density decisi
 | Portfolio (Developer) | 6 | 5 | 4 |
 | Editorial / Blog | 6 | 4 | 3 |
 | Public-sector service | 3 | 2 | 5 |
+| App / admin (CRUD, settings, forms) | 3 | 2 | 7 |
+| Dashboard / analytics | 3 | 2 | 8 |
+| Storefront (shop home, category, product) | 5 | 4 | 5 |
+
+App, admin and dashboard presets follow the project `DESIGN.md` (shadcn, dense tables, one accent); sections
+4.3, 4.7, 4.9, 4.10 and 5 (layout diversification, hero rules, content density, testimonials, motion effects)
+are for marketing and storefront pages, not app screens. Storefront: product imagery leads, grid of at least 4 per row at 1440, prices in tabular figures,
+trust row (shipping, returns, certifications) above the fold or right after the first product row.
+
+A picked reference (`fe-visual-loop` Step 1) overrides the dials: set them to match the reference.
 
 ---
 
@@ -152,8 +162,9 @@ LLMs default to clichés. Override these defaults proactively.
 * **Display / Headlines:** Default `text-4xl md:text-6xl tracking-tighter leading-none`.
 * **Body / Paragraphs:** Default `text-base text-gray-600 leading-relaxed max-w-[65ch]`.
 * **Sans font choice:**
-  * **Discouraged as default:** `Inter`. Pick `Geist`, `Outfit`, `Cabinet Grotesk`, `Satoshi`, or a brand-appropriate serif first.
-  * **Override:** Inter is acceptable when the user explicitly asks for a neutral / standard / Linear-style feel, or when the brief is a public-sector / accessibility-first site.
+  * **App / admin / dashboard screens:** Inter or Geist are both fine (the global `DESIGN.md` default); legibility at 14px beats novelty.
+  * **Marketing pages and storefronts: Inter is discouraged as default.** Pick `Geist`, `Outfit`, `Cabinet Grotesk`, `Satoshi`, or a brand-appropriate serif first.
+  * **Override:** Inter is acceptable on marketing pages when the user asks for a neutral / standard / Linear-style feel, the picked reference uses it, or the brief is public-sector / accessibility-first.
 * **Pairings to know:** `Geist` + `Geist Mono`, `Satoshi` + `JetBrains Mono`, `Cabinet Grotesk` + `Inter Tight`, `GT America` + `IBM Plex Mono`.
 
 * **SERIF DISCIPLINE (VERY DISCOURAGED AS DEFAULT):**
@@ -371,7 +382,7 @@ Open the page in both modes during development. Do not ship a page you've only s
 * **NO custom mouse cursors.** Outdated, accessibility-hostile, perf-hostile.
 
 ### 9.B Typography
-* **AVOID Inter as default.** See Section 4.1. Override path exists.
+* **AVOID Inter as default on marketing pages and storefronts.** Fine for app/admin screens. See Section 4.1.
 * **NO oversized H1s** that just scream. Control hierarchy with weight + color, not raw scale.
 * **Serif constraints:** Serif for editorial / luxury / publication. Not for dashboards.
 
