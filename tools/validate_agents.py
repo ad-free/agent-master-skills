@@ -16,34 +16,26 @@ AGENTS_DIR = os.path.join(ROOT, "agents")
 
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
 
-REQUIRED = [
-    "name",
-    "description",
-    "model",
-    "allowed-tools",
-    "mode",
-    "max-steps",
-    "samplePrompts",
-    "version",
-    "owner",
-]
-OPTIONAL = ["color", "tools"]
+REQUIRED = ["name", "description", "tools"]
+
+# Fields Claude Code reads for agents/*.md (https://code.claude.com/docs/en/sub-agents)
+KNOWN = set(REQUIRED) | {
+    "disallowedTools", "model", "permissionMode", "maxTurns", "autoCompactWindow", "skills",
+    "mcpServers", "hooks", "memory", "background", "effort", "isolation", "color",
+    "initialPrompt", "omitClaudeMd", "experimental",
+}
+# Old fields Claude Code ignores; their presence means the limits they describe are not enforced
+DEAD = {"allowed-tools", "max-steps", "mode", "triggers", "samplePrompts", "preamble-tier", "owner", "version"}
+
+NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
 # Claude Code subagent models: aliases, or a full model ID (claude-*)
 MODEL_ALIASES = {"sonnet", "opus", "haiku", "fable", "inherit"}
 
-# Tools agents may request
+# Built-in tools agents may request; MCP tools (mcp__<server>__<tool>) are also accepted
 ALLOWED_TOOLS = {
-    "Read",
-    "Write",
-    "Edit",
-    "Bash",
-    "Grep",
-    "Glob",
-    "Agent",
-    "AskUserQuestion",
-    "WebSearch",
-    "Task",
+    "Read", "Write", "Edit", "Bash", "Grep", "Glob", "Agent", "AskUserQuestion",
+    "WebSearch", "WebFetch", "NotebookEdit",
 }
 
 
@@ -92,63 +84,37 @@ def validate_file(path):
     if not meta:
         return False, "no frontmatter found"
 
+    dead = sorted(DEAD & set(meta))
+    if dead:
+        return False, f"unsupported fields (ignored by Claude Code): {', '.join(dead)}"
+    unknown = sorted(set(meta) - KNOWN)
+    if unknown:
+        return False, f"unknown fields: {', '.join(unknown)}"
+
     missing = [k for k in REQUIRED if not meta.get(k)]
     if missing:
         return False, f"missing metadata: {', '.join(missing)}"
 
-    # mode sanity
-    if meta.get("mode") not in ("subagent", "assistant"):
-        return False, "invalid mode (must be 'subagent' or 'assistant')"
+    if not NAME_RE.match(str(meta["name"])):
+        return False, f"name '{meta['name']}' must be kebab-case"
 
-    # model validation
     model = meta.get("model")
-    if model not in MODEL_ALIASES and not str(model).startswith("claude-"):
+    if model is not None and model not in MODEL_ALIASES and not str(model).startswith("claude-"):
         return (
             False,
             f"model '{model}' is not a Claude Code model ({', '.join(sorted(MODEL_ALIASES))}, or a claude-* ID)",
         )
 
-    # tools/allowed-tools validation (v2.0.0 uses allowed-tools, legacy uses tools)
-    tool_list = []
-    allowed_tools = meta.get("allowed-tools")
-    legacy_tools = meta.get("tools")
-    if isinstance(allowed_tools, list):
-        tool_list = allowed_tools
-    elif isinstance(allowed_tools, str):
-        tool_list = [x.strip() for x in allowed_tools.split(",") if x.strip()]
-    elif isinstance(legacy_tools, list):
-        tool_list = legacy_tools
-    elif isinstance(legacy_tools, str):
-        tool_list = [x.strip() for x in legacy_tools.split(",") if x.strip()]
-    else:
-        return False, "allowed-tools or tools must be a comma-separated string or list"
+    tools = meta["tools"]
+    tool_list = tools if isinstance(tools, list) else [x.strip() for x in str(tools).split(",") if x.strip()]
     for t in tool_list:
-        if t not in ALLOWED_TOOLS:
-            return (
-                False,
-                f"allowed-tools contains unknown tool: {t} (allowed: {', '.join(sorted(ALLOWED_TOOLS))})",
-            )
+        if t not in ALLOWED_TOOLS and not str(t).startswith("mcp__"):
+            return False, f"tools contains unknown tool: {t} (allowed: {', '.join(sorted(ALLOWED_TOOLS))}, mcp__*)"
 
-    # max-steps validation
-    max_steps = meta.get("max-steps")
-    try:
-        ms = int(max_steps)
-        if ms < 1 or ms > 50:
-            return False, "max-steps must be between 1 and 50"
-    except (ValueError, TypeError):
-        return False, "max-steps must be an integer"
-
-    # version validation
-    if "version" in meta:
-        try:
-            _ = tuple(int(x) for x in str(meta.get("version")).split(".") if x)
-        except Exception:
-            return False, "invalid version format"
-
-    # samplePrompts must be a non-empty list
-    sp = meta.get("samplePrompts")
-    if not isinstance(sp, list) or not sp:
-        return False, "samplePrompts must be a non-empty list of example prompts"
+    if "maxTurns" in meta:
+        mt = str(meta["maxTurns"])  # str: the fallback parser has no ints
+        if not mt.isdigit() or not 1 <= int(mt) <= 100:
+            return False, "maxTurns must be an integer between 1 and 100"
 
     return True, meta
 

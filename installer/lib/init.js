@@ -13,15 +13,15 @@ const TEMPLATES = {
   },
   fullstack: {
     skills: ['dev-craft', 'ui-craft', 'verification-before-completion', 'debugging-and-error-recovery', 'code-review-and-quality'],
-    agents: ['verifier', 'debugger', 'code-reviewer', 'test-engineer'],
+    agents: ['verifier', 'code-reviewer', 'ui-verifier'],
   },
   frontend: {
     skills: ['ui-craft', 'dev-craft', 'verification-before-completion', 'accessibility', 'fe-visual-loop'],
-    agents: ['verifier', 'code-reviewer'],
+    agents: ['verifier', 'code-reviewer', 'ui-verifier'],
   },
   backend: {
     skills: ['dev-craft', 'verification-before-completion', 'api-design', 'debugging-and-error-recovery'],
-    agents: ['verifier', 'debugger', 'security-auditor'],
+    agents: ['verifier', 'code-reviewer'],
   },
 };
 

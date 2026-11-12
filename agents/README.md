@@ -1,28 +1,19 @@
----
-{}
+# Agents
 
----
+Subagent files for Claude Code, Markdown with YAML frontmatter (schema: https://code.claude.com/docs/en/sub-agents).
 
-Agents directory
+| Agent | Role | Tools |
+|---|---|---|
+| `code-reviewer` | Read-only review of a diff file against the brief | Read, Grep, Glob (no shell) |
+| `verifier` | Fresh full run, mutation spot-check, REQ-to-test check | Read, Grep, Glob, Bash, Edit, Write (tests only) |
+| `ui-verifier` | Browser screenshots at 1440/390, console errors, compare to reference | Read, Grep, Glob, Bash, Playwright MCP |
 
-Place agent persona files in this folder as Markdown files with YAML frontmatter.
-Required frontmatter keys (v2.0.0):
-- `name`
-- `description`
-- `model`
-- `allowed-tools` (v2.0.0) or `tools` (legacy)
-- `mode` (subagent | assistant)
-- `max-steps`
-- `samplePrompts`
-- `version`
-- `owner`
+`dev-craft/references/test-agent.md` says when each is dispatched. Unused agents live in `_archive/`.
 
-Optional v2.0.0 fields: `preamble-tier`, `triggers`, `metadata`.
-
-Validator: `tools/validate_agents.py` checks the frontmatter and exits non-zero on errors.
-Each agent should include `samplePrompts` (non-empty list) and `owner`.
-Run locally:
+Frontmatter: `name` (kebab-case) and `description` required; `tools`, `model`, `maxTurns` expected. Old fields
+(`allowed-tools`, `max-steps`, `mode`, `triggers`, `samplePrompts`, `preamble-tier`, `owner`, `version`) are
+rejected because Claude Code ignores them. Start from `AGENT_TEMPLATE.md`.
 
 ```bash
-python tools/validate_agents.py
+python3 tools/validate_agents.py
 ```
