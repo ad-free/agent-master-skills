@@ -62,4 +62,4 @@ repo. Never switch with an implied contract. Worktree isolation for parallel sid
 Frontend uses only fields the backend returns and handles nullable ones; every backend error has a UI path; no
 `any` or casts hiding a mismatch; loading/empty/error handled; server-side authorization; every consumer of a
 changed contract updated; types in sync (`gen:types` then `git diff --exit-code`); the running app matches the
-contract.
+contract; one real end-to-end run per acceptance criterion (UI run only against a mock = backend not verified).

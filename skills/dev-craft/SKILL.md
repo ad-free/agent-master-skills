@@ -21,7 +21,7 @@ this skill, then `references/` defaults. `AGENTS.md` hard rules (commits, destru
 | **Standard** | feature or fix in a few files, one endpoint, a UI change, a small schema change, a review | Section 3, without reference files unless the task hits a condition in Section 5 |
 | **Large** | new module or service, schema + API + UI together, risky migration, auth/security, ambiguous scope, multi-session | Section 3 + `references/phases-large.md` |
 
-Vague input ("Build HRM", "make me a CRM") or attached spec files: read `references/workflow.md` §Input gate
+Vague input ("Build HRM", "make me a CRM") or attached spec files: read `references/input-gate.md`
 before anything else. Do not start building from a one-liner.
 
 ## 2. Scope: what you may write, what you must read
@@ -89,7 +89,8 @@ checkpoint after TRACE.
 | UI built or changed | `references/frontend-design.md`, `references/checklists/ui.md`, one `ui-patterns/` file |
 | Tables/schema/queries touched; new service | `references/data-modeling.md`; `references/architecture.md` |
 | 2+ components, or FE-only/BE-only against the other side | `references/fullstack.md` |
-| Writing code | `references/build-protocol.md`, `references/clean-code-defaults.md`, `references/idioms/README.md` |
+| Writing code | `references/build-protocol.md`, `references/idioms/README.md` |
+| Writing code where the repo has no linter config or settled pattern for that area | `references/clean-code-defaults.md` |
 | Refactor or cleanup (dead code, duplication, naming) | `references/refactor.md` |
 | Migration (schema, data, API, config, dependency) | `plugins/database-migrations/SKILL.md` |
 | Choosing a structure or a hard-to-reverse option (ADR) | `references/architecture.md` |

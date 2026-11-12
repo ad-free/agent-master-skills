@@ -146,6 +146,9 @@ the contract and does not invent endpoints.
 
 **Exit:** a staged, verified change with a rollback plan and a proposed commit message.
 
+**Demo script** (Large, UI, or when asked; skip for small Standard tasks): end with steps the user can run in about 5 minutes: seed command, exact commands or URLs, and
+what to observe per `REQ` (UI: route, viewport, what to see). Run it once yourself; its output is Evidence.
+
 ## Large overview
 
 Load `phases-large.md` one phase at a time.

@@ -38,3 +38,16 @@ Standard bug fix is 623 lines for a ~450 target.
 
 Final-audit re-measure: Standard bug fix 583, FE-only 683, schema 769, Large full-stack 1685, Large UI 1595. The +8 to +11
 lines come from later rule edits in `verify.md` and `workflow.md` (red-proof wording, demo-script scope, characterization step).
+
+## Round 3 trim (2026-11-12, applied)
+
+After the Phase 2 skill pruning the checklists always load (their skills are archived), so the fallback
+discount above no longer applies. Standard bug fix 607 -> 490 by moving content, not removing rules:
+idioms verification log -> `idioms/VERIFIED.md`; Input gate -> `input-gate.md`; `workflow.md` layer rules and
+failure handling cut to what `AGENTS.md` and other loaded files do not already say; requirement matrix ->
+`test-agent.md`, demo script -> `phases-large.md` §SHIP-PREP; `verify.md` "By kind of change" points at the files
+that own each check; 11 red-flag rows that restate loaded rules removed. One rule change:
+`clean-code-defaults.md` loads only when the repo has no linter config or settled pattern (529 in that case).
+Evals (2 headless runs per arm per case, before = `7948d26`): t07, t12 4/4 in both arms; t09 equal; t11 equal or
+better (independent check 0/2 -> 1/2); t02 and t04 inconclusive because `skill-gate.sh` blocked runs in both
+arms. Local detail: `results/load-budget-trim.md` (gitignored).
