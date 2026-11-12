@@ -17,6 +17,24 @@ def test_validate_agents():
     assert code == 0, out
 
 
+def test_validate_agents_rejects_ignored_fields(tmp_path):
+    sys.path.insert(0, os.path.join(HERE, "tools"))
+    from validate_agents import validate_file
+
+    def check(front):
+        p = tmp_path / "a.md"
+        p.write_text(f"---\n{front}\n---\n\nbody\n")
+        return validate_file(str(p))
+
+    good = "name: rev\ndescription: d\ntools: Read, mcp__playwright__browser_navigate\nmodel: inherit\nmaxTurns: 5"
+    assert check(good)[0], check(good)
+    assert not check(good + "\nallowed-tools: [Read]")[0]
+    assert not check(good + "\nmax-steps: 5")[0]
+    assert not check(good.replace("name: rev", "name: Code Reviewer"))[0]
+    assert not check(good.replace("tools: Read, mcp__playwright__browser_navigate\n", ""))[0]
+    assert not check(good.replace("maxTurns: 5", "maxTurns: 0"))[0]
+
+
 def test_validate_dev_craft_state_good():
     py = sys.executable
     sample = os.path.join(HERE, "tests", "fixtures", "project_with_dev_craft")

@@ -16,6 +16,11 @@ subagents). If one is absent, follow this file and `checklists/testing.md` alone
 
 ## Roles (separate subagents or sessions when the environment supports them)
 
+Dispatch by name where the agent is installed: Verifier -> `verifier`, UI Verifier -> `ui-verifier`, a
+read-only diff review -> `code-reviewer`. Their tool limits are enforced by the harness; a generic agent's are
+not. `code-reviewer` has no shell: write `git diff <range> > <run folder>/review.diff` and pass that path.
+Test Designer has no named agent: use a generic subagent and withhold the implementation.
+
 1. **Test Designer** (after TRACE, before BUILD)
    - Input: brief with `REQ-n`, examples and `Invariants:`, contract, schema, test conventions. It must **not**
      see the implementation.
