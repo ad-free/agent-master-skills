@@ -49,5 +49,6 @@ failure handling cut to what `AGENTS.md` and other loaded files do not already s
 that own each check; 11 red-flag rows that restate loaded rules removed. One rule change:
 `clean-code-defaults.md` loads only when the repo has no linter config or settled pattern (529 in that case).
 Evals (2 headless runs per arm per case, before = `7948d26`): t07, t12 4/4 in both arms; t09 equal; t11 equal or
-better (independent check 0/2 -> 1/2); t02 and t04 inconclusive because `skill-gate.sh` blocked runs in both
-arms. Local detail: `results/load-budget-trim.md` (gitignored).
+better (independent check 0/2 -> 1/2). t02 and t04 re-run with hooks off for the eval runs only (the
+`skill-gate.sh` hook blocks edits when the Skill tool is disallowed): t04 4/4 in all four runs; t02 before 5/5
+and 4/5, after 5/5 and 5/5 (mutation check in 3 of 4 runs). Local detail: `results/load-budget-trim.md` (gitignored).
