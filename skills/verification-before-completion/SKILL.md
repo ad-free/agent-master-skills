@@ -1,10 +1,10 @@
 ---
 name: verification-before-completion
-description: |
-  Use before saying "done", "fixed" or "complete" on work done outside dev-craft, or when proof must outlive
-  the session (CI handoff, release, audit) via the hash-chained evidence ledger. Grades evidence
-  FRESH/STALE/MISSING; 5 gates: structure, deterministic, security, convention, LLM judge. Inside dev-craft,
-  its Verify step covers this.
+description: >-
+  Use when about to say "done", "fixed" or "complete" on work done outside dev-craft, or when proof must
+  outlive the session (CI handoff, release, audit) via the hash-chained evidence ledger. Grades evidence
+  FRESH/STALE/MISSING across 5 gates: structure, deterministic, security, convention, LLM judge. Inside
+  dev-craft, its Verify step covers this.
 metadata:
   origin: agent-master-skills
   version: 2.1.0

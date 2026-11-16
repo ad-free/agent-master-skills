@@ -1,10 +1,9 @@
 ---
 name: ship
-description: |
-  Automated ship workflow: detect base branch, run tests, review diff, bump VERSION, update CHANGELOG,
-  commit, push, create PR. Use when asked to "ship", "deploy", "push to main", "create a PR", "merge and push",
-  or "get it deployed". (gstack)
-  
+description: >-
+  Use when asked to "ship", "deploy", "push to main", "create a PR", "merge and push", or "get it deployed".
+  Automated ship workflow: detect base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit,
+  push, create PR. (gstack)
 disable-model-invocation: true
 metadata:
   origin: agent-master-skills
@@ -111,8 +110,8 @@ fi
 Invoke `code-reviewer` agent on the diff:
 
 ```bash
-git diff origin/$BASE_BRANCH...HEAD > /tmp/ship-diff.patch
-# Feed to code-reviewer agent
+DIFF=$(mktemp) && git diff origin/$BASE_BRANCH...HEAD > "$DIFF"
+# Pass the "$DIFF" path to the code-reviewer agent
 ```
 
 **Review checks:**

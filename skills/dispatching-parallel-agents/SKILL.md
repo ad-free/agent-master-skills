@@ -1,10 +1,8 @@
 ---
 name: dispatching-parallel-agents
-description: |
-  Run independent tasks simultaneously using subagents. Use when multiple tasks
-  have no dependencies and can execute concurrently.
-  Invoked by: dev-craft (parallel slices, Verifier / UI Verifier dispatch).
-  
+description: >-
+  Use when several tasks have no dependencies on each other and can run at the same time in subagents. Invoked
+  by: dev-craft (parallel slices, Verifier / UI Verifier dispatch).
 metadata:
   origin: agent-master-skills
   version: 2.0.0

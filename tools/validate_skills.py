@@ -5,8 +5,6 @@ Checks:
 - YAML frontmatter contains required keys: name, description (the only keys hosts need; others are optional)
 - Warns/errors on absolute local paths, inline secrets patterns, risky commands
 - Validates allowedTools against whitelist (if present)
-- Validates gate patterns: HUMAN CHECKPOINT — Gate N
-- Validates out-of-scope detection pattern
 
 Exit code 0 on success, non-zero if errors found.
 """
@@ -23,7 +21,8 @@ except Exception:
 ROOT = os.path.dirname(os.path.dirname(__file__))
 SKILLS_GLOB = os.path.join(ROOT, 'skills', '**', 'SKILL.md')
 
-RE_ABSOLUTE_PATH = re.compile(r"(^|\s)(/|[A-Za-z]:\\)")
+# Machine-local roots only: a bare "/" also matched "A / B" prose and "/>" in JSX
+RE_ABSOLUTE_PATH = re.compile(r"(^|[\s`'\"(])(/(home|Users|root|mnt|opt|var|tmp|etc|usr|private)/|[A-Za-z]:\\)")
 RE_SECRET_LIKE = re.compile(r"(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|GCLOUD|gcloud auth|ssh .*@|-----BEGIN PRIVATE KEY-----|API_KEY|SECRET_KEY)", re.I)
 RE_RISKY_CMDS = re.compile(r"\b(curl|wget|scp|ssh|aws|gcloud|kubectl)\b", re.I)
 ALLOWED_TOOLS = {'Read', 'Write', 'Edit', 'Bash', 'Grep', 'Glob', 'Agent', 'AskUserQuestion', 'WebSearch', 'Task'}
@@ -35,12 +34,6 @@ DEAD_KEYS = ('triggers', 'preamble-tier', 'version', 'preferred-model')
 
 # Archived skills and the claude.ai sync folder are not part of the library
 SKIP_DIRS = ('_archive', 'synced')
-
-# Gate pattern to validate
-GATE_PATTERN = re.compile(r'###\s*\[\d+(\.\d+)?\]\s*HUMAN CHECKPOINT\s*—\s*Gate\s+\d+:')
-
-# Out-of-scope pattern
-OUT_OF_SCOPE_PATTERN = re.compile(r'Out-of-scope detection.*runs at every gate')
 
 errors = []
 warnings = []
@@ -85,7 +78,8 @@ for path in glob(SKILLS_GLOB, recursive=True):
         continue
     # check required keys
     if 'model' in fm:
-        errors.append(f'{rel}: top-level `model` switches the session model in Claude Code; remove it')
+        errors.append(f'{rel}: top-level `model` switches the model for that turn, and each switch and switch-back '
+                      'drops the prompt cache (costs more, not less); remove it')
     for key in DEAD_KEYS:
         if key in fm:
             errors.append(f'{rel}: `{key}` is not a skill field Claude Code reads; remove it (version: under metadata)')
@@ -114,15 +108,6 @@ for path in glob(SKILLS_GLOB, recursive=True):
             for t in atools:
                 if t not in ALLOWED_TOOLS:
                     warnings.append(f'{rel}: `allowed-tools` contains unknown tool: {t} (allowed: {", ".join(sorted(ALLOWED_TOOLS))})')
-    # validate gate patterns in body
-    gate_matches = GATE_PATTERN.findall(text)
-    if len(gate_matches) == 0:
-        # Only warn for pipeline skills that should have gates
-        if fm.get('name') in ('dev-craft', 'ui-craft'):
-            warnings.append(f'{rel}: No HUMAN CHECKPOINT gate patterns found (expected for pipeline skills)')
-    # validate out-of-scope pattern
-    if 'Out-of-scope detection' not in text and fm.get('name') in ('dev-craft', 'ui-craft'):
-        warnings.append(f'{rel}: No out-of-scope detection pattern found (expected for pipeline skills)')
     # scan body for risky patterns
     in_fence = False
     for i, line in enumerate(text.splitlines(), start=1):

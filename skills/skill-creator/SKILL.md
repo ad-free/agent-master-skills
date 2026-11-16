@@ -1,6 +1,8 @@
 ---
 name: skill-creator
-description: "Create new skills, modify and improve existing skills for the agent-master-skills library. Use when the user wants to create a skill from scratch, edit or optimize an existing skill, or add a plugin. Follows the skill-composer integration pattern for dependency-aware loading."
+description: >-
+  Use when creating a skill from scratch, editing or optimizing an existing skill, or adding a plugin in the
+  agent-master-skills library. Follows the skill-composer integration pattern for dependency-aware loading.
 metadata:
   origin: agent-master-skills
   version: 2.0.0

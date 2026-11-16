@@ -1,6 +1,7 @@
 # AI Tells — Quick Reference (Banned by Default)
 
-**Source:** taste-skill, image-to-code-skill, redesign-skill  
+**Source:** taste-skill, image-to-code-skill, redesign-skill, anthropics/skills `frontend-design` (Apache-2.0)  
+**Override:** the brief wins. A look the brief pins down (palette, font, era) is followed even when it is listed here.  
 **Use in:** ui-craft DESIGN/REVIEW phases — mechanical grep check
 
 ---
@@ -22,6 +23,8 @@
 - [ ] Serif for dashboards/B2B SaaS (unless editorial/luxury/heritage)
 - [ ] `Fraunces` / `Instrument Serif` as default display serif
 - [ ] Mixed-family emphasis (random serif word in sans headline)
+- [ ] One word or phrase accented in a headline (italic, bold or colour)
+- [ ] Template chrome: meta strings joined with ` · `, `WORD — fragment` labels, `→` appended to every link
 - [ ] Italic descender clipping (`leading-none` on `y/g/j/p/q`)
 - [ ] Eyebrow abuse (> ceil(sections/3))
 - [ ] Title Case On Every Header
@@ -35,6 +38,8 @@
 - [ ] Complex flex percentage math (use CSS Grid)
 - [ ] No max-width container
 - [ ] Uniform border-radius on everything
+- [ ] Numbered markers (01 / 02 / 03) on content that is not a real sequence
+- [ ] Fade-and-slide-up on every section or hover motion on every card (use one orchestrated moment)
 - [ ] No overlap/depth (flat adjacency)
 - [ ] Symmetrical vertical padding (top=bottom always)
 - [ ] Dashboard = left sidebar only
@@ -73,6 +78,8 @@
 - [ ] AI clichés: Elevate, Seamless, Unleash, Next-Gen, Game-changer, Delve, Tapestry, "In the world of..."
 - [ ] Exclamation marks in success messages
 - [ ] "Oops!" error messages
+- [ ] Errors that apologise or stay vague (say what happened and how to fix it)
+- [ ] One action named two ways in a flow (button "Publish", toast "Saved")
 - [ ] Lorem Ipsum
 - [ ] Quote > 3 lines
 - [ ] Em-dashes as design flourish in quotes
