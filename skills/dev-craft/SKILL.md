@@ -1,6 +1,7 @@
 ---
 name: dev-craft
 description: Use for non-trivial coding work - building or changing features, fixing bugs, refactors and cleanup, migrations, schema/API/UI changes, architecture choices, reviewing a diff or PR comments, resuming earlier work. Skip typos, one-line edits, trivial config, quick questions, and throwaway scripts.
+model: sonnet
 metadata:
   version: 4.0.0
 ---
