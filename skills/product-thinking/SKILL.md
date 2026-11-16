@@ -1,10 +1,9 @@
 ---
 name: product-thinking
-description: |
-  Transform vague ideas into structured product specifications through 4-round refinement.
-  Use when input is vague, incomplete, or "I have an idea..." — before planning.
-  Invoked by: triage, planner.
-  
+description: >-
+  Use when input is vague or incomplete ("I have an idea...", "build me a CRM"), before planning. Turns it
+  into a structured product spec through 4 rounds of refinement. Invoked by: dev-craft (input gate, Large
+  planning).
 metadata:
   origin: agent-master-skills
   version: 2.0.0
@@ -199,8 +198,11 @@ Ready for [dev-craft / dev-craft].
 
 ### Interaction Principles
 
+0. **Look before you ask.** Read the files, spec and code the user pointed at first; never ask what they
+   already answer or reopen what the user already decided. Ask *why* they want it if they have not said.
 1. **One question at a time.** Never dump a list of 10 questions. Ask 1–2, get answers, then proceed.
-2. **Verify assumptions out loud.** "I'm assuming this is a B2B SaaS because you mentioned organizations and billing. Is that right?"
+   Ask the one whose answer would change what gets built most, and say what it would change.
+2. **Verify assumptions out loud.** Every default you fill in is stated as a proposal with its reason; a hidden default is a defect. "I'm assuming this is a B2B SaaS because you mentioned organizations and billing. Is that right?"
 3. **Be explicit about what's out of scope.** Undefined boundaries are the #1 source of scope creep. Write it down.
 4. **Use concrete examples.** "When you say 'approval workflow', do you mean a manager sees a pending item and clicks approve/reject, or is there a multi-step chain?"
 5. **Suggest, don't dictate.** "A typical CRM has these modules..." not "You need these modules."

@@ -1,9 +1,9 @@
 ---
 name: code-review-and-quality
-description: |
-  Eight-axis code review with confidence-based filtering, pre-report gate, and false positive suppression.
-  Use before merging PRs, after implementing features, or when receiving review feedback.
-  Invoked by: code-reviewer, implementer, verifier.
+description: >-
+  Use when a reviewer agent (code-reviewer, verifier) reviews a finished diff: eight-axis review with
+  confidence-based filtering, a pre-report gate and false-positive suppression. For reviewing a diff or
+  answering PR comments in the main session, use dev-craft.
 metadata:
   version: 2.0.0
   origin: agent-master-skills

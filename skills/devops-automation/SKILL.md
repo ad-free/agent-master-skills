@@ -1,12 +1,10 @@
 ---
 name: devops-automation
-description: |
-  CI/CD pipeline design, IaC best practices (Terraform/Kubernetes), security-by-default
-  configurations, automated rollback strategies, and deployment validation gates. Use when
-  deciding deployment mechanics, rollback strategy, CI/CD pipeline shape, or
-  infrastructure-as-code choices. Do NOT use for "is this ready to deploy" (see
-  verification-before-completion) or for writing the pipeline YAML itself (that's plain BUILD work
-  once the strategy is decided).
+description: >-
+  Use when deciding deployment mechanics, rollback strategy, CI/CD pipeline shape, or infrastructure-as-code
+  choices (Terraform/Kubernetes, security-by-default config, deployment validation gates). Do NOT use for "is
+  this ready to deploy" (see verification-before-completion) or for writing the pipeline YAML itself once the
+  strategy is decided.
 metadata:
   origin: agent-master-skills
   version: 2.0.0

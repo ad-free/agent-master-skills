@@ -1,13 +1,11 @@
 ---
 name: fe-visual-loop
-description: |
-  Reference-first visual loop for any new screen, page or redesign. Starts from
-  real reference sites the user picks (the agent finds 3-5 when none is given),
-  extracts their structure into DESIGN.md, fills real content, mocks from the
-  reference, gets an explicit pick, builds, then has ui-verifier compare build
-  and reference at the same widths. Use for page builds, redesigns, and component
-  work too big to free-style but smaller than a full ui-craft run. Invoked by:
-  dev-craft (Design step), ui-craft (Phases 2/3/8).
+description: >-
+  Use when building a new screen or page, a redesign, or component work too big to free-style but smaller than
+  a full ui-craft run. Reference-first loop: starts from real reference sites the user picks (the agent finds
+  3-5 when none is given), extracts their structure into DESIGN.md, fills real content, mocks from the
+  reference, gets an explicit pick, builds, then has ui-verifier compare build and reference at the same
+  widths. Invoked by: dev-craft (Design step), ui-craft (Phases 2/3/8).
 metadata:
   version: 2.0.0
   origin: agent-master-skills
@@ -94,6 +92,8 @@ Real content before layout: the layout is judged with the content it will hold.
 
 - Implement with the project's stack, components and tokens; follow the mock's structure, spacing and content.
   Deviations need a stated reason.
+- Spend boldness in one place: one memorable element, everything around it quiet. Before Proof, remove one
+  decoration that does not serve the brief.
 
 ### Step 7: Proof (hard gate)
 

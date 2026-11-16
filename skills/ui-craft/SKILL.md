@@ -1,10 +1,10 @@
 ---
 name: ui-craft
-description: |
-  Run the 10-phase frontend development pipeline with persistent `.ui-craft`
-  state. Use for UI/UX features, design system work, component libraries,
-  redesigning an existing UI, animation and micro-interactions, or resuming
-  sessions. Do NOT use for a small UI tweak inside a feature (dev-craft covers it).
+description: >-
+  Use when building UI/UX features, design-system work or component libraries, redesigning an existing UI,
+  adding animation and micro-interactions, or resuming a .ui-craft session. Runs the 10-phase frontend
+  pipeline with persistent `.ui-craft` state. Do NOT use for a small UI tweak inside a feature (dev-craft
+  covers it).
 metadata:
   origin: agent-master-skills
   phase-count: 10
