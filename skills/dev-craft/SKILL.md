@@ -50,20 +50,20 @@ condition the task hits (UI, schema, migration, risk flag, review).
 
 | Step | Do | Read now | Gate to leave |
 |---|---|---|---|
-| Frame | Restate task; read AGENTS.md, nearest similar feature, tests, stack versions; set scope + tier | `references/workflow.md` | Scope, tier, stack known |
+| Frame | Restate task; read AGENTS.md (none, and no CLAUDE.md: read `references/project-agents-template.md` now, even on Standard: derive the gate, run it as a baseline, offer a draft), nearest similar feature, tests, stack versions; set scope + tier | `references/workflow.md` | Scope, tier, stack, gate known |
 | Challenge | Test the request against the repo and itself; findings tagged by basis; <=3 questions with defaults; <=3 proposals | `references/challenge.md` | Blocking questions answered; assumptions listed |
-| Brief | Task Brief: numbered `REQ-n`, each with a concrete example and `Source:` tag; `Invariants:` list | `references/workflow.md`, `references/challenge.md` | User confirmed (Standard: shown, nothing risky open) |
+| Brief | Task Brief: numbered `REQ-n`, each with a concrete example and `Source:` tag (a REQ that reads or writes data through an endpoint adds two failure examples: other user/role denied, invalid input rejected with the project's error, not a 500; check the neighbouring endpoints for the same rule and report any that miss it); `Invariants:` list; one line `Risk flag: <money, authorization, personal data, migration, contract, concurrency>` or `none` (flagged: `references/test-agent.md`) | `references/workflow.md`, `references/challenge.md` | User confirmed (Standard: shown, nothing risky open) |
 | Design (UI) | New screen or redesign: `fe-visual-loop` (real reference, picked by the user); tweak: 3 lines in the brief | `references/frontend-design.md` (+ `ui-patterns/<domain>.md`) | User picked reference and mock screenshots |
 | Data (schema touched) | Review the model; findings as options; check queries | `references/data-modeling.md` (new service: `architecture.md`) | Findings decided |
 | Contract (2+ sides) | Define request/response/errors/auth once, consumers listed | `references/fullstack.md` | Consumers agree |
 | Plan | Thin vertical slices; every REQ maps to a test | `references/workflow.md`, Large: `phases-large.md` | Every REQ has a test and a done-condition |
 | Implement | Failing test, minimal code, match conventions, lint, types, tests; stay in write scope | `references/build-protocol.md`, `idioms/README.md` | Slice proof passes |
 | Review | Review your own diff as a stranger would; try to break it | `references/review.md` | No open high-severity finding |
-| Verify | Run everything after the last edit; fill the Evidence table; screenshots for UI | `references/verify.md` | Evidence table complete or gaps stated |
+| Verify | Run everything after the last edit; fill the Evidence table; UI changed: dispatch `ui-verifier` (screenshots stay out of this context); risk flag: dispatch `verifier` (a small diff is not a reason to skip it) | `references/verify.md` | Evidence table complete or gaps stated |
 | Finalize | Walk REQs, handoff per `AGENTS.md`, propose commit message (do not commit) | `references/verify.md` | Report matches what was done |
 
-Other entry points: **bug** (reproduce, failing test, root cause, fix, regression proof), **refactor**,
-**investigate**, **review a diff**, **incoming PR comments**: see `references/workflow.md` §Modes and
+Other entry points: **bug** (reproduce, failing test, root cause, fix), **refactor**, **investigate**, **test
+backfill**, **hunt** (bugs with no symptom yet), **review a diff**, **PR comments**: `references/workflow.md` §Modes and
 `references/review.md`. Large work runs the phased path in `references/phases-large.md` with one approval
 checkpoint after TRACE.
 
@@ -74,7 +74,7 @@ checkpoint after TRACE.
    message. Creating a feature branch (`git switch -c <type>/<slug>`) is allowed.
 2. **Branch guard.** Never edit on `main`, `master`, or `develop`: protected-branch mistakes are hard to undo.
    Branch first, in every repo the scope touches.
-3. **No code without a shown brief** (Large: explicit approval). Unwritten requirements are the main source of rework.
+3. **No code without a shown brief** (Large: explicit approval; headless: print it before the first edit). Unwritten requirements are the main source of rework.
 4. **Coverage (Large).** Every P1 requirement traces to a task with an acceptance criterion before BUILD.
 5. **Evidence before done.** A claim counts only with output from this session produced after the last
    relevant edit. "Should work" is a guess. Anything not run goes under "Not verified".

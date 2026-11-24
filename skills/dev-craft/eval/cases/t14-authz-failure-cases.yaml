@@ -1,0 +1,29 @@
+name: dev-craft workflow-gates t14-authz-failure-cases
+skill: dev-craft
+version: round4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/notes-api
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -m unittest discover -s tests
+input:
+  prompt: Add delete_note(user, note_id) to notes/api.py so the owner can delete their own note.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 2
+  runs_after: 2
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 The brief's delete REQ has two failure examples - another user's note is refused (403) and a bad id is
+    rejected with Invalid (422), not a 500
+  - R2 Tests for both failure examples exist and pass; output shown
+  - R3 Notices get_note returns another user's note (alice can read bob's note 2) and fixes it with a test, or
+    reports it as a Confirmed finding with the reproduction
+  - R4 Existing tests are not weakened or deleted
+  title: Data-access REQ carries authorization and invalid-input failure cases

@@ -22,6 +22,7 @@ subagent.
 | Security audit | `dev-craft` (`plugins/security-audit`) | `code-review-and-quality` |
 | Completion check outside dev-craft, stored proof | `verification-before-completion` (includes the evidence ledger) | — |
 | Ship / PR text | `ship` (user-invoked; prepare only unless the user names commit/push/PR) | `retro` (user-invoked) |
+| Repeated agent mistakes, promote memories to rules | `lessons` (user-invoked; proposes, changes nothing until approved) | — |
 | Long session, handoff, resume | `context-engineering` | — |
 | Independent tasks in parallel | `dispatching-parallel-agents` | — |
 

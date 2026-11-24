@@ -2,7 +2,7 @@
 name: verifier
 description: Independent verifier for a finished slice. Use after Implement (dev-craft TEST step, Large tasks, or Standard tasks with a risk flag) with the brief, the diff and the stack commands. Runs everything fresh, spot-checks test strength, checks every REQ has a test. Does not edit production code.
 tools: Read, Grep, Glob, Bash, Edit, Write
-model: inherit
+model: sonnet
 maxTurns: 25
 ---
 

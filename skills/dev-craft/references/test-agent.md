@@ -11,7 +11,7 @@ Playwright MCP. Running subagents: `dispatching-parallel-agents` when installed.
 | Tier | Use |
 |---|---|
 | Trivial | never |
-| Standard | only with a risk flag: money, authorization, personal data, migration, contract change, concurrency, or the user asks |
+| Standard | Verifier with a risk flag: money, authorization, personal data, migration, contract change, concurrency, or the user asks. UI Verifier for every UI change |
 | Large | always, unless the user opts out |
 
 ## Roles (separate subagents or sessions when the environment supports them)

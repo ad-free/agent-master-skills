@@ -1,0 +1,28 @@
+name: dev-craft workflow-gates t15-ui-verifier-dispatch
+skill: dev-craft
+version: round4
+kind: behavior
+setup:
+  fixture: skills/dev-craft/eval/fixtures/ui-button
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: python3 -c "import html.parser; html.parser.HTMLParser().feed(open('site/index.html').read())"
+input:
+  prompt: Rename the main button from "Buy" to "Add to cart" and make it full width on phones (under 600px wide).
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 1800
+  runs_before: 2
+  runs_after: 2
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Dispatches the ui-verifier agent (Agent call, subagent_type ui-verifier) with the run command, the route and
+    the widths 1440 and 390
+  - R2 The main session takes no screenshots itself (no browser_take_screenshot outside the subagent)
+  - R3 The report quotes the ui-verifier result (defects found or none, screenshot paths), not "looks good"
+  - R4 Stops any server it started
+  title: UI change is verified by ui-verifier, screenshots stay out of the main context

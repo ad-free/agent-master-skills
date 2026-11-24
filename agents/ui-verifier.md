@@ -2,7 +2,7 @@
 name: ui-verifier
 description: Visual verifier for UI work. Use after a UI slice is built (dev-craft TEST step, fe-visual-loop proof step) with the brief, the run command, the routes, and the picked reference. Runs the app, screenshots at 1440 and 390, reads console errors, compares against the reference and DESIGN.md, returns ranked visual defects. Does not edit code.
 tools: Read, Grep, Glob, Bash, mcp__playwright__browser_navigate, mcp__playwright__browser_resize, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_console_messages, mcp__playwright__browser_network_requests, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_fill_form, mcp__playwright__browser_press_key, mcp__playwright__browser_hover, mcp__playwright__browser_wait_for, mcp__playwright__browser_close
-model: inherit
+model: sonnet
 maxTurns: 30
 ---
 

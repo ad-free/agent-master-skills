@@ -102,6 +102,12 @@
       "category": "context"
     },
     {
+      "name": "lessons",
+      "description": "Use when the user runs /lessons: finds lessons the agent learned more than once (project memories, Stop-gate outcomes) and proposes where each belongs, with a draft eval case. Changes nothing until approved.",
+      "source": "./skills/lessons",
+      "category": "context"
+    },
+    {
       "name": "dispatching-parallel-agents",
       "description": "Use when several tasks have no dependencies on each other and can run at the same time in subagents. Invoked by: dev-craft (parallel slices, Verifier / UI Verifier dispatch).",
       "source": "./skills/dispatching-parallel-agents",

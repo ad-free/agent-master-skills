@@ -16,7 +16,7 @@ an API. If an idiom here conflicts with the repo's convention, the repo wins.
 |---|---|
 | Python backend | `python.md`; plus `fastapi.md`, `pydantic.md`, `sqlalchemy-alembic.md`, `testing-python.md` as used |
 | Postgres | `postgres.md` |
-| React + TypeScript | `react-typescript.md`; plus `tailwind.md`, one of `shadcn-ui.md` / `material-ui.md` (detected, never both), `frontend-data.md`, `testing-frontend.md`, `charts.md` as used |
+| React + TypeScript | `react-typescript.md`; plus `tailwind.md`, one of `shadcn-ui.md` / `material-ui.md` (detected, never both), `frontend-data.md`, `testing-frontend.md`, `playwright-e2e.md`, `i18next.md`, `charts.md` as used |
 | Language not listed | Detect conventions from the repo and `clean-code-defaults.md`; do not invent a house style |
 
 Verification dates per file: `VERIFIED.md` (re-verify on a major version change or every 3 months).
