@@ -20,3 +20,7 @@ Postgres versions other than 17. Treat these as defaults and read the installed 
 Last verified: `charts.md`, `postgres.md`, `shadcn-ui.md`, `frontend-data.md` on 2026-10-20 (edited above); the other
 idioms files carry the 2026-10-19 verification listed above (not re-checked today). Re-verify a file when a major
 version of its library changes in the repo, or every 3 months, whichever comes first.
+
+`playwright-e2e.md` and `i18next.md` added 2026-11-24, checked against playwright.dev (auth setup project,
+`storageState` per role, project `dependencies`) and i18next.com (JSON v4 plural suffixes, `_other` fallback since
+v27.1.0, `saveMissing` + `missingKeyHandler`) via context7.

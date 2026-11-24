@@ -156,3 +156,25 @@ One PR per phase. I do not commit, push or open PRs; I stage and propose the mes
 - Changes under `~/.claude` (agents symlinks, settings, hooks) affect every project at once. Each is listed above
   and waits for explicit approval.
 - Live skills follow `origin/master`: every merged phase reaches all your projects at the next session start.
+
+## Phase 5: workflow gates (2026-11-24, branch `feat/workflow-gates`)
+
+From the gap review: `verifier`/`ui-verifier` had 0 calls; `context-engineering` was off but routed; no fallback
+for a missing project `AGENTS.md`; no Test, Hunt, e2e or i18n guidance.
+
+Done in the working tree (not committed): Stop gate hook `tools/hooks/stop-gate.sh` (per-repo trust, cache, loop
+guard, outcome log) with `tests/test_stop_gate.py`; dev-craft: missing-`AGENTS.md` fallback
+(`references/project-agents-template.md`), authorization and invalid-input failure examples in the brief,
+`ui-verifier` for every UI change, Test and Hunt modes, `idioms/playwright-e2e.md` and `idioms/i18next.md`;
+`verifier`/`ui-verifier` on Sonnet; `/lessons` skill; eval cases t13-t15, `eval/run_behavior.py`, `eval/POLICY.md`
+(trials, held-out set). Outside the repo, with the user's approval: hook installed in `~/.claude/settings.json`
+(backup `settings.json.bak-20261124`), `context-engineering` re-enabled, a test/hunt route in
+`~/.claude/hooks/skill-routes.tsv` (backup `.bak-20261124`), `Gate:` lines in hansa-global and armorify-ppe on
+branch `chore/agent-gate`.
+
+Independent review (`code-reviewer`): 1 high (fingerprint taken before the gate, so gate output could loop), 4
+medium, 4 low; all fixed except the eval runner sandbox (documented as not sandboxed in `POLICY.md`). Evals:
+`eval/load-budget.md` §Round 4 (64/72 after, 89%).
+
+Open: headless brief not printed; `verifier` not dispatched on risk flags (both need a mechanical check). Not done:
+Perf mode, dependency-upgrade checklist, Redis/MQTT idioms (wait for a task that needs them).

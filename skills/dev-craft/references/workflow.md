@@ -5,7 +5,8 @@ Detail for the flow in `SKILL.md`. Read the section you need.
 ## Frame (all Standard/Large tasks)
 
 1. Read project `AGENTS.md`, the nearest similar feature, the test setup, and exact stack versions from
-   dependency files. Reuse `.dev-craft/` state if present and current.
+   dependency files. Reuse `.dev-craft/` state if present and current. No `AGENTS.md`/`CLAUDE.md`:
+   `project-agents-template.md` (derive the gate, run a baseline, offer a draft).
 2. Set **scope** (write vs read-only, `SKILL.md` §2) and **tier**.
 3. Record the stack block once and reuse it (run commands from the right directory in monorepos):
 ```
@@ -23,7 +24,9 @@ Integration/e2e: <cmd or "none">
    money: parts sum to the whole), and follow `test-agent.md`. A policy choice the code makes (who gets the
    extra cent) is a `Business rule`, not an assumption.
 1. **Challenge**, then **Task Brief** (5-10 lines, in chat): goal; scope line; numbered `REQ-1..n` that are the
-   acceptance criteria, each with one concrete example (given X expect Y) and a `Source:` tag; `Invariants:`
+   acceptance criteria, each with one concrete example (given X expect Y) and a `Source:` tag (a REQ that reads
+   or writes data through an endpoint adds two failure examples: another user's or role's access denied, and
+   invalid input rejected with the project's error, not a 500); `Invariants:`
    (rules that always hold; format in `challenge.md`); out of scope; affected layers
    (FE / BE / DB / infra / tests); assumptions; open questions only the user can answer (policy ones are
    `Business rule`). Proceed if no
@@ -52,6 +55,8 @@ follows `test-agent.md`. Standard creates no state files, ADRs, or codebase map.
 | **Refactor (safe)** | Define the behavior boundary and establish verification before structural edits. No feature changes. One ownership boundary at a time; every intermediate state builds. Preserve public interfaces, failure behavior, ordering. Use this mode's own proof, not the full Large path, unless the refactor crosses modules or contracts. | Same proof passes before and after; requested structure achieved. |
 | **Investigate** | Gather evidence before editing. Separate observed symptom from inferred cause. Rank hypotheses by evidence and cheap falsification. No edit until one mechanism explains the evidence. | Cause (or exact blocker) named with proof. No fix unless authorized. |
 | **Review / PR comments** | `review.md`. Read-only unless the user asks for fixes. | Findings delivered; each comment answered. |
+| **Test (backfill)** | Tests for existing code, no behavior change. Pin current behavior first (characterization: record outputs, do not judge them), then add cases from `checklists/testing.md` and `edge-cases.md`. A test that exposes a bug never encodes it as expected: write it failing and fix or report per the project rule. E2E suites: `idioms/playwright-e2e.md`. | Each target behavior has a test that fails when the code is broken (mutation spot-check shown). |
+| **Hunt** | No symptom yet. One module at a time: walk `checklists/bugs.md`, `security.md`, `edge-cases.md` against it (not a diff). A `Confirmed` finding needs a failing test or a reproduction; the rest go under Questions as `Cited` / `Suspected` (`review.md`). Several modules: one read-only agent each (`dispatching-parallel-agents`). | Findings proven or dropped; fixes only if the user or project rule says fix what you find. |
 
 ## Layer rules
 

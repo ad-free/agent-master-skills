@@ -52,3 +52,22 @@ Evals (2 headless runs per arm per case, before = `7948d26`): t07, t12 4/4 in bo
 better (independent check 0/2 -> 1/2). t02 and t04 re-run with hooks off for the eval runs only (the
 `skill-gate.sh` hook blocks edits when the Skill tool is disallowed): t04 4/4 in all four runs; t02 before 5/5
 and 4/5, after 5/5 and 5/5 (mutation check in 3 of 4 runs). Local detail: `results/load-budget-trim.md` (gitignored).
+
+## Round 4: workflow gates (2026-11-24, branch `feat/workflow-gates`)
+
+Load: Standard bug fix 493 -> 498 (rules that must fire on small tasks moved into `SKILL.md` rows, no new lines).
+Runner `eval/run_behavior.py`, Sonnet, headless, hooks and Skill tool off; 33 runs, $3.98 total ($0.12 average).
+"Before" = live master copy. Rubric items passed on the final skill text (latest runs per case):
+
+| Case | Before (master) | After (final text) | Note |
+|---|---|---|---|
+| t13 no AGENTS.md | 1/4 | 12/12 (3 runs) | first run 1/4: rule lived only in `workflow.md`, which small tasks never read |
+| t14 authz failure cases | 3/4 | 12/12 (3 runs) | planted `get_note` owner gap found only after the "neighbouring endpoints" clause |
+| t15 ui-verifier dispatch | 1/4 | 8/8 (2 runs) | one earlier miss traced to `frontend-design.md` §5 telling the main agent to screenshot (fixed) |
+| t12 runnable gate (regression) | - | 12/12 (3 runs) | |
+| t01 misread requirement (regression) | 3/4 | 8/12 (3 runs) | R1 `Source:` tags 0/3 in both arms: no run shows a brief |
+| t02 money split (regression) | 3/4 | 12/16 (4 runs) | R4 verifier 0/4: now named under "Not done", never dispatched |
+
+Total after: 64/72 (89%). Open: (1) headless Sonnet never prints a Task Brief (`REQ-n`, `Source:`), master
+and branch alike, despite hard gate 3; (2) `verifier` is not dispatched on risk-flagged work after two wording
+attempts. Both need a mechanical check, not more text.

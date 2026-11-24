@@ -7,7 +7,7 @@ load them too. Each skill is loaded on demand when its description matches the t
 
 ## Skills
 
-18 skills. Two (`ship`, `retro`) are user-invoked only (`/name`); the model never auto-loads them.
+19 skills. Three (`ship`, `retro`, `lessons`) are user-invoked only (`/name`); the model never auto-loads them.
 
 ### Entry points
 
@@ -44,6 +44,7 @@ API design, test strategy, test seams, edge cases, bug and security checklists l
 | `eval-harness` | Golden-case regression tests for skills |
 | `/ship` | Tests, diff review, version bump, changelog, commit, push, PR (only when you ask to ship) |
 | `/retro` | Weekly engineering retrospective from git history |
+| `/lessons` | Finds lessons learned more than once (project memories, Stop-gate outcomes) and proposes where each belongs, with a draft eval case; changes nothing until you approve |
 
 ### Archived (in `skills/_archive/`)
 
@@ -133,6 +134,19 @@ done
 Claude Code reads `~/.claude/skills/<name>/SKILL.md`; folders without a `SKILL.md` at that level (`_archive/`,
 `references/`) are ignored.
 
+**Optional: the Stop gate.** `tools/hooks/stop-gate.sh` blocks the agent from stopping while the project gate
+fails. The gate is one line in the project's `AGENTS.md` (or `CLAUDE.md`): ``Gate: `make check` ``. It runs only
+when the working tree changed since the last pass; no `Gate:` line means no-op. The gate is code from the repo,
+so it runs only after you approve it once per repo (`bash <path>/stop-gate.sh --trust` in a terminal inside the
+repo; it asks y/N and refuses without a terminal, so the agent cannot approve itself);
+editing the `Gate:` line voids the approval. Trust pins the command text, not what it runs: approving `make check`
+also approves later edits to the `Makefile` (mind checked-out outside PRs). Needs `git` and `jq`. Add to `~/.claude/settings.json`:
+
+```json
+"hooks": { "Stop": [ { "hooks": [ { "type": "command", "timeout": 600,
+  "command": "bash ~/.local/share/agent-master-skills-live/tools/hooks/stop-gate.sh" } ] } ] }
+```
+
 **Option B: installer CLI (per project, or Cursor/Codex)**
 
 ```bash
@@ -160,7 +174,7 @@ Just describe the task; `dev-craft` loads for any non-trivial code change. Examp
 | Layer | Purpose | Tooling |
 |-------|---------|---------|
 | Structural | Every case parses and matches the schema; CI | `tools/validate_eval_cases.py`, `tools/eval_harness.py ci` |
-| Behaviour | Headless agent runs on fixtures, graded against a rubric, before/after a skill change | `skills/<skill>/eval/cases/*.yaml` (`kind: behavior`) |
+| Behaviour | Headless agent runs on fixtures, graded against a rubric, before/after a skill change | `skills/<skill>/eval/cases/*.yaml` (`kind: behavior`), runner `skills/dev-craft/eval/run_behavior.py`; when to run and how many trials: `skills/dev-craft/eval/POLICY.md` |
 
 `skills/dev-craft/eval/measure-load.sh` reports how many reference lines each scenario loads
 (`eval/load-budget.md` has the history).

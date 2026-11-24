@@ -66,10 +66,10 @@ Trends = lines, comparisons = bars, parts of a whole = donut (few slices), never
 
 ## 5. Visual critique (required, in Verify)
 
-Run the app, screenshot each key screen at desktop (~1440) and mobile (~390), look at them, compare with the
-picked reference, `design.md` and `checklists/ui.md`, fix gaps, include screenshots in the Evidence table. New
-screens and redesigns: the `ui-verifier` agent does this pass (`fe-visual-loop` Step 7). Browser unavailable:
-list under Not verified and give preview commands.
+Every UI change, tweaks included: dispatch the `ui-verifier` agent (run command, routes, widths ~1440 and ~390,
+the picked reference or `design.md`, `checklists/ui.md`); do not take screenshots in the main session. Fix what it
+reports, re-dispatch until no high-severity defect, and put its screenshot paths in the Evidence table. New screens
+and redesigns: `fe-visual-loop` Step 7. Agent or browser unavailable: list under Not verified, give preview commands.
 
 Example of a finding from this pass: "Dashboard at 390px: KPI cards overflow the viewport and the table has no
 horizontal scroll. Fix: stack cards in one column, wrap the table in a scrolling container."
