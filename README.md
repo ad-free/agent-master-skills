@@ -7,7 +7,7 @@ load them too. Each skill is loaded on demand when its description matches the t
 
 ## Skills
 
-19 skills. Three (`ship`, `retro`, `lessons`) are user-invoked only (`/name`); the model never auto-loads them.
+19 skills. Three (`ship-release`, `retro`, `lessons`) are user-invoked only (`/name`); the model never auto-loads them.
 
 ### Entry points
 
@@ -42,7 +42,7 @@ API design, test strategy, test seams, edge cases, bug and security checklists l
 |-------|---------|
 | `skill-creator` | Creating or editing skills in this library |
 | `eval-harness` | Golden-case regression tests for skills |
-| `/ship` | Tests, diff review, version bump, changelog, commit, push, PR (only when you ask to ship) |
+| `/ship-release` | Tests, diff review, version bump, changelog, commit, push, PR (only when you ask to ship) |
 | `/retro` | Weekly engineering retrospective from git history |
 | `/lessons` | Finds lessons learned more than once (project memories, Stop-gate outcomes) and proposes where each belongs, with a draft eval case; changes nothing until you approve |
 
@@ -95,7 +95,7 @@ Request
   │       Parallel work: dispatching-parallel-agents (+ dev-craft build-extras.md for worktrees)
   ├── full UI pipeline, design system, motion → ui-craft (+ fe-visual-loop, anti-slop, accessibility)
   ├── long session / handoff / resume → context-engineering
-  └── user-invoked: /ship, /retro
+  └── user-invoked: /ship-release, /retro
 ```
 
 Hard gates in every tier: no commit/push/merge without an explicit instruction, never edit on `main`/`master`,

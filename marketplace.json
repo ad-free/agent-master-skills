@@ -120,9 +120,9 @@
       "category": "testing"
     },
     {
-      "name": "ship",
+      "name": "ship-release",
       "description": "Use when asked to \"ship\", \"deploy\", \"push to main\", \"create a PR\", \"merge and push\", or \"get it deployed\". Automated ship workflow: detect base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit, push, create PR. (gstack)",
-      "source": "./skills/ship",
+      "source": "./skills/ship-release",
       "category": "devops"
     },
     {
