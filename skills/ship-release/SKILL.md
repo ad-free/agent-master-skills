@@ -1,5 +1,5 @@
 ---
-name: ship
+name: ship-release
 description: >-
   Use when asked to "ship", "deploy", "push to main", "create a PR", "merge and push", or "get it deployed".
   Automated ship workflow: detect base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit,
@@ -16,7 +16,7 @@ TOKEN CEILING: ~5K tokens. If skill exceeds, extract sections to references/.
 
 # Ship: Fully Automated Ship Workflow
 
-You are running the `/ship` workflow. This is a **non-interactive, fully automated** workflow. Do NOT ask for confirmation at any step. The user said `/ship` which means DO IT. Run straight through and output the PR URL at the end.
+You are running the `/ship-release` workflow. This is a **non-interactive, fully automated** workflow. Do NOT ask for confirmation at any step. The user said `/ship-release` which means DO IT. Run straight through and output the PR URL at the end.
 
 **Only stop for:**
 - On the base branch (abort)

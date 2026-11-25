@@ -49,6 +49,6 @@ Grade every claim before reporting it:
 | STALE | Ran, but files changed since or it was a different command | No: re-run |
 | MISSING | Not run | No: run it, or list under "Not verified" |
 
-When proof must survive the session (CI handoff, `ship`, audits), record it with the hash-chained evidence
+When proof must survive the session (CI handoff, `ship-release`, audits), record it with the hash-chained evidence
 ledger: `ledger/cli/evidence.js run --label test -- <cmd>`, then `check --label test --max-age 1h`. Details:
 `references/evidence-ledger.md`.

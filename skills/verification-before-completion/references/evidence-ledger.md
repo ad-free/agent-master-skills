@@ -113,7 +113,7 @@ There is no automatic capture hook. Wrap each proof command with `evidence run -
 
 ## Ship Integration
 
-`/ship` and `/land-and-deploy` cite fresh evidence instead of re-running suites:
+`/ship-release` and `/land-and-deploy` cite fresh evidence instead of re-running suites:
 - Checks required evidence labels
 - If all FRESH → proceeds with commit/PR
 - If any STALE/MISSING → blocks with specific missing evidence
@@ -170,4 +170,4 @@ def compute_fingerprint(repo_path):
 
 - `verification-before-completion` — Mandatory verification gates (consumes evidence)
 - `dev-craft` / `ui-craft` — Pipeline phases (produce evidence)
-- `ship` — Release workflow (requires fresh evidence)
+- `ship-release` — Release workflow (requires fresh evidence)
