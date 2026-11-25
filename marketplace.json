@@ -121,7 +121,7 @@
     },
     {
       "name": "ship-release",
-      "description": "Use when asked to \"ship\", \"deploy\", \"push to main\", \"create a PR\", \"merge and push\", or \"get it deployed\". Automated ship workflow: detect base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit, push, create PR. (gstack)",
+      "description": "Use only when the user types /ship-release. Release workflow on a feature branch: merge the base branch, run tests, review the diff, bump VERSION, update CHANGELOG, commit, push the branch, open a PR. Refuses to run on main/master/develop and never merges the PR. (gstack)",
       "source": "./skills/ship-release",
       "category": "devops"
     },
