@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="top">
+  <b>NORTHWIND SUPPLY ADMIN</b>
+  <a href="#">Dashboard</a> | <a href="#" class="cur">Orders</a> | <a href="#">Products</a> | <a href="#">Customers</a> | <a href="#">Reports</a> | <a href="#">Settings</a> | <a href="#">Logout</a>
+</div>
+<div class="main">
+  <h1>Orders</h1>
+  <div class="kpis">
+    <div class="kpi"><div>Total orders</div><div class="v" id="k-count"></div></div>
+    <div class="kpi"><div>Revenue</div><div class="v" id="k-rev"></div></div>
+    <div class="kpi"><div>Pending</div><div class="v" id="k-pending"></div></div>
+    <div class="kpi"><div>Refunded</div><div class="v" id="k-refund"></div></div>
+  </div>
+  <div class="filters">
+    <input id="q" placeholder="search">
+    <select id="status">
+      <option value="">all</option>
+      <option>paid</option><option>pending</option><option>shipped</option><option>refunded</option><option>cancelled</option>
+    </select>
+    <button id="go">Search</button>
+    <button id="export">Export CSV</button>
+    <button id="new">New order</button>
+  </div>
+  <table id="orders">
+    <thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Email</th><th>Items</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+<script src="data/orders.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

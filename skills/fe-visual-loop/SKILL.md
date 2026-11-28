@@ -7,7 +7,7 @@ description: >-
   reference, gets an explicit pick, builds, then has ui-verifier compare build and reference at the same
   widths. Invoked by: dev-craft (Design step), ui-craft (Phases 2/3/8).
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   origin: agent-master-skills
   domain: frontend
   integrates-with: [ui-craft, anti-slop, image-to-design-spec, ui-verifier, verification-before-completion]
@@ -31,6 +31,27 @@ they copy the structure of a real, finished site. The agent finds references and
 
 **When NOT to use:** a tweak inside an existing screen (spacing, a field, a colour fix): follow the screen's
 existing pattern and `dev-craft/references/frontend-design.md`.
+
+## Design lock (once per project; check it first)
+
+Measured: on the same "improve this page" task, a locked hand-over scored 7.9/10 blind against 6.9 for the
+same model with skills alone, and 5.6 for a stronger model with skills alone. A stronger model or more skill text
+does not replace a designer's hand-over; the lock does. The model keeps re-inventing a look when nothing pins it.
+
+- **Lock exists** (`DESIGN.md` marked `Status: locked`, with theme tokens and `design/` pattern screenshots):
+  it is the spec. Implement the screen against it with the repo's components; skip Steps 1-5; no new look, no
+  new tokens. A rule the lock does not cover: follow its nearest pattern and add the gap to the handoff.
+- **No lock and the task is a new screen, a redesign, or "make it look professional"**: build the lock first
+  with Steps 1-5, then record it once:
+  - `DESIGN.md`: `Status: locked`, the picked references, tokens (font, type scale of 4-5 sizes, spacing scale,
+    radius, one accent, status colours as soft pills), page frame (top bar, header with one filled primary),
+    and each core pattern spelled out (list: KPI cards, status tabs with counts, table rules, row menu with
+    confirm on destroy, footer count; form; detail), each with its 390 behaviour stated (row cards instead of
+    a table, tabs that scroll or turn into a select, no horizontal page scroll) and a short Do-not list.
+  - Theme tokens in the project's theme file (CSS variables / Tailwind `@theme`, MUI `createTheme`), so code
+    can only use the locked values.
+  - `design/<pattern>.html` plus `-1440.png` and `-390.png` for each core pattern, approved by the user (Step 5).
+  Later screens reuse the lock: they cost one implementation, not another reference loop.
 
 ## The Loop
 

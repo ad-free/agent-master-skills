@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invoices — list pattern</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#0f172a;--muted:#f6f7f9;--mfg:#64748b;--border:#e5e8ee;--accent:#4f46e5;
+--ok:#15803d;--okbg:#e9f7ee;--warn:#b45309;--warnbg:#fdf3d8;--info:#1d4ed8;--infobg:#e6eefc;--grey:#475569;--greybg:#eef1f5;--bad:#b91c1c;--badbg:#fde9e9}
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 Inter,sans-serif;color:var(--fg);background:var(--bg)}
+.num{font-variant-numeric:tabular-nums}
+.top{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:28px;padding:0 24px}
+.brand{font-weight:600;font-size:15px}.nav{display:flex;gap:20px}.nav a{color:var(--mfg);text-decoration:none;height:56px;display:flex;align-items:center}
+.nav a.on{color:var(--fg);box-shadow:inset 0 -2px var(--accent)}.av{margin-left:auto;width:28px;height:28px;border-radius:50%;background:var(--greybg);display:grid;place-items:center;font-size:12px;font-weight:500}
+.menu{display:none}
+.wrap{max-width:1200px;margin:0 auto;padding:24px}
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px}
+h1{font-size:24px;font-weight:600;letter-spacing:-.01em;margin:0}.desc{color:var(--mfg);margin-top:4px}
+.btn{height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:#fff;font:500 14px Inter;color:var(--fg)}
+.btn.p{background:var(--accent);border-color:var(--accent);color:#fff}.acts{display:flex;gap:8px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.card{border:1px solid var(--border);border-radius:8px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.kpi{padding:16px}.kl{font-size:13px;font-weight:500;color:var(--mfg)}.kv{font-size:24px;font-weight:600;margin:6px 0 2px}.ks{font-size:12px;color:var(--mfg)}
+.bar{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tabs{display:flex;gap:20px;overflow-x:auto}.tab{padding:8px 0;color:var(--mfg);font-weight:500;white-space:nowrap}.tab b{font-weight:500;color:var(--mfg);background:var(--greybg);border-radius:999px;padding:1px 7px;margin-left:6px;font-size:12px}
+.tab.on{color:var(--fg);box-shadow:inset 0 -2px var(--accent)}
+.search{width:280px;height:36px;border:1px solid var(--border);border-radius:8px;padding:0 12px 0 32px;margin-bottom:8px;font:14px Inter;color:var(--mfg);display:flex;align-items:center;position:relative}
+.search:before{content:"";position:absolute;left:11px;width:11px;height:11px;border:1.6px solid var(--mfg);border-radius:50%}
+table{width:100%;border-collapse:collapse}th{background:var(--muted);font-size:13px;font-weight:500;color:var(--mfg);text-align:left;padding:0 16px;height:40px}
+td{height:48px;padding:0 16px;border-top:1px solid var(--border)}.r{text-align:right}.id{font:13px ui-monospace,Menlo,monospace}
+.sub{font-size:12px;color:var(--mfg)}.nm{font-weight:500}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:2px 8px;border-radius:999px}.pill:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.ok{color:var(--ok);background:var(--okbg)}.warn{color:var(--warn);background:var(--warnbg)}.info{color:var(--info);background:var(--infobg)}.grey{color:var(--grey);background:var(--greybg)}.bad{color:var(--bad);background:var(--badbg)}
+.dots{width:32px;height:32px;border:0;background:none;border-radius:6px;color:var(--mfg);font-size:18px}
+.foot{padding:12px 16px;border-top:1px solid var(--border);font-size:13px;color:var(--mfg)}
+.list{display:none}
+@media (max-width:767px){
+ .wrap{padding:16px}.nav{display:none}.menu{display:block;margin-left:auto}.av{margin-left:0}
+ .head{flex-direction:column}.acts{width:100%}.acts .btn{flex:1}
+ .kpis{grid-template-columns:1fr 1fr;gap:12px}.kv{font-size:20px}
+ .bar{flex-direction:column;align-items:stretch;border:0}.tabs{border-bottom:1px solid var(--border)}.search{width:100%;margin:4px 0 0}
+ table,.foot.t{display:none}.list{display:block}
+ .row{padding:12px 16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 32px;gap:2px 8px}.row .dots{justify-self:end;margin:-6px -8px 0 0}.row .amt{grid-column:2/3;justify-self:end;white-space:nowrap}.row .amt{grid-column:auto}
+ .row:first-child{border-top:0}.l1{display:flex;align-items:center;gap:8px}.amt{font-size:15px;font-weight:600;text-align:right}
+}
+</style></head><body>
+<div class="top"><span class="brand">Northwind Supply</span><nav class="nav"><a>Dashboard</a><a>Orders</a><a class="on">Invoices</a><a>Products</a><a>Customers</a></nav><button class="btn menu">Menu</button><span class="av">JM</span></div>
+<div class="wrap">
+<div class="head"><div><h1>Invoices</h1><div class="desc">Billing documents sent to customers.</div></div><div class="acts"><button class="btn">Export</button><button class="btn p">New invoice</button></div></div>
+<div class="kpis">
+<div class="card kpi"><div class="kl">Outstanding</div><div class="kv num">$28,410.00</div><div class="ks">9 invoices</div></div>
+<div class="card kpi"><div class="kl">Overdue</div><div class="kv num">$6,120.50</div><div class="ks">3 invoices</div></div>
+<div class="card kpi"><div class="kl">Paid this month</div><div class="kv num">$91,880.25</div><div class="ks">41 invoices</div></div>
+<div class="card kpi"><div class="kl">Avg. days to pay</div><div class="kv num">18</div><div class="ks">Last 90 days</div></div></div>
+<div class="bar"><div class="tabs"><span class="tab on">All<b>8</b></span><span class="tab">Open<b>3</b></span><span class="tab">Overdue<b>2</b></span><span class="tab">Paid<b>2</b></span><span class="tab">Void<b>1</b></span></div><div class="search">Search invoices</div></div>
+<div class="card">
+<table><thead><tr><th>Invoice</th><th>Customer</th><th>Due</th><th class="r">Lines</th><th class="r">Total</th><th>Status</th><th></th></tr></thead><tbody>
+<tr><td class="id">INV-2291</td><td><div class="nm">Pioneer Medical Supply</div><div class="sub">billing@pioneermed.com</div></td><td>Dec 4, 2026</td><td class="r num">6</td><td class="r num nm">$7,420.00</td><td><span class="pill warn">Open</span></td><td><button class="dots" aria-label="Actions">⋯</button></td></tr>
+<tr><td class="id">INV-2290</td><td><div class="nm">Ruth Calloway</div><div class="sub">ruth.calloway@fastmail.com</div></td><td>Nov 30, 2026</td><td class="r num">1</td><td class="r num nm">$129.00</td><td><span class="pill bad">Overdue</span></td><td><button class="dots" aria-label="Actions">⋯</button></td></tr>
+<tr><td class="id">INV-2289</td><td><div class="nm">Summit Ridge Builders</div><div class="sub">ap@summitridge.co</div></td><td>Nov 28, 2026</td><td class="r num">18</td><td class="r num nm">$15,860.40</td><td><span class="pill ok">Paid</span></td><td><button class="dots" aria-label="Actions">⋯</button></td></tr>
+<tr><td class="id">INV-2288</td><td><div class="nm">Daniel Okoye</div><div class="sub">d.okoye@gmail.com</div></td><td>Nov 26, 2026</td><td class="r num">2</td><td class="r num nm">$248.90</td><td><span class="pill info">Sent</span></td><td><button class="dots" aria-label="Actions">⋯</button></td></tr>
+<tr><td class="id">INV-2287</td><td><div class="nm">Lakeside Primary School</div><div class="sub">office@lakeside.sch.uk</div></td><td>Nov 25, 2026</td><td class="r num">9</td><td class="r num nm">$2,975.00</td><td><span class="pill grey">Void</span></td><td><button class="dots" aria-label="Actions">⋯</button></td></tr>
+</tbody></table>
+<div class="list">
+<div class="row"><div class="l1"><span class="id">INV-2291</span><span class="pill warn">Open</span></div><button class="dots" aria-label="Actions">⋯</button><div class="nm">Pioneer Medical Supply</div><div></div><div class="sub">Dec 4, 2026 · 6 lines</div><div class="amt num">$7,420.00</div></div>
+<div class="row"><div class="l1"><span class="id">INV-2290</span><span class="pill bad">Overdue</span></div><button class="dots" aria-label="Actions">⋯</button><div class="nm">Ruth Calloway</div><div></div><div class="sub">Nov 30, 2026 · 1 line</div><div class="amt num">$129.00</div></div>
+<div class="row"><div class="l1"><span class="id">INV-2289</span><span class="pill ok">Paid</span></div><button class="dots" aria-label="Actions">⋯</button><div class="nm">Summit Ridge Builders</div><div></div><div class="sub">Nov 28, 2026 · 18 lines</div><div class="amt num">$15,860.40</div></div>
+<div class="row"><div class="l1"><span class="id">INV-2288</span><span class="pill info">Sent</span></div><button class="dots" aria-label="Actions">⋯</button><div class="nm">Daniel Okoye</div><div></div><div class="sub">Nov 26, 2026 · 2 lines</div><div class="amt num">$248.90</div></div>
+</div>
+<div class="foot">Showing 5 of 8</div></div></div></body></html>

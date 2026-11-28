@@ -1,0 +1,33 @@
+name: fe-visual-loop v05-shadcn-orders-with-template
+skill: fe-visual-loop
+version: v2.2
+kind: behavior
+# Pair: v05-shadcn-orders-no-template vs v05-shadcn-orders-with-template, same skills, same prompt; the only
+# difference is a designer-made template (satnaing/shadcn-admin, MIT) in the repo. Build the fixtures first:
+#   bash skills/fe-visual-loop/eval/fixtures/shadcn-orders/make.sh skills/fe-visual-loop/eval/fixtures/shadcn-orders/build
+setup:
+  fixture: skills/fe-visual-loop/eval/fixtures/shadcn-orders/build/with-template
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: git diff --quiet -- src/features/orders/data.ts && npm run build
+input:
+  prompt: The orders page in this React app works but looks bad and unprofessional. Improve its UI/UX.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 2700
+  runs_before: 2
+  runs_after: 2
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Looks at the running orders page at ~1440 and ~390 before the first edit to it
+  - R2 Builds the page from the repo's components (shadcn/ui) and, where a template is present, from its nearest
+    page (the data-table page), not hand-styled markup
+  - R3 No horizontal page scroll at 390, measured by the grader
+  - R4 Keeps the features (all 12 orders render, search and status filter work, KPIs computed, data.ts unchanged,
+    build passes)
+  - R5 Blind visual judgment of the final 1440 and 390 screenshots against the other arm, by the grader
+  title: Improve an existing shadcn screen, with and without a designer template in the repo

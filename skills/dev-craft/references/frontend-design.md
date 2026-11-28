@@ -17,7 +17,9 @@ For a full pipeline use `ui-craft`; you decide when, and check its result.
 
 ## 2. Direction (before implementing; user confirms)
 
-**New screen, new page or redesign:** run the `fe-visual-loop` skill. It starts from real reference sites the user
+**A locked `DESIGN.md` exists** (`Status: locked`, with `design/` pattern screenshots): implement against it, no
+new look; see `fe-visual-loop` "Design lock". **New screen, new page, redesign or "make it look better" with no
+lock:** run the `fe-visual-loop` skill, which ends by recording the lock. It starts from real reference sites the user
 picks, extracts them into `DESIGN.md`, fills real content and mocks from the reference; the user approves
 screenshots, not a text description. Do not invent directions from adjectives.
 

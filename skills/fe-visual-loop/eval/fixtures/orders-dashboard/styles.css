@@ -1,0 +1,18 @@
+body { font-family: Arial, sans-serif; margin: 0; font-size: 14px; color: #333; }
+.top { background: #1e73be; color: white; padding: 9px 13px; }
+.top a { color: #fff; margin: 0 3px; }
+.top a.cur { font-weight: bold; text-decoration: underline; }
+.main { padding: 17px 40px; }
+h1 { font-size: 22px; margin: 5px 0 20px 0; }
+.kpis { overflow: hidden; margin-bottom: 30px; }
+.kpi { float: left; width: 250px; border: 1px solid #000; padding: 12px; margin-right: 15px; }
+.kpi .v { font-size: 18px; color: #1e73be; margin-top: 8px; }
+.filters { margin-bottom: 12px; }
+.filters input, .filters select { padding: 4px; border: 1px solid #999; }
+button { background: #1e73be; color: #fff; border: none; padding: 6px 11px; margin: 2px; cursor: pointer; }
+table { width: 1100px; border-collapse: collapse; }
+th { background: #eee; text-align: left; padding: 6px; border: 1px solid #ccc; }
+td { padding: 6px; border: 1px solid #ccc; }
+.st-paid, .st-shipped { color: green; }
+.st-pending { color: orange; }
+.st-refunded, .st-cancelled { color: red; }
