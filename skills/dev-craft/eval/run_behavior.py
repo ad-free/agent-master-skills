@@ -17,6 +17,7 @@ import shutil
 import signal
 import subprocess
 import sys
+import time
 
 import yaml
 
@@ -25,6 +26,42 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")
 
 def sh(cmd, cwd, **kw):
     return subprocess.run(cmd, cwd=cwd, shell=isinstance(cmd, str), capture_output=True, text=True, **kw)
+
+
+def alive(pid):
+    try:
+        return open(f"/proc/{pid}/stat").read().rsplit(")", 1)[1].split()[0] != "Z"  # a zombie is already dead
+    except OSError:
+        return False
+
+
+def reap(repo):
+    """Stop processes left running inside repo. Agents start dev servers in their own session (setsid, background
+    Bash), so killing the claude process group misses them."""
+    # shortcut: needs /proc (Linux); on macOS this finds nothing, add a psutil/lsof scan if evals run there.
+    repo = os.path.realpath(repo)
+    pids = []
+    for d in os.listdir("/proc") if os.path.isdir("/proc") else []:
+        if not d.isdigit() or int(d) == os.getpid():
+            continue
+        try:
+            cwd = os.path.realpath(f"/proc/{d}/cwd")
+            cmd = open(f"/proc/{d}/cmdline", "rb").read().replace(b"\0", b" ").decode(errors="replace")
+        except OSError:
+            continue
+        if cwd == repo or cwd.startswith(repo + os.sep) or repo + os.sep in cmd:
+            pids.append(int(d))
+    for sig in (signal.SIGTERM, signal.SIGKILL):
+        for pid in pids:
+            try:
+                os.kill(pid, sig)
+            except OSError:  # gone, or another user's process that only names the path
+                pass
+        pids = [p for p in pids if alive(p)]
+        if not pids:
+            break
+        time.sleep(2)
+    return pids
 
 
 def main():
@@ -73,6 +110,7 @@ def main():
             os.killpg(proc.pid, signal.SIGTERM)
         except ProcessLookupError:
             pass
+        reap(repo)
     open(os.path.join(run_dir, "events.jsonl"), "w").write(out)
 
     result, tools = {}, []
