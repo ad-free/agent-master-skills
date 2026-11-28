@@ -1,0 +1,33 @@
+name: fe-visual-loop v04-improve-existing
+skill: fe-visual-loop
+version: v2.1
+kind: behavior
+setup:
+  fixture: skills/fe-visual-loop/eval/fixtures/orders-dashboard
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: git diff --quiet -- data/ && python3 -c "import html.parser; html.parser.HTMLParser().feed(open('index.html').read())"
+input:
+  prompt: The orders page in this repo works but looks bad and unprofessional. Improve its UI/UX.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 2400
+  runs_before: 2
+  runs_after: 2
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Screenshots the existing page at ~1440 and ~390 before the first edit to index.html, styles.css or app.js
+    (browser_take_screenshot in main before the first Edit/Write)
+  - R2 Names concrete visible problems from those screenshots (e.g. overflow at 390, colour-only status, three
+    buttons per row, unlabeled search), not generic advice
+  - R3 Screenshots again after editing and states what changed and what remains
+  - R4 No horizontal page scroll at 390 (document scrollWidth <= 390, measured by the grader)
+  - R5 Keeps the features (all 12 orders render, search and status filter still work, KPIs still computed,
+    data/ unchanged; tests command passes)
+  - R6 Blind pairwise visual judgment of the final 1440 and 390 screenshots by the grader, which arm looks more
+    finished and is easier to scan
+  title: Improve an existing screen from its screenshots, keep its features

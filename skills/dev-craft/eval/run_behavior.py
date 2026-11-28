@@ -52,8 +52,9 @@ def main():
         sh(cmd, repo, check=True)
 
     prompt = (f"Follow the dev-craft skill for this task. Read {skill_dir}/SKILL.md first, then the files under "
-              f"{skill_dir}/references/ that it tells you to read. The Skill tool is disabled; read those files "
-              f"instead. {case['input'].get('mode', '')}.\n\nTask: {case['input']['prompt']}")
+              f"{skill_dir}/references/ that it tells you to read. Other skills it names are at "
+              f"{os.path.dirname(skill_dir)}/<name>/SKILL.md; use those copies, not ~/.claude/skills. The Skill "
+              f"tool is disabled; read those files instead. {case['input'].get('mode', '')}.\n\nTask: {case['input']['prompt']}")
     cmd = ["claude", "-p", prompt, "--output-format", "stream-json", "--verbose", "--model", a.model,
            "--max-budget-usd", str(a.budget), "--disallowedTools", "Skill", "--permission-mode",
            "bypassPermissions", "--settings", json.dumps({"disableAllHooks": True}), "--no-session-persistence"]

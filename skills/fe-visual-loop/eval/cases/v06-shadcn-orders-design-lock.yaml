@@ -1,0 +1,33 @@
+name: fe-visual-loop v06-shadcn-orders-design-lock
+skill: fe-visual-loop
+version: v2.3
+kind: behavior
+# Compare with v05-shadcn-orders-no-template: same app and prompt, plus a locked DESIGN.md, theme tokens and
+# approved list-pattern screenshots (the hand-over a designer gives). Build the fixtures first:
+#   bash skills/fe-visual-loop/eval/fixtures/shadcn-orders/make.sh skills/fe-visual-loop/eval/fixtures/shadcn-orders/build
+setup:
+  fixture: skills/fe-visual-loop/eval/fixtures/shadcn-orders/build/design-lock
+  repo:
+    copy_to_temp: true
+    git_init: true
+  tests: git diff --quiet -- src/features/orders/data.ts && npm run build
+input:
+  prompt: The orders page in this React app works but looks bad and unprofessional. Improve its UI/UX.
+  mode: 'headless: cannot ask the user; take safest default and state it'
+execution:
+  timeout: 2700
+  runs_before: 2
+  runs_after: 2
+verification:
+  assertions:
+  - type: not_empty
+    path: $.final_report
+  rubric:
+  - R1 Looks at the running orders page at ~1440 and ~390 before the first edit to it
+  - R2 Implements the locked DESIGN.md and the approved list pattern (tabs with counts, soft status pills, mobile
+    row cards, one filled primary) with the repo's shadcn/ui components; no new look invented
+  - R3 No horizontal page scroll at 390, measured by the grader
+  - R4 Keeps the features (all 12 orders render, search and status filter work, KPIs computed, data.ts unchanged,
+    build passes)
+  - R5 Blind visual judgment of the final 1440 and 390 screenshots against the other arm, by the grader
+  title: Improve an existing shadcn screen against a locked design hand-over
